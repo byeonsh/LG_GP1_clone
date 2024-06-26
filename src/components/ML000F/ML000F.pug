@@ -1,0 +1,197 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_pop-msg.pug
+include ../_common/_carousel.pug
+include ../_common/_pagination.pug
+include ../_common/_forms.pug
+include ../_common/_my-component.pug
+include ../_common/_link-banner.pug
+
+block meta 
+    - var componentId = "ML000F"
+    - var componentName = "My repair request"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+mixin inquiryList(data)
+    ul.my-repair
+        each set in data
+            li.my-repair__item
+                .my-repair__top
+                    .my-repair__img
+                        .image.c-image
+                            +printLazyImage("https://via.placeholder.com/100x100/999999/333333")
+                    .my-repair__txt
+                        if set.flag === "RECEIPT"
+                            .my-repair__flag.my-repair__flag--receipt !{set.flag}
+                        if set.flag === "PROCESS"
+                            .my-repair__flag.my-repair__flag--process !{set.flag}
+                        if set.flag === "CANCELED"
+                            .my-repair__flag.my-repair__flag--canceled !{set.flag}
+                        if set.flag === "COMPLETED"
+                            .my-repair__flag.my-repair__flag--completed !{set.flag}
+
+                        .c-text-contents
+                            if set.ReceiptNo
+                                .c-text-contents__bodycopy
+                                    a(href='#' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                                        span.font-w-normal-16.font-m-normal-14.my-repair__receipt !{set.ReceiptNo}
+                            if set.name
+                                .c-text-contents__bodycopy
+                                    span.my-repair__name.font-w-normal-20.font-m-normal-16 !{set.name}
+                        .my-repair__bottom
+                            +linkButton({type:"text", icon:true, color:"black", name:"View Detail"})
+    +pagination
+
+mixin myInputForm(params)
+    .my-input
+        ul
+            each set in params
+                - let data = {...set}
+                li
+                    .my-com__sort-box-text
+                    .c-search-box__form(class=`${data.warning ? 'my-warn' : ''}`)
+                        +formSelect(data.label='', data.id, data.placeholder, false)
+                            if data.optionVal
+                                - for(var i=0; i < data.optionVal.length; i++)
+                                    if data.selected === i + 1
+                                        option(value="" data.selected)= data.optionVal[i]
+                                    else
+                                        option(value="")= data.optionVal[i]
+
+mixin ML000F(option = '')
+    if option == 'myRepairList'
+        .c-wrapper.ML000F
+            .component
+                .fluid-container
+                    +myComponentSubMenu({
+                        title:"My Repair Request",
+                        subMenu:['Menu 1', 'Menu 2', 'Menu 3']
+                    })
+                    .my-component__wrap
+                        .my-component
+                            .my-repair-request
+                                .my-com__sort-box 
+                                    +myInputForm([
+                                        {
+                                            type: 'select',
+                                            optionVal: ['All', 'Receipt', ' Procress', ' Completed', ' Canceled'],
+                                            id: 'select1',
+                                        },
+                                        {
+                                            type: 'select',
+                                            optionVal: ['Latest', 'Oldest'],
+                                            id: 'select2',
+                                        }
+                                    ])              
+                                +inquiryList([
+                                    {
+                                        flag: "CANCELED", 
+                                        name: "WiFi Connected 10.5kg Washing Machine",
+                                        ReceiptNo : "CNU221004079840",
+                                    },
+                                    {
+                                        flag: "RECEIPT", 
+                                        name: "WiFi Connected 10.5kg Washing Machine",
+                                        ReceiptNo : "CNU221004079840",
+                                    },
+                                    {
+                                        flag: "COMPLETED", 
+                                        name: "WiFi Connected 10.5kg Washing Machine",
+                                        ReceiptNo : "CNU221004079840",
+                                    },
+                                    {
+                                        flag: "PROCESS", 
+                                        name: "WiFi Connected 10.5kg Washing Machine",
+                                        ReceiptNo : "CNU221004079840",
+                                    },
+                                    {
+                                        flag: "COMPLETED", 
+                                        name: "WiFi Connected 10.5kg Washing Machine",
+                                        ReceiptNo : "CNU221004079840",
+                                    },
+                                ])
+                    
+                    .my-component__wrap
+                        .my-component
+                            +linkBanner({
+                                type:"padding-tb",
+                                mobileTextAlignLeft:true,
+                                bgColor:"transparent",
+                                title:[{
+                                    text:"Got a product that needs repair?"
+                                }],
+                                desc:[{
+                                    text:"Contact us anytime",
+                                    font:"font-w-normal-20 font-m-normal-16"
+                                }], 
+                                button:[{
+                                    size:"large",
+                                    sizeMobile:"medium",
+                                    name: "Repair Request",
+                                    buttonStyle: 'default',
+                                    isButton: false
+                                }],
+                            })
+    if option == 'nodata'    
+        .c-wrapper.ML000F
+            .component
+                .fluid-container
+                    +myComponentSubMenu({
+                        title:"My Repair Request",
+                        subMenu:['Menu 1', 'Menu 2', 'Menu 3']
+                    })                          
+                    .my-component__wrap
+                        .my-component
+                            .my-nodata-wrap 
+                                .font-w-light-36.font-m-normal-16 There is no repair request.
+                    .my-component__wrap
+                        .my-component
+                            +linkBanner({
+                                type:"padding-tb",
+                                mobileTextAlignLeft:true,
+                                bgColor:"transparent",
+                                title:[{
+                                    text:"Got a product that needs repair?"
+                                }],
+                                desc:[{
+                                    text:"Contact us anytime",
+                                    font:"font-w-normal-20 font-m-normal-16"
+                                }], 
+                                button:[{
+                                    size:"large",
+                                    sizeMobile:"medium",
+                                    name: "Repair Request",
+                                    buttonStyle: 'default',
+                                    isButton: false
+                                }],
+                            })
+block content
+    .guide-text-type My repair list
+    +ML000F('myRepairList')
+
+    .guide-text-type No data
+    +ML000F('nodata')
+
+block modal
+    //- ML0028 My Inquiries (popup)
+    +pop-msg-standard({id : `myInquiriesPopup`, headline:"Delete history"})
+        // block - text contents
+        .c-text-contents 
+            .text.c-text-contents__bodycopy
+                .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="")
+                | The DELETE button on this page
+                | deletes the history, it does not delete or cancel the actual service.
+        .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap--no-divide-on-mobile
+            +button({type:"box-outlined", color:"black", size:"medium", name: "cancel"})(class="c-pop-msg__close-btn js-pop-close" aria-controls="myInquiriesPopup")
+            +button({type:"box", color:"red", size:"medium", name: "Delete"})

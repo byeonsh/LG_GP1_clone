@@ -1,0 +1,562 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_headline.pug
+include ../_common/_carousel.pug
+include ../_common/_pop-msg.pug
+include ../_common/_my-component.pug
+include ../_common/_pagination.pug
+include ../_common/_link-banner.pug
+include ../_common/_product-list.pug
+
+block meta 
+    - var componentId = "ML000J"
+    - var componentName = "My wishlist"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+
+mixin productListWishList($params)
+    li.c-product-list__item.productcollection__item(data-cmp-data-layer="")
+        +productItemWishList($params)
+
+mixin productItemWishList($params)
+    +productCard($params)
+
+//- mixin productCard($params)
+//-     // 일반 제품 카드로만 사용할 것 (제품 리스트 용도)
+//-     // 수정할 때 너무 힘드니까, 믹스인으로 쪼개놓지 말 것
+//-     - var config = {...$params}
+//-     .c-product-item
+//-         .c-product-item__top-container
+//-             .c-product-item__head
+//-                 if (config.flag)
+//-                     .c-product-item__tag
+//-                         .c-product-item__tag--flag
+//-                             if(config.flag.length <= 2)
+//-                                 - for (var x = 0; x < config.flag.length; x++)
+//-                                         span= config.flag[x]
+//-                 if (config.compare)
+//-                     .c-product-item__compare 
+//-                         .c-checkbox-item
+//-                             label.checkbox
+//-                                 input(type="checkbox")
+//-                                 span.label Compare
+//-                 if (config.wishlist)
+//-                     .c-product-item__wishlist
+//-                         //- span.number 120
+//-                         .c-tooltip
+//-                             .button
+//-                                 // Add 'active' class when button is activated
+//-                                 button(type="button" aria-expanded="false" class="cmp-button c-icon-button c-icon-button--wish c-tooltip__button" data-cmp-data-layer="")
+//-                                     span.sr-only add to wishlist
+//-                             .c-tooltip__container.top-right
+//-                                 .c-tooltip__contents.c-tooltip__contents--small
+//-                                     .c-text-contents
+//-                                         .text.c-text-contents__bodycopy
+//-                                             .cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")
+//-                                                 p Add items to your MY LG wishlist
+//-                                     .button
+//-                                         +linkButton({type:"text",color:"black", underline:true, name: 'View Wishlist'})
+//-             .c-product-item__headline
+//-                 if (config.sku)
+//-                     .c-product-item__sku= config.sku
+//-                 if (config.ufn)
+//-                     .c-product-item__ufn
+//-                         a(href="/template/PDP.html" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")= config.ufn 
+//-             if(config.grade || config.review)
+//-                 .c-product-item__rating
+//-                     if (config.grade)
+//-                         - var tagGrade = config.grade == "A" ? 'a' : config.grade
+//-                         .c-product-item__download
+//-                             a(href="#" role="button" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-product-item__download--click Product sheet
+//-                             .c-tooltip
+//-                                 .button
+//-                                     button.c-tooltip__button.c-energy-grade(type="button" aria-expanded="false" class=`c-energy-grade--${tagGrade}`)
+//-                                         span.sr-only= `Energy Grade : ${tagGrade}`
+//-                                 .c-tooltip__container
+//-                                     .c-tooltip__contents
+//-                                         a(href="#" role="button" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").font-w-bold-12i.font-m-bold-12i UK
+//-                                         a(href="#" role="button" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").font-w-bold-12i.font-m-bold-12i EU
+//-                     if (config.review)
+//-                         .c-product-item__rating
+//-                             .c-product-item__rating--filled-star
+//-                             .c-product-item__rating--number.font-w-normal-14i.font-m-normal-14i
+//-                                 // BV 1 
+//-                                 .rating(data-modelid=`${modelid}`)
+//-                                     span
+//-                                         span.sr-only 5.0 out of 5 stars.
+//-                                         a(href='/template/PDP.html#pdp_review' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 5.0 (10)
+//-                                 // or 
+//-                                 // BV2 
+//-                                 // .rating(data-bv-show="inline_rating", data-bv-product-id=`${modelid}`, data-bv-redirect-url="/template/PDP.html#pdp_review") 5.0 (10)
+//-                                 // or 
+//-                                 // LGCOM 
+//-                                 // .rating
+//-                                 //    span
+//-                                 //        span.sr-only 5.0 out of 5 stars.
+//-                                 //        a(href='/template/PDP.html#pdp_review' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 5.0 (10)
+//-                                 // or 
+//-                                 // SP
+//-                                 // .rating(data-shoppilot='oled65b2rla')
+//-                                 //    a(href='/template/PDP.html#pdp_review' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 5.0 (10)
+//-             if(config.type && config.groups)
+//-                 .c-product-item__groups
+//-                     - var count = config.groups.length
+//-                     - var limited = count >= 5
+//-                     .c-product-item__model-group(class=`group-type-${config.type}${limited ? ' limited' : ''}`)
+//-                         .inner(role="group")
+//-                             case config.type
+//-                                 when 'inch'
+//-                                     - for (var x = 0; x < count; x++)
+//-                                         button.swatch(type="button" class=`${x==0 ? 'active' : ''}`)= config.groups[x]
+//-                                 when 'color'
+//-                                     - for (var x = 0; x < count; x++)
+//-                                         button.swatch(type="button" class=`${x==0 ? ' active' : ''}` style=`background: ${config.groups[x]}`)
+//-                                             span.sr-only color name
+//-                         if(limited && config.type=='inch')
+//-                             .limited-number= `(${count})`
+//-                         if(limited && config.type=='color')
+//-                             .limited-number= `(${count})`
+//-             else
+//-                 .c-product-item__groups
+//-             .c-product-item__img 
+//-                 .c-product-item__visual-image
+//-                     a.image.c-image(href="/template/PDP.html" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+//-                         +printLazyImage('/mocks/product-350.png')
+//-             if (config.signature || config.thinq)
+//-                 .c-product-item__brand
+//-                     if(config.signature)
+//-                         +printLazyImage("/assets/icon/icon-lg-signature-black-90-9.svg")
+//-                     if(config.thinq)
+//-                         +printLazyImage("/assets/icon/icon-lg-thinq-black-46-9.svg")
+//-         .c-product-item__bottom-container
+//-             if(config.youreko)
+//-                 .c-product-item__energy-saving(style="max-width:222px;height:66px;background:#fafafa;line-height:66px;text-align:center;overflow:hidden") Energy Saving Banner Area
+//-             else 
+//-                 .c-product-item__energy-saving
+//-             if(!config.noprice)
+//-                 .c-product-item__price
+//-                     .price-area
+//-                         if config.retailer
+//-                             .price-box
+//-                                 .c-price__flag--retail See Retailer for Pricing
+//-                         else
+//-                             if config.promotion
+//-                                 .price-box
+//-                                     .c-price__flag--promotion
+//-                                         span= config.promotion
+//-                             if config.limited
+//-                                 .price-box
+//-                                     if config.limited
+//-                                         .c-price__flag--limited
+//-                                             span It's a limited product so you should hurry!
+//-                                                 //- span.qty 19
+//-                             //- if config.limited || config.vip
+//-                             //-     .price-box
+//-                             //-         if config.vip
+//-                             //-             .c-price__flag--vip
+//-                             //-                 span VIP Price
+//-                             //-         if config.limited
+//-                             //-             .c-price__flag--limited
+//-                             //-                 span Limited Quantities
+//-                             //-                     span.qty 19
+//-                             .price-box(class=`${ config.soldOut ? `dimmed` : ''}`)
+//-                                 .product-price
+//-                                     .c-price
+//-                                         .c-price__previous £2,199.98
+//-                                     .c-price
+//-                                         .c-price__discount 
+//-                                             span Save
+//-                                             span £2,199.98
+//-                             .price-box(class=`${ config.soldOut ? `dimmed` : ''}`)
+//-                                 .product-price
+//-                                     .c-price
+//-                                         .c-price__purchase £1,499.98
+//-                                     if config.membership && config.vip
+//-                                         .c-price__flag--vip
+//-                                             span.flag VIP Only
+//-                                             span= config.vip
+//-                                     else if config.membership && !config.vip
+//-                                         .c-price__flag--member
+//-                                             span.flag Member Only
+//-                                             span= config.membership
+//-                                     else if config.vip && !config.membership
+//-                                         .c-price__flag--vip
+//-                                             span.flag VIP Price
+//-                                             span= config.vip
+                            
+//-                             if config.installment || !config.outOfStock
+//-                                 .price-box
+//-                                     .c-price
+//-                                         .c-price__installment.c-product-item__button
+//-                                             a(href="#" role="button" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") £699.99/mo for 3 mos at 0% or
+//-                             if config.outOfStock || config.soldOut
+//-                                 .price-box
+//-                                     if config.outOfStock
+//-                                         .c-price__flag--notice
+//-                                             span Out of stock
+//-                                     if config.soldOut    
+//-                                         .c-price__flag--notice
+//-                                             span Sold out
+
+//-             if(config.writeAReview)
+//-                 .button.c-product-item__write-a-review
+//-                     +button({name:"Write a Review", type:"text",color:"black", icon:true})(data-modelid=`${config.modelid}`, class="js-write-review c-icon-button c-icon-button--write-review")
+//-             if(config.campaignArea)
+//-                 .c-product-item__campaign-area
+//-                     // Option : target="_blank"
+//-                     a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 
+//-                         if(config.campaignArea == "1")
+//-                             .c-product-item__campaign-area--default
+//-                                 .campaign-title.font-bold Campaign Title 
+//-                                 .campaign-date 01/01/2021 ~ 01/30/2021
+//-                             .c-product-item__campaign-area--hover
+//-                                 .campaign-bodycopy Buy a participating LG French Door Fridge and receive up to $300 Cash Back*
+//-                         else if(config.campaignArea == "2")
+//-                             .c-product-item__campaign-area--default
+//-                                 .campaign-title.font-bold Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title
+//-                                 .campaign-date 01/01/2021 ~ 01/30/2021
+//-                             .c-product-item__campaign-area--hover
+//-                                 .campaign-bodycopy Buy a participating LG French Door Fridge and receive up to $300 Cash Back*
+//-                         else if(config.campaignArea == "3")
+//-                             .c-product-item__campaign-area--default
+//-                                 .campaign-title.font-bold Campaign Title 
+//-                                 .campaign-date 01/01/2021 ~ 01/30/2021
+//-                             .c-product-item__campaign-area--hover
+//-                                 .campaign-bodycopy Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back*
+
+//-                         else
+//-                             .c-product-item__campaign-area--default
+//-                                 .campaign-title.font-bold Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title
+//-                                 .campaign-date 01/01/2021 ~ 01/30/2021
+//-                             .c-product-item__campaign-area--hover
+//-                                 .campaign-bodycopy Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back*
+//-             if(config.keyfeature)
+//-                 .c-text-contents.c-product-item__keyfeature
+//-                     ul
+//-                         - for (var x = 0; x < config.keyfeature.features.length; x++)
+//-                                 li= config.keyfeature.features[x]
+//-             .cta-wrap
+//-                 if(config.discontinued || config.soldOut)
+//-                     +defaultButton({name:'Learn More',wSize: 'medium', mSize: 'small',buttonStyle: 'default',isButton:false})(href="/template/PDP.html")
+//-                 else if(config.outOfStock)
+//-                     +defaultButton({name:'Learn More',wSize: 'medium', mSize: 'small',buttonStyle: 'default',isButton:false})(href="/template/PDP.html")
+//-                     if config.outOfStock == 'selected'
+//-                         +defaultButton({name:'Get Stock Alert',wSize: 'medium', mSize: 'small',buttonStyle: 'default js-pop-open',isButton:false})(href="#popStockAlert" role="button" disabled)
+//-                     else
+//-                         +defaultButton({name:'Get Stock Alert',wSize: 'medium', mSize: 'small',buttonStyle: 'default js-pop-open',isButton:false})(href="#popStockAlert" role="button")
+//-                 else if(config.packageDeal)
+//-                     if(config.outOfStock)
+//-                         +defaultButton({name:'Get Stock Alert',wSize: 'medium', mSize: 'small',buttonStyle: 'default js-pop-open',isButton:false})(href="#popStockAlert" role="button")
+//-                     else
+//-                         - var className = "cmp-button c-button c-button--default w-medium m-small"
+//-                         - var pressed = config.packageDealMsg=="pressed add"
+//-                         //- this code from "defaultButton"
+//-                         button(type="button" class=`${className} ${pressed ? "highlight" : "default"}` aria-pressed=`${pressed ? true : false}` data-cmp-data-layer)
+//-                             span.cmp-button__text.c-button__text.unpressed Add to package
+//-                             span.cmp-button__text.c-button__text.pressed Added
+//-                 else if(config.isInquiryToBuy)
+//-                     +defaultButton({name:'Inquiry to Buy',wSize: 'medium', mSize: 'small',buttonStyle: 'highlight',isButton:false})
+//-                 else 
+//-                     +defaultButton({name:'Learn More',wSize: 'medium', mSize: 'small',buttonStyle: 'default',isButton:false})(href="/template/PDP.html")
+//-                     +defaultButton({name:'Buy Now',wSize: 'medium', mSize: 'small',buttonStyle: 'highlight',isButton:false})(href="/template/PBP.html")
+
+
+mixin ML000J(option = '')
+    if option == 'wishlist'
+        .c-wrapper.ML000J
+            .component
+                .fluid-container
+                    .my-component.align-text-left
+                        .c-text-contents
+                            .text.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", "h2", "My wishlist")
+                    .my-component__wrap.border-only-web
+                        .my-component
+                            .my-wishlist__product-box.no-filter
+                                .c-result-area__product-list
+                                    ul.c-product-list.productcollection__items
+                                        // vip
+                                        // 구매 가능 상품 + 재고 있음 (purchasable + in stock)
+                                        +productListWishList (
+                                            {
+                                                flag:['new','sale'], 
+                                                promotion: "",
+                                                installment: true,
+                                                membership: '£1,866.98',
+                                                vip: "£1,000.00",
+                                                soldOut: false,
+                                                outOfStock: false ,
+                                                imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                                type:'inch',
+                                                groups:['55','66','77','55','66','77','55','66','77'],
+                                                sku:'GSJV70PZTF', 
+                                                modelid: 'MD07553044',
+                                                ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                                gradeIs:true,
+                                                grade: 'a',
+                                                gradeBlock2: true,
+                                                review: true,
+                                                wishlist:true,
+                                                signature:false,
+                                                proins:false,
+                                                discountTxt:true,
+                                                repair:true,
+                                                plInfoTxt: true
+                                            }
+                                        )
+                                        // 구매 가능 상품 + 재고 없음(purchasable + out of stock)
+                                        +productListWishList (
+                                            {
+                                                flag:['new','sale'], 
+                                                promotion: "",
+                                                installment: true,
+                                                membership: '£1,866.98',
+                                                vip: "£1,000.00",
+                                                soldOut: false,
+                                                outOfStock: 'selected',
+                                                imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                                type:'color',
+                                                groups:['#ffffff','#ddeeff','#aaeedd'],
+                                                sku:'GSJV70PZTF', 
+                                                modelid: 'MD07553044',
+                                                ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                                grade:'f',
+                                                review: true,
+                                                wishlist:true,
+                                                signature:false,
+                                                proins:false,
+                                            }
+                                        )
+                                        // 구매 불가 상품 + 가격 있음(un-purchasable with price)
+                                        +productListWishList (
+                                            {
+                                                flag:['new','sale'], 
+                                                promotion: "",
+                                                installment: true,
+                                                membership: '£1,866.98',
+                                                vip: "£1,000.00",
+                                                soldOut: false,
+                                                outOfStock: false ,
+                                                imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                                type:'inch',
+                                                groups:['55','66','77','55','66','77','55','66','77'],
+                                                sku:'GSJV70PZTF', 
+                                                modelid: 'MD07553044',
+                                                ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                                grade:'f',
+                                                review: true,
+                                                wishlist:true,
+                                                signature:false,
+                                                discontinued:true,
+                                                proins:false,
+                                            }
+                                        )
+                                        // 구매 불가 상품 + 가격 있음(un-purchasable with no price)
+                                        +productListWishList (
+                                            {
+                                                flag:['new','sale'], 
+                                                promotion: "",
+                                                installment: true,
+                                                membership: '£1,866.98',
+                                                vip: "£1,000.00",
+                                                soldOut: false,
+                                                outOfStock: false ,
+                                                imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                                type:'inch',
+                                                groups:['55','66','77','55','66','77','55','66','77'],
+                                                sku:'GSJV70PZTF', 
+                                                modelid: 'MD07553044',
+                                                ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                                grade:'f',
+                                                review: true,
+                                                wishlist:true,
+                                                signature:false,
+                                                discontinued:true,
+                                                proins:false,
+                                            }
+                                        )
+                                        // member
+                                        // 구매 가능 상품 + 재고 있음 (purchasable + in stock)
+                                        +productListWishList (
+                                            {
+                                                flag:['new','sale'], 
+                                                promotion: "",
+                                                installment: true,
+                                                membership: '£1,866.98',
+                                                soldOut: false,
+                                                outOfStock: false ,
+                                                imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                                type:'inch',
+                                                groups:['55','66','77','55','66','77','55','66','77'],
+                                                sku:'GSJV70PZTF', 
+                                                modelid: 'MD07553044',
+                                                ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                                grade:'f',
+                                                review: true,
+                                                wishlist:true,
+                                                signature:false,
+                                            }
+                                        )
+                                        // 구매 가능 상품 + 재고 없음(purchasable + out of stock)
+                                        +productListWishList (
+                                            {
+                                                flag:['new'], 
+                                                promotion: "",
+                                                installment: true,
+                                                membership: '£1,866.98',
+                                                soldOut: false,
+                                                outOfStock: 'selected',
+                                                imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                                type:'color',
+                                                groups:['#ffffff','#ddeeff','#aaeedd'],
+                                                sku:'GSJV70PZTF', 
+                                                modelid: 'MD07553044',
+                                                ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                                grade:'f',
+                                                review: true,
+                                                wishlist:true,
+                                                signature:false,
+                                            }
+                                        )
+                                        // 구매 불가 상품 + 가격 있음(un-purchasable with price)
+                                        +productListWishList (
+                                            {
+                                                flag:['new','sale'], 
+                                                promotion: "",
+                                                installment: true,
+                                                membership: '£1,866.98',
+                                                soldOut: false,
+                                                outOfStock: false ,
+                                                imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                                type:'inch',
+                                                groups:['55','66','77','55','66','77','55','66','77'],
+                                                sku:'GSJV70PZTF', 
+                                                modelid: 'MD07553044',
+                                                ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                                grade:'f',
+                                                review: true,
+                                                wishlist:true,
+                                                signature:false,
+                                                discontinued:true,
+                                            }
+                                        )
+                                        // 구매 불가 상품 + 가격 있음(un-purchasable with no price)
+                                        +productListWishList (
+                                            {
+                                                flag:['new','sale'], 
+                                                promotion: "",
+                                                installment: true,
+                                                membership: '£1,866.98',
+                                                soldOut: false,
+                                                outOfStock: false ,
+                                                imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                                type:'inch',
+                                                groups:['55','66','77','55','66','77','55','66','77'],
+                                                sku:'GSJV70PZTF', 
+                                                modelid: 'MD07553044',
+                                                ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                                grade:'f',
+                                                review: true,
+                                                wishlist:true,
+                                                signature:false,
+                                                discontinued:true,
+                                                noprice:true
+                                            }
+                                        )
+                                        // 해당 상품의 “판매점 찾기”가 있는 경우 (when there is the “Find a dealer” for that product)
+                                        //- +productListWishList (
+                                        //-     {
+                                        //-         flag:['new','sale'], 
+                                        //-         promotion: "",
+                                        //-         installment: true,
+                                        //-         membership: '£1,866.98',
+                                        //-         soldOut: false,
+                                        //-         outOfStock: false ,
+                                        //-         imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                        //-         type:'inch',
+                                        //-         groups:['55','66','77','55','66','77','55','66','77'],
+                                        //-         sku:'GSJV70PZTF', 
+                                        //-         modelid: 'MD07553044',
+                                        //-         ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                        //-         grade:'f',
+                                        //-         review: true,
+                                        //-         wishlist:true,
+                                        //-         signature:false,
+                                        //-         noprice:true
+                                        //-     }
+                                        //- )
+                                        //- // 해당 상품의 “판매점 찾기”가 없는 경우 (when there is the “Find a dealer” for that product)
+                                        //- +productListWishList (
+                                        //-     {
+                                        //-         flag:['new','sale'], 
+                                        //-         promotion: "",
+                                        //-         installment: true,
+                                        //-         membership: '£1,866.98',
+                                        //-         soldOut: false,
+                                        //-         outOfStock: false ,
+                                        //-         imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                        //-         type:'inch',
+                                        //-         groups:['55','66','77','55','66','77','55','66','77'],
+                                        //-         sku:'GSJV70PZTF', 
+                                        //-         modelid: 'MD07553044',
+                                        //-         ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                        //-         grade:'f',
+                                        //-         review: true,
+                                        //-         wishlist:true,
+                                        //-         signature:false,
+                                        //-         discontinued:false,
+                                        //-         noprice:true,
+                                        //-         isInquiryToBuy:true
+                                        //-     }
+                                        //- )
+                                .my-wishlist__pagination
+                                    +pagination
+
+    if option == 'nodata'
+        .c-wrapper.ML000J
+            .component
+                .fluid-container
+                    .my-component.align-text-left
+                        .c-text-contents
+                            .text.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", "h2", "My wishlist")
+                    .my-component__wrap
+                        .my-component 
+                            +linkBanner({
+                                type:"large",
+                                mobileTextAlignLeft:true,
+                                bgColor:"transparent",
+                                title:[{
+                                    text:"The home for all of your wishlist<br>Explore LG products and add to your Wishlist",
+                                    font:"font-w-light-36 font-m-normal-20"
+                                }],
+                                button:[{
+                                    size:"medium",
+                                    sizeMobile:"small",
+                                    name: "Continue Shopping​",
+                                    buttonStyle: 'highlight',
+                                    isButton: false
+                                }],
+                            })
+
+block content
+    // Component Markup
+    .guide-text-type Wish List
+    +ML000J('wishlist')
+
+    .guide-text-type No data 
+    +ML000J('nodata')
+
+block modal
+    +printLayerPopup('popStockAlert')

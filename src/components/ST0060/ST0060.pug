@@ -1,0 +1,142 @@
+extends ../_common/_layout.pug
+include ../_common/_index.pug
+
+block meta 
+    - var componentId = "ST0060"
+    - var componentName = "Secret Coupon Popup"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    // An area for testing options when coding.
+    // Please do not use it during development.
+    //- guide style
+    .guide
+        .grid-1600
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script.
+                    const guideList = {
+                        '#imageInTxt_Coupon' : [
+                            {
+                                'name' : 'Active toggle',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'active'},
+                                ]
+                            }
+                        ],
+                        '.c-pop-side__image' : [
+                            {
+                                'name' : 'image style',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'inside'},
+                                ]
+                            }
+                        ],
+                        '.c-pop-side' : [
+                            {
+                                'name' : 'Permanent Hide toggle',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'hidden'},
+                                ]
+                            }
+                        ],
+                    };
+            .button-wrapper
+                .guide-column
+                    .target Popup Btns
+                    ul.btn-list
+                        li.btn-item 
+                            +linkButton({href:"#exclusiveCoupon", type:"guide", class:"js-pop-open", name:"MY LG Popup", roleButton:"true"})
+
+    mixin image(params)
+        - var option = {...params}
+        - var imgAlt = ''
+        // block : image
+        .image.c-image
+            +printLazyImage(`../../assets/image/secret-coupon-imgText_210-120.png`)
+        .c-empty
+            .empty_text !{option.imgTxt}
+        if block
+            block
+
+block modal
+    .c-wrapper.ST0060.bg-default
+        .component
+            .cmp-container                
+                //- Secret Popup
+                .c-pop-side(id='imageInTxt_Coupon' role='alert' aria-live='assertive' class="active")
+                    .c-pop-side__container
+                        .c-pop-side__image
+                            +image({
+                                imgTrueTxt: true,
+                                imgTxt : 'Exclusive<br>Coupon'
+                            })
+                        .c-text-contents
+                            .title.c-text-contents__headline
+                                .cmp-title.font-w-normal-24.font-m-normal-20
+                                    strong Secret Coupon!
+                            .text.c-text-contents__bodycopy
+                                //- .cmp-text.radio-text.font-w-normal-16.font-m-normal-14
+                                //-     p 10% Off Coupon Code : 
+                                //-         span BF_Secret_xyz1
+                                .text.font-w-normal-16.font-m-normal-14 
+                                    | Have you watched a lot of TV products?
+                                    br
+                                    | 10% discount just for you
+                                    br
+                                    | Secret coupons will disappear soon!
+                            .button.c-cta
+                                +defaultButton({name: 'Download', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+
+                        //- close button
+                        .button.c-pop-side__close.c-pop-side__close--on-top
+                            button.cmp-button.c-pop-side__close-button.js-side-close(type='button', aria-controls='imageInTxt_Coupon')
+                                span.cmp-button__text.sr-only close
+
+    .c-pop-msg.medium(role='dialog' id='exclusiveCoupon' aria-modal='true' aria-labelledby='exclusiveCoupon-headline' tabindex='0')
+        .c-pop-msg__container
+            .c-pop-msg__header.c-pop-msg__header--no-border
+                .c-text-contents
+                    #exclusiveCoupon-headline.title.c-text-contents__headline
+                        .cmp-title.font-w-normal-24.font-m-normal-20
+                            strong Exclusive coupon for you is now available
+            .c-text-contents
+                .text.c-text-contents__bodycopy
+                    .c-text-couponDesc
+                        | If you&apos;re on the fence, 
+                        br
+                        | check out the offers in your My Cart
+                    .c-text-couponBox
+                        | Exclusive 
+                        br
+                        | Coupon
+                    .c-text-couponInfo
+                        p Terms and Conditions
+                        ul.customScroll
+                            li adipiscing elit.
+                            li Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
+                            li Proin sodales pulvinar sic tempor.
+                            li Aenean euismod bibendum laoreet. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                            li Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
+                .button.c-cta
+                    +defaultButton({name: 'Close', wSize: 'small', mSize: 'small', buttonStyle: '', isButton: false})
+                    +defaultButton({name: 'My Coupon', wSize: 'small', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+
+            .button.c-pop-msg__close.c-pop-msg__close--on-top
+                button.cmp-button.c-pop-msg__close-button.js-pop-close(type='button' aria-controls='exclusiveCoupon' data-cmp-data-layer='')
+                    span.cmp-button__text.sr-only close
+        .c-pop-msg__dimmed

@@ -1,0 +1,49 @@
+@use '../abstract/' as *;
+
+@mixin link {
+  .c-link {
+    display: flex;
+    column-gap: rem($margin6px);
+    text-decoration: underline;
+    text-underline-offset: rem($margin2px);
+
+    $right-icon: '&:after';
+
+    &--standard {
+      align-items: center;
+      color: $active-red;
+      font-size: rem(14px);
+      line-height: rem(14px);
+      font-weight: $font-semibold;
+
+      #{$right-icon} {
+        content: '';
+        display: inline-block;
+        background: {
+          repeat: no-repeat;
+          size: 100% auto;
+        }
+      }
+    }
+
+    // variation
+    // icon shape
+    &[target='_blank'],
+    &--external {
+      #{$right-icon} {
+        background-image: url($icon-blank-red-16-16); // follow standard color
+      }
+    }
+
+    // icon size
+    $size-list: 12, 16;
+    @each $value in $size-list {
+      $selector: '&.size-#{$value}:after';
+      $size: rem(#{$value}px);
+      #{$selector} {
+        width: $size;
+        height: $size;
+      }
+    }
+  }
+}

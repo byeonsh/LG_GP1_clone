@@ -1,0 +1,181 @@
+@use '../abstract/' as *;
+
+@mixin tablist {
+  &__tablist {
+    display: flex;
+    flex-wrap: nowrap;
+    width: auto;
+    list-style: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    justify-content: flex-start;
+    margin: 0;
+    gap: rem($margin24px);
+    @include inset-padding-hz;
+    @include screen(web) {
+      gap: rem($margin36px);
+    }
+    // for scrollbars
+    padding-bottom: rem($padding10px);
+    margin-bottom: rem(-$padding10px);
+    // for focus-visible (= outline size)
+    padding-top: rem($border2);
+    margin-top: rem(-$border2);
+  }
+}
+@mixin tab {
+  &__tab {
+    position: relative;
+    appearance: none;
+    box-sizing: border-box;
+    padding: 0;
+    border: 0;
+    background: inherit;
+    color: $gray3;
+    font-size: rem(16px);
+    line-height: rem(18px);
+    font-weight: $font-regular;
+    white-space: nowrap;
+    @include screen(web) {
+      font-size: rem(20px);
+      line-height: rem(24px);
+    }
+  }
+}
+@mixin tabpanel {
+  &__tabpanel {
+    display: none;
+    text-align: initial;
+    &--active {
+      display: block;
+    }
+  }
+}
+
+@mixin tabs() {
+  // Styles for OOTB Tabs
+  .tabs {
+    width: 100%;
+    // text-align: center;
+    &-margin {
+      margin-top: rem($margin10px);
+      // @include screen(web) {
+      //     margin-top: rem($margin10px);
+      // }
+      .cmp-tabs__inner {
+        padding-top: rem($padding12px);
+        padding-bottom: rem($padding16px);
+      }
+    }
+    .cmp-tabs {
+      &__inner {
+        // display: inline-block;
+        max-width: 100%;
+      }
+      @include tablist;
+      @include tab;
+      &__tab {
+        padding-top: rem(2px);
+        &.cmp-tabs__tab--active {
+          // color: $orange;
+          padding-top: 0;
+          &:after {
+            content: '';
+            display: block;
+            position: absolute;
+            bottom: rem($margin3px * -1);
+            left: 0;
+            width: 100%;
+            height: rem($height2px);
+            background: $active-red;
+          }
+          // &:hover {
+          //     &:after {
+          //         background: $orange !important;
+          //     }
+          // }
+        }
+        .c-wrapper.bg-black &,
+        .c-wrapper.bg-darkgray & {
+          color: $white;
+        }
+        // &:hover {
+        //     &:after {
+        //         content: '';
+        //         display: block;
+        //         position: absolute;
+        //         bottom: rem($margin3px * -1);
+        //         left: 0;
+        //         width: 100%;
+        //         height: rem($height2px);
+        //         background: $black;
+        //     }
+        // }
+      }
+      @include tabpanel;
+    }
+  }
+  // Styles for Custom Tabs
+  // Mainly used as anchors or bookmarks
+  .c-tabs {
+    $block: '.c-tabs';
+
+    width: 100%;
+    text-align: center;
+    &__inner {
+      display: inline-block;
+      max-width: 100%;
+    }
+    @include tablist;
+    @include tab;
+
+    .cmp-tabs__tab {
+      padding-top: 0;
+    }
+
+    &--box-style {
+      #{$block}__inner {
+        width: 100%;
+      }
+      #{$block}__tablist {
+        width: auto;
+        padding: 0;
+        padding-bottom: rem($padding3px);
+        margin: 0 auto;
+        gap: 0;
+      }
+      .cmp-tabs__tab {
+        position: relative;
+        padding: rem($padding12px) 0;
+        flex: 1;
+        font-size: rem(16px);
+        line-height: rem(18px);
+        color: $gray3;
+        @include screen(web) {
+          font-size: rem(20px);
+          line-height: rem(24px);
+        }
+        &--active {
+          padding: rem($padding12px) 0 !important;
+          color: $black !important;
+        }
+      }
+    }
+
+    &__tab {
+      &--active {
+        color: $orange;
+        &:after {
+          content: '';
+          display: block;
+          position: absolute;
+          bottom: rem($margin3px * -1);
+          left: 0;
+          width: 100%;
+          height: rem($height2px);
+          background: $orange;
+        }
+      }
+    }
+  }
+}

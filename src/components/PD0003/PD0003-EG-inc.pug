@@ -1,0 +1,242 @@
+mixin PD0003(option=false)
+    script.
+        // for print test
+        const process = {
+            env: {
+                NODE_ENV: 'local'
+            }
+        };
+    include ./_summary-information.pug
+    include ./_summary-price.pug
+    .c-wrapper.PD0003.no-crop.bg-default
+        .component
+            // block - summary area
+            .cmp-container.c-summary-area
+                +textButton({name: 'Learn More', wSize: 'small', mSize: 'small', buttonStyle: 'default back', isButton: false})(href="/template/PDP.html" class="c-summary-area__learn-more" data-link-name="learn_more" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer)
+                //- +linkButton({type:'text', name:'Learn More', icon:true, href:"/template/PDP.html", class:'c-summary-area__learn-more'})
+                // EG 
+                if(option == 'eg')
+                    //- display product image
+                    .c-summary-area__primary 
+                        .c-summary-area__primary-sticky
+                            +gallery({
+                                isPopup: false,
+                                galleryFeatures : ["image", "video", "360", "3d", "ar", "vr"],
+                                galleryList : [
+                                    {color: '000/888'},
+                                    {color: '111/999'},
+                                    {color: '222/aaa'},
+                                    {color: '333/bbb'},
+                                    {color: '444/ccc'},
+                                    {color: '555/ddd'},
+                                    {color: '666/eee'},
+                                    {color: '777/fff'},
+                                ]
+                            })
+                            +product-summary-pto
+                    //- indicate product information 
+                    // GA4 
+                    .c-summary-area__secondary(data-pim-category1="" data-pim-category2="" data-pim-category3="" data-pim-category4="" data-pim-sku="" data-pim-model-name="" data-pim-model-year="" data-pim-flag="" data-pim-modeltype="" data-shop-stock-status="" data-shop-msrp="" data-shop-pbp-coupon="" data-shop-pbp-coupon-dc="" data-shop-price="")
+                        //- product information
+                        +product-basic-information
+
+                        // block - product sub information
+                        .c-product-extra-information
+                            // block - accordion
+                            .c-accordion.js-accordion
+                                // RO - 3 or more lines 
+                                +product-information-box({title : "Key Features", controlsId : "PD0003Keyfeature1"})
+                                    +key-feature('moreLines')
+                                // RO - 3 or fewer lines 
+                                +product-information-box({title : "Key Features", controlsId : "PD0003Keyfeature2"})
+                                    +key-feature('fewerLines')
+                                //- +product-information-box({title : "Award", controlsId : "PD0003AwardInformation"})
+                                //-     +award-information
+                                //-+product-information-box({title : "Compatible Product", controlsId : "PD0003CompatibleProductList"})
+                                //-    +compatible-product(6)
+                                //-+product-information-box({title : "Compatible Product", controlsId : "PD0003CompatibleProductSearch"})
+                                //-    +compatible-product(7)
+                                // RO ver
+                                +product-information-box({title : "Compatible Product", controlsId : "PD0003CompatibleProductList"})    
+                                    +compatible-product(ro)
+                        
+                        //- product sibling option
+                        .c-product-summary-siblings
+
+                            // block - accordion
+                            //- screen size
+                            .c-accordion.js-accordion
+                                +product-sibling-option-box({title : "Screen Size", controlsId : "PD0003SiblingOptions01", columnCount : 4})
+                                    ul.c-sibling-option-box__option-group
+                                        //- +product-sibling-case("size")
+                                        +product-sibling-option-prd({ optionType: "size", inputName: 'size', optionName: '43"', price: '£1549.98', priceToggle: false, checked:true})
+                                        +product-sibling-option-prd({ optionType: "size", inputName: 'size', optionName: '50"', price: '£649.98', priceToggle: false})
+                                        +product-sibling-option-prd({ optionType: "size", inputName: 'size', optionName: '55"', price: '£799.98', priceToggle: false, disabled: true})
+                                        +product-sibling-option-prd({ optionType: "size", inputName: 'size', optionName: '65"', price: '£999.98', priceToggle: false})
+                                        +product-sibling-option-prd({ optionType: "size", inputName: 'size', optionName: '70"', price: '£1,199.98', priceToggle: false})
+                                        +product-sibling-option-prd({ optionType: "size", inputName: 'size', optionName: '75"', price: '£1,499.98', priceToggle: false})
+                                        +product-sibling-option-prd({ optionType: "size", inputName: 'size', optionName: '86"', price: '£2,299.98', priceToggle: false})
+
+                            //- color chip
+                            .c-accordion.js-accordion
+                                +product-sibling-option-box({title : "Color", controlsId : "PD0003SiblingColor01", columnCount : 3})
+                                    ul.c-sibling-option-box__option-group.c-sibling-colorchip
+                                        //- +product-sibling-case("color")
+                                        +product-sibling-option-prd({ optionType: "color", inputName: 'color', optionName: 'Burdeos', optionColor: 'Burdeos', price: '', checked:true})
+                                        +product-sibling-option-prd({ optionType: "color", inputName: 'color', optionName: 'HA Black Stainless Steel', optionColor: 'HA_Black-Stainless-Steel', price: ''})
+                                        +product-sibling-option-prd({ optionType: "color", inputName: 'color', optionName: 'Platinum silver', optionColor: 'HA_REF_Platinum_Silver', price: ''})
+                                        +product-sibling-option-prd({ optionType: "color", inputName: 'color', optionName: 'Disabled Color Sample', optionColor: 'HA_REF_White', price: '', disabled: true})
+
+                            //- required fields
+                            .c-required-box
+                                +required-text-indicate
+
+                            //- delivery pincode1
+                            +product-delivery-pincode
+
+                            // block - Exchange offer
+                            .c-accordion.js-accordion
+                                +product-sibling-option-box({title :"Exchange offer",  description: "Exchange any product and get benefits up to ₹21000*", controlsId : "PD0003SiblingOptions11", columnCount : 1})    
+                                    .c-sibling-option-box__option-moreGroup
+                                        .c-sibling-option-box__option-moreGroup(role="radiogroup")
+                                            .exchange-offer__before
+                                                +product-sibling-option-wa({ optionType : "exchangeOffer", inputName: 'service', optionName: 'Choose Product to Exchange', price : "Save ₹21000*", checked: false, useOptionNameIcon: true })                            
+                                        .c-sibling-option-box__option-group 
+                                            div.c-sibling-option__detail
+                                                .c-sibling-option__primary-detail.exchange-offer
+                                                    +product-exchange-information                        
+                            // Explore Additional Savings
+                            .c-accordion.js-accordion
+                                +product-sibling-option-box({title : "Explore Additional Savings", controlsId : "PD0003SiblingOptionsB07", columnCount : 1, useTooltip : true})
+                                    .c-sibling-option-box__option-group
+                                        // Questionnaire Coupon
+                                        .c-addon-product-box.bg-transparent.c-accordion__box.c-addon-product-box--option-choosing
+                                            +product-addon-item-popup('PBP')
+                                            
+                            // LGCOMMON-4762 start
+                            .c-accordion.js-accordion
+                                +product-sibling-option-box({title : "Protect with LG Premium Care", controlsId : "PD0003SiblingOptionsB01", columnCount : 1, useTooltip : true})
+                                    .c-sibling-option-box__option-group.type-toggle
+                                        // warranty
+                                        .c-addon-product-box.c-accordion__box.c-addon-product-box--option-choosing
+                                            p Warranty Type : Delete the area during development
+                                            +product-addon-selection-toggle('warranty')
+                                            p Service Type : Delete the area during development
+                                            +product-addon-selection-toggle('service')
+                            .c-accordion.js-accordion
+                                +product-sibling-option-box({title : "Buy More, Save More", controlsId : "PD0003SiblingOptionsB02", description: "information description text area", columnCount : 1, useTooltip : true})
+                                    .c-sibling-option-box__option-group.type-toggle
+                                        // bundle (step1 sample)
+                                        .c-addon-product-box.c-accordion__box.c-addon-product-box--option-choosing
+                                            +product-addon-selection-toggle('bundle')
+                            .c-accordion.js-accordion
+                                +product-sibling-option-box({title : "Perfect pairing for your TV&Soundbars", controlsId : "PD0003SiblingOptionsB03", columnCount : 1, useTooltip : true, hasbottomDescription: true, bottomDescription: "link text"})
+                                    .c-sibling-option-box__option-group.type-toggle
+                                        // accessory
+                                        .c-addon-product-box.c-accordion__box.c-addon-product-box--option-choosing
+                                            +product-addon-selection-toggle('accessoryBtype')
+                            // LGCOMMON-4762 end
+                            
+
+                            // block - Promotion
+                            .c-accordion.js-accordion
+                                +product-sibling-option-box({title :"Promotions", controlsId : "PD0003SiblingOptions05", columnCount : 1})    
+                                    .c-sibling-option-box__option-group
+                                        div.c-sibling-option__detail
+                                            .c-sibling-option__primary-detail.promotions
+                                                +product-promotion-information
+
+                            // block - accordion
+                            .c-accordion.js-accordion
+                                // delivery + installation
+                                +product-sibling-option-box({title :"Delivery + Installation", controlsId : "PD0003SiblingOptions03", columnCount : 1, useTooltip : true})
+                                    .c-sibling-option-box__option-moreGroup(role="radiogroup")
+                                        +product-sibling-option-wa({ optionType : "delivery", inputName: 'delivery', optionName: 'Delivery Only', useTooltip: true , checked: true})
+                                            .c-sibling-option__secondary-detail 
+                                                +date-input("deliveryOnly")
+                                        +product-sibling-option-wa({ optionType : "delivery", inputName: 'delivery', optionName: 'Delivery Only & Installation', useTooltip: true })
+                                            .c-sibling-option__secondary-detail 
+                                                +date-input("addInstallation")
+                                        +product-sibling-option-wa({ optionType : "delivery", inputName: 'delivery', optionName: 'Delivery & Installation(Wallmount)'})
+                                            .c-sibling-option__secondary-detail 
+                                                +date-input("addWallmount")
+
+                            // block - accordion
+                            .c-accordion.js-accordion
+                                // Service charge
+                                +product-sibling-option-box({title :"Service charge", controlsId : "PD0003SiblingOptions04", columnCount : 1, useTooltip : true})
+                                    .c-sibling-option-box__option-moreGroup(role="radiogroup")
+                                        +product-sibling-option-wa({ inputName: 'service', optionName: 'No Need', price : "0", useTooltip: true })
+                                        +product-sibling-option-wa({ inputName: 'service', optionName: 'Haul-away', useTooltip: true })
+
+                            // block - accordion
+                            .c-accordion.js-accordion
+                                // required
+                                +product-sibling-option-box({title :"Delivery method", controlsId : "PD0003SiblingOptions09", columnCount : 1, requiredTitle: true})
+                                    .c-sibling-option-box__option-moreGroup(role="radiogroup")
+                                        +product-sibling-option-wa({ inputName: 'delivery method', optionName: 'Option 1', price : "EGP 0.00", useTooltip: true })
+                                        +product-sibling-option-wa({ inputName: 'delivery method', optionName: 'Option 2', price : "EGP 0.00", useTooltip: true })
+                                        +invalid-warning("This is required.")
+
+                            // RO : B type - Delivery method
+                            .c-accordion.js-accordion
+                                +product-sibling-option-box({title :"Delivery method", controlsId : "PD0003SiblingOptions07", columnCount : 1, useTooltip : true})
+                                    .c-sibling-option-box__option-moreGroup(role="radiogroup")
+                                        +product-sibling-option-wa({ inputName: 'delivery method', optionName: 'Option 1', price : "EGP 0.00", useTooltip: true })
+                                        +product-sibling-option-wa({ inputName: 'delivery method', optionName: 'Option 2', price : "EGP 0.00", useTooltip: true })
+                                        //- +address-select("Select pickup address")
+
+                            // RO : B type - Additional services
+                            .c-accordion.js-accordion
+                                +product-sibling-option-box({title :"Additional services", controlsId : "PD0003SiblingOptions08", columnCount : 1, useTooltip : true})
+                                    .c-sibling-option-box__option-moreGroup(role="radiogroup")
+                                        .c-sibling-option-box__option-title Installation
+                                        +product-sibling-option-wa({ inputName: 'installation', optionName: 'Option 1', price : "EGP 0.00", useTooltip: true })
+                                        +product-sibling-option-wa({ inputName: 'installation', optionName: 'Option 2', price : "EGP 0.00", useTooltip: true })
+                                    .c-sibling-option-box__option-moreGroup(role="radiogroup")
+                                        .c-sibling-option-box__option-title Haulaway
+                                        +product-sibling-option-wa({ inputName: 'disposalExistingProduct', optionName: 'Option 1', price : "EGP 0.00", useTooltip: true })
+                                        +product-sibling-option-wa({ inputName: 'disposalExistingProduct', optionName: 'Option 2', price : "EGP 0.00", useTooltip: true })
+                                
+                            // RO : B type - Delivery time
+                            .c-accordion.js-accordion
+                                .c-sibling-option-box
+                                    .c-sibling-option.c-product-dilivery-time
+                                        //calendar type
+                                        //- +product-dilivery-time
+                                        .c-product-dilivery-time__wrap
+                                            .c-sibling-option-box__head
+                                                .c-text-contents
+                                                    .text.c-text-contents__headline
+                                                        h2.cmp-text.font-w-normal-24.font-m-normal-16 Delivery time
+                                            .c-sibling-option-box__contents
+                                                .c-sibling-option__secondary-detail 
+                                                    p Date Type : Delete the area during development
+                                                    +date-input("Deliverytime")
+                                                    p Message Type : Delete the area during development
+                                                    .c-product-dilivery-time__text.font-w-normal-20.font-m-normal-14 
+                                                        p Delivery within 3-5 days
+                                                    .c-product-dilivery-time__disclaimer
+                                                        p.c-text.font-w-normal-14.font-m-normal-12 Your Preferred delivery date may differ from actual delivery system's delivery date.
+                                                        p.c-text.font-w-normal-14.font-m-normal-12 The actual delivery time may vary under certain circumstances such as public holidays, severe weather conditions, failed delivery attempts etc.
+                
+                        //- delivery information
+                        +product-delivery-information
+                        //- klarana Installment
+                        //- +product-installment
+
+                        //- //- create your bundle 
+                        //- +product-summary-bundle-carousel
+
+                        //- price
+                        +product-price-sticky(option)
+
+                        //- info etc
+                        +product-info-etc
+
+                        //- recommended promotion banner
+                        - var bannerType = "overlay-bottom"
+                        - var useMoreDialog = true
+                        +product-summary-promotion-banner("overlay-bottom", useMoreDialog)
+                        //- +product-summary-promotion-banner("overlay-side")
+                        //- +product-summary-promotion-banner("") 

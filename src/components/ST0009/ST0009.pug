@@ -1,0 +1,230 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_video.pug
+include ../_common/_headline.pug
+include ../_common/_carousel.pug
+
+block meta 
+    - var componentId = "ST0009"
+    - var componentName = "Large Image"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'Text Placement',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'place-text-left', 'remove' : 'place-text-right'},
+                                    {'toggle' : false, 'add' : 'place-text-right', 'remove' : 'place-text-left'},
+                                ]
+                            },
+                        ],
+                        '.type-vertical .c-picker__text' : [
+                            {
+                                'name' : 'Text Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-left', 'remove' : 'align-center, align-right'},
+                                    {'toggle' : false, 'add' : 'align-center', 'remove' : 'align-left, align-right'},
+                                    {'toggle' : false, 'add' : 'align-right', 'remove' : 'align-left, align-center'},
+                                ]
+                            },
+                        ],
+                        '.type-horizontal .c-picker__contents, .type-horizontal .c-carousel' : [
+                            {
+                                'name' : 'Text Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-left', 'remove' : 'align-center, align-right'},
+                                    {'toggle' : false, 'add' : 'align-center', 'remove' : 'align-left, align-right'},
+                                    {'toggle' : false, 'add' : 'align-right', 'remove' : 'align-left, align-center'},
+                                ]
+                            },
+                        ],
+                        '.c-text-contents__bodycopy' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            }
+                        ],
+                    };
+
+    // Component Markup
+    mixin image(size)
+        // block : image
+        div(class='image c-image')&attributes(attributes)
+            +printLazyImage(`https://via.placeholder.com/${size}/999999/333333`)
+            if block
+                block
+
+    mixin button-contents(name)
+        // block :cta 
+        .button.c-cta
+            +defaultButton({name: `${name}`, wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+            +defaultButton({name: `${name}`, wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+        .button.c-cta
+            +textButton({name: `${name}`, wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+            +textButton({name: `${name}`, wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+
+    mixin buttons(type, name)
+        case type
+            when 'box'
+                // block :cta 
+                .button.c-cta
+                    +defaultButton({name: `${name}`, wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                    +defaultButton({name: `${name}`, wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+            default
+                // block :cta 
+                .button.c-cta
+                    +textButton({name: `${name}`, wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                    +textButton({name: `${name}`, wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+
+    mixin text-contents(params)
+        - var option={isButton:false,buttonText:'',headText:'',bodyText:'',headSize:'',bodySize:'', ...params}
+            // block : text-contents   
+            .c-text-contents
+                .title.c-text-contents__headline
+                    +headline(option.headSize, 'h2', `${option.headText} can be up to 100 characters lorem ipsum dolor sit amet, consectetuer adipiscing elit aenean commodo.`)
+                .text.c-text-contents__bodycopy 
+                    .cmp-text(class=option.bodySize data-cmp-data-layer="") 
+                        p #{option.bodyText} text can be up to 200 characters. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient. Body text can be up to 200 characters.
+                if(option.isButton)
+                    +button-contents(option.buttonText)
+    
+    mixin video-contents(params)
+        - var option={size:'',titleText:'',videoType:'', ...params}
+            // Video case
+            +image(option.size)&attributes(attributes)
+                +floating-video(option.videoType)
+                    .text.c-media__titlecopy
+                        .cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="") 
+                            p #{option.titleText}
+
+    mixin thumb-image(size)
+        // block : image
+        .image.c-image
+            +printLazyImage(`https://via.placeholder.com/${size}/999999/333333`)
+            if block
+                block
+
+    mixin tabItem(params)
+        - var option={isActive:false, imageSize:'', div:'', num:'',  ...params}
+            a.c-list__item(href="#" role="tab" id=`tabs-${option.div}-item-${option.num}-tab` aria-controls=`tabs-${option.div}-item-${option.num}-tabpanel`, aria-selected=`${option.isActive ? true : false}`)
+                +thumb-image(option.imageSize)
+                
+
+    // Type1. Vertical Pickers
+    .guide-text-type Type1. Vertical Pickers
+    .c-wrapper.ST0009.bg-default.margin-top.margin-bottom.place-text-left
+        .component.type-vertical
+            .cmp-container
+                // Vertical case
+                .c-picker.c-picker--vertical
+                    .c-picker__visual
+                        .c-list(role="tablist")
+                            +tabItem({isActive:true, imageSize:'388x312', div:'1',num:'1'})
+                            +tabItem({imageSize:'388x312', div:'1',num:'2'})
+                            +tabItem({imageSize:'388x312', div:'1',num:'3'})
+                        .c-picker__view
+                            .c-picker__media
+                                +video-contents({size:'1200x762',titleText:'[video title 1]', videoType:'brightcove'})(role="tabpanel" id='tabs-1-item-1-tabpanel' aria-labelledby='tabs-1-item-1-tab')
+                                +video-contents({size:'1200x762',titleText:'[video title 2]', videoType:'youtube'})(role="tabpanel" id='tabs-1-item-2-tabpanel' aria-labelledby='tabs-1-item-2-tab')
+                                +image('1200x762')(role="tabpanel" id='tabs-1-item-3-tabpanel' aria-labelledby='tabs-1-item-3-tab')
+                    .c-picker__text.align-left
+                        - for (var x = 0; x < 3; x++)
+                            +text-contents({headText:`Heading${x+1}`,bodyText:`Body${x+1}`,headSize:`font-w-light-56 font-m-light-28`,bodySize:`font-w-normal-24 font-m-normal-16`})
+
+    // Type2. Horizontal Pickers
+    .guide-text-type Type2. Horizontal Pickers
+    .c-wrapper.ST0009.bg-default.margin-top.margin-bottom.place-text-left
+        .component.type-horizontal
+            .cmp-container
+                // Horizontal case
+                // desktop only
+                .desktop-only
+                    .c-picker.c-picker--horizontal
+                        .c-picker__contents.align-left
+                            .c-picker__text
+                                - for (var x = 0; x < 4; x++)
+                                    +text-contents({headText:`Heading${x+1}`,bodyText:`Body${x+1}`,headSize:`font-w-light-36 font-m-normal-16`,bodySize:`font-w-normal-16 font-m-normal-16`})
+                            .c-list(role="tablist")
+                                +tabItem({isActive:true,imageSize:'64x64', div:'2',num:'1'})
+                                - for (var x = 0; x < 3; x++)
+                                    +tabItem({imageSize:'64x64', div:'2',num:`${x+2}`})
+                            .c-picker__buttons
+                                - for (var x = 0; x < 4; x++)
+                                    +buttons(`${(x < 2 ? 'box' : 'text')}`, `button${x+1} text`)
+                        .c-picker__view
+                            .c-picker__media
+                                +video-contents({size:'768x512',titleText:'[video title 1]', videoType:'brightcove'})(role="tabpanel" id='tabs-2-item-1-tabpanel' aria-labelledby='tabs-2-item-1-tab')
+                                +video-contents({size:'768x512',titleText:'[video title 2]', videoType:'youtube'})(role="tabpanel" id='tabs-2-item-2-tabpanel' aria-labelledby='tabs-2-item-2-tab')
+                                +image('768x512')(role="tabpanel" id='tabs-2-item-3-tabpanel' aria-labelledby='tabs-2-item-3-tab')
+                                +image('768x512')(role="tabpanel" id='tabs-2-item-4-tabpanel' aria-labelledby='tabs-2-item-4-tab')
+                                
+                // mobile only
+                .mobile-only
+                    .carousel.panelcontainer
+                        // block : carousel
+                        .cmp-carousel.swiper.c-carousel.align-left(data-cmp-data-layer="")
+                            .cmp-carousel__content.swiper-wrapper
+                                .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                                    +video-contents({size:'768x512',titleText:'[video title 1]', videoType:'brightcove'})
+                                    +text-contents({headText:'Heading1',bodyText:'Body1',isButton:true,buttonText:'button1 text',headSize:`font-w-light-36 font-m-light-28`,bodySize:`font-w-normal-16 font-m-normal-16`})
+                                .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                                    +video-contents({size:'768x512',titleText:'[video title 2]', videoType:'youtube'})
+                                    +text-contents({headText:'Heading2',bodyText:'Body2',isButton:true,buttonText:'button2 text',headSize:`font-w-light-36 font-m-light-28`,bodySize:`font-w-normal-16 font-m-normal-16`})
+                                .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                                    +image('768x512')
+                                    +text-contents({headText:'Heading3',bodyText:'Body3',isButton:true,buttonText:'button3 text',headSize:`font-w-light-36 font-m-light-28`,bodySize:`font-w-normal-16 font-m-normal-16`})
+                                .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                                    +image('768x512')
+                                    +text-contents({headText:'Heading4',bodyText:'Body4',isButton:true,buttonText:'button4 text',headSize:`font-w-light-36 font-m-light-28`,bodySize:`font-w-normal-16 font-m-normal-16`})
+                            .c-carousel__handlers
+                                .c-carousel__handler
+                                    .cmp-carousel__actions
+                                        +carouselBtn({type:"pagination", direction:"prev"})
+                                    +carouselPagination({isUnder:true})
+                                    .cmp-carousel__actions
+                                        +carouselBtn({type:"pagination", direction:"next"})
+
+    

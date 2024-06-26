@@ -1,0 +1,138 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_sns-list.pug
+include ../_common/_pop-msg.pug
+include ../_common/_headline.pug
+include ../_common/_carousel.pug
+
+block meta 
+    - var componentId = "ST0045"
+    - var componentName = "Article Title"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script.
+                    const guideList = {
+                        'body' : [
+                            {
+                                'name' : 'Dark Theme',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'dark-theme'},
+                                ]
+                            }
+                        ],
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'BG Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'bg-default', 'remove' : 'bg-white, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-white', 'remove' : 'bg-default, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-lightgray', 'remove' : 'bg-default, bg-white, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-darkgray', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-black', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-darkgray'},
+                                ]
+                            },
+                        ],
+                    }
+    mixin user-info(dateMonth, dateYear, userName="user name")
+        .c-article-title__user-info 
+            span.font-w-normal-16.font-m-normal-14= `Dec.${dateMonth}, ${dateYear}`
+            span.font-w-normal-16.font-m-normal-14= `By ${userName}`
+        .c-article-title__user-info 
+            span.font-w-normal-16.font-m-normal-14= `Dec.${dateMonth}, ${dateYear}`
+        .c-article-title__user-info 
+            span.font-w-normal-16.font-m-normal-14= `By ${userName}`
+
+    mixin filter(list)
+        .c-article-filter
+            .c-article-filter__inner.c-article-filter__inner--tag(id="articleFilter")
+                .c-article-filter__scroll
+                    .button.c-article-filter__tag
+                        each item in list
+                            // GA4
+                            a.cmp-button.c-article-filter__button(href=`${item.url ? item.url : "#"}` data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                                span.cmp-button__text= item.label
+
+                //- button.c-article-filter__btn-scroll.c-article-filter__btn-scroll--left.js-tab-scroll__left(type='button' aria-controls="articleFilter")
+                //-     span.sr-only Scroll Left
+                //- button.c-article-filter__btn-scroll.c-article-filter__btn-scroll--right.js-tab-scroll__right(type='button' aria-controls="articleFilter")
+                //-     span.sr-only Scroll Right
+
+    mixin sns
+        //- block : sns share
+        .c-sns-share
+            //- block : tooltip
+            .c-tooltip
+                .button
+                    +iconButton({type:"button",color:"black",class:"share",otherClass:"c-tooltip__button", name:"Share", ariaControls:"snsShare", expanded:"false"})
+                    
+                .c-tooltip__container.top-right(id="snsShare")
+                    // 2022-11-04
+                    .c-tooltip__contents
+                        // sns list
+                        +snsList
+    // Component Markup
+    .c-wrapper.ST0045.bg-default
+        .component
+            .cmp-container
+                //- block : article title
+                .c-article-title
+                    - var eyebrowStyle = "font-w-normal-16 font-m-normal-14"
+                    - var headlineStyle = "font-w-light-56 font-m-light-28"
+                    - var bodyStyle = "font-w-normal-24 font-m-normal-16"
+                    +sns
+                    .c-text-contents
+                        .text.c-text-contents__eyebrow
+                            p.cmp-text(class=eyebrowStyle data-cmp-data-layer="") Inspiration
+                        .title.c-text-contents__headline
+                            h1.cmp-title(class=headlineStyle data-cmp-data-layer="") How To Keep Your Spirits Up This Christmas
+                        .text.c-text-contents__bodycopy 
+                            p.cmp-text(class=bodyStyle data-cmp-data-layer="") This festive season might be a little different to normal. Here’s how to have yourself a merry little Christmas and stay connected with the ones you love.
+                    +user-info("12", "2022", "Rachel Ramsay")
+                //- block : article filter
+                +filter([
+                    { label: 'INSPIRATION', url: "#" },
+                    { label: 'Our Stories' },
+                    { label: 'How to' },
+                    { label: 'Smart ThinQ' },
+                    { label: 'OLED TV' },
+                    { label: 'INSPIRATION', url: "#" },
+                    { label: 'Our Stories' },
+                    { label: 'How to' },
+                ])
+
+block modal
+    +printLayerPopup('popCopyComplete')

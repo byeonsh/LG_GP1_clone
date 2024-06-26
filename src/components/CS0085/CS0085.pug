@@ -1,0 +1,151 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+
+block meta
+    - var componentId = "CS0085"
+    - var componentName = "Step_Attach Documents"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${controlsId}` aria-label="")
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+
+    mixin contentsBody(stepNumber, status)
+        // block - text contents
+        .c-text-contents.c-accordion__body-text
+            case stepNumber
+                when 3
+                    case status
+                        when 'default'
+                            section
+                                .cs-form
+                                    .cs-form__wrap
+                                        .cmp-form
+                                            p.cmp-txt.font-m-normal-20.font-w-normal-24 Proof of residence (recommended)
+                                            .c-btn-upload
+                                                #preview
+                                                    p.cs-preview__file File Name.jpeg
+                                                        button.file-remove(type="button" aria-label="") X
+                                                .c-btn-upload__inner 
+                                                    div
+                                                        label.c-not-required(for='file-input')
+                                                            .btn-upload.font-m-normal-14i.font-w-normal-14i(role="button" data-link-name) Upload
+                                                        input#file-input.file(type='file' name='file-input' readonly="readonly" aria-label="" multiple)
+                                                    .c-file-msg.font-m-normal-12.font-w-normal-16 
+                                                            | TIP: you can use a photo of the receipt.
+                                                            br
+                                                            | The file must be less than 10 MB. Allowed file types: jpeg, jpg, gif, pdf, png, tif, zip.
+                                                            br
+                                                            | Make sure the document is readable or in high resolution.
+                                                .c-warning.c-upload-required Tamanho do arquivo anexo excedido.
+                                                .c-warning.c-upload-invalid ‘O formato do arquivo anexo não é suportado
+                                    .cs-form__wrap
+                                        .cmp-form
+                                            p.cmp-txt.font-m-normal-20.font-w-normal-24 Proof of residence (recommended)
+                                            .c-btn-upload
+                                                #preview
+                                                    p.cs-preview__file File Name.jpeg
+                                                        button.file-remove(type="button" aria-label="") X
+                                                .c-btn-upload__inner 
+                                                    div
+                                                        label.c-not-required(for='file-input')
+                                                            .btn-upload.font-m-normal-14i.font-w-normal-14i(role="button" data-link-name) Upload
+                                                        input#file-input.file(type='file' name='file-input' readonly="readonly" aria-label="" multiple)
+                                                    .c-file-msg.font-m-normal-12.font-w-normal-16 
+                                                            | TIP: you can use a photo of the receipt.
+                                                            br
+                                                            | The file must be less than 10 MB. Allowed file types: jpeg, jpg, gif, pdf, png, tif, zip.
+                                                            br
+                                                            | Make sure the document is readable or in high resolution.
+                                                .c-warning.c-upload-required Tamanho do arquivo anexo excedido.
+                                                .c-warning.c-upload-invalid ‘O formato do arquivo anexo não é suportado
+                                                                                
+                            .c-button-wrap
+                                    .button.c-cta
+                                        +defaultButton({name: 'Next', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-next")
+                        when 'completed'
+                            div
+                                .c-result__txtBox.font-m-normal-12.font-w-normal-16 Proof of residence(recommended) : filename.jpg
+                                .c-result__txtBox.font-m-normal-12.font-w-normal-16 Proof of residence(recommended) : filename.jpg
+                            .button.c-cta
+                                +linkButton({type:"text", color:"black", name: "Edit"})(role="button")
+
+    -
+        const stepList = [
+            {
+                'eyebrow': 'Type of Repair',
+                'stepNumber': 3
+            },
+        ]
+
+    mixin pack(faq, stepNumber, controlsId, status)
+        case status
+            when 'default'
+                .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+                    .c-accordion__head
+                        // block - text contents
+                        // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+                        //- .c-accordion__head-text.c-text-contents.c-step-active
+                        .c-accordion__head-text.c-text-contents
+                            span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true")
+                                span.c-accordion__step
+                                span.c-accordion__head-flag.font-m-normal-16.font-w-semibold-20
+                        +trigger(controlsId)
+                    // This area is accordion content. Please include only this area during development.
+                    .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+                        +contentsBody(stepNumber, status)
+            when 'completed'
+                // If you need to expand all the accordions on the result page, add a class .c-accordion__box--expand
+                // .c-accordion__box.js-accordion-handle-target.c-accordion__box--expand
+                .c-accordion__box.js-accordion-handle-target.c-accordion__box--expand
+                    .c-accordion__head
+                        // block - text contents
+                        // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+                        // .c-accordion__head-text.c-text-contents.c-step-active
+                        .c-accordion__head-text.c-text-contents
+                            span.c-accordion__initial.font-m-normal-16.font-w-normal-20(aria-hidden="true") 
+                                span.c-accordion__step 
+                                span.c-accordion__head-flag.font-m-normal-14.font-w-semibold-18 
+                        +trigger(controlsId)
+                    .c-accordion__body.c-complete__body(id=`${controlsId}` class=`step${stepNumber}`)
+                        +contentsBody(stepNumber, status)
+            default
+                - break
+
+
+    .guide-text-option  Step_Attach Documents - BR
+    .c-wrapper.CS0085.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0085__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +pack(faq, faq.stepNumber, controlsId, 'default')
+
+    .guide-text-option complete(no No solution)
+    .c-wrapper.CS0085.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0085__container
+                // Add class when displaying complete - .type-accordion__result
+                .c-accordion.js-accordion.type-accordion__result
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(faq, faq.stepNumber, controlsId, 'completed')
+

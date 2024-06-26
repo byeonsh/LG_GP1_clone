@@ -1,0 +1,310 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_button.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "BU000A"
+    - var componentName = "Fill out an application"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+            
+mixin myFormRadio(params)
+    - let data = {...params}
+    .c-form__box.c-form__radio-box
+        each set in data
+            .c-form-box
+                .c-radio-item
+                    label.radio(for=`${set.id}`)
+                        input(type="radio" name=`${set.name}`, value=`${set.val}`, id=`${set.id}`)&attributes(attributes)
+                        span.label= set.label
+
+mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected, required= false})    
+    .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+        +formSelect(label, id, placeholder, required)
+            if optionVal
+                - for(var i=0; i < optionVal.length; i++)
+                    if selected === i + 1
+                        option(value="" selected)= optionVal[i]
+                    else
+                        option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText})
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst ? 'my-warn' : ''}` 
+    if data.type === 'select'
+        +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required}) 
+    else if data.type === 'radio'
+        +myFormRadio(params)
+    else if data.type === 'captcha'
+        +myCaptcha({label: data.label, id: data.id, placeholder: data.placeholder, warning: data.warning, required: data.required})
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                    if data.required
+                        em.c-required *
+                            span.sr-only Required fields
+            if data.required && !data.button && data.type !== "password"
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+                if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)            
+            else if data.button
+                if data.validation
+                    .input-button__container.input-button__container--validation
+                        .my-button-validation
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required)&attributes(attributes)
+                            +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                        each item in data.button
+                            .button.c-cta.button-full
+                                +defaultButton({name:item, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                else
+                    .input-button__container
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required)&attributes(attributes)
+                        // [Start] 2023-05-03 : ADD - email form case
+                        each item in data.button
+                            .button.c-cta.button-full
+                                +defaultButton({name:item, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                        // [End] 2023-05-03 : ADD - email form case
+            else 
+                if data.active
+                    input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value, required)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                    else if data.search 
+                        button(type='button' class='my-form__search__icon')
+                            span.sr-only search
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config} ${data.search ? 'my-form__search' : ''}`, required)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                    else if data.search 
+                        button(type='button' class='my-form__search__icon')
+                            span.sr-only search
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+                
+
+mixin myInputForm(data, column)
+    .my-input(class=`${column ? 'column2-type' : ''}`)
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin formCheckbox(label, name, val, id, count = "false", disabled = false, required)
+    .c-checkbox-item&attributes(attributes)
+        label.checkbox(for=`${id}`)
+            if(disabled)
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, disabled="disabled")&attributes(attributes)
+            else 
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`)&attributes(attributes)
+            if(label)
+                span.label= label
+                    -if(count >= 0 & count != "false") // for filter
+                        sup.count= count 
+                    if required
+                        em.c-required *
+                            span.sr-only Required fields
+            else 
+                if block 
+                    span.label
+                        block
+
+
+block content   
+    // Component Markup
+    .c-wrapper.BU000A.bg-default.margin-top.margin-bottom
+        .component
+            .cmp-container 
+                .my-component
+                    .my-formbox
+                        +myInputForm([
+                            {
+                                type:"text",
+                                label:"Email ",
+                                id:"email",
+                                required:true,
+                                placeholder:"Email address",
+                                inputUnderline:false,
+                            },
+                            {
+                                type:"text",
+                                label:"Email ",
+                                id:"email",
+                                required:true,
+                                placeholder:"Email address",
+                                inputUnderline:false,
+                                warningFirst: ["Пожалуйста введите корректный email"],
+                            },
+                            {                                        
+                                type: 'select',
+                                label: 'Country ',
+                                id: 'country',
+                                required:true,
+                                optionVal: ['Country','Afghanistan' , 'Albania' , 'Algeria' , 'Anguilla' , 'Antigua and Barbuda' , 'Antigua' , 'Argentina' , 'Armenia' , 'Aruba' , 'Australia' , 'Austria' , 'Azerbaijan' , 'Bahamas' , 'Bahrain' , 'Bangladesh' , 'Barbados' , 'Belarus' , 'Belgium' , 'Belize' , 'Benin' , 'Bermuda' , 'Bolivia' , 'Bosnia and Herzegovina' , 'Botswana' , 'Brazil' , 'British Virgin Islands' , 'Brunei' , 'Bulgaria' , 'Burkina Faso' , 'Cambodia' , 'Cameroon' , 'Canada' , 'Cayman Islands' , 'Central African Republic' , 'Chile' , 'China' , 'Colombia' , 'Congo' , 'Costa Rica' , 'Cote d`Ivoire' , 'Croatia' , 'Cuba' , 'Curaçao' , 'Cyprus' , 'Czech' , 'Democratic Republic of the Congo' , 'Denmark' , 'Djibouti' , 'Dominican Republic' , 'Ecuador' , 'Egypt' , 'El Salvador' , 'Equatorial Guinea' , 'Eritrea' , 'Estonia' , 'Ethiopia' , 'Fiji' , 'Finland' , 'France' , 'Gabon' , 'Gambia' , 'Georgia' , 'Germany' , 'Ghana' , 'Greece' , 'Grenada' , 'Guatemala' , 'Guinea' , 'Guyana' , 'Haiti' , 'Honduras' , 'Hong Kong' , 'Hungary' ,'Iceland' , 'India' , 'Indonesia' , 'Iran' , 'Iraq' , 'Ireland' , 'Isle of Man' , 'Israel' , 'Italy' , 'Ivory Coast' , 'Jamaica' , 'Japan' , 'Jordan' , 'Kazakhstan' , 'Kenya' , 'Kosovo' , 'Kuwait' , 'Laos' , 'Latvia' , 'Lebanon' , 'Liberia' , 'Libya' , 'Lithuania' , 'Luxembourg' , 'Macedonia' , 'Malawi' , 'Malaysia' , 'Maldives' , 'Mali' , 'Malta' , 'Mauritania' , 'Mauritius' , 'Mexico' , 'Montenegro' , 'Morocco' , 'Mozambique' , 'Myanmar' , 'Namibia' , 'Nepal' , 'Netherlands Antilles' , 'Netherlands' , 'New Zealand' , 'Nicaragua' , 'Nigeria' , 'Norway' , 'Oman' , 'Pakistan' , 'Palestine' , 'Panama' , 'Papua New Guinea' , 'Paraguay' , 'Peru' , 'Philippines' , 'Poland' , 'Portugal' , 'Puerto Rico' , 'Qatar' , 'Romania' , 'Russia' , 'Rwanda' , 'Saint Kitts and Nevis' , 'Saint Lucia' , 'Sao Tome and Principe' , 'Saudi Arabia' , 'Senegal' , 'Serbia' , 'Sierra Leone' , 'Singapore' , 'Slovakia' , 'Slovenia' , 'Somalia' , 'South Africa' , 'South Korea' , 'Sri Lanka' , 'St Kitts' , 'St Maarten' , 'St Vincent' , 'Sudan' , 'Suriname' , 'Swaziland' , 'Sweden' , 'Switzerland' , 'Syria' , 'Taiwan' , 'Thailand' , 'Togo' , 'Trinidad and Tobago' , 'Tunisia' , 'Turkey' , 'Turkmenistan' , 'Turks and Caicos Islands' , 'U.A.E' , 'Uganda' , 'Ukraine' , 'United Kingdom' , 'United Republic of Tanzania' , 'United States' , 'Uruguay' , 'US Virgin Islands' , 'Uzbekistan' , 'Venezuela' , 'Vietnam' , 'Yemen' , 'Zambia' , 'Zimbabwe' ,], 
+                            },
+                            {                                        
+                                type: 'select',
+                                label: 'Country ',
+                                id: 'country',
+                                required:true,
+                                optionVal: ['Country','Afghanistan' , 'Albania' , 'Algeria' , 'Anguilla' , 'Antigua and Barbuda' , 'Antigua' , 'Argentina' , 'Armenia' , 'Aruba' , 'Australia' , 'Austria' , 'Azerbaijan' , 'Bahamas' , 'Bahrain' , 'Bangladesh' , 'Barbados' , 'Belarus' , 'Belgium' , 'Belize' , 'Benin' , 'Bermuda' , 'Bolivia' , 'Bosnia and Herzegovina' , 'Botswana' , 'Brazil' , 'British Virgin Islands' , 'Brunei' , 'Bulgaria' , 'Burkina Faso' , 'Cambodia' , 'Cameroon' , 'Canada' , 'Cayman Islands' , 'Central African Republic' , 'Chile' , 'China' , 'Colombia' , 'Congo' , 'Costa Rica' , 'Cote d`Ivoire' , 'Croatia' , 'Cuba' , 'Curaçao' , 'Cyprus' , 'Czech' , 'Democratic Republic of the Congo' , 'Denmark' , 'Djibouti' , 'Dominican Republic' , 'Ecuador' , 'Egypt' , 'El Salvador' , 'Equatorial Guinea' , 'Eritrea' , 'Estonia' , 'Ethiopia' , 'Fiji' , 'Finland' , 'France' , 'Gabon' , 'Gambia' , 'Georgia' , 'Germany' , 'Ghana' , 'Greece' , 'Grenada' , 'Guatemala' , 'Guinea' , 'Guyana' , 'Haiti' , 'Honduras' , 'Hong Kong' , 'Hungary' ,'Iceland' , 'India' , 'Indonesia' , 'Iran' , 'Iraq' , 'Ireland' , 'Isle of Man' , 'Israel' , 'Italy' , 'Ivory Coast' , 'Jamaica' , 'Japan' , 'Jordan' , 'Kazakhstan' , 'Kenya' , 'Kosovo' , 'Kuwait' , 'Laos' , 'Latvia' , 'Lebanon' , 'Liberia' , 'Libya' , 'Lithuania' , 'Luxembourg' , 'Macedonia' , 'Malawi' , 'Malaysia' , 'Maldives' , 'Mali' , 'Malta' , 'Mauritania' , 'Mauritius' , 'Mexico' , 'Montenegro' , 'Morocco' , 'Mozambique' , 'Myanmar' , 'Namibia' , 'Nepal' , 'Netherlands Antilles' , 'Netherlands' , 'New Zealand' , 'Nicaragua' , 'Nigeria' , 'Norway' , 'Oman' , 'Pakistan' , 'Palestine' , 'Panama' , 'Papua New Guinea' , 'Paraguay' , 'Peru' , 'Philippines' , 'Poland' , 'Portugal' , 'Puerto Rico' , 'Qatar' , 'Romania' , 'Russia' , 'Rwanda' , 'Saint Kitts and Nevis' , 'Saint Lucia' , 'Sao Tome and Principe' , 'Saudi Arabia' , 'Senegal' , 'Serbia' , 'Sierra Leone' , 'Singapore' , 'Slovakia' , 'Slovenia' , 'Somalia' , 'South Africa' , 'South Korea' , 'Sri Lanka' , 'St Kitts' , 'St Maarten' , 'St Vincent' , 'Sudan' , 'Suriname' , 'Swaziland' , 'Sweden' , 'Switzerland' , 'Syria' , 'Taiwan' , 'Thailand' , 'Togo' , 'Trinidad and Tobago' , 'Tunisia' , 'Turkey' , 'Turkmenistan' , 'Turks and Caicos Islands' , 'U.A.E' , 'Uganda' , 'Ukraine' , 'United Kingdom' , 'United Republic of Tanzania' , 'United States' , 'Uruguay' , 'US Virgin Islands' , 'Uzbekistan' , 'Venezuela' , 'Vietnam' , 'Yemen' , 'Zambia' , 'Zimbabwe' ,], 
+                                warning: ["This field is required"],
+                            },
+                            {
+                                type:"text",
+                                label:"Name ",
+                                id:"name",
+                                required:true,
+                                placeholder:"The name will be used to address you",
+                                inputUnderline:false,
+                            },
+                            {
+                                type:"text",
+                                label:"Name ",
+                                id:"name",
+                                required:true,
+                                placeholder:"The name will be used to address you",
+                                inputUnderline:false,
+                                warningFirst: ["Это обязательное поле"],
+                            },
+                            {
+                                type:"text",
+                                label:"Surname ",
+                                id:"surname",
+                                required:true,
+                                placeholder:"The last name will also be used to address",
+                                inputUnderline:false,
+                            },
+                            {
+                                type:"text",
+                                label:"Surname ",
+                                id:"surname",
+                                required:true,
+                                placeholder:"The last name will also be used to address",
+                                inputUnderline:false,
+                                warningFirst: ["Слишком длинный текст"],
+                            },
+                            {
+                                type:"text",
+                                label:"Company ",
+                                id:"company",
+                                required:true,
+                                placeholder:"The name of your company or organization",
+                                inputUnderline:false,
+                            },
+                            {
+                                type:"text",
+                                label:"Company ",
+                                id:"company",
+                                required:true,
+                                placeholder:"The name of your company or organization",
+                                inputUnderline:false,
+                                warningFirst: ["Это обязательное поле"],
+                            },
+                            {                                        
+                                type: 'select',
+                                label: 'Budget ',
+                                id: 'Budget',
+                                required:false,
+                                optionVal: ['Budget','N/A','Less than $100,000','$100,000 ~ $500,000','$500,000 ~ $1,000,000','More than $1,000,000',], 
+                                infoText: ["Пожалуйста, укажите ориентировочный бюджет вашего проекта"],
+                            },
+                            {                                        
+                                type: 'select',
+                                label: 'Budget ',
+                                id: 'Budget',
+                                required:false,
+                                optionVal: ['Budget','N/A','Less than $100,000','$100,000 ~ $500,000','$500,000 ~ $1,000,000','More than $1,000,000',], 
+                                infoText: ["Пожалуйста, укажите ориентировочный бюджет вашего проекта"],
+                                warning: ["error message"],
+                            },
+                            {                                        
+                                type: 'select',
+                                label: 'Timeline ',
+                                id: 'Timeline',
+                                required:false,
+                                optionVal: ['Timeline','N/A','Less than 3 Months','3 Months ~ 6 Months','6 Months ~ 9 Months','9 Months ~ 1 year','More than a year',],      
+                                infoText: ["Пожалуйста, укажите ориентировочные сроки реализации вашего проекта"],                                               
+                            }, 
+                            {                                        
+                                type: 'select',
+                                label: 'Timeline ',
+                                id: 'Timeline',
+                                required:false,
+                                optionVal: ['Timeline','N/A','Less than 3 Months','3 Months ~ 6 Months','6 Months ~ 9 Months','9 Months ~ 1 year','More than a year',],      
+                                infoText: ["Пожалуйста, укажите ориентировочные сроки реализации вашего проекта"],
+                                warning: ["error message"],                                          
+                            },       
+                        ])
+                      
+                        .agree_form
+                            .agree-formbox
+                                .agree-formbox__check
+                                    +formCheckbox('Privacy Policy', "name", "val1", `checkId1`, count="false", disabled = false, required = false)
+                                    +postFormMessage("Это обязательное поле", "Я прочитал и согласен с Политикой Конфиденциальности")
+                        .c-form.ty2
+                            label.font-w-normal-16.font-m-normal-14 Direct Marketing
+                                em.c-required *
+                                    span.sr-only Required fields
+                            +myFormRadio([
+                                {
+                                    val: "Yes",
+                                    id: "yes",
+                                    label: "Yes",
+                                },
+                                {
+                                    val: "No",
+                                    id: "no",
+                                    label: "No",
+                                },
+                            ])
+                            +postFormMessage("", "Я даю согласие на использование компанией LG моих личных данных в целях профилирования и отправки мне маркетинговых сообщений, касающихся продуктов и услуг LG.")
+                        .agree_form
+                            .agree-formbox
+                                .agree-formbox__check
+                                    +formCheckbox('Transfer outside your country', "name2", "val2", `checkId2`, count="false", disabled = false, required = true)
+                                    +postFormMessage("error message", "Я понимаю, что LGE может передавать мою информацию (включая мою личную информацию) за пределы моей страны, как описано в Политике конфиденциальности.")
+                .button.c-cta.my-button
+                    +defaultButton({name: "Submit", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})

@@ -1,0 +1,24 @@
+//- 믹스인 수정 시, 기존에 개발에 전달했던 페이지의 마크업이 달라지지 않도록 주의 부탁 드립니다. 
+
+mixin printLazyBpPicture(params)
+    - var option = {bp1:768, bp2:1279, alt:"picture", ...params}
+    //- 상위에 .image 클래스를 추가해야합니다. (주로 .c-image)
+    .cmp-image(data-cmp-data-layer='')
+        picture
+            source(media=`(max-width: ${option.bp1}px)`, srcset=option.mobile)
+            source(media=`(max-width: ${option.bp2}px)`, srcset=option.tablet)
+            source(media=`(min-width: ${option.bp2 + 1}px)`, srcset=option.web)
+            img.cmp-image__image.c-image__img(src=option.mobile, alt=option.alt, loading="lazy")
+
+mixin printLazyPicture(img1, img2, max="768", min="769", alt="picture")
+    //- 상위에 .image 클래스를 추가해야합니다. (주로 .c-image)
+    .cmp-image(data-cmp-data-layer='')
+        picture
+            source(media=`(max-width: ${max}px)`, srcset=img1)
+            source(media=`(min-width: ${min}px)`, srcset=img2)
+            img.cmp-image__image.c-image__img(src=img1, alt=alt, loading="lazy")&attributes(attributes)
+
+mixin printLazyImage(img, alt="picture")
+    //- 상위에 .image 클래스를 추가해야합니다. (주로 .c-image)
+    .cmp-image(data-cmp-data-layer='')
+        img.cmp-image__image.c-image__img(src=img, alt=alt, loading="lazy")&attributes(attributes)

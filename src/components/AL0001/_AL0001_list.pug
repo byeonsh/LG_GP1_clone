@@ -1,0 +1,209 @@
+include ../_common/_image.pug
+include ../_common/_button.pug
+
+mixin itemContent(set)
+	.c-list-item__content.c-text-contents
+		if set.title
+			.title.c-text-contents-title
+				strong.c-list-item-content__title.cmp-title.font-w-light-36.font-m-light-24(data-cmp-data-layer="")= set.title
+		else 
+			.title.c-text-contents-title
+				strong.c-list-item-content__title.cmp-title.font-w-light-36.font-m-light-24(data-cmp-data-layer="") lg unveils two groundbreaking smartphones
+
+		if set.bodyText
+			.text.c-text-contents-bodycopy
+				.c-list-item-content__text.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")= set.bodyText
+		else 
+			.text.c-text-contents-bodycopy
+				.c-list-item-content__text.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") LONDON, Feb. 20, 2019 — At MWC 2019, LG Electronics (LG) will reveal three new consumer-friendly smartphones designed for those seeking advanced mobile devices without compromising usability. The LG Q60, LG K50 and LG K40 boast premium features, advanced technologies and stylish design, all without breaking the bank. Redefining Usability With thes...
+		.c-list-item-content__type
+
+			if set.listType
+				.text.c-text-contents-subcopy
+					span.c-list-item-content-type__txt.cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")= set.listType
+			else 
+				.text.c-text-contents-subcopy
+					span.c-list-item-content-type__txt.cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="") Home Entertainment
+			.date.c-text-contents-date 
+				span.c-list-item-content-type__date.cmp-date.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")= set.date
+
+mixin topicsList(data)
+	// block - list
+	.c-list(role="list")
+		each set in data 
+			.c-list__item(role="listitem")
+				
+				if set.isImg
+					a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+						+itemContent(set)
+						.c-list-item__img
+							+printLazyImage(
+								`https://via.placeholder.com/342x220`
+							)
+				else 
+					a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+						+itemContent(set)
+
+mixin latestTopic(data)
+	- var size_pc = "830x553";
+	- var size_mo = "310x200";
+	// block - list
+	.c-list(role="list")
+		each set in data 
+			.c-list__item(role="listitem")
+				
+				if set.isImg
+					a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 
+						.c-list-item__img
+							+printLazyPicture(
+								`https://via.placeholder.com/${size_mo}`, 
+								`https://via.placeholder.com/${size_pc}`
+							)
+						+itemContent(set)
+				else 
+					a(href="#" class="only-text" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+						+itemContent(set)
+
+mixin bloglList (param)
+	- var size_pc = "464x300";
+	- var size_mo = "310x200";
+	each data in param 
+		li.c-list__item
+			span.c-list-item__img
+				+printLazyPicture(
+					`https://via.placeholder.com/${size_mo}`, 
+					`https://via.placeholder.com/${size_pc}`
+				)
+			.c-list-item__contents.c-text-contents
+				.title.c-text-contents-title
+					strong.cmp-title.c-list-item__contents__title.font-w-light-36.font-m-light-24(data-cmp-data-layer="")= data.titleName
+				if data.titlePreview
+					.text.c-text-contents-bodycopy.al-web-only
+						p.cmp-text.c-list-item__contents__preview.font-w-normal-16.font-m-normal-16= data.titlePreview
+
+				if data.hashtag.length > 0
+					.c-list-item__contents__hashtags
+						each tag in data.hashtag
+							a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").font-w-normal-14.font-m-normal-14= `#${tag}`
+
+				.date.c-text-contents-date
+					span.cmp-date.c-list-item__contents__date.font-w-normal-12.font-m-normal-12= data.date
+
+				.c-bloglList__btn
+					if data.txtBtn
+						+textButton({name: 'Learn More', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: false})
+					else
+						+defaultButton({name: 'Learn More', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+
+mixin businessList(params)
+	each data in params
+		.c-text-contents
+			.date.c-text-contents-date
+				h5.cmp-date.font-w-light-56.font-m-light-28.c-businessList__tabDate(data-cmp-data-layer="")= data.tabDate
+			ul.c-businessList__list
+				each notice in data.notices
+					li.c-businessList__item.c-text-contents
+						a.c-businessList__item--anchor(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+							.title.c-text-contents-title
+								strong.cmp-title.font-w-light-36.font-m-light-24.c-businessList__item--title(data-cmp-data-layer="")= notice.itemTitle
+							.text.c-text-contents-bodycopy
+								.cmp-text.font-w-normal-16.font-m-normal-16.c-businessList__item--bodycopy(data-cmp-data-layer="")= notice.itemBodycopy
+							.date.c-text-contents-date
+								span.cmp-date.font-w-normal-16.font-m-normal-12.c-businessList__item--date(data-cmp-data-layer="")= notice.itemDate
+
+mixin image(size1, size2)
+	// block : image
+	.image.c-image
+		+printLazyPicture(`https://via.placeholder.com/${size1}/999999/333333`, `https://via.placeholder.com/${size2}/999999/333333`)
+		if block
+			block                        
+mixin video-contents(size1, size2, videoType)
+	// Display only when video is registered
+	// block : media contents
+	.c-media-contents
+		// Video case
+		+image(size1, size2)
+			+floating-video(videoType)
+			
+mixin c-businessList-video-list(params)
+	ul.c-businessList--video-list__list.c-text-contents
+		each data in params
+			li.c-businessList--video-list__item
+				//- +video-contents('310x174', '464x260', 'youtube')
+				a.c-businessList--video-list__item--anchor(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+					+printLazyPicture(`https://via.placeholder.com/310x174/999999/333333`, `https://via.placeholder.com/464x260/999999/333333`)
+					.title.c-text-contents-title.c-businessList--video-list__item--title
+						strong.cmp-title.font-w-light-36.font-m-light-24(data-cmp-data-layer="")= data.title
+					.topic-box
+						.topic.c-text-contents-topic.c-businessList--video-list__item--topic
+							span.cmp-topic.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")= data.topic
+						.date.c-text-contents-date.c-businessList--video-list__item--date
+							span.cmp-topic.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")= data.date
+				.button
+					+textButton({name: 'Learn More', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: true})
+
+
+mixin bodycopy 
+	.text.c-text-contents__bodycopy 
+		p.cmp-text.font-w-normal-20.font-m-normal-16(data-cmp-data-layer="") For more information about LG Electronics, please contact our Corporate Communications Team. Select "Send an Email" to contact the managers directly. 
+
+
+
+mixin roleList(item)
+	if item 
+		.c-list__item(role="listitem")
+			if block
+				block
+	else
+		.c-list__item
+			if block
+				block
+
+mixin textListItem(params)
+	- var option={contents:both, useQuote:false, isList:false, headline:'', bodycopy:'', ...params}
+		+roleList(option.isList)
+			//- block : text-contents                 
+			div(class=`c-text-contents ${option.bodycopy}`)
+				.title.c-text-contents__headline
+					+headline(`${option.headline}`)
+				case option.contents
+					when "list"
+						.text.c-text-contents__bodycopy
+							.cmp-text(data-cmp-data-layer="")
+								//- element : list
+								ul
+									li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+									li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+									li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+
+					when "desc"
+						.text.c-text-contents__bodycopy 
+							.cmp-text(data-cmp-data-layer="") 
+								p Body text can be up to 700 characters. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient. Body text can be up to 200 characters.
+					
+					default
+						.text.c-text-contents__bodycopy 
+							.cmp-text(data-cmp-data-layer="") 
+								p Body text can be up to 700 characters. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient. Body text can be up to 200 characters.
+						//- element : list
+						.text.c-text-contents__bodycopy
+							.cmp-text(data-cmp-data-layer="")
+								ul
+									li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+									li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+									li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+				//- block :cta 
+				.button.c-cta
+					+linkButton
+				//- block :cta 
+				.button.c-cta
+					+linkButton({type:"text", icon:true})
+				//- element : quote
+				if option.useQuote
+					.c-text-contents__quote 
+						.text.c-text-contents__quote-text
+							.cmp-text.font-w-semibold-28.font-m-semibold-20(data-cmp-data-layer="") 
+								p “Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo”
+						.text.c-text-contents__quote-name
+							.cmp-text.font-w-normal-20.font-m-normal-16(data-cmp-data-layer="") 
+								p Lorem ipsum dolor sit amet

@@ -1,0 +1,211 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_pagination.pug
+
+//- include ../_common/_carousel.pug
+//- include ../_common/_video.pug
+//- include ../_common/_hero-banner.pug
+//- include ../_common/_spec-info.pug
+
+block meta 
+    - var componentId = "CS0047"
+    - var componentName = "CS Accordion"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    //- // An area for testing options when coding. 
+    //- // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Top margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'Bottom margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+
+                        ],
+
+                    };
+
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${controlsId}` aria-label="")
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+
+    mixin contentsBody(useImg)
+        // accordion contents
+        // block - text contents
+        // If you need a flex element, use it by adding a class - .c-flex
+        .c-text-contents.c-accordion__body-text.c-flex
+            // accordion contents
+            span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true") A.
+            .text.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-16
+                span.cmp-text(data-cmp-data-layer="") Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quibusdam similique tempore culpa aliquam itaque quis doloribus, fugiat, optio dolorum vero odio at atque repellat non, nulla numquam eaque quasi voluptas eos! Quae quidem dolorum temporibus dolore rerum. Possimus, esse quod.
+            // block - cta
+            .button.c-cta
+                //- +linkButton
+                +defaultButton({name:'Learn more',wSize: 'medium', mSize: 'medium',buttonStyle: 'default',isButton:false})
+
+
+
+        //- if useImg
+        //-     .image.c-image.c-accordion__body-image
+        //-         +printLazyImage("https://via.placeholder.com/1600x900/000/333/?text=Image", "")
+
+    mixin pack(faq, useImg, controlsId)
+        .c-accordion__box.js-accordion-handle-target
+            .c-accordion__head
+                // SUPPORT FAQ EYEBROW ADDED
+                span.c-accordion__head-flag.font-m-normal-14.font-w-normal-14 #{faq.eyebrow}
+                // block - text contents
+                .c-accordion__head-text.c-text-contents
+                    span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true") Q.
+                    .text.c-text-contents__headline
+                        .cmp-text.font-w-normal-20.font-m-normal-18(data-cmp-data-layer="") 
+                            strong #{faq.headline} 
+                +trigger(controlsId)
+            .c-accordion__body(id=`${controlsId}`)
+                +contentsBody
+    -
+        const faqList = [
+            {
+                'eyebrow':'Delivery',
+                'headline':'What should i do if the courier does not find me at home at the time of delivery?',
+                'useImg':true
+            },
+            {
+                'eyebrow':'Payment',
+                'headline': 'What are the available payment methods?',
+                'useImg':false
+            },
+            {
+                'eyebrow':'Your orders',
+                'headline': 'Do i need to be registered to make a purchase?',
+                'useImg':true
+            }
+        ]
+
+    mixin pack2(useImg, controlsId)
+        .c-accordion__box.js-accordion-handle-target
+            .c-accordion__head
+                // block - text contents
+                .c-accordion__head-text.c-text-contents
+                    span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true") Q.
+                        span.c-accordion__head-flag.font-m-normal-14.font-w-semibold-18  Delivery
+
+                    .text.c-text-contents__headline
+                        .cmp-text.font-w-normal-20.font-m-normal-18(data-cmp-data-layer="") 
+                            strong Do you have too many product to type each information?
+                +trigger(controlsId)
+            .c-accordion__body(id=`${controlsId}`)
+                +contentsBody(useImg)
+    mixin packStep(faq, stepNumber, controlsId)
+        if faq.disabled 
+            .c-accordion__box.js-accordion-handle-target.c-accordion__box--disabled
+                .c-accordion__head
+                    // block - text contents
+                    // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+                    //- .c-accordion__head-text.c-text-contents.c-step-active
+                    .c-accordion__head-text.c-text-contents
+                        span.c-accordion__initial.font-m-normal-16.font-w-normal-20(aria-hidden="true") 
+                            span.c-accordion__step Step #{faq.stepNumber}
+                            .c-accordion__head-flag.font-m-normal-16.font-w-semibold-20 
+                                p #{faq.eyebrow}
+                                span.c-dot *
+                    +trigger(controlsId)
+                .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+                    +contentsBody(stepNumber)
+        else
+            .c-accordion__box.js-accordion-handle-target
+                .c-accordion__head
+                    // block - text contents
+                    // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+                    //- .c-accordion__head-text.c-text-contents.c-step-active
+                    .c-accordion__head-text.c-text-contents
+                        span.c-accordion__initial.font-m-normal-16.font-w-normal-20(aria-hidden="true") 
+                            span.c-accordion__step Step #{faq.stepNumber}
+                            .c-accordion__head-flag.font-m-normal-16.font-w-semibold-20 
+                                p #{faq.eyebrow}
+                                span.c-dot *
+                    +trigger(controlsId)
+                .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+                    +contentsBody(stepNumber)
+    -
+        const stepList = [
+            {
+                'eyebrow': 'Find my product',
+                'stepNumber': 1,
+                'disabled': false
+            },
+            {
+                'eyebrow': 'Your product symptom',
+                'stepNumber': 2,
+                'disabled': true
+            },
+        ]
+
+    .guide-text-type CS Accordion
+
+
+    .guide-text-option Type1
+    .c-wrapper.CS0047.type-text.margin-top.margin-bottom
+        .component.type-accordion.type-accordion__offEye
+            .CS0047__container
+                // Hiding when not using headcopy 
+                //- .c-cs-header
+                //-     // block : text-contents
+                //-     .c-text-contents
+                //-         .title.c-text-contents__headline
+                //-             +headline('font-w-light-56 font-m-light-28',h2,'Frequently Asked Questions')
+                //-         .text.c-text-contents__bodycopy
+                //-             .cmp-text.font-w-normal-20.font-m-normal-16(data-cmp-data-layer="")
+                //-                 span Lorem ipsum dolor sit amet, Aenean commodo ligula
+                .c-accordion.js-accordion
+                    each faq, index in faqList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(faq, faq.useImg, controlsId)
+
+    .guide-text-option Type2
+    .c-wrapper.CS0047.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0047__container
+                .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +packStep(faq, faq.stepNumber, controlsId)
+
+                // when active    
+                .button.c-cta
+                    +defaultButton({name: 'Cancel', wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                    +defaultButton({name: 'Submit', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: "none"})

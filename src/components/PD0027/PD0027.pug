@@ -1,0 +1,262 @@
+extends ../_common/_layout.pug
+include ../_common/_image.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_filter.pug
+include ../_common/_product-list.pug
+include ../_common/_pagination.pug
+include ../_common/_pop-msg.pug
+include ../_common/_carousel.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "PD0027"
+    - var componentName = "Reviews"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+                    
+    // Component Markup
+    mixin reviewItem($params)
+        // GA4
+        a.c-product-list__item.productcollection__item(data-cmp-data-layer="" href='/pdp-url/#pdp_review' data-modelid="MD07550445" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+            .c-product-item
+                .c-product-item__top-container
+                    .c-product-item__visual-image
+                        .image.c-image
+                            .cmp-image(data-cmp-data-layer='')
+                                img.cmp-image__image.c-image__img(src='https://via.placeholder.com/350x350/999999/000000' alt='picture' loading='lazy')
+                    .c-product-item__model-display-name.c-text-contents
+                        .text.c-text-contents__eyebrow.sku
+                            .cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer='')
+                                p
+                                    span GSJV70PZTF
+                        .text.c-text-contents__headline
+                            .cmp-text.font-w-normal-24.font-m-normal-20(data-cmp-data-layer='')
+                                p American Fridge Freezer 635L Water &amp; Ice Dispenser
+
+    mixin categoryFilter(type)
+        form.cmp-form.c-category-filter
+            fieldset.c-category-filter__inner
+                legend.sr-only Select a Product to Review
+                .c-category-filter__body.vertical-bottom
+                    if(type == 1)
+                        .c-form__item
+                            +formSelect("Select a Product to Review", "selectCategory", "Select a Category", false)(class="js-select-category" onchange="document.getElementById('selectModel').removeAttribute('disabled');this.closest('.cmp-container').querySelector('.c-content-area__category').classList.add('hidden');closest('.cmp-container').querySelector('.c-content-area__product-list').classList.remove('hidden')")
+                                option(value="" disabled selected) Category
+                                option(value="energyStorageSystem") Energy Storage System
+                                option(value="certification") Certification
+                                option(value="dataSheets") Data Sheets
+                            .c-warning.hidden Category is required.
+                        .c-form__item
+                            label.sr-only(for="selectModel") Select a Model
+                            +formSelect("", "selectModel", "Select a Model", false)(disabled class="js-select-product")
+                                option(value="" disabled selected) Model number
+                                option(value="/pdp-url/#pdp_review" data-modelid="MD07550445") model1
+                                option(value="/pdp-url/#pdp_review" data-modelid="MD07550445") model2
+                                option(value="/pdp-url/#pdp_review" data-modelid="MD07550445") model3
+                            .c-warning.hidden Model number is required.
+                        // When using link, add full class to submit and link
+                        .c-cta.button.full
+                            +defaultButton({name: 'Select', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(type="submit")
+                        // The link below is optional.
+                        .c-cta.button.full
+                            +defaultButton({name: 'Link', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+                    else
+                        .c-form__item
+                            +formSelect("Select a Product to Review", "selectModel", "Select a Model", false)(class="js-select-product" required)
+                                option(value="" disabled selected) Model number
+                                option(value="/pdp-url/#pdp_review" data-modelid="MD07550445") model1
+                                option(value="/pdp-url/#pdp_review" data-modelid="MD07550445") model2
+                                option(value="/pdp-url/#pdp_review" data-modelid="MD07550445") model3
+                            .c-warning.hidden Model number is required.
+                        if(type != 3)
+                            // When using link, add full class to submit and link
+                            .c-cta.button.full
+                                +defaultButton({name: 'Select', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(type="submit")
+                            // The link below is optional.
+                            .c-cta.button.full
+                                +defaultButton({name: 'Link', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+                        else 
+                            .c-cta.button
+                                +defaultButton({name: 'Select', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(type="submit")
+
+    mixin categoryTitleArea(params)
+        if(params.desc)
+            +component-title-area({
+                alignment:"",
+                headline : {
+                    text : params.title
+                },
+                description : {
+                    text : params.desc,
+                    style : "font-w-normal-24 font-m-normal-12"
+                }
+            })
+        else
+            +component-title-area({
+                alignment:"",
+                headline : {
+                    text : params.title
+                },
+            })(class="c-region-header--vacate-side")
+
+    mixin backtoStep
+        .c-back-to.button
+            +textButton({name: 'Back to Category Select', wSize: 'small', mSize: 'small', buttonStyle: 'default back', isButton: true})(onclick="event.preventDefault();window.location.reload();")
+            //- +iconButton({type:"button",color:"black",class:"back",otherClass:"", name:"Back to Category Select"})(onclick="event.preventDefault();window.location.reload();")
+
+    mixin slideItem(idx)
+        .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+            .c-category-select-list__item
+                .c-category-select-list__item--top
+                    .image.c-image
+                        +printLazyImage('https://via.placeholder.com/64x64/999999/333333')
+                    if(idx == 0)
+                        .font-w-normal-24.font-m-normal-16 Fidge Freezers
+                    else 
+                        .font-w-normal-24.font-m-normal-16 Washing Machines
+                .c-category-select-list__item--bottom
+                    +defaultButton({name: 'Look On', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: true})(onclick="this.closest('.c-content-area__category').classList.add('hidden');this.closest('.cmp-container').querySelector('.c-content-area__product-list').classList.remove('hidden')")
+
+    mixin handler
+        .c-carousel__handler
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"prev"})
+            +carouselPagination
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"next"})
+
+    .guide-text-option Option : Multi Category
+    .c-wrapper.PD0027.no-crop.margin-top.margin-bottom.bg-default
+        .component.has-filter
+            .cmp-container
+
+                //- input(name=bvCampaignId)
+                +categoryFilter(1)
+                
+                .c-content-area.c-content-area__category
+
+                    +categoryTitleArea({title: 'Select a product category to review'})
+                    .c-category-select-list
+                        .carousel.panelcontainer
+                            // block - carousel
+                            .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                                .cmp-carousel__content.swiper-wrapper
+                                    - for (var x = 0; x < 6; x++)
+                                        +slideItem(x)
+                                +handler 
+
+                .c-content-area.c-content-area__product-list.hidden
+
+                    +backtoStep
+
+                    +categoryTitleArea({title: 'Washing Machines', desc: 'With a selection of high-efficiency LG washing machine models that are designed to reduce energy costs and water consumption, you’re sure to find plenty of options with the styles, colours and functions that fit your life.'})
+
+                    .productlist.productcollection
+                        .c-category__root
+                            .c-productcollection__root.productcollection__root(data-cmp-is="productcollection", data-cmp-data-layer)
+
+                                +filter(false)
+                                //- +filterResult(9, false)
+                                .c-result-area 
+                                    .c-result-area__controls.font-w-normal-14.font-m-normal-14
+                                        .c-result-area__result.productcollection__results-count
+                                            strong.c-result-area__count 30 
+                                            span Results
+                                        .c-result-area__sort
+                                            +formSelect("Sort By", "sort", "", false)
+                                                option(value="") Newest
+                                                option(value="") Most Popular
+                                                option(value="") Consumer Rating
+                                    .c-result-area__product-list(id="resultTarget")
+                                        ul.c-product-list.productcollection__items
+                                            - for(var x = 0; x < 9; x++)
+                                                // GA4
+                                                li(data-pim-category1="" data-pim-category2="" data-pim-category3="" data-pim-category4="" data-pim-sku="" data-pim-model-name="" data-pim-model-year="" data-pim-flag="" data-pim-modeltype="" data-shop-stock-status="" data-shop-msrp="" data-shop-price="")
+                                                    +reviewItem
+
+                                        .c-result-area__more 
+                                            //- +button({type:"box-outlined", color:"black", size:"medium", icon: true, name: "More"})
+                                            +pagination()
+                                            //- +paginationFraction
+
+    .guide-text-option Option : Single Category
+    .c-wrapper.PD0027.no-crop.margin-top.margin-bottom.bg-default
+        .component.has-filter
+            .cmp-container
+
+                +categoryFilter(3)
+
+                .c-content-area.c-content-area__product-list
+
+                    +categoryTitleArea({title: 'Washing Machines', desc: 'With a selection of high-efficiency LG washing machine models that are designed to reduce energy costs and water consumption, you’re sure to find plenty of options with the styles, colours and functions that fit your life.'})
+
+                    .productlist.productcollection
+                        .c-category__root
+                            .c-productcollection__root.productcollection__root(data-cmp-is="productcollection", data-cmp-data-layer)
+
+                                +filter(false)
+                                //- +filterResult(9, false)
+                                .c-result-area 
+                                    .c-result-area__controls.font-w-normal-14.font-m-normal-14
+                                        .c-result-area__result.productcollection__results-count
+                                            strong.c-result-area__count 30 
+                                            span Results
+                                        .c-result-area__sort
+                                            +formSelect("Sort By", "sort", "", false)
+                                                option(value="") Newest
+                                                option(value="") Most Popular
+                                                option(value="") Consumer Rating
+                                    .c-result-area__product-list(id="resultTarget")
+                                        ul.c-product-list.productcollection__items
+                                            - for(var x = 0; x < 9; x++)
+                                                li
+                                                    +reviewItem
+
+                                        .c-result-area__more 
+                                            //- +button({type:"box-outlined", color:"black", size:"medium", icon: true, name: "More"})
+                                            +pagination()
+                                            //- +paginationFraction
+
+block modal
+    +printLayerPopup('popPostReview')
+    +printLayerPopup('popSuccessSubmitReview')
+    +printLayerPopup('popCopyComplete')

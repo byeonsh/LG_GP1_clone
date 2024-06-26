@@ -1,0 +1,512 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_pop-msg.pug
+include ../../components/CT000E/CT502-inc.pug
+include ../_common/_toast.pug
+
+block meta 
+    - var componentId = "ETC000E"
+    - var componentName = "Newsletter"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+    if data.type === 'captcha'
+        +myCaptcha({label: data.label, id: data.id, placeholder: data.placeholder, warning: data.warning})
+    if data.type === 'gender'
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                if data.required
+                    em.c-required *
+                        span.sr-only Required fields
+            .c-form__box.c-form__radio-box
+                each val, index in data.value
+                    .c-form-box
+                        if index == 0
+                            +formRadio(val, "gender", val, val)(aria-label="" checked)
+                        else
+                            +formRadio(val, "gender", val, val)(aria-label="")
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                    if data.required
+                        em.c-required *
+                            span.sr-only Required fields
+            if data.required
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+            else if data.inputUnderline
+                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`underline` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+            else 
+                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+                    
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+mixin myInputForm(data, column)
+    .my-input(class=`${column ? 'column2-type' : ''}`)
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+
+mixin ETC000E(option=false)
+    if option == 'sg'
+        .c-wrapper
+            .component
+                .fluid-container
+                    .ETC000E
+                        .my-component__wrap
+                            .my-component
+                                .c-text-contents
+                                    .title.c-text-contents__headline
+                                        +headline('font-w-light-56 font-m-light-28', "h2", "Newsletter")
+                                    .text.c-text-contents__bodycopy.font-w-normal-20.font-m-normal-12 
+                                        p.cmp-text(data-cmp-data-layer="") Sign up for our newsletter and stay up to date regarding new LG products, special offers, great contests, and more.
+
+                        .my-component
+                            .my-form
+                                
+                                p.my-form-required.font-w-normal-16.font-m-normal-12
+                                    em.c-required * 
+                                        span.sr-only Required fields
+                                    | Required fields  
+                                .my-formbox
+                                    +myInputForm([
+                                        {
+                                            type:"text",
+                                            label:"Email address",
+                                            id:"emmail",
+                                            required:true,
+                                            placeholder:"",
+                                            inputUnderline:false,
+                                            warningFirst: ['Email address is required.'],
+                                            infoTextSecond: ['Please enter your email. Try something more like lg@domain.com.'],
+                                        },
+                                    ])
+                                    .my-formbox__colum2
+                                        +myInputForm([
+                                            {
+                                                type:"password",
+                                                label:"Password",
+                                                id:"yourPassword",
+                                                required:true,
+                                                placeholder:"",
+                                                inputUnderline:false,
+                                                warningFirst: ['Password is required.'],
+                                                infoTextSecond: ['If you lose your password, you cannot retrieve it.'],
+                                            },
+                                            {
+                                                type:"password",
+                                                label:"Confirm password",
+                                                id:"yourPasswordConfirm",
+                                                required:true,
+                                                placeholder:"",
+                                                inputUnderline:false,
+                                                warningFirst: ['Password is required.'],
+                                            },
+                                            {
+                                                type:"text",
+                                                label:"First name",
+                                                id:"FirstName",
+                                                required:true,
+                                                placeholder:"",
+                                                inputUnderline:false,
+                                                warningFirst: ['First name is required.'],
+                                            },
+                                            {
+                                                type:"text",
+                                                label:"Last name",
+                                                id:"LastName",
+                                                required:true,
+                                                placeholder:"",
+                                                inputUnderline:false,
+                                                warningFirst: ['Last name is required.'],
+                                            },
+
+                                            {   
+                                                type: 'select',
+                                                optionVal: ['Select', 'Select', 'Select'],
+                                                label: 'Country / Region',
+                                                id: 'country',
+                                                required:true,
+                                                warningFirst: ['Country / Region is required.'],
+                                            },
+                                            {   
+                                                type: 'select',
+                                                optionVal: ['Select', 'Select', 'Select'],
+                                                label: 'Job',
+                                                id: 'Job',
+                                                required:true,
+                                                warningFirst: ['Job is required.'],
+                                            },
+                                        ])
+
+
+                                    .c-post-form__item
+                                        .c-input-item
+                                            label(for="post_recommend").c-select-label.font-w-normal-16.font-m-normal-14 Have you purchased LG Products before?
+                                            .c-radio
+                                                .c-radio-group
+                                                    +formRadio('Yes', 'post_recommend', 'post_recommend', 'post_yes')
+                                                    +formRadio('No', 'post_recommend', 'post_recommend', 'post_no') 
+                                    .my-check__wrap
+                                        .button
+                                            +formCheckbox('TV & Home theater system.', "name", "val1", `popCheckId1`, count="false", disabled = false, required = true)
+                                        .button
+                                            +formCheckbox('Air conditioner', "name", "val1", `popCheckId2`, count="false", disabled = false, required = true)
+                                        .button
+                                            +formCheckbox('Mobile', "name", "val1", `popCheckId3`, count="false", disabled = false, required = true)
+                                        .button
+                                            +formCheckbox('Refrigerator', "name", "val1", `popCheckId4`, count="false", disabled = false, required = true)
+                                        .button
+                                            +formCheckbox('Air solutions', "name", "val1", `popCheckId5`, count="false", disabled = false, required = true)
+                                        .button
+                                            +formCheckbox('G watch', "name", "val1", `popCheckId6`, count="false", disabled = false, required = true)
+                                        .button
+                                            +formCheckbox('Vacuum cleaner', "name", "val1", `popCheckId7`, count="false", disabled = false, required = true)
+                                        .button
+                                            +formCheckbox('Dishwasher', "name", "val1", `popCheckId8`, count="false", disabled = false, required = true)
+                                        .button
+                                            +formCheckbox('Tablet', "name", "val1", `popCheckId9`, count="false", disabled = false, required = true)
+                                        .button
+                                            +formCheckbox('Washing machine & Washer dryer', "name", "val1", `popCheckId10`, count="false", disabled = false, required = true)
+                                        .button
+                                            +formCheckbox('Microwave oven', "name", "val1", `popCheckId11`, count="false", disabled = false, required = true)
+                                        .button
+                                            +formCheckbox('Mobile accessories', "name", "val1", `popCheckId12`, count="false", disabled = false, required = true)
+                                    
+                                    +formCheckbox(false, name2 , value2, id+"2", disabled)(required = require)
+                                        span.font-w-normal-16.font-m-normal-14.c-pop-msg__gray-form-agree
+                                            | I agree with the data protection policy 
+                                            // GA4
+                                            a.font-underline(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") read privacy policy
+                                            +required-text-sr
+                                    +postFormMessage("Privacy Policy is not checked.", "")
+                            .button.c-cta.my-button
+                                +defaultButton({
+                                    name: "Cancel", 
+                                    wSize:"large", 
+                                    mSize:"medium", 
+                                    buttonStyle : "default", 
+                                    isButton : true
+                                })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popNotifyMe")
+                                +defaultButton({
+                                    name: "Sign up", 
+                                    wSize:"large", 
+                                    mSize:"medium", 
+                                    buttonStyle : "highlight", 
+                                    isButton : true
+                                })(type="submit")
+
+                        .my-component__wrap
+                            .my-component.type-side
+                                .component
+                                    .cmp-container
+                                        // block : text-contents
+                                        .c-text-contents
+                                            .title.c-text-contents__headline
+                                                .cmp-title.font-w-light-56.font-m-light-28(data-cmp-data-layer="")
+                                                    strong Unsubscribe from Newsletter
+                                            //- .text.c-text-contents__subcopy
+                                            //-     .cmp-text.font-w-normal-24.font-m-normal-18(data-cmp-data-layer="") 
+                                            //-         p You can Unsubscribe here if you no longer wish to receive the Unsubscribe news.
+                                            .text.c-text-contents__bodycopy
+                                                .cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") 
+                                                    p You can Unsubscribe here if you no longer wish to receive the Unsubscribe news.
+                                        // block cta 
+                                        .button.c-cta
+                                            +defaultButton({name: 'Unsubscribe', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+    else if option == 'kz'
+        .c-wrapper
+            .component
+                .fluid-container
+                    .ETC000E
+                        .my-component__wrap
+                            .my-component
+                                .c-text-contents
+                                    .title.c-text-contents__headline
+                                        +headline('font-w-light-56 font-m-light-28', "h2", "Новостная Рассылка")
+                                    .text.c-text-contents__bodycopy.font-w-normal-20.font-m-normal-12 
+                                        p.cmp-text(data-cmp-data-layer="") Подпишитесь на нашу новостную рассылку и будьте всегда в курсе наших новейших продуктов, специальных предложений и отличных конкурсов.
+
+                        .my-component
+                            .my-form
+                                
+                                p.my-form-required.font-w-normal-16.font-m-normal-12
+                                    em.c-required * 
+                                        span.sr-only Міндетті өрістер
+                                    | Міндетті өрістер
+                                .my-formbox
+                                    +myInputForm([
+                                        {
+                                            type:"text",
+                                            label:"Электронный адрес",
+                                            id:"emmail",
+                                            required:true,
+                                            placeholder:"",
+                                            inputUnderline:false,
+                                            warningFirst: ['Email address is required.'],
+                                            infoTextSecond: ['Please enter your email. Try something more like lg@domain.com.'],
+                                        },
+                                    ])
+                                    .my-formbox__colum2
+                                        +myInputForm([
+                                            {
+                                                type:"password",
+                                                label:"Пароль",
+                                                id:"yourPassword",
+                                                required:true,
+                                                placeholder:"",
+                                                inputUnderline:false,
+                                                warningFirst: ['Password is required.'],
+                                                infoTextSecond: ['If you lose your password, you cannot retrieve it.'],
+                                            },
+                                            {
+                                                type:"password",
+                                                label:"Подтвердить пароль",
+                                                id:"yourPasswordConfirm",
+                                                required:true,
+                                                placeholder:"",
+                                                inputUnderline:false,
+                                                warningFirst: ['Password is required.'],
+                                            },
+                                            {
+                                                type:"text",
+                                                label:"Имя",
+                                                id:"FirstName",
+                                                required:true,
+                                                placeholder:"",
+                                                inputUnderline:false,
+                                                warningFirst: ['First name is required.'],
+                                            },
+                                            {
+                                                type:"text",
+                                                label:"Фамилия",
+                                                id:"LastName",
+                                                required:true,
+                                                placeholder:"",
+                                                inputUnderline:false,
+                                                warningFirst: ['Last name is required.'],
+                                            },
+
+                                            {   
+                                                type: 'select',
+                                                optionVal: ['Select', 'Select', 'Select'],
+                                                label: 'Страна / Регион',
+                                                id: 'country',
+                                                required:true,
+                                                warningFirst: ['Country / Region is required.'],
+                                            },
+                                            {   
+                                                type: 'select',
+                                                optionVal: ['Select', 'Select', 'Select'],
+                                                label: 'Должность',
+                                                id: 'Job',
+                                                required:true,
+                                                warningFirst: ['Job is required.'],
+                                            },
+                                        ])
+                                    +formCheckbox(false, name2 , value2, id+"2", disabled)(required = require)
+                                        span.font-w-normal-16.font-m-normal-14.c-pop-msg__gray-form-agree
+                                            | Я согласен с политикой защиты данных
+                                            // GA4
+                                            a.font-underline(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") прочитайте Правила.
+                                            +required-text-sr
+                            .button.c-cta.my-button
+                                +defaultButton({
+                                    name: "Отменить", 
+                                    wSize:"large", 
+                                    mSize:"medium", 
+                                    buttonStyle : "default", 
+                                    isButton : true
+                                })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popNotifyMe")
+                                +defaultButton({
+                                    name: "Подписаться", 
+                                    wSize:"large", 
+                                    mSize:"medium", 
+                                    buttonStyle : "highlight", 
+                                    isButton : true
+                                })(type="submit")
+                        .my-component__wrap
+                            .component.type-side
+                                .cmp-container
+                                    // block : text-contents
+                                    .c-text-contents
+                                        .title.c-text-contents__headline
+                                            .cmp-title.font-w-light-36.font-m-light-28(data-cmp-data-layer="")
+                                                strong Отписаться от Новостной рассылки
+                                        //- .text.c-text-contents__subcopy
+                                        //-     .cmp-text.font-w-normal-24.font-m-normal-18(data-cmp-data-layer="") 
+                                        //-         p You can Unsubscribe here if you no longer wish to receive the Unsubscribe news.
+                                        .text.c-text-contents__bodycopy
+                                            .cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") 
+                                                p Вы можете отписаться здесь, если Вы больше не хотите получать новостную рассылку Отписаться.
+                                    // block cta 
+                                    .button.c-cta
+                                        +defaultButton({name: 'Отписаться', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+    else if option == 'tr'
+        .c-wrapper
+            .component
+                .fluid-container
+                    .ETC000E
+                        .my-component__wrap
+                            .my-component
+                                .c-text-contents
+                                    .title.c-text-contents__headline
+                                        +headline('font-w-light-56 font-m-light-28', "h2", "Bülten")
+                                    .text.c-text-contents__bodycopy.font-w-normal-20.font-m-normal-12 
+                                        p.cmp-text(data-cmp-data-layer="") Bültenimize abone olun ve yeni LG ürünleri, özel teklifler, harika yarışmalar ve daha fazlası hakkında güncel kalın.
+
+                        .my-component
+                            .my-form
+                                
+                                p.my-form-required.font-w-normal-16.font-m-normal-12
+                                    em.c-required * 
+                                        span.sr-only Міндетті өрістер
+                                    | Haber bülteni zorunlu alanları
+                                .my-formbox
+                                    +myInputForm([
+                                        {
+                                            type:"text",
+                                            label:"E-posta Adresi",
+                                            id:"email",
+                                            required:true,
+                                            placeholder:"",
+                                            inputUnderline:false,
+                                            warningFirst: ['E-posta adresi gerekli.'],
+                                            infoTextSecond: ['Lütfen Emailnızı giriniz. lg@domain.com gibi bir adres deneyiniz'],
+                                        },
+                                    ])
+                                    .my-formbox__colum2
+                                        +myInputForm([
+                                            {
+                                                type:"birth",
+                                                label:"İsim",
+                                                id:"FirstName",
+                                                required:true,
+                                                placeholder:"",
+                                                inputUnderline:false,
+                                                warningFirst: ['İsim gerekli.'],
+                                            },
+                                            {
+                                                type:"text",
+                                                label:"Soyadı",
+                                                id:"LastName",
+                                                required:true,
+                                                placeholder:"",
+                                                inputUnderline:false,
+                                                warningFirst: ['Soyadı gerekli.'],
+                                            },
+                                            {
+                                                type:"date",
+                                                label:"Doğum tarihi",
+                                                id:"dateOfBirth",
+                                                required:true,
+                                                value: "",
+                                                placeholder:"e.g. mm/dd/yyyy",
+                                                warningFirst: ['Doğum tarihi gerekli.'],
+                                            },
+                                            {
+                                                type:"gender",
+                                                label:"Cinsiyet",
+                                                id:"gender",
+                                                value: ["Erkek","Kadın"],
+                                                required:true,
+                                            },
+                                        ])
+                                    +formCheckbox(false, 'agreeChk1Tr' , '', 'agreeChk1Tr')(required = require)
+                                        span.font-w-normal-16.font-m-normal-14.c-pop-msg__gray-form-agree
+                                            | Veri koruma politikasını okudum ve kabul ediyorum.
+                                            // GA4
+                                            a.font-underline(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="") Gizlilik Politikası
+                                            +required-text-sr
+                                    +postFormMessage("Anlaşma kontrol edilmedi.", "")
+                                    +formCheckbox(false, 'agreeChk2Tr' , '', 'agreeChk2Tr')(required = require)
+                                        span.font-w-normal-16.font-m-normal-14.c-pop-msg__gray-form-agree
+                                            | Politikayı Okuyun LG Electronicsten en son haberleri ve teklifleri almak istiyorum.
+                            .button.c-cta.my-button
+                                +defaultButton({
+                                    name: "Cancel", 
+                                    wSize:"large", 
+                                    mSize:"medium", 
+                                    buttonStyle : "default", 
+                                    isButton : true
+                                })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popNotifyMe")
+                                +defaultButton({
+                                    name: "Sign up", 
+                                    wSize:"large", 
+                                    mSize:"medium", 
+                                    buttonStyle : "highlight", 
+                                    isButton : true
+                                })(type="submit")
+                        .my-component__wrap
+                            .component.type-side
+                                .cmp-container
+                                    // block : text-contents
+                                    .c-text-contents
+                                        .title.c-text-contents__headline
+                                            .cmp-title.font-w-light-36.font-m-light-28(data-cmp-data-layer="")
+                                                strong Bülten aboneliğini iptal et
+                                        //- .text.c-text-contents__subcopy
+                                        //-     .cmp-text.font-w-normal-24.font-m-normal-18(data-cmp-data-layer="") 
+                                        //-         p You can Unsubscribe here if you no longer wish to receive the Unsubscribe news.
+                                        .text.c-text-contents__bodycopy
+                                            .cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") 
+                                                p 1. Artık haberleri almak istemiyorsanız buradan aboneliği iptal edebilirsiniz.
+                                                    br
+                                                    | 2. LG Electronicsten en son haberleri ve teklifleri almak istiyorum.
+
+                                    // block cta 
+                                    .button.c-cta
+                                        +defaultButton({name: 'Buradan', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+block content
+    // Component Markup
+    
+    .guide-text-type Type1. SG
+    +ETC000E('sg')
+
+    .guide-text-type Type2. KZ
+    +ETC000E('kz')
+
+    .guide-text-type Type4. TR
+    +ETC000E('tr')

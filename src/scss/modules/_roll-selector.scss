@@ -1,0 +1,319 @@
+@use '../abstract/' as *;
+
+@mixin roll-selector {
+  %active-tab-style {
+    position: absolute;
+    bottom: rem($margin1px * -1);
+    left: 0;
+    right: 0;
+    height: rem($height2px);
+    background-color: $active-red;
+  }
+  .c-roll-selector {
+    $block: '.c-roll-selector';
+    $after-scroll: '.is-sticky';
+    $item-width: $width180px;
+    $item-margin: $margin30px;
+    $arrow-width: $width18px;
+    $side-margin: $padding35px;
+    $total: ($item-width * 6 + $item-margin * 5 + ($arrow-width + $side-margin) * 2);
+    text-align: center;
+    padding-top: rem($padding16px);
+    padding-bottom: rem($padding16px);
+    transition: padding $animation-duration;
+    @include container($design-full, true);
+    @include inset-padding-hz;
+    @include screen(web) {
+      padding-top: rem($padding24px);
+      padding-bottom: rem($padding24px);
+    }
+    // element
+    &__container {
+      // arrow button
+      position: relative;
+      padding-left: rem($padding31px + $padding6px);
+      padding-right: rem($padding31px + $padding6px);
+      @include screen(web) {
+        padding-left: rem($width80px);
+        padding-right: rem($width80px);
+      }
+      @include screen(mobile) {
+        margin-left: rem($block-margin-m * -1);
+        margin-right: rem($block-margin-m * -1);
+      }
+    }
+    &__item {
+      cursor: pointer;
+      user-select: none;
+      padding-top: rem($padding2px);
+      text-decoration: none;
+      flex-basis: calc(100% / 4 - rem($margin16px));
+      @include screen(web) {
+        flex-basis: rem($item-width);
+      }
+      &:is(button):focus-visible,
+      &:is([tabIndex]):focus-visible,
+      a:focus-visible,
+      &:is(a):focus-visible {
+        display: block;
+        overflow: hidden;
+        outline-offset: rem($margin3px * -1);
+        outline-width: rem($margin3px);
+        outline-style: solid;
+        @include lgness-radius('default');
+      }
+      a {
+        color: inherit;
+      }
+      a:hover,
+      a:active,
+      a:focus,
+      a:focus-visible,
+      &:hover,
+      &:active,
+      &:focus,
+      &:focus-visible {
+        text-decoration: none;
+      }
+      &:not(.c-roll-selector__item--active) {
+        a:hover,
+        a:active,
+        a:focus,
+        a:focus-visible,
+        &:hover,
+        &:active,
+        &:focus,
+        &:focus-visible {
+          #{$block}__item-name {
+            color: $black;
+            text-decoration: none;
+          }
+        }
+      }
+      &-image {
+        display: block;
+        width: rem($width40px);
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: rem($margin8px);
+        @include screen(web) {
+          width: 100%;
+          max-width: rem($max-width64px);
+          min-width: rem($max-width36px);
+          margin-bottom: rem($margin12px);
+        }
+        .c-image {
+          display: block;
+          > * {
+            display: block;
+          }
+        }
+      }
+      &-body {
+        display: block;
+        // modifier
+        &--description {
+          font-size: rem(12px);
+          line-height: rem(14px);
+          color: $gray3;
+        }
+        @include screen(mobile) {
+          display: none;
+        }
+      }
+      &-name {
+        display: block;
+        color: $gray3;
+        word-break: normal;
+        word-wrap: break-word;
+        @include screen(mobile) {
+          @include ellipsis(2);
+          & > * {
+            line-height: normal;
+          }
+        }
+        * {
+          display: block;
+          @include screen(mobile) {
+            font-weight: normal;
+          }
+        }
+      }
+    }
+    &__arrow {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: rem($width30px);
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      padding: 0;
+      @include screen(web) {
+        top: 50%;
+        bottom: auto;
+        transform: translateY(-50%);
+        width: rem($width48px);
+      }
+      &--prev {
+        left: 0;
+      }
+      &--next {
+        right: 0;
+      }
+
+      $arrow: '&:after';
+      $next: '&[class*="next"]';
+      $prev: '&[class*="prev"]';
+      $disabled: '&:disabled, &[disabled]';
+
+      #{$arrow} {
+        content: '';
+        display: block;
+        width: rem($width7px);
+        height: rem($width12px);
+        background: {
+          image: url($icon-arrow-black-right-7-12);
+          size: 100% auto;
+        }
+        @include screen(web) {
+          width: rem($width48px);
+          height: rem($width48px);
+          background-image: url($icon-arrow-black-right-48-48);
+        }
+      }
+      #{$disabled} {
+        display: none;
+      }
+      #{$next} {
+        // @include screen(mobile) {
+        //     border-left: 1px solid $mid-gray1;
+        // }
+        #{$arrow} {
+          transform: rotateY(0) #{'/*!rtl:rotateY(#{$degree180})*/'}; /*! RTL last keep colon */
+        }
+      }
+      #{$prev} {
+        // @include screen(mobile) {
+        //     border-right: 1px solid $mid-gray1;
+        // }
+        #{$arrow} {
+          transform: rotateY($degree180) #{'/*!rtl:rotateY(0)*/'}; /*! RTL last keep colon */
+        }
+      }
+    }
+    &__item--active {
+      color: red;
+      #{$block}__item-name {
+        color: $black;
+        text-decoration-line: underline;
+        text-decoration-color: $active-red;
+        text-underline-offset: rem($padding1px);
+        @include screen(web) {
+          text-decoration-thickness: rem($border2);
+          text-underline-offset: rem($padding3px);
+        }
+      }
+    }
+    // block
+    .c-carousel {
+      position: relative;
+      z-index: 1;
+      margin-bottom: rem($border1 * -1);
+      height: calc(100% + $border1);
+      overflow: hidden;
+      .swiper-wrapper {
+        display: flex;
+        justify-content: center;
+        &.swiper-allow-arrow {
+          justify-content: flex-start;
+        }
+      }
+      ul {
+        @include reset-list-style;
+        li {
+          &.swiper-slide {
+            button {
+              border: 0;
+              padding: 0;
+              margin: 0;
+              width: 100%;
+              background: transparent;
+              display: block;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+    }
+    .c-roll-selector__handler {
+      display: none;
+    }
+    .swiper-initialized + .c-roll-selector__handler {
+      display: block;
+    }
+    .c-roll-selector__item:not(.c-roll-selector__item--active) {
+      .c-image__img--active {
+        display: none;
+      }
+    }
+    .c-roll-selector__item--active {
+      .c-image__img:not(.c-image__img--active) {
+        display: none;
+      }
+    }
+    .c-roll-selector__item-name + .c-roll-selector__item-body {
+      margin-top: rem($margin6px);
+      @include screen(web) {
+        margin-top: rem($margin8px);
+      }
+    }
+    #{$after-scroll} & {
+      padding-top: 0;
+      padding-bottom: 0;
+      &__item-image,
+      &__item-body {
+        display: none;
+      }
+      &__container {
+        @include screen(mobile) {
+          position: static;
+        }
+      }
+      &__item {
+        $padding: $padding20px;
+        $side-padding: ($padding24px - $padding16px) * 0.5;
+        flex-basis: auto;
+        width: auto;
+        color: $gray3;
+        padding: rem($padding $side-padding);
+        @include screen(web) {
+          padding-top: rem($padding25px);
+          padding-bottom: rem($padding25px);
+        }
+        &--active {
+          position: relative;
+          color: $black;
+          &:after {
+            content: '';
+            @extend %active-tab-style;
+            bottom: 0; // do not remove
+          }
+          #{$block}__item-name {
+            text-decoration: none !important;
+          }
+        }
+      }
+      &__arrow:after {
+        @include screen(web) {
+          width: rem($width10px);
+          height: rem($height18px);
+          background-image: url($icon-arrow-gray3-right-10-18);
+        }
+      }
+    }
+  }
+}

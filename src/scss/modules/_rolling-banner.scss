@@ -1,0 +1,286 @@
+@use '../abstract/' as *;
+
+@mixin rolling-banner {
+  $block: '.c-rolling-banner';
+  $active-banner: '.swiper-slide-active';
+  $prev-banner: '.swiper-slide-prev';
+  $next-banner: '.swiper-slide-next';
+
+  .c-rolling-banner {
+    @include screen(web) {
+      $width: rem(692px * 3 + $gutter-w * 2);
+      min-width: $width;
+      max-width: $width;
+    }
+    &__contents {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+
+      $left-padding: '&:before';
+      $right-padding: '&:after';
+
+      #{$left-padding},
+      #{$right-padding} {
+        content: '';
+        display: block;
+        min-width: rem(15px);
+        width: calc(20 / 306 * 100%);
+        @include screen(web) {
+          width: calc(60 / 472 * 100%);
+          #{$active-banner} & {
+            width: calc(60 / 692 * 100%);
+          }
+        }
+      }
+    }
+    &__contents-container {
+      transform: scale(calc(692 / 472) * 0.81);
+      transform-origin: left center;
+      #{$active-banner} & {
+        transform: scale(1);
+      }
+    }
+    &__item {
+      transform: scale(calc(472 / 692));
+      transition: all $animation-duration;
+      #{$active-banner} & {
+        transform: scale(1);
+      }
+      #{$next-banner} & {
+        transform-origin: left center;
+      }
+      #{$prev-banner} & {
+        transform-origin: right center;
+      }
+    }
+    &__item-title {
+      font-weight: $font-semibold;
+
+      font-size: rem(18px);
+      line-height: rem(21px);
+      @include screen(web) {
+        font-size: rem(20px);
+        line-height: rem(24px);
+        #{$active-banner} & {
+          font-size: rem(28px);
+          line-height: rem(32px);
+        }
+      }
+    }
+    &__item-promotion-date {
+      color: $gray6;
+      font-size: rem(14px);
+      line-height: rem(14px);
+      #{$active-banner} & {
+        font-size: rem(20px);
+        line-height: rem(20px);
+      }
+      @include screen(mobile) {
+        display: none;
+      }
+    }
+    &__item-image {
+      overflow: hidden;
+      position: relative;
+      @include lgness-radius('default');
+      #{$active-banner} & {
+        border: rem($border2) solid $red;
+      }
+    }
+    &__handler {
+      // ...
+    }
+    &__actions {
+      // ...
+      display: flex;
+      column-gap: rem($margin4px);
+      @include screen(web) {
+        column-gap: rem($margin8px);
+      }
+    }
+    &__action {
+      // reset
+      border: none;
+      padding: 0;
+      // -- end
+
+      $size: rem($width64px);
+      $size-m: rem($width36px);
+
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: $size-m;
+      height: $size-m;
+      border-radius: 50%;
+      background-color: rgba($white, 0.3);
+      @include screen(web) {
+        width: $size;
+        height: $size;
+      }
+
+      $arrow: '&:after';
+      #{$arrow} {
+        content: '';
+        display: block;
+        width: rem($icon18px);
+        height: rem($icon18px);
+        background : {
+          image: url($icon-arrow-white-right-18-18);
+          size: 100% auto;
+          repeat: no-repeat;
+        }
+        @include screen(web) {
+          width: rem($icon36px);
+          height: rem($icon36px);
+        }
+      }
+
+      // variation
+      &:disabled,
+      &[disabled] {
+        opacity: 0.3;
+      }
+      // disabled
+      // modifier
+      &--prev {
+        left: 0;
+        @include screen(web) {
+          left: rem($margin45px);
+        }
+        #{$arrow} {
+          transform: rotate($degree180) #{'/*!rtl:none*/'}; /*! 230512 RTL */
+        }
+      }
+      &--next {
+        right: 0;
+        @include screen(web) {
+          right: rem($margin45px);
+        }
+        #{$arrow} {
+          transform: none #{'/*!rtl:rotate(180deg)*/'}; /*! 230512 RTL */
+        }
+      }
+    }
+
+    // modifier
+    // only two items
+    &--no-enough-loop {
+      @include screen(web) {
+        min-width: rem(692 * 2 + $gutter-w);
+        max-width: rem(692 * 2 + $gutter-w);
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .swiper {
+        @include screen(web) {
+          // text-align: center;
+        }
+      }
+      .swiper-wrapper {
+        @include screen(web) {
+          // display: inline-flex;
+          gap: rem($gutter-w);
+          width: auto;
+          text-align: initial;
+          transition: transform $animation-duration;
+          // transform: translateX(rem(110px));
+        }
+      }
+      .swiper-slide {
+        max-width: rem(692px);
+        &:first-child .c-rolling-banner__item {
+          transform-origin: right center;
+        }
+        &:last-child .c-rolling-banner__item {
+          transform-origin: left center;
+        }
+      }
+    }
+
+    // vendor
+    .swiper {
+      $gutter: $gutter-w;
+      $slide-width: 472px;
+      $active-width: 692px;
+      $container-width-t: $slide-width + $active-width + $gutter-w;
+
+      position: static;
+      @include screen(mobile) {
+        padding: rem(0 $block-margin-m);
+      }
+
+      // element
+      &-wrapper {
+        align-items: center;
+      }
+      &-slide {
+        @include screen(web) {
+          width: auto;
+        }
+        @include screen(desktop) {
+          // max-width: calc(472 / $container-width * 100%);
+          // max-width: calc(100% * 0.3 - ($gutter-w * 0.5));
+          // max-width: rem(472px);
+        }
+        // @include screen(tablet) {
+        //     $width: calc(472px / $container-width-t * 100%);
+        //     max-width: calc($width - rem(24px * 0.5));
+        //     min-width: rem(472px * 0.85);
+        // }
+      }
+      &-slide-active {
+        // @include screen(desktop) {
+        //     // max-width: calc(692 / $container-width * 100%);
+        //     max-width: rem(692px);
+        // }
+        // @include screen(tablet) {
+        //     $width: calc(692px / $container-width-t * 100%);
+        //     max-width: calc($width - rem(24px * 0.5));
+        //     min-width: rem(692px * 0.85);
+        // }
+      }
+
+      // modifier
+      &--single-item {
+        .swiper-wrapper {
+          justify-content: center;
+        }
+        .c-rolling-banner__actions {
+          display: none;
+        }
+      }
+    }
+
+    // layout : margin
+    $text: '.c-text-contents';
+    $cta: '.c-cta';
+
+    &__item {
+      #{$text} + #{$cta} {
+        margin-top: rem($margin8px);
+        @include screen(web) {
+          margin-top: rem($margin20px);
+        }
+      }
+    }
+    &__item-title + #{$block}__item-promotion-date {
+      margin-top: rem($margin8px);
+      @include screen(web) {
+        #{$active-banner} & {
+          margin-top: rem($margin12px);
+        }
+      }
+    }
+
+    // vairation
+    // Card text block area
+  }
+}

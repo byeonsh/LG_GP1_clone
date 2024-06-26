@@ -1,0 +1,1346 @@
+include ./CT0303-inc.pug
+
+mixin anotherPayment(params)
+    - data = {...params}
+    .c-creditCard
+        .c-creditCard--col01
+            if data.id
+                .c-creditCard__box
+                    +formText("text", block, `${data.id}`, false, `${data.placeholder}`)
+                    +invalid-warning(`${data.warning}`)
+            if data.desc
+                .c-creditCard__desc
+                    if data.route
+                        img(src=`../../assets/${data.route}.svg`, alt=data.alt)
+                    span.cmp-text.font-w-normal-16.font-m-normal-16= data.desc
+        +paymentTerms(data.terms)
+        //- .button.align-text-center
+            //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+            //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+            //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+            //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+            //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+
+mixin cardList(data, country=false)
+    -let path = '../../assets/icon/';
+        if data.title === "none"
+            .installment-payment__list(class=`${data.add ? 'installment-payment__list--type2' : ''}`)
+                each list in data.item
+                    input(type="radio" id=`installment-bank-${list.type}-${data.name}-${country}` name=`installment-${data.name}` class="installment-payment__input")
+                    label(for=`installment-bank-${list.type}-${data.name}-${country}` class="installment-payment__item")
+                        img(src=`${path}icon-payment-bank-${list.type}.svg`, alt=list.type loading="lazy")
+                        if list.moImg
+                            img.img-mo(src=`${path + list.moImg}.svg`, alt=list.moImg)
+                        span.installment-payment__item--name= list.subname
+            if data.warning
+                    .c-warning.font-m-normal-14.font-w-normal-14= data.warning
+        else
+            .c-text-contents
+                .c-text-contents__title= data.title
+            .installment-payment__list(class=`${data.add ? 'installment-payment__list--type2' : ''}`)
+                each list in data.item
+                    input(type="radio" id=`installment-bank-${list.type}-${data.name}-${country}` name=`installment-${data.name}` class="installment-payment__input")
+                    label(for=`installment-bank-${list.type}-${data.name}-${country}` class="installment-payment__item") 
+                        img(src=`${path}icon-payment-bank-${list.type}.svg`, alt=list.type loading="lazy")
+                        if list.moImg
+                            img.img-mo(src=`${path + list.moImg}.svg`, alt=list.moImg)
+                        span.installment-payment__item--name= list.subname
+            if data.warning
+                    .c-warning.font-m-normal-14.font-w-normal-14= data.warning
+
+mixin findomestic(data, country=false)
+    .c-findomestic
+        each list in data.lists
+            details.c-findomestic__accorion-wrap(open)
+                summary.c-accordion__head
+                    .c-accordion__head-text
+                        .c-findomestic-instalments-flexbox
+                            span.c-findomestic-instalments__info= list.title
+                            span.c-findomestic-instalments__cost= list.cost
+                .c-accordion__body
+                    ul.c-findomestic-instalments
+                        li.c-findomestic-instalments-flexbox
+                            span.c-findomestic-instalments__info.font-semibold= list.subTitle
+                        li.c-findomestic-instalments-flexbox
+                            span.c-findomestic-instalments__info Rata mensile
+                            span.c-findomestic-instalments__cost= list.rata
+                        li.c-findomestic-instalments-flexbox
+                            span.c-findomestic-instalments__info Importo dell'acquisto
+                            span.c-findomestic-instalments__cost= list.buyCost
+                        li.c-findomestic-instalments-flexbox
+                            span.c-findomestic-instalments__info Tan
+                            span.c-findomestic-instalments__cost= list.tan
+                        li.c-findomestic-instalments-flexbox
+                            span.c-findomestic-instalments__info Taeg
+                            span.c-findomestic-instalments__cost= list.taeg
+                        li.c-findomestic-instalments-flexbox
+                            span.c-findomestic-instalments__info Importo totale dovuto
+                            span.c-findomestic-instalments__cost= list.totalCost
+        
+        .c-findomestic-text-content 
+            strong.c-findomestic-text-content__sub-title Requisiti
+            p Per richiedere un finanziamento, è necessario:
+            ul.c-findomestic-list 
+                li essere maggiorenne e residente in Italia
+                li avere un reddito dimostrabile
+                li essere titolari di un conto corrente
+        .c-findomestic-text-content 
+            strong.c-findomestic-text-content__sub-title Documenti
+            p Sono da allegare alla richiesta in copia fronte/retro:
+            ul.c-findomestic-list 
+                li Documento di identità a scelta tra Carta Identità, Patente, Passaporto
+                li Documento di Reddito (Ultima busta paga, Modello Unico, Certificazione Unica)
+                li Tessera Sanitaria
+        .c-findomestic-text-content 
+            strong.c-findomestic-text-content__sub-title Firma Contratto
+            p La firma e l'upload dei documenti vengono effettuati direttamente nel form di Richiesta.
+            p L'esito della pratica verrà inviato via mail. Sarà sempre possibile controllare lo stato d'avanzamento della pratica dal sito <a href="" class="c-findomestic-text-content__link" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="">www.lamiarichiesta.it</a> ed integrare eventuali documenti mancanti.
+        
+        .button.align-text-center
+            //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+            //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+            //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+            //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+            //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+
+mixin creditCard(data, country=false)
+    -let path = '../../assets/icon/';
+    case country
+        when "de"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Kreditkartennummer", `${country}-cardNumber`, false, "Card Number")
+                        +invalid-warning("Please enter a valid card number.")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "gültig bis Monat/Jahr", `${country}-cardDate`, false, "MM/YY")
+                        +invalid-warning("Expiry month invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "Karten-Sicherheitscode", `${country}-CVV`, false, "CVV")
+                        +invalid-warning("Card security code invalid.")
+                .button.align-text-center
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+        when "fr"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Numéro de la carte", "numéroDeLaCarte", false, "12345678")
+                        +invalid-warning("Numéro de carte non valide")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Date d'expiration", "dateD'expiration", false, "MM/YY")
+                        +invalid-warning("Expiry month invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "CVC / CVV", `${country}-CVV`, false, "123")
+                        +invalid-warning("Card security code invalid.")
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Nom du titulaire de la carte", "nomDuTitulaireDeLaCarte", false, "J. Smith")
+                .button.align-text-center
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+        when "br"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formSelect("Tipo de documento", "tipoDeDocumento", "Tipo de documento", false)
+                            option(value="") CPF
+                            option(value="") CNPJ
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Número do documento", "numeroDoDocumento", false, "")
+                        +invalid-warning("Este é um campo obrigatório.")
+                        +invalid-warning("O número do documento deve ter 11 dígitos.")
+                        +invalid-warning("O número do documento deve ter 14 dígitos.")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Número do Cartão de Crédito", "creditCardNumber", false, "Nome impresso no cartão")
+                        +invalid-warning("Por favor insira um número de tipo de cartão de crédito válido.")
+                    .c-creditCard__box
+                        +formText("text", "Data de Validade", "cardDate", false, "MM/YY")
+                        +invalid-warning("O mês de expiração deve ser um número")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Nome impresso no cartão", "namePrintedOnCard", false, "Nome impresso no cartão")
+                        +invalid-warning("Este é um campo obrigatório") 
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "Código de Verificação do Cartão", "CVV", false, "CVV")
+                        +exclamTooltip(false, false, direction = 'bottom-left', size = 'auto',
+                            [
+                                {
+                                    route:"icon/cvv1-img-220-205",
+                                    alt:"svvimg1",
+                                },
+                                {
+                                    route:"icon/cvv2-img-220-205",
+                                    alt:"svvimg2",
+                                },
+                            ]
+                        )
+                        +invalid-warning("Por favor insira um número válido neste campo.")
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formSelect("Método de pagamento", "MetodoDePagamento", "Método de pagamento", false)
+                            option(value="") Master Card
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formSelect("Parcelas", "parcelas", "Parcelas", false)
+                            option(value="") 1 parcela de R$ 5.578,00 (R$ 5.578,00)
+                        +invalid-warning("Este é um campo obrigatório.")
+                +paymentTerms(data.terms)
+                //- .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+        when "mx"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "NUMERO DE TARJETA", `${country}-cardInformation`, false, "NUMERO DE TARJETA")
+                        img.c-creditCard-visa(src=`${path}icon-payment-visa-mx-40-20.svg`, alt="visa")
+                    img(src=`${path}icon-payment-credit-card-mx-192-15.svg`, alt="credit-card")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formSelect("MES DE EXPIRACIÓN", "MES DE EXPIRACIÓN", "Mes", false)
+                            option(value="MES" selected) MES
+                            option(value="MES") MES
+                    .c-creditCard__box.c-creditCard__box--cvv   
+                        +formSelect("AÑO DE EXPIRACIÓN", "AÑO DE EXPIRACIÓN", "Año", false)
+                            option(value="Año" selected) Año
+                            option(value="Año") Año
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "NOMBRE DEL TITULAR", `${country}-cardDate`, false, "")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "CÓDIGO DE SEGURIDAD (CVV)", `${country}-CVV`, false, "")
+                .c-creditCard--col04 
+                    .c-creditCard__box
+                        +formSelect("BANCO", "BANCO", "Seleccione el banco", false)
+                            option(value="Seleccione el banco" selected) Seleccione el banco
+                            option(value="Seleccione el banco") Seleccione el banco
+                .c-creditCard--col05
+                    .c-creditCard__box
+                        +formSelect("MENSUALIDADES", "MENSUALIDADES", "Seleccione el plazo", false)
+                            option(value="MENSUALIDADES" selected) MENSUALIDADES
+                            option(value="1 monthly installments of" ) 1 monthly installments of $ 19,499.00
+                            option(value="3 monthly installments of") 3 monthly installments of $ 6,499.67
+                            option(value="6 monthly installments of") 6 monthly installments of $ 3,249.83
+                            option(value="9 monthly installments of") 9 monthly installments of $ 2,166.56
+                            option(value="12 monthly installments of") 12 monthly installments of $ 1,624.92
+
+                .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+        when "cl"
+            .c-creditCard
+                img(src=`${path}icon-payment-cl-card-269-32.svg`, alt='payment-cl-card1')
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Numero de tarjeta", "numeroDeTarjeta", false, "")
+                    img.c-creditCard__img--w(src=`${path}icon-payment-cl-card-787-24.svg`, alt='payment-cl-card2-web')
+                    img.c-creditCard__img--m(src=`${path}icon-payment-cl-debit-credit-mobile-260-56.svg`, alt='payment-cl-card2-mobile')
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        .c-search-box__form
+                            +formSelect("Mes de Expiración", "mesDeExpiración", "Mes", false)
+                                option(value="Mes" selected)= "Mes"
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        .c-search-box__form
+                            +formSelect("Año de Expiración", "añoDeExpiración", "Año", false)
+                                option(value="Año" selected)= "Año"
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Nombre del Titular", "nombreDelTitular", false, "")
+                    .c-creditCard__box
+                        +formText("text", "Código de seguridad", "códigoDeSeguridad", false, "")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        .c-search-box__form
+                            +formSelect("Tipo", "tipo", "RUT", false)
+                                option(value="RUT" selected)= "RUT"
+                    .c-creditCard__box
+                        +formText("text", "Documento", "documento", false, "")
+                if data.lists
+                    each list in data.lists
+                        .c-creditCard--col01
+                            .c-creditCard__box
+                                +mySelect({optionVal: list.optionVal, warning: list.warning, label: list.label, id: list.id, infoText: list.infoText, placeholder: list.placeholder, warn: list.warning, selected: list.selected, check: list.check})
+                p.c-creditCard__text.font-w-normal-16.font-m-normal-16 Pago procesado por Mercado Pago
+                .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+        when "at"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Kreditkartennummer", `${country}-cardNumber`, false, "Card Number")
+                        +invalid-warning("Please enter a valid card number.")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "gültig bis Monat/Jahr", `${country}-cardDate`, false, "MM/YY")
+                        +invalid-warning("Expiry month invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "Karten-Sicherheitscode", `${country}-CVV`, false, "CVV")
+                        +invalid-warning("Card security code invalid.")
+                .button.align-text-center
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+        when "nl"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Kaartnumber", `${country}-cardNumber`, false, "123456789")
+                        img.c-creditCard-visa-nl(src=`${path}icon-payment-visa-mx-40-20.svg`, alt="visa")
+                        +invalid-warning("Please enter a valid card number.")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Vervaldatum", `${country}-cardDate`, false, "MM/YY")
+                        +invalid-warning("Expiry month invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "Verificatiecode", `${country}-CVV`, false, "CVV")
+                        +invalid-warning("Card security code invalid.")
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Naam kaarthouder", "naamKaarthouder", false, "J. Janssen")
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formCheckbox('Bewaar voor mijn volgende betaling', "name", "val1", `checkId9`, count="false", false)
+                .button.align-text-center
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+        when "hu"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Card number", `${country}-cardNumber`, false, "1234 0000 0000 0000")
+                        img.c-creditCard-img(src=`${path}icon-payment-credit-card-cl-106-20.svg`, alt="creditCard")
+                        +invalid-warning("Please enter a valid card number.")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Expiry date", `${country}-cardDate`, false, "")
+                        +invalid-warning("Expiry month Invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "CVC / CVV", `${country}-CVV`, false, "")
+                        +invalid-warning("Card security code invalid.")
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Cardholder name", `${country}-cardName`, false, "J.smith")
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formCheckbox("Sauvegarder pour mon prochain paiement", "name", "val6", `checkId6`, count="false", false)
+                .button.align-text-center
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+        when "pl"
+            .c-creditCard
+                .c-creditCard--col01
+                    ul.c-creditCard-list
+                        li.font-w-normal-16.font-m-normal-14 Wpisz swoją kartę kredytową jako ciąg cyfr bez spacji i myślników. Bezpieczeństwo danych Twojej karty kredytowej jest dla nas ważne. Używamy technologii Secure Socket Layer (SSL), aby chronić bezpieczeństwo informacji o Twojej karcie kredytowej.
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "", `${country}-cardNumber`, false, "Numer karty kredytowej")
+                .c-creditCard--col01
+                    .c-creditCard__box.margin-top-08
+                        +formText("text", "", `${country}-cardName`, false, "Miesiąc/Rok")
+                .c-creditCard--col01
+                    .c-creditCard__box.margin-top-08
+                        +formText("text", "", `${country}-cardDate`, false, "Kod bezpieczeństwa karty")
+                .button.align-text-center
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+        when "pe"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Numero De Tarjeta", `${country}-cardInformation`, false, "Card number")
+                        img.c-creditCard-visa(src=`${path}icon-payment-visa-mx-40-20.svg`, alt="visa")
+                    img(src=`${path}icon-payment-credit-card-mx-192-15.svg`, alt="credit-card")
+                .c-creditCard--col02 
+                    .c-creditCard__box
+                        +formSelect("Mes De Expiración", "Mes De Expiración", "Mes", false)
+                            option(value="Mes" selected) Mes
+                            option(value="Mes") Mes
+                    .c-creditCard__box.c-creditCard__box--cvv   
+                        +formSelect("Año De Expiración", "Año De Expiración", "Año", false)
+                            option(value="Año" selected) Año
+                            option(value="Año") Año
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Nombre Del Titular", `${country}-cardDate`, false, "")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "Código De Seguridad", `${country}-CVV`, false, "")
+                .c-creditCard--col02 
+                    .c-creditCard__box
+                        +formSelect("Tipo De Documento", "Tipo De Documento", "DNI", false)
+                            option(value="DNI" selected) DNI
+                            option(value="DNI") DNI
+                    .c-creditCard__box
+                        +formText("text", "Documento", "Documento", false, "")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Documento", "Documento", false, "")
+                        +invalid-warning("Por favor, introduzca 8 digitos en este campo.")
+                    .c-creditCard__box
+                        +formSelect("Medio De Pago", "Medio De Pago", "", false)
+                            option(value="" selected) 
+                            option(value="") 
+                .c-creditCard--col01 
+                    .c-creditCard__box
+                        +formSelect("Cuotas Mensuales", "Cuotas Mensuales", "", false)
+                            option(value="" selected) 
+                            option(value="") 
+                    ul.c-creditCard-list
+                        li.font-w-normal-16.font-m-normal-14.type02 Bitte beachten sie, dass bei Zahlung mit Paypal die dort hinterlegten Daten als Rechnungsadresse verwendet werden.
+                        li.font-w-normal-16.font-m-normal-14.type02 Si selecciono DNI / CE se emitirá Boleta y si selecciono RUC se emitirá Factura.
+                        li.font-w-normal-16.font-m-normal-14.type02 Si desea, puede hacer clic en ‘Atrás’ para revisar su información y cambiar algún dato de ser necesario
+                    p.c-creditCard__text.font-w-normal-16.font-m-normal-16 Pago procesado por Mercado Pago
+
+                .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+        when "cac_en"
+            .c-creditCard
+                img(src=`${path}icon-payment-credit-card-cac_en-106-20.svg`, alt='payment-cac_en-card1' class='payment-cac_en')
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Credit Card Name", "creditCardName", false, "")
+                        +invalid-warning("Campo obligatorio.")
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Número de tarjeta de crédito", "númeroDeTarjetaDeCrédito", false, "Card number")
+                        +invalid-warning("Campo obligatorio.")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        .c-search-box__form.display-block
+                            +formSelect("Fecha de vencimiento", "fechaDeVencimiento", "Mes", false)
+                                option(value="Mes" selected)= "Mes"
+                            +invalid-warning("Campo obligatorio.")
+                    .c-creditCard__box.c-creditCard__box--cvv.c-creditCard__box--cac_en
+                        .c-search-box__form.display-block
+                            +formSelect(" ", "", "Año", false)
+                                option(value="Año" selected)= "Año"
+                            +invalid-warning("Campo obligatorio.")
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Número de verificación de tarjeta", "númeroDeVerificaciónDeTarjeta", false, "")
+                        +invalid-warning("Por favor introduce un número valido para este campo.")
+                .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+        when "se"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Kreditkortsnummer", `${country}-cardNumber`, false, "Card Number")
+                        +invalid-warning("Please enter a valid card number")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Månad/År", `${country}-cardDate`, false, "MM/YY")
+                        +invalid-warning("Expiry month Invalid")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "Kortets säkerhetskod", `${country}-CVV`, false, "CVV")
+                        +invalid-warning("Card security code invalid")
+                .button.align-text-center
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+        when "cz"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Číslo platební karty", "creditCardNumber", false, "1234 0000 0000 0000")
+                        img.c-creditCard-icon(src=`${path}icon-payment-credit-card-cz-28-20.svg`, alt="creditCard")
+                        +invalid-warning("Please enter a valid card number.")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Datum expirace", "datumExpirace", false, "MM/YY")
+                        +invalid-warning("Expiry month Invalid.")
+                    .c-creditCard__box
+                        +formText("text", "CVV / CVC kód", "cvv/cvcKód", false, "123")
+                        +invalid-warning("Card security code invalid.")
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Jméno držitele", "jménoDržitele", false, "J.smith")
+                .button.align-text-center
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+        when "in"
+            .c-creditCard
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Card Number", "creditCardNumber", false, "Enter your card number here")
+                        +invalid-warning("Please enter a valid number in this field.")
+                    .c-creditCard__box
+                        +formText("text", "Name on Card", "creditCardName", false, "Enter your name here")
+                        +invalid-warning("This is a required field.")
+                .c-creditCard--col02
+                    .c-creditCard__box.c-creditCard__box
+                        .c-creditCard__box--row.c-creditCard__box--in
+                            +formSelect("Expired Date", "expiredDate", "Month", false)
+                                option(value="Month" selected) Month
+                                option(value="Month") Month
+                            +invalid-warning("This is a required field.")
+                        .c-creditCard__box--row
+                            +formSelect("Expired Date", "Year", "year", false, "Year")
+                                option(value="") Year
+                            +invalid-warning("This is a required field.")
+                    .c-creditCard__box
+                        +formText("text", "CVV", "cvv", false, "Enter your CVV number here​")
+                        +invalid-warning("Please enter a valid number in this field.")
+                .button.align-text-center
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+        when "ch_de"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        img(src=`${path}icon-payment-${data.subtype}-ch-de-68-30.svg`, alt=data.subtype class='c-creditCard__box--img')
+                        p.font-w-normal-16.font-m-normal-16.c-creditCard__box-text= data.infotext
+                .button.align-text-center
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+        when "ca"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Card Information", "cardInformation", false, "Card Number")
+                        +invalid-warning("Please enter a valid card number.")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "MM/YY", "cardDate", false, "MM/YY")
+                        +invalid-warning("Expiry month invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "Card Security Code", "CVV", false, "CVV")
+                        +invalid-warning("Card security code invalid.")
+                .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'                    
+        when "es"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Card Number", "creditCardNumber", false, "Card Number")
+                        +invalid-warning("Please enter a valid card number.")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Expiration date", "cardDate", false, "MM/YY")
+                        +invalid-warning("Expiry month invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "CVC / CVV", "CVV", false, "CVV")
+                        +invalid-warning("Card security code invalid.")
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Name on the Card", "creditCardName", false, "John Perez")
+                        +invalid-warning("Name on the Card is required.")                  
+                .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+        when "jp"
+            .c-creditCard
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Card Number", "creditCardNumber", false, "Card Number")
+                        +invalid-warning("Please enter a valid card number.")
+                    .c-creditCard__box
+                        +formText("text", "Name on card", "creditCardName", false, "")
+                        +invalid-warning("this is a required fields.")   
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "MM/YY", "cardDate", false, "MM/YY")
+                        +invalid-warning("Expiry invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "CVV", "CVV", false, "CVV")
+                        +invalid-warning("Card security code invalid.")                
+                .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+        when "id"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Card Information", "cardInformation", false, "Card Number")
+                        +invalid-warning("Please enter a valid card number.")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "MM/YY", "cardDate", false, "MM/YY")
+                        +invalid-warning("Expiry month invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "Card Security Code", "CVV", false, "CVV")
+                        +invalid-warning("Card security code invalid.")
+                .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'                         
+        when "th"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Card Information", "cardInformation", false, "Card Number")
+                        +invalid-warning("Please enter a valid card number.")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "MM/YY", "cardDate", false, "MM/YY")
+                        +invalid-warning("Expiry month invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "Card Security Code", "CVV", false, "CVV")
+                        +invalid-warning("Card security code invalid.")
+                .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'                         
+        when "kz"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Card Information", "cardInformation", false, "Card Number")
+                        +invalid-warning("Please enter a valid card number.")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "MM/YY", "cardDate", false, "MM/YY")
+                        +invalid-warning("Expiry month invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "Card Security Code", "CVV", false, "CVV")
+                        +invalid-warning("Card security code invalid.")
+                .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+        when "co"
+            .installment 
+                each list in data.list
+                    +cardList(list, country)
+            .c-creditCard
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Card Number", "creditCardNumber", false, "Card Number")
+                        +invalid-warning("Please enter a valid card number.")
+                    .c-creditCard__box
+                        +formText("text", "Name and surname as they appear on the card", "creditCardName", false, "")
+                        +invalid-warning("this is a required fields.")   
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Expiration Date (MM/YY)", "cardDate", false, "MM/YY")
+                        +invalid-warning("Expiry invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "CVL", "CVV", false, "CVL")
+                        +invalid-warning("Card security code invalid.")
+                .c-creditCard--col01 
+                    .c-creditCard__box
+                        +formSelect("Installment", "installment", "", false)
+                            option(value="" selected)
+                .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'                    
+        when "pt"
+            .c-creditCard
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Card Number", "creditCardNumber", false, "Card Number")
+                        +invalid-warning("Please enter a valid card number.")
+                    .c-creditCard__box
+                        +formText("text", "Name on card", "creditCardName", false, "")
+                        +invalid-warning("this is a required fields.")   
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "MM/YY", "cardDate", false, "MM/YY")
+                        +invalid-warning("Expiry invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "Card Security Code", "CVV", false, "CVV")
+                        +invalid-warning("Card security code invalid.")
+                .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'                    
+        when "sa"
+            .c-creditCard
+                .c-creditCard--col01 
+                    .c-creditCard__box
+                        +formSelect("Card Type", "Please select a card type", "", false)
+                            option(value="cardType" selected) Please select a card type
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Card Number", "creditCardNumber", false, "Card Number")
+                        +invalid-warning("Please enter a valid card number.")
+                    .c-creditCard__box
+                        +formText("text", "Name on card", "creditCardName", false, "")
+                        +invalid-warning("this is a required fields.")   
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "MM/YY", "cardDate", false, "MM/YY")
+                        +invalid-warning("Expiry invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "Card Security Code", "CVV", false, "CVV")
+                        +invalid-warning("Card security code invalid.")                
+                .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'                    
+        when "tk"
+            .c-creditCard
+                .c-creditCard--col01 
+                    .c-creditCard__box
+                        +formSelect("Card Type", "Please select a card type", "", false)
+                            option(value="cardType" selected) Please select a card type
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Card Number", "creditCardNumber", false, "Card Number")
+                        +invalid-warning("Please enter a valid card number.")
+                    .c-creditCard__box
+                        +formText("text", "Name on card", "creditCardName", false, "")
+                        +invalid-warning("this is a required fields.")   
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "MM/YY", "cardDate", false, "MM/YY")
+                        +invalid-warning("Expiry invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "Card Security Code", "CVV", false, "CVV")
+                        +invalid-warning("Card security code invalid.")                
+                .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'                    
+        when "sg"
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Card Number", "creditCardNumber", false, "Card Number")
+                        +invalid-warning("Please enter a valid card number.")              
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "Expiration", "cardDate", false, "MM/YY")
+                        +invalid-warning("Expiry invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "CVC", "CVV", false, "CVV")
+                        +invalid-warning("Card security code invalid.")    
+                .c-creditCard--col01 
+                    .c-creditCard__box
+                        +formSelect("Country", "Singapore", "", false)
+                            option(value="singapore" selected) Singapore
+                .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'                    
+        default
+            .c-creditCard
+                .c-creditCard--col01
+                    .c-creditCard__box
+                        +formText("text", "Card Information", "cardInformation", false, "Card Information")
+                        +invalid-warning("Please enter a valid card number.")
+                .c-creditCard--col02
+                    .c-creditCard__box
+                        +formText("text", "MM/YY", "cardDate", false, "MM/YY")
+                        +invalid-warning("Expiry month invalid.")
+                    .c-creditCard__box.c-creditCard__box--cvv
+                        +formText("text", "Card Security Code", "CVV", false, "CVV")
+                        +invalid-warning("Card security code invalid.")
+                .button.align-text-center
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+        when "tw"
+            .c-wrapper.c-wrapper-tw
+                .cmp-tabs(data-cmp-data-layer="", data-placeholder-text="false")
+                    .cmp-tabs__inner
+                        ul.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                            +printTab(1, 1, true) 一次付清
+                            +printTab(1, 2, false) 分期付款(特約銀行零利率)
+                    +printTabPanel(1, 1, true) 
+                        //- tabContent
+                        .c-creditCard
+                            .c-creditCard--col02
+                                .c-creditCard__box
+                                    +formText("text", "信用卡號", "cardInformation", false, "Card number")
+                                .c-creditCard__box
+                                    +formText("text", "月/年", "cardDate", false, "MM/YY")
+                            .c-creditCard--col01
+                                .c-creditCard__box.c-creditCard__box--cvv
+                                    +formText("text", "信用卡安全碼", "CVV", false, "CVV")
+                            .c-creditCard--tw
+                                img(src=`${path}icon-payment-tap-pay-tw-66-18.svg`, alt='tapPay-tw-card1' class='tapPay-tw' style='display:inline-block;')
+                                p.c-creditCard-tw__text.font-w-normal-16.font-m-normal-14 該服務由 Cherri Tech, Inc. 
+                                    span TapPay 提供。<br>支付數據使用 TLS1.2 安全加密
+                            .button.align-text-center
+                                //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                                //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                                //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                                //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                                +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                                //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    +printTabPanel(1, 2, false)
+                        //- tabContent
+                        .c-creditCard
+                            .c-creditCard--col01
+                                .c-creditCard__box
+                                    +payAccordion({
+                                        title: '信用卡號',
+                                        name: '花旗銀行',
+                                        radiolists:[
+                                            {
+                                                title: '3期',
+                                                id: 'bankradio01',
+                                                name: 'bankradio',
+                                                value: 'value01',
+                                                checked: false,
+                                            },
+                                            {
+                                                title: '6期',
+                                                id: 'bankradio02',
+                                                name: 'bankradio',
+                                                value: 'value02',
+                                                checked: false,
+                                            }, 
+                                            {
+                                                title: '12期',
+                                                id: 'bankradio03',
+                                                name: 'bankradio',
+                                                value: 'value03',
+                                                checked: false,
+                                            },
+                                            {
+                                                title: '15期',
+                                                id: 'bankradio04',
+                                                name: 'bankradio',
+                                                value: 'value04',
+                                                checked: false,
+                                            },
+                                            {
+                                                title: '18期',
+                                                id: 'bankradio05',
+                                                name: 'bankradio',
+                                                value: 'value05',
+                                                checked: true,
+                                            },
+                                            {
+                                                title: '24期',
+                                                id: 'bankradio06',
+                                                name: 'bankradio',
+                                                value: 'value06',
+                                                checked: false,
+                                            },
+                                        ]
+                                    })
+                            .c-creditCard--col02
+                                .c-creditCard__box
+                                    +formText("text", "信用卡號", "cardInformation", false, "Card number")
+                                .c-creditCard__box
+                                    +formText("text", "月/年", "cardDate", false, "MM/YY")
+                            .c-creditCard--col01
+                                .c-creditCard__box.c-creditCard__box--cvv
+                                    +formText("text", "信用卡安全碼", "CVV", false, "CVV")
+                            .c-creditCard--tw
+                                img(src=`${path}icon-payment-tap-pay-tw-66-18.svg`, alt='tapPay-tw-card1' class='tapPay-tw' style='display:inline-block;')
+                                p.c-creditCard-tw__text.font-w-normal-16.font-m-normal-14 該服務由 Cherri Tech, Inc. 
+                                    span TapPay 提供。<br>支付數據使用 TLS1.2 安全加密
+                            .button.align-text-center
+                                //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                                //- +defaultButton({name: "Place Order", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                                //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Place Order
+                                //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                                +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                                //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+
+mixin financeDeferral(data, country=false)
+    .c-financedeferral
+        p.font-w-normal-16.font-m-normal-14 Buy first and pay later with <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Aplazame.</span></a>
+        .button.align-text-center
+            //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+            //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+                    
+mixin financeCetelem(data, country=false)
+    .c-financecetelem
+        .c-financecetelem-instalments
+            dt.c-financecetelem-instalments-flexbox
+                span.c-financecetelem-instalments__info Amount
+                span.c-financecetelem-instalments__cost €3,909.04 (tax included)
+        p.font-w-semibold-16.font-m-semibold-14 You will be redirected to the Cetelem payment platform
+        p.font-w-normal-16.font-m-normal-14 And if you are already a client of Encuotas and you have available in your line of credit, deferring the payment of your purchase will be immediate
+        .button.align-text-center
+            //- [Start] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+            //- [End] 2023-04-11 : UPDATE - button name change 'Place Order' to 'Next'
+
+mixin formCheckbox(label, name, val, id, count = "false", disabled = false)
+    .c-checkbox-item
+        label.checkbox(for=`${id}`)
+            if(disabled)
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, disabled="disabled")&attributes(attributes)
+            else 
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`)&attributes(attributes)
+
+            if(label)
+                span.label!= label
+                    -if(count >= 0 & count != "false") // for filter
+                        sup.count= count 
+            else 
+                if block 
+                    span.label
+                        block
+
+mixin paymentComplete(params)
+    -let path = '../../assets/icon/';
+    each data in params
+        .c-checkout-step03
+            .c-checkout-step03-preview__info
+                span(class=`${data.date ? 'c-checkout-step03-preview__info--img' : 'c-checkout-step03-preview__info--img--column'} ${data.isBetween ? 'c-checkout-step03-preview__info--img--row' : ''} ${data.reverse ? 'c-checkout-step03-preview__info--img--column--reverse' : ''}`)
+                    if data.isBetween
+                        span.c-checkout-step03-preview__info--title!= data.title
+                            if data.tooltip
+                                +exclamTooltip(data.tooltip, false)
+                            if data.popSrc
+                                a.cmp-button.c-button.js-pop-open(href=`#${data.popSrc}` data-cmp-data-layer="" role="button")
+                                    span.cmp-button__icon
+                        if data.src
+                            img(src=`${path + data.src}.svg`, alt=data.type)
+                            if data.moImg
+                                img.img-mo(src=`${path + data.moImg}.svg`, alt=data.type)
+                    else
+                        if data.src
+                            img(src=`${path + data.src}.svg`, alt=data.type)
+                        span.c-checkout-step03-preview__info--title= data.title
+                if data.date
+                    span.c-checkout-step03-preview__info--date= data.date
+        if data.contents
+            each contents in data.contents
+                if contents.type === 'paypalList'
+                    .c-checkout-step03-payment
+                        .c-payPal 
+                            ul.c-payPal-list.c-payPal-list--fill
+                                li Pay in 3 interest - free payment of (monetary unit) (product price / 3) with
+                                    span.c-payPal__bold Paypal
+                                        +exclamTooltip('PayPal Pay in 3 is an interest-free loan that lets you split your basket into 3 payments, with the first due at time of purchase and subsequent payments due every month on the same date. It’s a great way to spread the cost of larger items or to cover emergencies, and is a helpful tool to manage your budget more effectively. Please note that Pay in 3 is a form of credit, so carefully consider whether you can afford the repayments and possible impact to your credit score.', false)
+                                    +linkButton({type:"text",color:"red", underline:true, name: "Learn more"})
+                                li Pay in 3 payment methods may be restricted on some accounts.
+                if contents.type === 'form'
+                    if contents.formTitle || contents.formText
+                        .c-checkout-step03-email
+                            if contents.formTitle
+                                strong.c-checkout-step03-email__title= contents.formTitle
+                            if contents.formText
+                                +formCheckbox(contents.formText, "name", contents.formVal, contents.formId, count="false", false)
+                                if contents.childForm
+                                    ul.childForm
+                                        each childForm, i in contents.childForm
+                                            +formCheckbox(childForm, "name", `${contents.formVal}-${i}`, `${contents.formVal}-${i}`, count="false", false)                                
+                    if contents.formList
+                        ul.c-checkout-step03-email__list 
+                            each list in contents.formList
+                                li(class=`${contents.noMargin ? '' : 'c-checkout-step03-email__list--margin'}`)= list
+                if contents.type === 'error'
+                    ul.toast-popup.c-checkout-step03-error
+                        li.toast-popup__item.toast-popup__item--error
+                            .toast-popup__container
+                                i.toast-popup__icon.toast-popup__icon--error
+                                    span.sr-only= error
+                                if contents.toastText
+                                    .toast-popup__title= contents.toastText
+                            button(type='button' class='toast-popup__remove')
+                                span.sr-only remove
+                if contents.type === 'listBold'
+                    .c-checkout-step03-email
+                    if contents.formList
+                        ul.c-checkout-step03-email__list 
+                            each list in contents.formList
+                                li.font-bold= list
+
+mixin footerInfoDR(country=false)
+    if country === 'FR'
+        .CT-buy-checkout__DR
+            p LG Electronics France
+            .CT-buy-checkout__DR-list
+                +textButton({name: 'CGV*', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="#")
+                +textButton({name: 'Confidentialité*', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="#")
+            +textButton({name: 'Search Engine Business France', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="#")
+            | est partenaire intermédiaire indépendant de LG Electronics France et à ce titre assure la transmission des commandes et la gestion des paiements.
+            .CT-buy-checkout__DR-list
+                +textButton({name: 'CGV*', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="#")
+                +textButton({name: 'Confidentialité*', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="#")
+    else if country === 'DE' || country === 'AT'
+        .CT-buy-checkout__DR
+            +textButton({name: 'Digital River Ireland Ltd.', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="#")
+            | Digital River Ireland Ltd. ist der Verkäufer der in diesem Geschäft angebotenen Produkte und Dienstleistungen
+            .CT-buy-checkout__DR-list
+                +textButton({name: 'Datenschutzrichtlinien', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="#")
+                +textButton({name: 'AGBs', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="#")
+                +textButton({name: 'Cookies', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="#")
+                +textButton({name: 'Wíderrufsrecht', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="#")
+                +textButton({name: 'Impressum', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="#")
+            p Sofern die Produkte über ein Mitarbeiter-/Partnerprogramm, über Gutscheincodes oder durch andere Aktionen bereits reduziert sind, ist die Teilnahme an Rabattaktionen (z.B. Cashback, etc.) ausgeschlossen. Eine Kombination mehrerer Rabatte ist nicht möglich.
+    else if country === 'CZ'
+        .CT-buy-checkout__DR
+            p Oficiálním prodejcem a prodejcem produktů a služeb nabízených v tomto obchodě je společnost 
+            .CT-buy-checkout__DR-list
+                +textButton({name: 'SEB CZ, s.r.o.', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="#")
+    else if country === 'HU'
+        .CT-buy-checkout__DR
+            +textButton({name: 'Search Engine Business', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="#")
+            | az LG Electronics Magyar Kft. webshopjában kapható termékek és szolgáltatások hivatalos viszonteladója.
+    else
+        // [Start] 2023-05-09 : ADD- DR compliance footer
+        .CT-buy-checkout__DR
+            +textButton({name: 'Digital River UK Ltd', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="https://store.digitalriver.com/store/defaults/en_GB/DisplayDRContactInformationPage/eCommerceProvider.Digital+River+UK+Ltd")
+            | is the authorised reseller and merchant of the products and services offered within this store.
+            .CT-buy-checkout__DR-list
+                +textButton({name: 'Privacy Policy', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="https://store.digitalriver.com/store/defaults/en_GB/DisplayDRPrivacyPolicyPage/eCommerceProvider.Digital+River+Ireland+Ltd.")
+                +textButton({name: 'Terms of Sale', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="https://store.digitalriver.com/store/defaults/en_GB/DisplayDRTermsAndConditionsPage/eCommerceProvider.Digital+River+Ireland+Ltd.")
+                +textButton({name: 'Cookies', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="https://store.digitalriver.com/store?Action=DisplayDRCookiesPolicyPage&Locale=en_GB&SiteID=defaults&eCommerceProvider=Digital+River+Ireland+Ltd.")
+                +textButton({name: 'Cancellation Right', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="https://store.digitalriver.com/store?Action=DisplayDRTermsAndConditionsPage&Locale=en_GB&SiteID=defaults&eCommerceProvider=Digital+River+Ireland+Ltd.#cancellationRight")
+                +textButton({name: 'Legal Notice', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" href="https://store.digitalriver.com/store?Action=DisplayDRContactInformationPage&Locale=en_GB&SiteID=defaults&eCommerceProvider=Digital+River+Ireland+Ltd.")
+            p Sofern die Produkte über ein Mitarbeiter-/Partnerprogramm, über Gutscheincodes oder durch andere Aktionen bereits reduziert sind, ist die Teilnahme an Rabattaktionen (z.B. Cashback, etc.) ausgeschlossen. Eine Kombination mehrerer Rabatte ist nicht möglich.
+        // [End] 2023-05-09 : ADD- DR compliance footer
+
+mixin CT0303(option=false, country=false)
+    .CT0303
+        if(option === "before")
+            .buy-checkout__item.before
+                +checkoutStep({
+                    title:"Payment",
+                    current:"3",
+                    total:"3",
+                    type: ""
+                })
+
+        if(option === "complete") 
+            .buy-checkout__item.buy-checkout__item--coupon.buy-checkout__item--complete
+                +checkoutStep({
+                    title:"Payment",
+                    current:"3",
+                    total:"3",
+                    type: "checked",
+                })         
+
+        if(option === "default")
+            .buy-checkout__item.buy-checkout__item--payment
+                +checkoutStep({
+                    title:"Payment",
+                    current:"3",
+                    total:"3",
+                    type: "active"
+                })
+                .c-checkout-step03.c-checkout-step03-active
+                    ul.c-checkout-step03-payment
+                        case country
+                            when 'br'
+                                +paymentBox([
+                                    {
+                                        type:"pix",
+                                        title:"PIX",
+                                        id:"pix",
+                                        placeholder:"Documento fiscal (CPF) do pagador",
+                                        warning:"Este é um campo obrigatório.",
+                                        route: "icon/icon-logo-pix2-142-50",
+                                        alt:"pix icon",
+                                        desc:"Após finalizar o pedido, o código QR será exibido. Através do app de seu banco, confira os dados e realize o pagamento.",
+                                        terms: [
+                                            {
+                                                type: 'form',
+                                                formText: `<span class="unline-red"><a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Termos e condições de vendas</span></a></span>`,
+                                                formVal: `${country}Val1`,
+                                                formId: `${country}EmaliId1`
+                                            },
+                                            {
+                                                type: 'form',
+                                                formText: `<span class="unline-red"><a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Política de Privacidade</span></a>`,
+                                                formVal: `${country}Val2`,
+                                                formId: `${country}EmaliId2 `
+                                            },
+                                            {
+                                                type: 'form',
+                                                formText: `Gostaria de receber a newsletter da LG Electronics e ser informado por e-mail sobre as ofertas, promoções e novidades atuais sobre os dispositivos LG. Este consentimento pode ser revogado a qualquer momento com efeito futuro.`,
+                                                formVal: `${country}Val3`,
+                                                formId: `${country}EmaliId3`
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        type:"creditCard",
+                                        title:"Cartão de Crédito",
+                                        moImg: 'icon-payment-credit-card-br-mo-106-20',
+                                        terms: [
+                                            {
+                                                type: 'form',
+                                                formText: `<span class="unline-red"><a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Termos e condições de vendas</span></a></span>`,
+                                                formVal: `${country}Val4`,
+                                                formId: `${country}EmaliId4`
+                                            },
+                                            {
+                                                type: 'form',
+                                                formText: `<span class="unline-red"><a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Política de Privacidade</span></a>`,
+                                                formVal: `${country}Val5`,
+                                                formId: `${country}EmaliId5 `
+                                            },
+                                            {
+                                                type: 'form',
+                                                formText: `Gostaria de receber a newsletter da LG Electronics e ser informado por e-mail sobre as ofertas, promoções e novidades atuais sobre os dispositivos LG. Este consentimento pode ser revogado a qualquer momento com efeito futuro.`,
+                                                formVal: `${country}Val6`,
+                                                formId: `${country}EmaliId6`
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        type:"bankSlip",
+                                        title:"Boleto Bancário",
+                                        desc:"Após finalizar o pedido, o boleto bancário será exibido. Você pode utilizar o número do boleto para pagamento pela internet ou telefone, ou imprimi-lo para pagamento em qualquer agência bancária.",
+                                        id:"bankSlip",
+                                        placeholder:"Documento fiscal (CPF) do pagador",
+                                        warning:"Este é um campo obrigatório.",
+                                        terms: [
+                                            {
+                                                type: 'form',
+                                                formText: `<span class="unline-red"><a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Termos e condições de vendas</span></a></span>`,
+                                                formVal: `${country}Val7`,
+                                                formId: `${country}EmaliId7`
+                                            },
+                                            {
+                                                type: 'form',
+                                                formText: `<span class="unline-red"><a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Política de Privacidade</span></a>`,
+                                                formVal: `${country}Val8`,
+                                                formId: `${country}EmaliId8 `
+                                            },
+                                            {
+                                                type: 'form',
+                                                formText: `Gostaria de receber a newsletter da LG Electronics e ser informado por e-mail sobre as ofertas, promoções e novidades atuais sobre os dispositivos LG. Este consentimento pode ser revogado a qualquer momento com efeito futuro.`,
+                                                formVal: `${country}Val9`,
+                                                formId: `${country}EmaliId9`
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        type:"digitalWallet",
+                                        title:"Carteira Digital",
+                                        desc:"Ao finalizar a compra, você será redirecionado ao ambiente da carteira digital Mercado Pago, onde poderá realizar o pagamento.",
+                                        terms: [
+                                            {
+                                                type: 'form',
+                                                formText: `<span class="unline-red"><a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Termos e condições de vendas</span></a></span>`,
+                                                formVal: `${country}Val10`,
+                                                formId: `${country}EmaliId10`
+                                            },
+                                            {
+                                                type: 'form',
+                                                formText: `<span class="unline-red"><a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Política de Privacidade</span></a>`,
+                                                formVal: `${country}Val11`,
+                                                formId: `${country}EmaliId11 `
+                                            },
+                                            {
+                                                type: 'form',
+                                                formText: `Gostaria de receber a newsletter da LG Electronics e ser informado por e-mail sobre as ofertas, promoções e novidades atuais sobre os dispositivos LG. Este consentimento pode ser revogado a qualquer momento com efeito futuro.`,
+                                                formVal: `${country}Val12`,
+                                                formId: `${country}EmaliId12`
+                                            }
+                                        ]
+                                    }
+                                ], country)                         
+                            default 
+                                +paymentBox([
+                                    {
+                                        type:"creditCard",
+                                        title:"Credit Card",
+                                    },
+                                    {
+                                        type:"payPal",
+                                        title:"PayPal",
+                                        fillIcon:true
+                                    },
+                                    {
+                                        type:"klarna",
+                                        title:"Klarna",
+                                    }
+                                ], country)
+
+            .buy-checkout__item.buy-checkout__item--payment.buy-checkout__item--complete(style="display: none;")
+                +checkoutStep({
+                    title:"Payment",
+                    current:"3",
+                    total:"3",
+                    type: "checked"
+                })
+                case country
+                    when 'br'
+                        +paymentComplete([
+                            {
+                                src: 'icon-pix-mini-20-20',
+                                type: 'pix',
+                                title: 'PIX',
+                                isBetween: true,
+                            },
+                            {
+                                src: 'icon-payment-credit-card-br-106-20',
+                                moImg: 'icon-payment-credit-card-br-mo-106-20',
+                                type: 'creditCard',
+                                title: 'Cartão de Crédito',
+                                isBetween: true
+                            },
+                            {
+                                src: 'icon-boleto-32-20',
+                                type: 'boleto',
+                                title: 'Boleto Bancário',
+                                isBetween: true,
+                            },
+                            {
+                                src: 'icon-mp-logo-76-20',
+                                type: 'digitalWallet',
+                                title: 'Carteira Digital',
+                                isBetween: true,
+                                contents: [
+                                    {
+                                        type: 'form',
+                                        formText: `<span class="unline-red"><a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Termos e condições de vendas</a></span>`,
+                                        formVal: `${country}Val01`,
+                                        formId: `${country}EmaliId1`
+                                    },
+                                    {
+                                        type: 'form',
+                                        formText: `<span class="unline-red"><a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Política de Privacidade</a></span>`,
+                                        formVal: `${country}Val02`,
+                                        formId: `${country}EmaliId2`
+                                    },
+                                    {
+                                        type: 'form',
+                                        formText: `Gostaria de receber a newsletter da LG Electronics e ser informado por e-mail sobre as ofertas, promoções e novidades atuais sobre os dispositivos LG. Este consentimento pode ser revogado a qualquer momento com efeito futuro.`,
+                                        formVal: `${country}Val03`,
+                                        formId: `${country}EmaliId3`
+                                    },
+                                ]
+                            }
+                        ])
+                    default
+                        +paymentComplete([
+                            {
+                                src: 'icon-mylg-visa-31-23',
+                                type: 'creditCard',
+                                title: 'VISA Xxxxxxxxx6995',
+                                date: '05/24',
+                                isBetween: false,
+                                contents: [
+                                    {
+                                        type: 'form',
+                                        formText: `<span class="unline-red">I accept <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Digital River's terms and conditions of sales.</span></a></span>`,
+                                        formVal: 'val01',
+                                        formId: 'emaliId1'
+                                    },
+                                    {
+                                        type: 'form',
+                                        formText: `<span class="unline-red">Receipt of marketing messages(Optional) <br/> I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text"> Privacy Policy. </span></a></span>`,
+                                        formVal: 'val02',
+                                        formId: 'emaliId2'
+                                    }
+                                ]
+                            },
+                            {
+                                src: 'icon-payment-paypal-74-20',
+                                type: 'payPal',
+                                title: 'Buy now and pay later with pay in 3',
+                                isBetween: false,
+                                contents: [
+                                    {
+                                        type: 'paypalList'
+                                    },
+                                    {
+                                        type: 'form',
+                                        formText: `<span class="unline-red">I accept <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Digital River's terms and conditions of sales.</span></a></span>`,
+                                        formVal: 'val03',
+                                        formId: 'emaliId3'
+                                    },
+                                    {
+                                        type: 'form',
+                                        formText: `<span class="unline-red">Receipt of marketing messages(Optional) <br/> I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text"> Privacy Policy. </span></a></span>`,
+                                        formVal: 'val04',
+                                        formId: 'emaliId4'
+                                    }
+                                ]
+                            },
+                            {
+                                src: 'icon-payment-klarna-54-20',
+                                type: 'klarna',
+                                title: 'Buy now, pay later!',
+                                isBetween: false,
+                                contents: [
+                                    {
+                                        type: 'form',
+                                        formText: `<span class="unline-red">I accept <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Digital River's terms and conditions of sales.</span></a></span>`,
+                                        formVal: 'val05',
+                                        formId: 'emaliId5'
+                                    },
+                                    {
+                                        type: 'form',
+                                        formText: `<span class="unline-red">Receipt of marketing messages(Optional) <br/> I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text"> Privacy Policy. </span></a></span>`,
+                                        formVal: 'val06',
+                                        formId: 'emaliId6'
+                                    },
+                                    {
+                                        type: 'form',
+                                        formText: `<span class="unline-red">By proceeding, you will be presented with payment options provided by Klarna. By continuing, I accept the terms of the <a class="cmp-button c-button c-button--text-underline red" href="https://cdn.klarna.com/1.0/shared/content/legal/terms/0/en_gb/user" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Klarna Shopping Service</span></a> and confirm that I have read the <a class="cmp-button c-button c-button--text-underline red" href="https://cdn.klarna.com/1.0/shared/content/legal/terms/0/en_gb/privacy" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Privacy Notice</span></a> and the <a class="cmp-button c-button c-button--text-underline red" href="https://cdn.klarna.com/1.0/shared/content/legal/terms/0/en_gb/cookie_purchase" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Cookie Notice. *</span></a></span>`,
+                                        formVal: 'val07',
+                                        formId: 'emaliId7'
+                                    }
+                                ]
+                            }
+                            
+                        ])

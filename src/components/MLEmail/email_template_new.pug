@@ -1,0 +1,39 @@
+extends ./_template/_email_layout.pug
+
+block meta 
+    title email temlate new(GP1 style)
+
+block header
+    +email-header({title: "GP1 Email Template"})
+
+block content
+    //- *** Cautions ***
+    //- * thead, tbody등은 렌더링 문제로 사용을 지양합니다.
+    //- * colspan 과 rowspan 사용은 오류를 유발시키기 때문에 사용을 금지합니다.(최대한 tr 자식으로 td>table 형식으로 사용)
+    //- * 가장 가볍고 안전한 방법은 table, tr, td 이 3개의 태그만 활용하는 것입니다.
+    //- * gmail에서 svg 이미지가 노출되지 않는 이슈가 있어 svg 사용은 금지합니다.
+    //- * 보안 이슈로 인해 target="_blank" 는 rel="noreferrer noopener" 과 함께 사용합니다.
+    //- * 메일폼은 margin값 적용 오류가 있어 margin은 최소한으로 사용해줍니다.
+    //- * 축약어 오류를 막기위해 padding: 20px 0 10px 과 같은 축약어 사용을 지양하는 하지만 사용이 전혀 불가능해 보이진 않습니다.(최소 사용 권장.)
+    //- * 내부 여백은 padding을 사용하고 외부 여백은 공백 문자(&nbsp)를 사용할 수 있도록합니다.
+    //- * bgcolor, color 값은 #ffffff 과 같이 hex코드로 사용해야합니다.
+    //- * 표 형식은 필요한 경우, 형제 tr 중 first-child의 tr 안의 td에만 width 값을 적용하여 컬럼의 너비를 결정해주는 방식으로 통일합니다.
+    //-   ㄴ colgroup 사용을 지양하며 column layout을 그리기 위함입니다.
+
+    //- * Gmail App 에선 width 자동 계산 오류가 있어서 반드시 최상위 table 에 width 속성과 함께 style로 min-width를 px단위로 선언해 줘야합니다.
+    //-   ㄴ 내부 <table>의 레이아웃이 2 컬럼의 td로 구성되었다면, px 단위로 계산하여 필요한 컬럼 td에 min-width를 적절히 넣어줘야 합니다.
+    //- * Gmail (App/Web 모두) 에서 position 관련 스타일(relative, absolute 등)이 적용되지 않습니다.
+    //- * Gmail (App/Web 모두) 메일 형식을 텍스트 그대로 쓰게 되면 a:mailto로 변경됩니다. 
+    //-   ㄴ"@"" 대신  "&#64;" 엔티티 코드를 활용해도 스타일이 변경되지 않습니다.
+    //-   ㄴ '.com' 워딩 때문에 발생하는 문제로 파악되며, a(style='text-decoration:none;cursor:text;pointer-events:none;) 를 사용하여 해당 문제를 피할 수 있습니다.
+    //- * cellpadding은 반드시 0 으로 해야합니다.(네이버 메일에선 cellpadding이 강제로 0이 됨.)
+    //- * outlook 에서 a 태그를 사용할 때 href 값으로 http로 시작하는 올바른 주소를 넣어야 a태그가 제대로 렌더링 됩니다.
+    //- * <table>에 height:100%가 되게 하기 위해선 필요한 만큼 부모 <table>에 똑같이 height:100%를 적용해 줘야 합니다.
+    //- * anchor를 사용할 때 link text라면 display: inline;이 아니라 'inline-block'을 적용해야 rtl 방향이 잘 작동됩니다.
+    //- * text-align-last 속성은 오피스플러스 메일 내에서 작동이 되지 않습니다.
+    //- * ol li 구조 사용시, ol 의 padding-inline-start 속성을 강제로 삭제시키는 사이트가 있기 때문에 사용을 지양함. 대표적으로 Gmail이 그러하다.(ML0146.pug 참고)
+    
+    //- Contents Area는 반드시 tr>td 구조로 하나의 td로 block역할을 할 수 있도록 작성해줍니다.
+    //- 아래 <td>의 height 값은 임의로 넣은 것이니 실제 사용시 제거하고 사용해주세요.
+    tr
+        td(height='500') Contents Area

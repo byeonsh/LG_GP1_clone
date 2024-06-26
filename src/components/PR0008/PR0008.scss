@@ -1,0 +1,294 @@
+@charset "UTF-8";
+
+@use '../../scss/abstract/' as *;
+
+$component: '.PR0008';
+
+#{$component} {
+  $drop-color: $dark-gray3;
+  %primary {
+    @include screen(custom, rem($tablet), min) {
+      grid-row: 1/3;
+    }
+    .c-floating-contents__floating {
+      @include screen(web) {
+        top: auto;
+        backdrop-filter: blur(6px);
+        padding-top: rem($padding20px);
+        @at-root #{$component} {
+          .c-list--3block-list {
+            .c-floating-contents {
+              &:first-of-type .c-floating-contents__floating.font-white,
+              .c-floating-contents__floating.font-white {
+                background-color: rgba($drop-color, 0.5);
+              }
+              &:first-of-type .c-floating-contents__floating.font-black,
+              .c-floating-contents__floating.font-black {
+                background-color: rgba($white, 0.5);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  %secondary {
+    @include screen(web) {
+      display: flex;
+      flex-direction: row-reverse;
+    }
+    .c-floating-contents__floating {
+      @include screen(web) {
+        top: auto;
+        backdrop-filter: blur(6px);
+        flex: 1;
+      }
+      @include screen(custom, rem($tablet), min) {
+        position: relative;
+      }
+      &.font-white {
+        background-color: rgba($drop-color, 0.5);
+        @include screen(custom, rem($tablet), min) {
+          background-color: $dark-gray1;
+        }
+      }
+      &.font-black {
+        background-color: rgba($white, 0.5);
+        @include screen(custom, rem($tablet), min) {
+          background-color: $white;
+        }
+      }
+    }
+    .c-text-contents {
+      @include screen(custom, rem($tablet), min) {
+        max-width: rem($width300px);
+      }
+    }
+  }
+  %only {
+    .c-floating-contents__floor {
+      // ...
+    }
+    .c-floating-contents__floating {
+      @include screen(web) {
+        display: inline-flex;
+        align-items: flex-end;
+        left: 50%;
+        max-height: 100%;
+
+        &.font-white {
+          background-color: $dark-gray1;
+        }
+        &.font-black {
+          background-color: $white;
+        }
+      }
+    }
+  }
+  // element
+  > .component > .cmp-container {
+    @include container($design-grid-full, true);
+    @include inset-padding-hz;
+  }
+
+  $floating-contents: '.c-floating-contents';
+  $text-contents: '.c-text-contents';
+  .c-region-header + * {
+    @include lgness-component-title-margin;
+  }
+
+  .c-carousel {
+    position: static;
+    @include screen(mobile) {
+      overflow: initial;
+    }
+  }
+
+  .c-list {
+    $block-size: 710px;
+    $web-screen: calc(columns(6, false) / $design-grid-full * 100%);
+
+    @include screen(custom, rem($tablet), min) {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(auto, 1fr));
+      gap: rem($margin18px $margin20px);
+      max-height: $block-size;
+    }
+
+    // element
+    &__item {
+      @include lgness-radius('default');
+      overflow: hidden;
+    }
+
+    // modifier
+    &--block-list {
+      @include screen(mobile) {
+        display: flex;
+      }
+      @include screen(web) {
+        display: flex;
+      }
+      .c-image .cmp-image {
+        @include screen(web) {
+          left: 0;
+          width: 50%;
+        }
+      }
+      .c-floating-contents {
+        @extend %only;
+      }
+    }
+    &--2block-list {
+      .c-floating-contents {
+        @extend %primary;
+      }
+      @include screen(custom, (rem($mobile + 1px $tablet))) {
+        gap: rem($margin20px);
+        .c-list__item {
+          flex-basis: calc(100% / 2 - rem($margin20px) / 2);
+        }
+      }
+    }
+    &--3block-list {
+      @include screen(custom, rem($tablet), min) {
+        grid-template-columns: $web-screen auto;
+      }
+
+      .c-floating-contents {
+        &:first-of-type {
+          @extend %primary;
+        }
+        &:not(:first-of-type) {
+          @extend %secondary;
+        }
+      }
+    }
+  }
+
+  .c-floating-contents {
+    &__floor {
+      height: 100%;
+      @include screen(mobile) {
+        flex: 1;
+      }
+      .c-image {
+        & > *:not(.c-text-contents__date-countdown) {
+          @include screen(mobile) {
+            aspect-ratio: 310/400;
+            @include lgness-image-crop('x');
+          }
+        }
+        &__img {
+          @include screen(mobile) {
+            max-height: 100%;
+            max-width: none;
+            width: auto;
+          }
+        }
+      }
+    }
+    &__floating {
+      padding: rem($padding20px);
+      min-height: rem(218px);
+      @include screen(web) {
+        padding: rem($padding32px);
+        min-height: rem(284px);
+        max-height: rem(372px);
+      }
+      @include screen(mobile) {
+        top: auto;
+        background-color: rgba($drop-color, 0.5);
+        backdrop-filter: blur(6px);
+      }
+      &.font-white {
+        background-color: rgba($drop-color, 0.5);
+      }
+      &.font-black {
+        background-color: rgba($white, 0.5);
+      }
+    }
+  }
+
+  .c-text-contents {
+    &__eyebrow {
+      position: relative;
+      > * {
+        display: flex;
+      }
+      span + span {
+        &::before {
+          content: '';
+          display: inline-block;
+          width: rem($width1px);
+          height: rem($height8px);
+          background-color: $mid-gray2;
+          margin-top: rem($margin1px);
+          margin-left: rem($margin4px);
+          margin-right: rem($margin4px);
+          @include screen(web) {
+            height: rem($height14px);
+            margin-left: rem($margin10px);
+            margin-right: rem($margin10px);
+          }
+        }
+      }
+    }
+    &__headline {
+      @include ellipsis(2);
+      @include screen(web) {
+        > * {
+          line-height: normal;
+        }
+      }
+    }
+    &__bodycopy {
+      color: inherit;
+      @include ellipsis(2);
+    }
+  }
+
+  .c-image {
+    overflow: hidden;
+    height: 100%;
+    &__img {
+      height: 100%;
+      // object-fit: cover;
+    }
+    .cmp-image {
+      height: 100%;
+    }
+  }
+
+  .c-countdown--small {
+    position: absolute;
+    z-index: 1;
+    top: rem($margin12px);
+    right: rem($margin13px);
+    width: fit-content;
+    background: rgba($drop-color, 0.5);
+    backdrop-filter: blur(6px);
+    @include screen(web) {
+      top: rem($margin20px);
+      right: rem($margin32px);
+    }
+  }
+
+  // layout : margin
+  .c-text-contents {
+    &__bodycopy,
+    &__date,
+    &__date-countdown {
+      margin-top: rem($margin4px);
+      @include screen(web) {
+        margin-top: rem($margin8px);
+      }
+    }
+  }
+  .c-cta {
+    margin-top: rem($margin12px);
+    @include screen(web) {
+      margin-top: rem($margin16px);
+    }
+  }
+}

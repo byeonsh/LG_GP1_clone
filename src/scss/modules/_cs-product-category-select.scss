@@ -1,0 +1,410 @@
+@use '../abstract/' as *;
+
+@mixin cs-product-category-select {
+  .c-prd-grid {
+    display: grid;
+    grid-template-columns: repeat(2, calc(50% - rem(5px)));
+    grid-gap: rem(10px);
+    align-items: stretch;
+
+    > div {
+      position: relative;
+      background: $white;
+      padding: rem($padding20px);
+      border-radius: rem($radius20);
+      // text-align: center;
+      // color: $gray3;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: flex-start;
+      justify-content: space-between;
+      cursor: pointer;
+      img {
+        max-width: rem(64px);
+        max-height: rem(64px);
+      }
+
+      .c-category__title {
+        word-wrap: break-word;
+        // min-height: rem(36px);
+        display: block;
+        color: $black;
+        text-align: left;
+        margin-bottom: rem($margin16px);
+        word-break: break-word;
+      }
+
+      .c-prd-grid-img {
+        background-repeat: no-repeat;
+        background-position: center 25%;
+        background-size: rem(64px) rem(64px);
+        width: 64px;
+        height: 64px;
+        margin-bottom: 16px;
+      }
+
+      &:hover {
+        // cursor: pointer;
+        background: $gray58;
+
+        .c-category__title {
+          color: $white;
+        }
+      }
+    }
+
+    &.c-small-size {
+      @include reset-list-style;
+
+      li {
+        background: none;
+        padding: rem($padding20px);
+        border: 1px solid $grayd;
+        border-radius: rem($radius8);
+        line-height: rem(18px);
+
+        img {
+          max-width: rem(40px);
+          max-height: rem(40px);
+        }
+      }
+    }
+
+    @include screen(web) {
+      display: flex;
+      flex-wrap: wrap;
+      // justify-content: center;
+      gap: rem(23.5px);
+      max-width: 100%;
+      // margin: 0 auto;
+      width: fit-content;
+
+      // justify-content: center;
+      > div {
+        padding: rem($padding28px);
+        border-radius: rem($radius28);
+        width: rem(220px);
+        position: relative;
+        box-sizing: border-box;
+        align-items: flex-start;
+        flex-direction: column-reverse;
+        &.hover {
+          // border-bottom: 2px solid $red;
+        }
+        .c-category__title {
+          min-height: rem(84px);
+        }
+      }
+    }
+  }
+
+  .c-modal {
+    $c-modal: '.c-modal';
+    // visibility: hidden;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    // display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    z-index: 1000;
+    @include screen(web) {
+      align-items: center;
+    }
+
+    &--active {
+      visibility: unset;
+      display: flex;
+    }
+
+    &__dimmed {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: rgb(0 0 0 / 20%);
+      z-index: 1;
+    }
+
+    &__box {
+      position: relative;
+      width: 100%;
+      background-color: $warm-gray;
+      z-index: 2;
+      @include screen(web) {
+        max-width: rem(1124px);
+        height: 90vh;
+        border-radius: rem(30px);
+      }
+    }
+    &__head {
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding: rem($padding16px $padding16px);
+      text-align: left;
+      border-bottom: 1px solid $mid-gray1;
+      @include screen(web) {
+        position: relative;
+        padding: rem($padding32px $padding48px $padding20px);
+      }
+    }
+    &__title {
+      letter-spacing: rem(0.5px);
+      @include screen(web) {
+        width: 100%;
+        text-align: left;
+      }
+    }
+    &__closebtn {
+      position: absolute;
+      top: rem(18px);
+      right: rem(18px);
+      width: rem(24px);
+      height: rem(24px);
+      border: none;
+      background-color: $warm-gray;
+      cursor: pointer;
+      text-indent: -9999px;
+      @include screen(web) {
+        top: rem(32px);
+        right: rem(48px);
+        width: rem(48px);
+        height: rem(48px);
+      }
+      &:before,
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: rem(1px);
+        height: 100%;
+        margin: auto;
+        background-color: $black;
+        @include screen(web) {
+          width: rem(2px);
+        }
+      }
+      &:before {
+        transform: rotate(45deg);
+      }
+      &:after {
+        transform: rotate(-45deg);
+      }
+    }
+    &__content {
+      padding: rem(0 $padding4px 0 $padding12px);
+      @include screen(web) {
+        padding: rem(0 $padding21px 0 $padding48px);
+      }
+      &-top {
+        padding: rem($padding25px $padding12px 0);
+        @include screen(web) {
+          padding: rem($padding48px 0 0);
+        }
+      }
+      &-scroll-box {
+        padding-right: rem(4px);
+        padding-bottom: rem($padding24px);
+        overflow-y: auto;
+        @include screen(web) {
+          padding-right: rem($padding25px);
+        }
+      }
+      &-inner {
+        scroll-behavior: smooth;
+        padding-right: rem(10px);
+        overflow-y: auto;
+        @include screen(web) {
+          height: auto;
+          padding-right: rem(22px);
+        }
+      }
+      &-title {
+        text-align: left;
+        font-weight: 400;
+      }
+      &-subtitle {
+        margin-top: rem($margin4px);
+        margin-bottom: rem($margin12px);
+        text-align: left;
+        color: $gray3;
+        @include screen(web) {
+          margin-bottom: rem($margin20px);
+        }
+      }
+      .c-prd-grid {
+        display: grid;
+        // grid-template-columns: repeat(auto-fill, minmax(min(calc(50% - rem(10px)), 80vw), 1fr));
+        grid-template-columns: repeat(2, calc(50% - rem(5px)));
+        > div {
+          flex-direction: column;
+          text-align: left;
+          border-radius: rem($radius20);
+          img {
+            // max-width: rem(64px);
+            // max-height: rem(64px);
+          }
+          p {
+            margin-bottom: rem($margin16px);
+            line-height: rem(18px);
+            word-wrap: break-word;
+            word-break: break-word;
+            display: inline-block;
+            // color: $white;
+            @include screen(web) {
+              padding: 0;
+              line-height: rem(24px);
+              min-height: rem(48px);
+            }
+          }
+          &:hover {
+            cursor: pointer;
+            background: $gray58;
+            span,
+            p {
+              color: $white;
+            }
+          }
+        }
+        @include screen(web) {
+          grid-template-columns: repeat(auto-fill, minmax(min(calc(20% - rem(16px)), 80vw), 1fr));
+          grid-gap: rem(16px);
+          > div {
+            border-radius: rem($radius28);
+            padding: rem($padding28px);
+            width: auto;
+          }
+        }
+      }
+    }
+    &__bottom {
+      .care-text {
+        padding: rem($padding24px $padding25px);
+        border-top: 1px solid $graycb;
+        color: $gray6;
+        font-size: rem(14px);
+        line-height: rem(20px);
+        @include screen(web) {
+          padding: rem($padding24px $padding50px $padding20px);
+          border-radius: 0 0 $border8 $border8;
+        }
+      }
+    }
+
+    .c-tabs {
+      &__inner {
+        display: block;
+        border-bottom: 1px solid $mid-gray1;
+        .c-tabs__tablist {
+          scroll-behavior: smooth;
+          overflow-x: unset;
+          overflow-y: unset;
+          gap: 0;
+          padding-right: 0;
+          padding-left: 0;
+          display: flex;
+          // height: $mobile-tab-height;
+          @include screen(web) {
+            @include flex-context;
+            @include container($design-grid-full, false);
+            display: flex;
+            // height: $pc-tab-height;
+          }
+          li {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: auto !important;
+            height: 100%;
+            padding: rem($padding19px 0 $padding17px);
+            &::after {
+              bottom: 0;
+            }
+            &.cmp-tabs__tab {
+              a {
+                color: $gray3;
+                &:active,
+                &:hover {
+                  text-decoration: none;
+                }
+              }
+              &--active {
+                color: $black;
+                a {
+                  color: $black;
+                }
+              }
+            }
+            &:first-child {
+              padding-left: rem($padding25px);
+              margin-right: rem($margin24px);
+              &::after {
+                left: rem(25px);
+                width: calc(100% - rem(25px));
+                @include screen(web) {
+                  left: rem(50px);
+                  width: calc(100% - rem(50px));
+                }
+              }
+            }
+            &:last-child {
+              padding-right: rem($padding25px);
+              &::after {
+                right: rem(25px);
+                width: calc(100% - rem(25px));
+                @include screen(web) {
+                  right: rem(50px);
+                  width: calc(100% - rem(50px));
+                }
+              }
+            }
+            @include screen(web) {
+              width: 50% !important;
+              padding: rem($padding8px 0);
+              &:first-child {
+                padding-left: rem($padding50px) !important;
+                padding-right: 0;
+                margin-right: 0;
+              }
+              &:last-child {
+                padding-right: rem($padding50px) !important;
+                padding-left: 0;
+              }
+            }
+            button {
+              width: 100%;
+              height: 100%;
+              // padding: rem(0 $padding12px);
+              font-size: rem(14px);
+              color: $gray3;
+              font-weight: 700;
+              &:after {
+                bottom: -1px;
+              }
+              &.cmp-tabs__tab--active {
+                color: $black;
+              }
+              @include screen(web) {
+                font-size: rem(18px);
+              }
+            }
+          }
+        }
+      }
+      &__tabpanel {
+        .container {
+          &:last-child {
+            padding-bottom: 0;
+          }
+        }
+      }
+    }
+  }
+}

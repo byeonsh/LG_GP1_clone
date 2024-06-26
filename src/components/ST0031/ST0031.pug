@@ -1,0 +1,215 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_video.pug
+
+block meta 
+    - var componentId = "ST0031"
+    - var componentName = "Business Showroom"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js" type="module")
+
+block content 
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        'body' : [
+                            {
+                                'name' : 'Dark Theme',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'dark-theme'},
+                                ]
+                            }
+                        ],
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'BG Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'bg-default', 'remove' : 'bg-white, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-white', 'remove' : 'bg-default, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-lightgray', 'remove' : 'bg-default, bg-white, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-darkgray', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-black', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-darkgray'},
+                                ]
+                            },
+                        ],
+                        '.c-text-contents' : [
+                            {
+                                'name' : 'Text Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-text-left', 'remove' : 'align-text-center, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-center', 'remove' : 'align-text-left, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-right', 'remove' : 'align-text-left, align-text-center'},
+                                ]
+                            }
+                        ],
+                        '.c-text-contents__bodycopy' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            }
+                        ],
+                        '.c-overlay-contents' : [
+                            {
+                                'name' : 'Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-left', 'remove' : 'align-right'},
+                                    {'toggle' : false, 'add' : 'align-right', 'remove' : 'align-left'},
+                                ]
+                            }
+                        ],
+                    };
+    mixin image(type = "full")
+        // block : image
+        .image.c-image
+            if type == "full"
+                +printLazyPicture('https://via.placeholder.com/768x576/000/333', 'https://via.placeholder.com/1600x700/000/333')
+            else if type == "wide"
+                +printLazyPicture('https://via.placeholder.com/768x512/000/333', 'https://via.placeholder.com/1098x686/000/333')
+            else if type == "standard"
+                +printLazyPicture('https://via.placeholder.com/768x512/000/333', 'https://via.placeholder.com/800x500/000/333')
+            else if type == "narrow"
+                +printLazyPicture('https://via.placeholder.com/768x1025/000/333', 'https://via.placeholder.com/488x650/000/333')
+            if block
+                block
+
+    mixin overlay-contents(type = "full", button="text")
+        .c-overlay-contents.align-left(class=`c-overlay-contents__type-${type}`)
+            .c-overlay-contents__visual
+                +image(type)
+                    // When registering a video
+                    +floating-video("brightcove")
+            .c-overlay-contents__floating
+                .align-container
+                    .c-text-contents
+                        .title.c-text-contents__headline
+                            p.cmp-text.font-w-light-36.font-m-light-24(data-cmp-data-layer="") Heading can be up to 60 characters lorem ipsum dolor sit amet
+                        .text.c-text-contents__bodycopy
+                            p.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") Body text can be up to 350 characters. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec
+                        // Requires input of 'a Show Room' page url in action
+                        form.cmp-form(action="/html/customer/event-show-room.html" method="post", target="_blank")
+                            if(button == "text")
+                                .button
+                                    +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                            else if(button == "box-outlined")
+                                .button
+                                    +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+
+    mixin overlay-contents-animation(type = "full", button="text")
+        .c-overlay-contents.align-left(class=`c-overlay-contents__type-${type}`)
+            .c-overlay-contents__visual
+                +image(type)
+                    // to dev - if animation > mobileUse Flag is "N", remove class ".use-mobile". 
+                    .c-video__animation.use-mobile
+                        +bg-video
+            .c-overlay-contents__floating
+                .align-container
+                    .c-text-contents
+                        .title.c-text-contents__headline
+                            p.cmp-text.font-w-light-36.font-m-light-24(data-cmp-data-layer="") Heading can be up to 60 characters lorem ipsum dolor sit amet
+                        .text.c-text-contents__bodycopy
+                            p.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") Body text can be up to 350 characters. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec
+                        // Requires input of 'a Show Room' page url in action
+                        form.cmp-form(action="/html/customer/event-show-room.html" method="post", target="_blank")
+                            if(button == "text")
+                                .button
+                                    +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                            else if(button == "box-outlined")
+                                .button
+                                    +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                            
+    // Component Markup
+
+    .guide-text-option Option1. full
+    // block : ST0031 
+    .c-wrapper.ST0031.bg-default.margin-top.margin-bottom.subtract-color
+        .component
+            .cmp-container
+                +overlay-contents("full", "text")
+
+    .guide-text-option Option2. wide
+    // block : ST0031 
+    .c-wrapper.ST0031.bg-default.margin-top.margin-bottom.subtract-color
+        .component
+            .cmp-container
+                +overlay-contents("wide", "box-outlined")
+
+    .guide-text-option Option3. standard
+    // block : ST0031 
+    .c-wrapper.ST0031.bg-default.margin-top.margin-bottom.subtract-color
+        .component
+            .cmp-container
+                +overlay-contents("standard", "text")
+
+    .guide-text-option Option4. standard narrow
+    // block : ST0031 
+    .c-wrapper.ST0031.bg-default.margin-top.margin-bottom.subtract-color
+        .component
+            .cmp-container
+                +overlay-contents("narrow", "box-outlined")
+
+    .guide-text-option Option5. full - animation
+    // block : ST0031 
+    .c-wrapper.ST0031.bg-default.margin-top.margin-bottom.subtract-color
+        .component
+            .cmp-container
+                +overlay-contents-animation("full", "text")
+
+    .guide-text-option Option6. wide - animation
+    // block : ST0031 
+    .c-wrapper.ST0031.bg-default.margin-top.margin-bottom.subtract-color
+        .component
+            .cmp-container
+                +overlay-contents-animation("wide", "box-outlined")
+
+    .guide-text-option Option7. standard - animation
+    // block : ST0031 
+    .c-wrapper.ST0031.bg-default.margin-top.margin-bottom.subtract-color
+        .component
+            .cmp-container
+                +overlay-contents-animation("standard", "text")
+
+    .guide-text-option Option8. narrow - animation
+    // block : ST0031 
+    .c-wrapper.ST0031.bg-default.margin-top.margin-bottom.subtract-color
+        .component
+            .cmp-container
+                +overlay-contents-animation("narrow", "box-outlined")
+

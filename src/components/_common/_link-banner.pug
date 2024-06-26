@@ -1,0 +1,35 @@
+mixin linkBanner(params)
+    //- option 
+    //- 1. bgColor:white - 배경컬러 #fff,
+    //- 2. type : (설정없음:기본), small, medium, large, noPadding
+    //- 3. border : true - border 사용, false(설정없음:기본) - border 없음
+    //- 4. mobileTextAlignLeft : true - 모바일 분기에서 버튼 제외하고 text-align:left 로 변경, false(설정없음:기본) - text-align:center
+    //- 5. title, desc : font - 폰트 관련 클래스 추가 , text - 텍스트
+    //- 6. button : type - 버튼 타입 , color - 버튼 컬러,  size - 버튼 사이즈, name - 버튼 텍스트
+    //- 7. isArrowButton : (ex ML000A MyLG-index) arrow 버튼일경우. true일경우 linkButton은 hidden
+    - let data = {...params}
+    .link-banner(class=`${data.bgColor ? `link-banner--bg-${data.bgColor}`: ''} ${data.type ? `link-banner--type-${data.type}` : ''} ${data.border ? `link-banner--border` : ''} ${data.isArrowButton ? 'link-banner--arrowButton':''}`)
+        .c-text-contents(class=`${data.mobileTextAlignLeft ? `align-text-mo` : 'align-text-center'}`)
+            .link-banner__title.text
+                each titleInfo in data.title
+                    p.cmp-text(class=`${titleInfo.font ? `${titleInfo.font}` : 'font-w-light-56 font-m-light-28'}` data-cmp-data-layer="") !{titleInfo.text}
+            if data.desc
+                .link-banner__desc.text.c-text-contents__bodycopy
+                    each descInfo in data.desc
+                        p.cmp-text(class=`${descInfo.font ? `${descInfo.font}` : 'font-w-normal-24 font-m-normal-16'}` data-cmp-data-layer="") !{descInfo.text}
+            if data.descList
+                .link-banner__desc.list.c-text-contents__bodycopy
+                    ul.link-banner__desc--list
+                        each descListInfo in data.descList
+                            li(class=`${descListInfo.font ? `${descListInfo.font}` : 'font-w-normal-24 font-m-normal-16'}` data-cmp-data-layer="") !{descListInfo.text}
+            if data.descRef
+                .link-banner__desc.ref.c-text-contents__bodycopy
+                    each descRefInfo in data.descRef
+                        p.cmp-text(class=`${descRefInfo.font ? `${descRefInfo.font}` : 'font-w-normal-16 font-m-normal-12'}` data-cmp-data-layer="") !{descRefInfo.text}
+
+        if (data.isArrowButton)
+            a(href="#" class="link-banner__btn-arrow" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+        else
+            .button.c-cta
+                each set in data.button
+                    +defaultButton({name: set.name, wSize: set.size, mSize: set.sizeMobile || set.size, buttonStyle: set.buttonStyle, isButton: false})

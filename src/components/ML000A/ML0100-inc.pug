@@ -1,0 +1,255 @@
+include ../_common/_toast.pug
+include ../_common/_pop-msg.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_pagination.pug
+include ../_common/_carousel.pug
+include ../_common/_forms.pug
+include ../_common/_my-component.pug
+include ../_common/_link-banner.pug
+
+mixin myProfile(params)
+    -let data = {...params}
+    .my-profile
+        .my-profile__namebox.my-component__title-section
+            +myProfileNameBox(data)
+        +myProfileInfo(data)
+
+mixin myProfileNameBox(params)
+    - let data = {...params}  
+    .my-profile__name   
+        if data.isVip
+            i.my-profile-vip__icon
+                span.sr-only vip
+            .my-profile-vip.font-w-bold-14.font-m-bold-12.font-red VIP
+        a(href="#" title="move to My account page" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+            .font-w-normal-24.font-m-normal-20 !{data.name}
+                .my-profile__more
+                    span.sr-only icon more 
+
+mixin myProfileInfo(params)
+    - let data = {...params}
+    .my-profile__info(class=`${!data.point ? "my-profile__info--no-point" : ""}`)
+        if data.isObs
+            if data.point && data.coupon
+                .my-profile__info__container
+                    a(href="#" class="my-profile-point" title="view more" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        .my-profile-point__info
+                            i.my-profile-point__icon
+                                span.sr-only point
+                            .my-profile-point__text.font-w-normal-16 Points
+                        .my-profile-point__number.font-w-semibold-24.font-m-semibold-18.font-red !{data.point}P
+                    a(href="#" class="my-profile-coupon" title="view more" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        .my-profile-coupon__info
+                            i.my-profile-coupon__icon
+                                span.sr-only coupon
+                            .my-profile-coupon__text.font-w-normal-16.font-m-normal-12 Coupons
+                        .my-profile-coupon__number.font-w-semibold-24.font-m-semibold-18.font-red= data.coupon
+
+            if !data.point && data.coupon
+                .my-profile__info__container
+                    //- a(href="#" class="my-profile-point" title="view more" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                    //-     .my-profile-orders__info
+                    //-         i.my-profile-orders__icon
+                    //-             span.sr-only orders
+                    //-         .my-profile-orders__text.font-w-normal-16 Orders
+                    //-     .my-profile-orders__number.font-w-semibold-24.font-m-semibold-18.font-red !{data.order}
+                    a(href="#" class="my-profile-coupon" title="view more" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        .my-profile-coupon__info
+                            i.my-profile-coupon__icon
+                                span.sr-only coupon
+                            .my-profile-coupon__text.font-w-normal-16.font-m-normal-12 Coupons
+                        .my-profile-coupon__number.font-w-semibold-24.font-m-semibold-18.font-red= data.coupon
+
+        .my-profile__info-list
+            ul  
+                if data.point && data.order && data.coupon
+                    li
+                        a(href="#" title="view more" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                            .my-profile__list-icon
+                                span.my-profile__icon.my-profile__icon--cart orders
+                                span.font-w-normal-16.font-m-normal-12 Orders
+                            .my-profile__list-count
+                                span.font-w-semibold-24.font-m-semibold-18 !{data.order}
+                if data.product
+                    li
+                        a(href="#" title="view more" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                            .my-profile__list-icon
+                                span.my-profile__icon.my-profile__icon--product products
+                                span.font-w-normal-16.font-m-normal-12 Products
+                            .my-profile__list-count
+                                span.font-w-semibold-24.font-m-semibold-18 !{data.product}
+                if data.request
+                    li
+                        a(href="#" title="view more" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                            .my-profile__list-icon
+                                span.my-profile__icon.my-profile__icon--request repair request
+                                span.font-w-normal-16.font-m-normal-12 Repair Request
+                            .my-profile__list-count
+                                span.font-w-semibold-24.font-m-semibold-18 !{data.request}
+                if data.inquires
+                    li
+                        a(href="#" title="view more" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                            .my-profile__list-icon
+                                span.my-profile__icon.my-profile__icon--inquires inquires
+                                span.font-w-normal-16.font-m-normal-12 Inquires
+                            .my-profile__list-count
+                                span.font-w-semibold-24.font-m-semibold-18 !{data.inquires}
+
+                if data.review
+                    li
+                        a(href="#" title="view more" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                            .my-profile__list-icon
+                                span.my-profile__icon.my-profile__icon--review review
+                                span.font-w-normal-16.font-m-normal-12 Review
+                            .my-profile__list-count
+                                span.font-w-semibold-24.font-m-semibold-18 !{data.review}
+//-[Start] 2024-01-24 : Add ThinQ Banner & ThinQ Registration (Popup)
+mixin thinkQBaner
+    .c-wrapper.ML0100
+        .component
+            .ml-event__zone
+                p.font-w-bold-12.font-m-bold-12 You have connected product(s) with ThinQ. 
+                    +linkButton({href:"#ThinqRegistrationPopUp", color:"black", type:"text", class:"js-pop-open", name:"Link with LG.com with a one click.", roleButton:"true"})
+                button.clone-self
+
+mixin image
+        // block : image
+        .image.thinkq-image
+            +printLazyPicture('https://via.placeholder.com/48x48/000/333/?text=48x48', 'https://via.placeholder.com/160x160/000/333/?text=160x160')   
+
+            if block
+                block
+
+mixin categoryItem3(params)
+    .cmp-carousel__item.swiper-slide(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+        // block : text contents
+        // Text align options default : center
+        // option : target (_blank or _self)
+        div.c-text-contents
+            button(type="button" class="c-prd" data-cmp-data-layer data-link-name="")
+                .c-prd__top
+                    +image                        
+                    .c-prd-info__text.font-m-normal-20.font-w-normal-20 LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)
+                .c-prd-info.c-prd-info__type-grid
+                    .c-prd-info__inner 
+                        dl 
+                            dt.font-m-normal-12.font-w-normal-16 Serial number
+                            dd.font-m-normal-12.font-w-normal-16 503PWJFRFFEES068
+                        dl
+                            dt.font-m-normal-12.font-w-normal-16 Purchase date
+                            dd.font-m-normal-12.font-w-normal-16 22/09/28
+        if block
+            block
+
+mixin carouselPaginationUI 
+        // 23.02.14 modified markup - added ".c-carousel__handler--dial", ".c-carousel__handler--away-from-carousel"
+        .c-carousel__handler.c-carousel__handler--dial.c-carousel__handler--away-from-carousel
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"prev"})
+            +carouselPagination
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"next"})
+        
+//-[End] 2024-01-24 : Add ThinQ Banner & ThinQ Registration (Popup)
+
+mixin ML0100(option=false)
+    .c-wrapper.ML0100
+        .component
+            .fluid-container
+                .my-component
+                    if option === "OBS + Point Member"
+                        +myProfile({
+                            isObs:true,
+                            name:"Hi Reberteotu ********** Steveeeee **********",
+                            point:"42,738",
+                            order:"5", 
+                            product:"3", 
+                            request: "2",
+                            inquires: "7",
+                            review: "8",
+                            coupon:"7",
+                        })
+                    else if option === "OBS + Point VIP"
+                        +myProfile({
+                            isObs:true,
+                            isVip: true,
+                            name:"Hi Reberteotu ********** Stev ****",
+                            point:"42,738",
+                            order:"5", 
+                            product:"3", 
+                            request: "2",
+                            inquires: "7",
+                            review: "8",
+                            coupon:"7",
+                        })
+                    else if option === "OBS + No Point Member"
+                        +myProfile({
+                            isObs:true,
+                            name:"Hi Reberteotu ********** Stev ****",
+                            point:"",
+                            order:"5", 
+                            product:"3", 
+                            request: "2",
+                            inquires: "7",
+                            coupon:"7",
+                        })
+                    else if option === "OBS + No Point VIP"
+                        +myProfile({
+                            isObs:true,
+                            isVip: true,
+                            name:"Hi Reberteotu ********** Stev ****",
+                            point:"",
+                            order:"5", 
+                            product:"3", 
+                            request: "2",
+                            inquires: "7",
+                            coupon:"7",
+                        })
+                    else if option === "Non OBS + No Point"
+                        +myProfile({
+                            isObs:false,
+                            name:"Hi Reberteotu ********** Stev ****",
+                            product:"3", 
+                            request: "2",
+                            inquires: "7",
+                        })
+                    //- +toastPopup([
+                    //-     {
+                    //-     type:"warning", 
+                    //-     text:`You have connected product(s) with ThinQ.    <a href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="">Link with LG.com with a one click.</a>`,
+                    //-     remove:true,
+                    //-     }
+                    //- ])
+
+//-[Start] 2024-01-24 : Add ThinQ Banner & ThinQ Registration (Popup)
+block modal
+    .ML0100
+        +pop-msg-standard({id : "ThinqRegistrationPopUp", headline:"ThinQ Registration" , headLineStyle: "font-w-light-56 font-m-light-28", size: "large"})
+            .c-pop-msg__contents
+                .type-home.thinkq-popup.disableSwiper
+                    .c-modal__box
+                        .c-modal__content
+                            .c-result.font-m-normal-12.font-w-normal-16
+                                        span.c-result__number 4
+                                        | products      
+                            .c-modal__content-scroll-box 
+                                .carousel.panelcontainer
+                                    // block : swiper-category
+                                    .cmp-carousel.swiper.c-carousel.c-carousel--category(data-cmp-data-layer="")
+                                        .cmp-carousel__content.swiper-wrapper
+                                            - for (var x = 0; x < 3; x++)
+                                                +categoryItem3
+                                        +carouselPaginationUI
+                .c-pop-msg__borderbottom
+                    .c-modal__bottom 
+                        .button.c-cta       
+                            +defaultButton({name: 'Register', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})(disabled)
+            +toastPopup([
+                {   type:"success", 
+                    remove: true, 
+                    text: 'Registration Successful!',
+                }
+            ])
+//-[End] 2024-01-24 : Add ThinQ Banner & ThinQ Registration (Popup)

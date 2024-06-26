@@ -1,0 +1,1631 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_forms.pug
+include ../_common/_pagination.pug
+include ../_common/_brand-detail.pug
+include ../_common/_filter.pug
+
+block meta 
+    - var componentId = "CS0041"
+    - var componentName = "Find a store"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    //- // An area for testing options when coding. 
+    //- // Please do not use it during development.
+    //- .guide 
+    //-     .grid-1600 
+    //-     .grid-1440
+    //-     .inner
+    //-         .guide-list
+    //-             a(href="../../list-st.html") List 
+    //-         .guide-title #{componentId}. #{componentName}
+    //-         .guide-wrapper
+    //-             script. 
+    //-                 const guideList = {
+    //-                     '.c-wrapper' : [
+    //-                         {
+    //-                             'name' : 'Top margin',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : true, 'add' : 'margin-top'},
+    //-                             ]
+    //-                         },
+    //-                         {
+    //-                             'name' : 'Bottom margin',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : true, 'add' : 'margin-bottom'},
+    //-                             ]
+    //-                         },
+    //-                         {
+    //-                             'name' : 'BG Color',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : false, 'add' : 'bg-white', 'remove' : 'bg-lightgray, bg-darkgray, bg-black'},
+    //-                                 {'toggle' : false, 'add' : 'bg-lightgray', 'remove' : 'bg-white, bg-darkgray, bg-black'},
+    //-                                 {'toggle' : false, 'add' : 'bg-darkgray', 'remove' : 'bg-white, bg-lightgray, bg-black'},
+    //-                                 {'toggle' : false, 'add' : 'bg-black', 'remove' : 'bg-white, bg-lightgray, bg-darkgray'},
+    //-                             ]
+    //-                         }
+    //-                     ],
+    //-                     '.type-text, .type-disclaimer' : [
+    //-                         {
+    //-                             'name' : 'Text Align',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : false, 'add' : 'align-text-left', 'remove' : 'align-text-center, align-text-right'},
+    //-                                 {'toggle' : false, 'add' : 'align-text-center', 'remove' : 'align-text-left, align-text-right'},
+    //-                                 {'toggle' : false, 'add' : 'align-text-right', 'remove' : 'align-text-left, align-text-center'},
+    //-                             ]
+    //-                         }
+    //-                     ],                        
+    //-                     '.type-disclaimer .component' : [
+    //-                         {
+    //-                             'name' : 'Width Size',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : false, 'add' : 'width-1440', 'remove' : 'width-1600'},
+    //-                                 {'toggle' : false, 'add' : 'width-1600', 'remove' : 'width-1440'},
+    //-                             ]
+    //-                         }
+    //-                     ],
+    //-                     '.type-side' : [
+    //-                         {
+    //-                             'name' : 'Align',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : false, 'add' : 'align-left', 'remove' : 'align-right'},
+    //-                                 {'toggle' : false, 'add' : 'align-right', 'remove' : 'align-left'},
+    //-                             ]
+    //-                         }
+    //-                     ],
+    //-                     '.c-text-contents__bodycopy, .c-text-contents__disclaimer' : [
+    //-                         {
+    //-                             'name' : 'Font Options',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+    //-                                 {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+    //-                                 {'toggle' : true, 'add' : 'font-italic'},
+    //-                                 {'toggle' : true, 'add' : 'font-underline'},
+    //-                             ]
+    //-                         }
+    //-                     ],
+    //-                 };
+
+    mixin printTab(div, num, selected)
+        if selected
+            li.swiper-slide.cmp-tabs__tab.cmp-tabs__tab--active(href="#" role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0" data-cmp-hook-tabs="tab" aria-selected="true")
+                a(role="tab" aria-label="")
+                    if block
+                        block
+        else 
+            li.swiper-slide.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1" data-cmp-hook-tabs="tab" aria-selected="false")
+                a(role="tab" aria-label="")
+                    if block
+                        block
+    
+    mixin printTabPanel(div, num, selected)
+        if selected 
+            .c-tabs__tabpanel.c-tabs__tabpanel--active.cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+        else 
+            .c-tabs__tabpanel.cmp-tabs__tabpanel(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+
+    mixin mapSearchBox
+        // block : c-map-search__box
+        form.cmp-form.c-map-search__box(action="#" method="get")&attributes(attributes)
+            .c-map-search__box-inner
+                label.sr-only(for='finderSearch') search
+                input.c-map-search__box-input(type='text' id='finderSearch' placeholder='Enter your city or address')
+                .c-map-search__box-button
+                    button(type="button" aria-label="").c-icon-search
+                        span.sr-only search
+                    p.c-map-search__box-divider
+                    button(type="button" aria-label="").c-icon-place
+                        span.sr-only location
+            if block
+                block
+
+    mixin mapSearchResultBrand(params)
+        +brandMapSearchPdp(params)
+
+    mixin mapSearchResultBrand2(params)
+        +brandMapSearchGlobal({
+            isPin: params.isPin,
+            isExport: params.isExport,
+            isToggle: params.isToggle,
+            pin: 'blank',
+            code: false,
+            brandName: 'Связной',
+            brandAddr: {address: 'Красный проспект, д. 2/1',},
+            contact: [
+                {type: 'phone', number: ['8-800-250-25-25']},
+            ],
+            toggleProduct: false,
+        })
+
+    mixin mapTooltipBrand
+        +brandDetailItem(
+            {
+                brandLogo: {src: 'https://via.placeholder.com/80x28/999999/333333'},
+                brandDistance: '2.2 KM',
+                brandName: 'Paulson’s',
+                brandAddr: {address: '1880 Broadway New York, NY 10023, United States', hasExport: false},
+                contact: [
+                    {type: 'phone', number: ['212-246-9734']},
+                ],
+                buttons: [
+                    {color: 'red', type: 'box', name: 'GET DIRECTIONS'}
+                ],
+                category: {title: 'Product category', text: ['Blu-ray & DVD players, FridgeBlu-ray & DVD players', 'Blu-ray & DVD players, FridgBlu-ray']},
+            }
+        )
+
+    mixin mapDirectionDefault(type, direction, pin, text)
+        - var bg = type ? 'c-box-gray' : ''
+        - var itmType = type ? direction : 'item'
+        - var color = direction == 'departure' ? 'is-black' : ''
+        - var indent = pin == 'car' ? 'c-pin-text__indent' : ''
+
+        .c-pin-text(class=`${bg} c-map-direction__result-${itmType}`)
+            .c-pin-text__pin
+                if type
+                    .c-pin-text__pin
+                        .c-map__pin(class=`${color}`)= pin
+                else
+                    .c-pin__icon(class=`${pin}`)
+                        span.sr-only= pin
+            if type
+                .font-w-normal-14.font-m-normal-14.c-pin-text__content= text
+            if block
+                .c-pin-text__content
+                    block
+
+    mixin mapDirectionResultTitle(direction, pin, text)
+        +mapDirectionDefault(true, direction, pin, text) 
+
+    mixin mapDirectionResultItem(pin)
+        +mapDirectionDefault(false, '', pin, '')
+            if block
+                block
+
+    mixin step-contents 
+        .c-step-option-list.c-list.js-step-option-area(role="list")
+            - for (var i=0; i<2; i++)
+                +step-option-card    
+
+    mixin step-option-card
+        .c-step-option-list__item.c-list__item.js-step-option(role="listitem")
+            // block - image
+            .image.c-image
+                +printLazyPicture('https://via.placeholder.com/310x200/000/eee/?text=310x200', 'https://via.placeholder.com/708x300/000/eee/?text=708x300')
+            // block - text contents
+            .c-text-contents
+                .text.c-text-contents__eyebrow
+                    strong.cmp-text.font-w-semibold-24.font-m-semibold-16(data-cmp-data-layer="")
+                        | Warranty
+                .text.c-text-contents__bodycopy
+                    .cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+                        | Verify ownership to get efficient warranty service.
+            // block - cta
+            .button.c-cta
+                +linkButton({name:'Learn more'})
+
+    mixin formRange(label, js,  name1, name2, id1, id2, min, max, minlabel, maxlabel)
+        .c-form-range(data-range=js)
+            label.sr-only(for=`${id1}`)= `${label} Min`
+            label.sr-only(for=`${id2}`)= `${label} Max`
+            input.input-left(type="range", name=`${name1}_fake`, id=`${id1}`, min=`${min}` max=`${max}` value=`${min}`, aria-labelledby=`${id1}_real`, aria-label=`${minlabel}`)&attributes(attributes)
+            input.input-right(type="range", name=`${name2}_fake`, id=`${id2}`, min=`${min}` max=`${max}` value=`${max}`, aria-labelledby=`${id2}_real`, aria-label=`${maxlabel}`)&attributes(attributes)
+            // real value
+            input.real-left(type="hidden", name=`${name1}`, value="")
+            input.real-right(type="hidden", name=`${name2}`, value="")
+            .c-range
+                .c-range-slider
+                    .c-range-track
+                    .c-range-active
+                    .c-range-thumb__left
+                    .c-range-thumb__right
+                    .c-range-min(id=`${id1}_real`) 0 Km
+                    .c-range-max(id=`${id2}_real`) 300 Km
+
+    .guide-text-type Find a store
+
+    // Component Markup
+    .c-wrapper.CS0041.type-text
+        .component.full.type-tabs
+            .CS0041__container
+                .c-tabs.tabs.panelcontainer
+                    .cmp-tabs(data-cmp-data-layer="", data-placeholder-text="false")
+                        .c-tabs__inner.cmp-tabs__inner
+                            ul.c-tabs__tablist.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                +printTab(1, 1, true) LG BEST SHOP
+                                +printTab(1, 2, false) Service center
+                        
+                        +printTabPanel(1, 1, true)
+                            .container
+                                .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+
+                                // block : search(common area)
+                                .c-search-box.c-no-title
+                                    // block : .c-search-box__body(--multi, --double)
+                                    form(action="#" method="get")
+                                        .cs-form
+                                            .cmp-form
+                                                label(for="address").font-m-normal-16.font-w-normal-24 Address #[em.require *]#[span.sr-only Required Field]
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        input#address.font-m-normal-16.font-w-normal-20(type="text" required="required" aria-label="" placeholder="Type your city or address")
+                                                        .c-warning Address is required.
+                                                    .cs-form__button-wrap
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(tabindex="0")
+                                                //- .cs-form__desc.font-m-normal-14i.font-w-normal-14 After typing Zip Code, please click a SEARCH button above.
+                                // block : c-map-search
+                                // 검색타입 : is-search
+                                // 길찾기, 검색 없는 리스트 : is-direction
+                                .c-map-search.is-direction
+                                    .c-map-search__inner
+                                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                                            span.sr-only Search Box
+                                        // block : c-map
+                                        .c-map
+                                            .c-map__inner
+                                                // element : c-map__pin
+                                                .c-map__pin.is-active 1
+                                                // element : c-map-tooltip
+                                                .c-map-tooltip
+                                                    .c-map-tooltip__container
+                                                        .button
+                                                            button(type="button" aria-label="").c-map-tooltip__close
+                                                                span.sr-only Close
+                                                        // block : c-brand-detail
+                                                        .c-map-tooltip__contents
+                                                            +mapTooltipBrand()
+                                                // google map
+                                        .c-map-search__body
+                                            // result
+                                            .c-map-search__result
+                                                .c-brand-detail-list
+                                                    +mapSearchResultBrand({ isPin: true, isExport: false, isToggle: true })
+                                                    +mapSearchResultBrand({ isPin: false, isExport: false, isToggle: false })
+                                            
+                                            .c-map-search__pagenation
+                                                +pagination
+                            
+                            .guide-text-option Case1: Before searching (first screen when entering page)
+                            .container
+                                // block : c-map-search
+                                // 검색타입 : is-search
+                                // 길찾기, 검색 없는 리스트 : is-direction
+                                .c-map-search.is-direction
+                                    .c-map-search__inner
+                                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                                            span.sr-only Search Box
+                                        //- block : c-map
+                                        .c-map
+                                        .c-map-search__body
+                                            //- result
+                                            .c-map-search__result
+                                                .c-no-data-wrap.small
+                                                    .c-no-data 
+                                                        strong.font-w-semibold-20.font-m-semibold-20 Please enter a location
+
+                            .guide-text-option Case2 Get directions_No data
+                            .container
+                                // block : c-map-search
+                                // 검색타입 : is-search
+                                // 길찾기, 검색 없는 리스트 : is-direction
+                                .c-map-search.is-direction
+                                    .c-map-search__inner
+                                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                                            span.sr-only Search Box
+                                        //- block : c-map
+                                        .c-map
+                                            .c-map__inner
+                                                //- //- element : c-map__pin
+                                                //- .c-map__pin.is-active 1
+                                                //- //- element : c-map-tooltip
+                                                //- .c-map-tooltip
+                                                //-     .c-map-tooltip__container
+                                                //-         .button
+                                                //-             button(type="button").c-map-tooltip__close
+                                                //-                 span.sr-only Close
+                                                //-         //- block : c-brand-detail
+                                                //-         .c-map-tooltip__contents
+                                                //-             +mapTooltipBrand()
+                                                //- //- google map
+                                        .c-map-search__body
+                                            //- result
+                                            .c-map-search__result
+                                                .c-no-data-wrap.small
+                                                    .c-no-data 
+                                                        strong.font-w-semibold-20.font-m-semibold-20 No results
+                                                        p.font-w-normal-16.font-m-normal-22.c-no-data__desc TIP : try entering a location
+
+                            .guide-text-option Case3: find directions (if no search results are available)
+                            .container
+                                // block : c-map-search
+                                // 검색타입 : is-search
+                                // 길찾기, 검색 없는 리스트 : is-direction
+                                .c-map-search.is-direction
+                                    .c-map-search__inner
+                                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                                            span.sr-only Search Box
+                                        //- block : c-map
+                                        .c-map
+                                            .c-map__inner
+                                                //- //- element : c-map__pin
+                                                //- .c-map__pin.is-active 1
+                                                //- //- element : c-map-tooltip
+                                                //- .c-map-tooltip
+                                                //-     .c-map-tooltip__container
+                                                //-         .button
+                                                //-             button(type="button").c-map-tooltip__close
+                                                //-                 span.sr-only Close
+                                                //-         //- block : c-brand-detail
+                                                //-         .c-map-tooltip__contents
+                                                //-             +mapTooltipBrand()
+                                                //- //- google map
+                                        .c-map-search__body
+                                            //- block : c-map-direction__search
+                                            .c-map-direction__search
+                                                .c-map-direction__search-title
+                                                    p.font-w-semibold-24.font-m-semibold-20 Get directions
+                                                    button.c-button.c-map-direction__search-close(type="button" aria-label="")
+                                                        span.sr-only Close
+                                                //- element : departure
+                                                .c-pin-text.c-box-gray.c-map-direction__search-departure
+                                                    .c-pin-text__pin.c-map-direction__search-pin
+                                                        .c-map__pin.is-black A
+                                                    +mapSearchBox(class="c-pin-text__content")
+                                                        .c-warning.font-m-normal-14.font-w-normal-14 Address is required.
+                                                //- element : to
+                                                .c-pin-text.c-box-gray.c-map-direction__search-arrival
+                                                    .c-pin-text__pin.c-map-direction__search-pin
+                                                        .c-map__pin B
+                                                    .c-pin-text__content.font-w-normal-14.font-m-normal-16 1 PARK AVE MT VERNON, NY 10550
+                                            //- result
+                                            .c-map-search__result
+                                                //- block : c-map-direction__result
+                                                .c-map-direction__result
+                                                    .c-no-data-wrap.small
+                                                        .c-no-data 
+                                                            strong.font-w-semibold-20.font-m-semibold-20 There is no data
+                                                            p.font-w-normal-16.font-m-normal-22.c-no-data__desc There is no data
+
+                            .guide-text-option Case4: find directions (if search results are available)
+                            .container
+                                // block : c-map-search
+                                // 검색타입 : is-search
+                                // 길찾기, 검색 없는 리스트 : is-direction
+                                .c-map-search.is-direction
+                                    .c-map-search__inner
+                                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                                            span.sr-only Search Box
+                                        // block : c-map
+                                        .c-map
+                                            .c-map__inner
+                                                //- element : c-map__pin
+                                                .c-map__pin.c-tooltip-direction.is-black A
+                                                .c-map__pin.c-tooltip-direction B
+                                                //- element : c-map-tooltip
+                                                .c-map-tooltip.c-tooltip-direction
+                                                    .c-map-tooltip__container
+                                                        .button
+                                                            button(type="button").c-map-tooltip__close
+                                                                span.sr-only Close
+                                                        //- block : c-brand-detail
+                                                        .c-map-tooltip__contents
+                                                            p.font-w-normal-14.font-m-normal-14 550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States
+                                                // google map
+                                        .c-map-search__body
+                                            // block : c-map-direction__search
+                                            .c-map-direction__search
+                                                .c-map-direction__search-title
+                                                    p.font-w-semibold-24.font-m-semibold-20 Get directions
+                                                    button.c-button.c-map-direction__search-close(type="button" aria-label="")
+                                                        span.sr-only Close
+                                                // element : departure
+                                                .c-pin-text.c-box-gray.c-map-direction__search-departure
+                                                    .c-pin-text__pin.c-map-direction__search-pin
+                                                        .c-map__pin.is-black A
+                                                    +mapSearchBox(class="c-pin-text__content")
+                                                        .c-warning.font-m-normal-14.font-w-normal-14 Address is required.
+                                                // element : to
+                                                .c-pin-text.c-box-gray.c-map-direction__search-arrival
+                                                    .c-pin-text__pin.c-map-direction__search-pin
+                                                        .c-map__pin B
+                                                    .c-pin-text__content.font-w-normal-14.font-m-normal-16 1 PARK AVE MT VERNON, NY 10550
+
+                                            // result
+                                            .c-map-search__result
+                                                // block : c-map-direction__result
+                                                .c-map-direction__result
+                                                    .font-w-semibold-18.font-m-semibold-18.c-map-direction__result-title Suggested routes
+                                                    +mapDirectionResultTitle('departure', 'A', '550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States')
+
+                                                    +mapDirectionResultItem('car')
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__indent 5.5 MI. About 12 mins
+                                                    +mapDirectionResultItem('turn-left')
+                                                        p.c-pin-text__icon 1
+                                                        p.font-w-normal-14.font-m-normal-14 At the roundabout, take the 2nd exit onto Hanger Hill/A317
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                                    +mapDirectionResultItem('turn-left')
+                                                        p.c-pin-text__icon 2
+                                                        p.font-w-normal-14.font-m-normal-14 Head east toward Baker St
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                                    +mapDirectionResultItem('turn-left')
+                                                        p.c-pin-text__icon 3
+                                                        p.font-w-normal-14.font-m-normal-14 Head east toward Baker St
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                                    +mapDirectionResultItem('turn-left')
+                                                        p.c-pin-text__icon 4
+                                                        p.font-w-normal-14.font-m-normal-14 At the roundabout, take the 2nd exit onto Hanger Hill/A317
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+
+                                                    +mapDirectionResultTitle('arrival', 'B', '550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States')
+
+                            .guide-text-option Case5: CN
+                            .container
+                                //- block : c-map-search
+                                //- 검색타입 : is-search
+                                //- 길찾기, 검색 없는 리스트 : is-direction
+                                .c-map-search.is-direction
+                                    .c-map-search__inner
+                                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                                            span.sr-only Search Box
+                                        //- block : c-map
+                                        .c-map
+                                            .c-map__inner
+                                                //- element : c-map__pin
+                                                .c-map__pin.is-active 1
+                                                //- element : c-map-tooltip
+                                                .c-map-tooltip
+                                                    .c-map-tooltip__container
+                                                        .button
+                                                            button(type="button" aria-label="").c-map-tooltip__close
+                                                                span.sr-only Close
+                                                        //- block : c-brand-detail
+                                                        .c-map-tooltip__contents
+                                                            +mapTooltipBrand()
+                                                //- google map
+                                        .c-map-search__body
+                                            //- result
+                                            .c-map-search__result
+                                                .c-brand-detail-list
+                                                    +mapSearchResultBrand({ isPin: true, isExport: false, isToggle: true })
+                                                    +mapSearchResultBrand({ isPin: false, isExport: false, isToggle: false })
+                                            
+                                            .c-map-search__pagenation
+                                                +pagination
+
+                            .guide-text-option global - Search results present
+                            .container
+                                //- block : c-map-search
+                                //- 검색타입 : is-search
+                                //- 길찾기, 검색 없는 리스트 : is-direction
+                                .c-map-search.is-direction
+                                    .c-map-search__inner
+                                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                                            span.sr-only Search Box
+                                        //- block : c-map
+                                        .c-map
+                                            .c-map__inner
+                                                //- element : c-map__pin
+                                                .c-map__pin.is-active 1
+                                                //- element : c-map-tooltip
+                                                .c-map-tooltip
+                                                    .c-map-tooltip__container
+                                                        .button
+                                                            button(type="button" aria-label="").c-map-tooltip__close
+                                                                span.sr-only Close
+                                                        //- block : c-brand-detail
+                                                        .c-map-tooltip__contents
+                                                            +mapTooltipBrand()
+                                                //- google map
+                                        .c-map-search__body
+                                            //- result
+                                            .c-map-search__result
+                                                .c-brand-detail-list
+                                                    +mapSearchResultBrand2({ isPin: false, isExport: false, isToggle: false })
+                                                    +mapSearchResultBrand2({ isPin: true, isExport: false, isToggle: true })
+                                                    +mapSearchResultBrand2({ isPin: false, isExport: false, isToggle: false })
+                                            
+                                            .c-map-search__pagenation
+                                                +pagination
+
+
+                            .guide-text-option Cookie settings 
+                            .container
+                                // No result
+                                .c-no-result 
+                                    .c-no-result__wrap
+                                        span.c-no-result__icon 
+                                        p.c-no-result__headline.font-m-normal-16.font-w-normal-20 This feature is disabled in your cookie settings. 
+                                        p.c-no-result__bodycopy.font-m-normal-12.font-w-normal-16 To activate, click on the link 
+                                            span.c-no-result__point “Change cookie settings” 
+                                            | in the top right corner of this page.
+                                        //- This feature is disabled in your cookie settings. To activate, click on the link 
+                                        //-     span.c-no-result__point “Change cookie settings” 
+                                        //-     span.pc-block in the top right corner of this page.
+
+                        +printTabPanel(1, 2, true)
+                            
+                            // 20230411 Global case add
+                            .guide-text-option Global common (All Case)
+                            .container
+                                .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+
+                                // block : search(common area)
+                                .c-search-box.c-no-title
+                                    // block : .c-search-box__body(--multi, --double)
+                                    form(action="#" method="get")
+                                        .cs-form
+                                            .cmp-form
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="address").font-m-normal-16.font-w-normal-24 Address #[em.require *]#[span.sr-only Required Field] 
+                                                        input#address.font-m-normal-16.font-w-normal-20(type="text" required="required" aria-label="" placeholder="Type your address")
+                                                        .c-warning The address is required.
+                                                        .button
+                                                            +linkButton({type:"text", name:"Select my address", underline:true})
+                                                    .cs-form__input-inner
+                                                        label(for="country").font-m-normal-16.font-w-normal-24 Country #[span.sr-only Required Field]
+                                                        select#region.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a country" data-change-label="Choose a country") Choose a country
+                                                            option(value="Choose a country" data-change-label="Choose a country") Choose a country
+                                                        .c-warning The country is required.
+                                                    .cs-form__input-inner
+                                                        label(for="product").font-m-normal-16.font-w-normal-24 Product #[span.sr-only Required Field]
+                                                        select#region.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a product" data-change-label="Choose a product") Choose a product
+                                                            option(value="Choose a product" data-change-label="Choose a product") Choose a product
+                                                        .c-warning The product is required.
+                                                    .cs-form__button-wrap
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})
+
+                            .guide-text-option ID / IN / HK Type 
+                            .container
+                                .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+
+                                // block : search(common area)
+                                .c-search-box.c-no-title
+                                    // block : .c-search-box__body(--multi, --double)
+                                    form(action="#" method="get")
+                                        .cs-form
+                                            .cmp-form
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="address").font-m-normal-16.font-w-normal-24 Service Center Location #[em.require *]#[span.sr-only Required Field] 
+                                                        input#address.font-m-normal-16.font-w-normal-20(type="text" required="required" aria-label="" placeholder="Type your address")
+                                                        .c-warning The address is required.
+                                                        .button
+                                                            +linkButton({type:"text", name:"Select my address", underline:true})
+                                                    .cs-form__input-inner
+                                                        label(for="product").font-m-normal-16.font-w-normal-24 Product #[span.sr-only Required Field]
+                                                        select#region.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a product" data-change-label="Choose a product") Choose a product
+                                                            option(value="Choose a product" data-change-label="Choose a product") Choose a product
+                                                        .c-warning The product is required.
+                                                    .cs-form__button-wrap
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})
+
+                            //-  20240624 : add EG Type
+                            .guide-text-option EG Type
+                            .container
+                                .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                                // block : search(common area)
+                                .c-search-box.c-no-title
+                                    // block : .c-search-box__body(--multi, --double)
+                                    form(action="#" method="get")
+                                        .cs-form
+                                            .cmp-form
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="address").font-m-normal-16.font-w-normal-24 City #[em.require *]#[span.sr-only Required Field] 
+                                                        select#region.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Select a City" data-change-label="Select a City") Select a City
+                                                            option(value="Select a City" data-change-label="Select a City") Select a City
+                                                        .c-warning City is required.
+                                                    .cs-form__input-inner
+                                                        label(for="product").font-m-normal-16.font-w-normal-24 Find a Repair center
+                                                        input#address.font-m-normal-16.font-w-normal-20(type="text" required="required" aria-label="" placeholder="Enter your city or address")
+                                                    .cs-form__input-inner
+                                                        label(for="product").font-m-normal-16.font-w-normal-24 Repairable Product
+                                                        select#region.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Select a Product" data-change-label="Select a Product") Select a Product
+                                                            option(value="Select a Product" data-change-label="Select a Product") Select a Product
+                                                    .cs-form__button-wrap
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})
+                             
+                            .guide-text-option Case1: Before searching (first screen when entering page)
+                            .container
+                                .c-require.font-m-normal-14i.font-w-normal-14i #[em.require *] Required fields 
+
+                                // block : c-map-search
+                                // 검색타입 : is-search
+                                // 길찾기, 검색 없는 리스트 : is-direction
+                                .c-map-search.is-direction
+                                    .c-map-search__inner
+                                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                                            span.sr-only Search Box
+                                        //- block : c-map
+                                        .c-map
+                                            .c-map__inner
+                                                //- //- element : c-map__pin
+                                                //- .c-map__pin.is-active 1
+                                                //- //- element : c-map-tooltip
+                                                //- .c-map-tooltip
+                                                //-     .c-map-tooltip__container
+                                                //-         .button
+                                                //-             button(type="button" aria-label="").c-map-tooltip__close
+                                                //-                 span.sr-only Close
+                                                //-         //- block : c-brand-detail
+                                                //-         .c-map-tooltip__contents
+                                                //-             +mapTooltipBrand()
+                                                //- google map
+                                        .c-map-search__body
+                                            //- result
+                                            .c-map-search__result
+                                                .c-no-data-wrap.small
+                                                    .c-no-data 
+                                                        strong.font-w-semibold-20.font-m-semibold-20 Please enter a location
+
+                            .guide-text-option Case2: search results (if there are center list )
+                            .container
+                                //- block : c-map-search
+                                //- 검색타입 : is-search
+                                //- 길찾기, 검색 없는 리스트 : is-direction
+                                .c-map-search.is-direction
+                                    .c-map-search__inner
+                                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                                            span.sr-only Search Box
+                                        //- block : c-map
+                                        .c-map
+                                            .c-map__inner
+                                                //- element : c-map__pin
+                                                .c-map__pin.is-active 1
+                                                //- element : c-map-tooltip
+                                                .c-map-tooltip
+                                                    .c-map-tooltip__container
+                                                        .button
+                                                            button(type="button" aria-label="").c-map-tooltip__close
+                                                                span.sr-only Close
+                                                        //- block : c-brand-detail
+                                                        .c-map-tooltip__contents
+                                                            +mapTooltipBrand()
+                                                //- google map
+                                        .c-map-search__body
+                                            .c-map-direction__search
+                                                .c-map-direction__search-title
+                                                    p.font-w-semibold-24.font-m-semibold-20 Search result
+                                                .c-map-direction__search-sub-title
+                                                    p.font-w-normal-16.font-m-normal-14 Quellenstrasse, 1100 Vienna, Austria
+                                                .c-map-btn__box 
+                                                    +defaultButton({name: '25km', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: true, buttonStyle : "highlight",})
+                                                    +defaultButton({name: '50km', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: true})
+                                                    +defaultButton({name: '70km', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: true})
+                                                    +defaultButton({name: '100km', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: true})
+                                            //- result
+                                            .c-map-search__result
+                                                .c-brand-detail-list
+                                                    +mapSearchResultBrand({ isPin: true, isExport: false, isToggle: true })
+                                                    +mapSearchResultBrand({ isPin: false, isExport: false, isToggle: false })
+                                            
+                                            .c-map-search__pagenation
+                                                +pagination
+
+                            .guide-text-option Case3: No search results
+                            .container
+                                .c-require.font-m-normal-14i.font-w-normal-14i #[em.require *] Required fields 
+
+                                // block : c-map-search
+                                // 검색타입 : is-search
+                                // 길찾기, 검색 없는 리스트 : is-direction
+                                .c-map-search.is-direction
+                                    .c-map-search__inner
+                                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                                            span.sr-only Search Box
+                                        //- block : c-map
+                                        .c-map
+                                            .c-map__inner
+                                                //- //- element : c-map__pin
+                                                //- .c-map__pin.is-active 1
+                                                //- //- element : c-map-tooltip
+                                                //- .c-map-tooltip
+                                                //-     .c-map-tooltip__container
+                                                //-         .button
+                                                //-             button(type="button" aria-label="").c-map-tooltip__close
+                                                //-                 span.sr-only Close
+                                                //-         //- block : c-brand-detail
+                                                //-         .c-map-tooltip__contents
+                                                //-             +mapTooltipBrand()
+                                                //- //- google map
+                                        .c-map-search__body
+                                            //- result
+                                            .c-map-search__result
+                                                .c-no-data-wrap.small
+                                                    .c-no-data 
+                                                        strong.font-w-semibold-20.font-m-semibold-20 No results
+                                                        p.font-w-normal-16.font-m-normal-22.c-no-data__desc TIP : try entering a location
+
+                            .guide-text-option Case4: find directions (if there is center details)
+                            .container
+                                .c-find-service-center
+                                    .c-find-service-center__wrap
+                                        p.c-find-service-center__tit.font-w-light-36.font-m-light-16 TECNICAV SERVICE E.I.R.L.
+                                        .c-find-service-center__img
+                                            +printLazyPicture('https://via.placeholder.com/328x186/000/fff/?text=328x186', 'https://via.placeholder.com/280x210/000/fff/?text=280x210')
+
+                                        ul.c-find-service-center__info-list
+                                            li
+                                                strong.font-w-nomal-16.font-m-nomal-16.c-find-service-center__info-tit Working hours
+                                                p.font-w-nomal-16.font-m-nomal-14.c-find-service-center__info-txt [Horario de atención] ▶ Lunes a Viernes de 9:00am a 1:00pm y de 3:00pm a 7:00pm / Sábados de 9:00am a 1:00pm. 
+                                            li
+                                                strong.font-w-nomal-16.font-m-nomal-16.c-find-service-center__info-tit Contactos
+                                                p.font-w-nomal-16.font-m-nomal-14.c-find-service-center__info-txt (51) 302969
+                                            li
+                                                strong.font-w-nomal-16.font-m-nomal-16.c-find-service-center__info-tit Whatsapp 
+                                                p.font-w-nomal-16.font-m-nomal-14.c-find-service-center__info-txt 
+                                            li
+                                                strong.font-w-nomal-16.font-m-nomal-16.c-find-service-center__info-tit Dirección
+                                                p.font-w-nomal-16.font-m-nomal-14.c-find-service-center__info-txt JR. RAUL PORRAS BARRENECHEA NRO.330 JULIACA SAN ROMAN - PUNO, PUNO/SAN ROMAN/JULIACA, 21, 1101
+                                            li
+                                                strong.font-w-nomal-16.font-m-nomal-16.c-find-service-center__info-tit Contact Information
+                                                p.font-w-nomal-16.font-m-nomal-14.c-find-service-center__info-txt [Horario de atención] ▶ Lunes a Viernes de 9:00am a 1:00pm y de 3:00pm a 7:00pm / Sábados de 9:00am a 1:00pm.
+                                            li
+                                                strong.font-w-nomal-16.font-m-nomal-16.c-find-service-center__info-tit Productos reparables
+                                                p.font-w-nomal-16.font-m-nomal-14.c-find-service-center__info-txt Aire acondicionado comercial, Aire acondicionado residencial, Almacenamiento externo, Almacenamiento óptico, Campanas Extractoras, Celulares, Cocinas, Computación, Equipos de sonido , Lavadoras, Microondas, Monitores, Monitores comerciales, OLED SIGNAGE, Proyectores, Refrigeradoras, SEÑALIZACIÓN DIGITAL, TV COMERCIAL, TVS, Video
+                                        
+                                        .c-list-more.align-text-center.button
+                                            +textButton({name: 'Información detallada', wSize: 'small', mSize: 'small', buttonStyle: 'down', isButton: true})
+
+                                // block : c-map-search
+                                // 검색타입 : is-search
+                                // 길찾기, 검색 없는 리스트 : is-direction
+                                .c-map-search.is-direction
+                                    .c-map-search__inner
+                                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                                            span.sr-only Search Box
+                                        // block : c-map
+                                        .c-map
+                                            .c-map__inner
+                                                // element : c-map__pin
+                                                .c-map__pin.is-active 1
+                                                // element : c-map-tooltip
+                                                .c-map-tooltip
+                                                    .c-map-tooltip__container
+                                                        .button
+                                                            button(type="button" aria-label="").c-map-tooltip__close
+                                                                span.sr-only Close
+                                                        // block : c-brand-detail
+                                                        .c-map-tooltip__contents
+                                                            +mapTooltipBrand()
+                                                // google map
+                                        .c-map-search__body
+                                            // block : c-map-direction__search
+                                            .c-map-direction__search
+                                                .c-map-direction__search-title
+                                                    p.font-w-semibold-24.font-m-semibold-20 Get directions
+                                                    button.c-button.c-map-direction__search-close(type="button" aria-label="")
+                                                        span.sr-only Close
+                                                // element : departure
+                                                .c-pin-text.c-box-gray.c-map-direction__search-departure
+                                                    .c-pin-text__pin.c-map-direction__search-pin
+                                                        .c-map__pin.is-black A
+                                                    +mapSearchBox(class="c-pin-text__content")
+                                                        .c-warning.font-m-normal-14.font-w-normal-14 Address is required.
+                                                // element : to
+                                                .c-pin-text.c-box-gray.c-map-direction__search-arrival
+                                                    .c-pin-text__pin.c-map-direction__search-pin
+                                                        .c-map__pin B
+                                                    .c-pin-text__content.font-w-normal-14.font-m-normal-16 1 PARK AVE MT VERNON, NY 10550
+
+                                            // result
+                                            .c-map-search__result
+                                                // block : c-map-direction__result
+                                                .c-map-direction__result
+                                                    .font-w-semibold-18.font-m-semibold-18.c-map-direction__result-title Suggested routes
+                                                    +mapDirectionResultTitle('departure', 'A', '550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States')
+
+                                                    +mapDirectionResultItem('car')
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__indent 5.5 MI. About 12 mins
+                                                    +mapDirectionResultItem('turn-left')
+                                                        p.c-pin-text__icon 1
+                                                        p.font-w-normal-14.font-m-normal-14 At the roundabout, take the 2nd exit onto Hanger Hill/A317
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                                    +mapDirectionResultItem('turn-left')
+                                                        p.c-pin-text__icon 2
+                                                        p.font-w-normal-14.font-m-normal-14 Head east toward Baker St
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                                    +mapDirectionResultItem('turn-left')
+                                                        p.c-pin-text__icon 3
+                                                        p.font-w-normal-14.font-m-normal-14 Head east toward Baker St
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                                    +mapDirectionResultItem('turn-left')
+                                                        p.c-pin-text__icon 4
+                                                        p.font-w-normal-14.font-m-normal-14 At the roundabout, take the 2nd exit onto Hanger Hill/A317
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+
+                                                    +mapDirectionResultTitle('arrival', 'B', '550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States')
+
+                            .guide-text-option Case5: find directions (if there is no center detail)
+                            .container
+                                // block : c-map-search
+                                // 검색타입 : is-search
+                                // 길찾기, 검색 없는 리스트 : is-direction
+                                .c-map-search.is-direction
+                                    .c-map-search__inner
+                                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                                            span.sr-only Search Box
+                                        // block : c-map
+                                        .c-map
+                                            .c-map__inner
+                                                // element : c-map__pin
+                                                .c-map__pin.is-active 1
+                                                // element : c-map-tooltip
+                                                .c-map-tooltip
+                                                    .c-map-tooltip__container
+                                                        .button
+                                                            button(type="button" aria-label="").c-map-tooltip__close
+                                                                span.sr-only Close
+                                                        // block : c-brand-detail
+                                                        .c-map-tooltip__contents
+                                                            +mapTooltipBrand()
+                                                // google map
+                                        .c-map-search__body
+                                            // block : c-map-direction__search
+                                            .c-map-direction__search
+                                                .c-map-direction__search-title
+                                                    p.font-w-semibold-24.font-m-semibold-20 Get directions
+                                                    button.c-button.c-map-direction__search-close(type="button" aria-label="")
+                                                        span.sr-only Close
+                                                // element : departure
+                                                .c-pin-text.c-box-gray.c-map-direction__search-departure
+                                                    .c-pin-text__pin.c-map-direction__search-pin
+                                                        .c-map__pin.is-black A
+                                                    +mapSearchBox(class="c-pin-text__content")
+                                                        .c-warning.font-m-normal-14.font-w-normal-14 Address is required.
+                                                // element : to
+                                                .c-pin-text.c-box-gray.c-map-direction__search-arrival
+                                                    .c-pin-text__pin.c-map-direction__search-pin
+                                                        .c-map__pin B
+                                                    .c-pin-text__content.font-w-normal-14.font-m-normal-16 1 PARK AVE MT VERNON, NY 10550
+
+                                            // result
+                                            .c-map-search__result
+                                                // block : c-map-direction__result
+                                                .c-map-direction__result
+                                                    .font-w-semibold-18.font-m-semibold-18.c-map-direction__result-title Suggested routes
+                                                    +mapDirectionResultTitle('departure', 'A', '550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States')
+
+                                                    +mapDirectionResultItem('car')
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__indent 5.5 MI. About 12 mins
+                                                    +mapDirectionResultItem('turn-left')
+                                                        p.c-pin-text__icon 1
+                                                        p.font-w-normal-14.font-m-normal-14 At the roundabout, take the 2nd exit onto Hanger Hill/A317
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                                    +mapDirectionResultItem('turn-left')
+                                                        p.c-pin-text__icon 2
+                                                        p.font-w-normal-14.font-m-normal-14 Head east toward Baker St
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                                    +mapDirectionResultItem('turn-left')
+                                                        p.c-pin-text__icon 3
+                                                        p.font-w-normal-14.font-m-normal-14 Head east toward Baker St
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                                    +mapDirectionResultItem('turn-left')
+                                                        p.c-pin-text__icon 4
+                                                        p.font-w-normal-14.font-m-normal-14 At the roundabout, take the 2nd exit onto Hanger Hill/A317
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+
+                                                    +mapDirectionResultTitle('arrival', 'B', '550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States')
+
+                            .guide-text-option Case6: find directions (No data)
+                            .container
+                                // block : c-map-search
+                                // 검색타입 : is-search
+                                // 길찾기, 검색 없는 리스트 : is-direction
+                                //- block : c-map-search
+                                //- 검색타입 : is-search
+                                //- 길찾기, 검색 없는 리스트 : is-direction
+                                .c-map-search.is-direction
+                                    .c-map-search__inner
+                                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                                            span.sr-only Search Box
+                                        //- block : c-map
+                                        .c-map
+                                            .c-map__inner
+                                                //- //- element : c-map__pin
+                                                //- .c-map__pin.is-active 1
+                                                //- //- element : c-map-tooltip
+                                                //- .c-map-tooltip
+                                                //-     .c-map-tooltip__container
+                                                //-         .button
+                                                //-             button(type="button" aria-label="").c-map-tooltip__close
+                                                //-                 span.sr-only Close
+                                                //-         //- block : c-brand-detail
+                                                //-         .c-map-tooltip__contents
+                                                //-             +mapTooltipBrand()
+                                                //- //- google map
+                                        .c-map-search__body
+                                            //- block : c-map-direction__search
+                                            .c-map-direction__search
+                                                .c-map-direction__search-title
+                                                    p.font-w-semibold-24.font-m-semibold-20 Get directions
+                                                    button.c-button.c-map-direction__search-close(type="button" aria-label="")
+                                                        span.sr-only Close
+                                                //- element : departure
+                                                .c-pin-text.c-box-gray.c-map-direction__search-departure
+                                                    .c-pin-text__pin.c-map-direction__search-pin
+                                                        .c-map__pin.is-black A
+                                                    +mapSearchBox(class="c-pin-text__content")
+                                                        .c-warning.font-m-normal-14.font-w-normal-14 Address is required.
+                                                //- element : to
+                                                .c-pin-text.c-box-gray.c-map-direction__search-arrival
+                                                    .c-pin-text__pin.c-map-direction__search-pin
+                                                        .c-map__pin B
+                                                    .c-pin-text__content.font-w-normal-14.font-m-normal-16 1 PARK AVE MT VERNON, NY 10550
+                                            //- result
+                                            .c-map-search__result
+                                                //- block : c-map-direction__result
+                                                .c-map-direction__result
+                                                    .c-no-data-wrap.small
+                                                        .c-no-data 
+                                                            strong.font-w-semibold-20.font-m-semibold-20 There is no data
+                                                            p.font-w-normal-16.font-m-normal-22.c-no-data__desc Please retry to enter a location
+                            
+
+                            //- .guide-text-option Case5: CN
+                            //- .container
+                            //-     //- block : c-map-search
+                            //-     //- 검색타입 : is-search
+                            //-     //- 길찾기, 검색 없는 리스트 : is-direction
+                            //-     .c-map-search.is-direction
+                            //-         .c-map-search__inner
+                            //-             button.c-map-search__toggle(type="button" aria-expanded="false" aria-label="")
+                            //-                 span.sr-only Collapse
+                            //-                 span.sr-only Expand
+                            //-             //- block : c-map
+                            //-             .c-map
+                            //-                 .c-map__inner
+                            //-                     //- element : c-map__pin
+                            //-                     .c-map__pin.is-active 1
+                            //-                     //- element : c-map-tooltip
+                            //-                     .c-map-tooltip
+                            //-                         .c-map-tooltip__container
+                            //-                             .button
+                            //-                                 button(type="button" aria-label="").c-map-tooltip__close
+                            //-                                     span.sr-only Close
+                            //-                             //- block : c-brand-detail
+                            //-                             .c-map-tooltip__contents
+                            //-                                 +mapTooltipBrand()
+                            //-                     //- google map
+                            //-             .c-map-search__body
+                            //-                 //- result
+                            //-                 .c-map-search__result
+                            //-                     .c-brand-detail-list
+                            //-                         +mapSearchResultBrand({ isPin: true, isExport: false, isToggle: true })
+                            //-                         +mapSearchResultBrand({ isPin: false, isExport: false, isToggle: false })
+                                            
+                            //-                 .c-map-search__pagenation
+                            //-                     +pagination
+                            
+
+
+                            .guide-text-option Cookie Settings Guide
+                            .container
+                                // No result
+                                .c-no-result 
+                                    .c-no-result__wrap
+                                        span.c-no-result__icon 
+                                        p.c-no-result__headline.font-m-normal-16.font-w-normal-20 font-w-semibold-20 This feature is disabled in your cookie settings. 
+                                        p.c-no-result__bodycopy.font-m-normal-12.font-w-normal-16 This feature is disabled in your cookie settings. To activate, click on the link 
+                                            span.c-no-result__point “Change cookie settings” 
+                                            span.pc-block in the top right corner of this page.
+                            
+                            //- 20230922 수정
+                            .guide-text-type Brazil (BR) type
+                            .guide-text-option Find Us &gt; Select the Product you wish to Repair
+                            .container
+                                .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+
+                                // block : search(common area)
+                                .c-search-box.c-no-title
+                                    // block : .c-search-box__body(--multi, --double)
+                                    form(action="#" method="get")
+                                        .cs-form
+                                            .cmp-form.cs-form__input-wrap-step.c-form__step1
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="category").font-m-normal-16.font-w-normal-24 Select the product you wish to repair #[em.require *]#[span.sr-only Required Field]
+                                                        select#region.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a category" data-change-label="Choose a category1" ) Choose a category1
+                                                            option(value="Choose a category2" data-change-label="Choose a category2") Choose a category2
+                                                        .c-warning Super category is required.
+                                                    .cs-form__input-inner.cs-form__input-inner2
+                                                        select#category.font-m-normal-16.font-w-normal-20(required="required" aria-label="" disabled)
+                                                            option(value="Choose a category" data-change-label="Choose a category") Choose a category
+                                                            option(value="Choose a category" data-change-label="Choose a category") Choose a category
+                                                        .c-warning  Category is required.
+                                                    .cs-form__input-inner.cs-form__input-inner2
+                                                        select#product.font-m-normal-16.font-w-normal-20(required="required" aria-label="" disabled)
+                                                            option(value="Choose a product" data-change-label="Choose a product") Choose a product
+                                                            option(value="Choose a product" data-change-label="Choose a product") Choose a product
+                                                        .c-warning Subcategory is required.
+
+                            .guide-text-option Find Us &gt; Search by
+                            .container
+                                .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+
+                                // block : search(common area)
+                                .c-search-box.c-no-title
+                                    // block : .c-search-box__body(--multi, --double)
+                                    form(action="#" method="get")
+                                        .cs-form
+                                            .cmp-form.cs-form__input-wrap-step.c-form__step1
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="category").font-m-normal-16.font-w-normal-24 Select the product you wish to repair #[em.require *]#[span.sr-only Required Field]
+                                                        select#region.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a category" data-change-label="Choose a category1" ) Choose a category1
+                                                            option(value="Choose a category2" data-change-label="Choose a category2") Choose a category2
+                                                        .c-warning Super category is required.
+                                                    .cs-form__input-inner.cs-form__input-inner2
+                                                        select#category.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a category" data-change-label="Choose a category") Choose a category
+                                                            option(value="Choose a category" data-change-label="Choose a category") Choose a category
+                                                        .c-warning  Category is required.
+                                                    .cs-form__input-inner.cs-form__input-inner2
+                                                        select#product.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a product" data-change-label="Choose a product") Choose a product
+                                                            option(value="Choose a product" data-change-label="Choose a product") Choose a product
+                                                        .c-warning Subcategory is required.
+                                            .cmp-form.cs-form__input-wrap-step.c-form__step2
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="searchby").font-m-normal-16.font-w-normal-24 Search by #[em.require *]#[span.sr-only Required Field]
+                                                        select#searchby.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a how to search" data-change-label="Choose a how to search") Choose a how to search
+                                                            option(value="searchByCity" data-change-label="Search by City") Search by City
+                                                            option(value="searchByAddress" data-change-label="Search by Address") Search by Address
+                                                            option(value="currentLocation" data-change-label="Use Current Location") Use Current Location
+                                                        .c-warning Search type is required.
+                                            .cmp-form.cs-form__input-wrap-step.c-form__step3.c-step2-form-fild
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="state").font-m-normal-16.font-w-normal-24 City #[em.require *]#[span.sr-only Required Field]
+                                                        select#state.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a state" data-change-label="Choose a state") Choose a state
+                                                            option(value="Choose a state" data-change-label="Choose a state") Choose a state
+                                                        .c-warning City is required.
+                                                    .cs-form__button-wrap.mt26
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search")
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="address").font-m-normal-16.font-w-normal-24 Zip code or address #[em.require *]#[span.sr-only Required Field] 
+                                                        input#address.font-m-normal-16.font-w-normal-20(type="text" required="required" aria-label="" placeholder="Type your address")
+                                                        .c-warning Address is required.
+                                                        .button
+                                                            +linkButton({type:"text", name:"Select my address", underline:true})
+                                                    .cs-form__button-wrap.mt26
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search")
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="address").font-m-normal-16.font-w-normal-24 Zip code or address #[em.require *]#[span.sr-only Required Field] 
+                                                        input#address.font-m-normal-16.font-w-normal-20(type="text" required="required" aria-label="" placeholder="Type your address")
+                                                        .c-warning Address is required.
+                                                        .button
+                                                            +linkButton({type:"text", name:"Select my address", underline:true})
+                                                    .cs-form__button-wrap.mt26
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search")
+
+                            //- Please refer to the W/F 
+                            .guide-text-option Find Us &gt; Search by - Brazil (BR), Mexico (MX)
+                            .container
+                                .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+
+                                // block : search(common area)
+                                .c-search-box.c-no-title
+                                    // block : .c-search-box__body(--multi, --double)
+                                    form(action="#" method="get")
+                                        .cs-form
+                                            .cmp-form.cs-form__input-wrap-step.c-form__step1
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="category").font-m-normal-16.font-w-normal-24 Select the product you wish to repair #[em.require *]#[span.sr-only Required Field]
+                                                        select#region.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a category" data-change-label="Choose a category1" ) Choose a category1
+                                                            option(value="Choose a category2" data-change-label="Choose a category2") Choose a category2
+                                                        .c-warning Super category is required.
+                                                    .cs-form__input-inner.cs-form__input-inner2
+                                                        select#category.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a category" data-change-label="Choose a category") Choose a category
+                                                            option(value="Choose a category" data-change-label="Choose a category") Choose a category
+                                                        .c-warning Category is required.
+                                                    .cs-form__input-inner.cs-form__input-inner2
+                                                        select#product.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a product" data-change-label="Choose a product") Choose a product
+                                                            option(value="Choose a product" data-change-label="Choose a product") Choose a product
+                                                        .c-warning Subcategory is required.
+                                            .cmp-form.cs-form__input-wrap-step.c-form__step2
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="searchby").font-m-normal-16.font-w-normal-24 Search by #[em.require *]#[span.sr-only Required Field]
+                                                        select#searchby.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a how to search" data-change-label="Choose a how to search") Choose a how to search
+                                                            option(value="searchByCity" data-change-label="Search by City") Search by City
+                                                            option(value="searchByAddress" data-change-label="Search by Address (street, zip code, etc.)") Search by Address (street, zip code, etc.)
+                                                            option(value="currentLocation" data-change-label="Use Current Location") Use Current Location
+                                                        .c-warning Search type is required.
+                                            .cmp-form.cs-form__input-wrap-step.c-form__step3.c-step2-form-fild
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="state").font-m-normal-16.font-w-normal-24 State #[em.require *]#[span.sr-only Required Field]
+                                                        select#state.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a state" data-change-label="Choose a state") Choose a state
+                                                            option(value="Choose a state" data-change-label="Choose a state") Choose a state
+                                                        .c-warning State is required.
+                                                    .cs-form__input-inner
+                                                        label(for="state").font-m-normal-16.font-w-normal-24 City #[em.require *]#[span.sr-only Required Field]
+                                                        select#state.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a City" data-change-label="Choose a City") Choose a City
+                                                            option(value="Choose a City" data-change-label="Choose a City") Choose a City
+                                                        .c-warning City is required.
+                                                    .cs-form__button-wrap.mt26
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search")
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="address").font-m-normal-16.font-w-normal-24 Find service  #[em.require *]#[span.sr-only Required Field] 
+                                                        input#address.font-m-normal-16.font-w-normal-20(type="text" required="required" aria-label="" placeholder="Enter an address or zip code")
+                                                        .c-warning Address is required.
+                                                        .button
+                                                            +linkButton({type:"text", name:"Select my address", underline:true})
+                                                    .cs-form__button-wrap.mt26
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search")
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="address").font-m-normal-16.font-w-normal-24 Find service  #[em.require *]#[span.sr-only Required Field] 
+                                                        input#address.font-m-normal-16.font-w-normal-20(type="text" required="required" aria-label="" placeholder="Enter an address or zip code")
+                                                        .c-warning Address is required.
+                                                        .button
+                                                            +linkButton({type:"text", name:"Select my address", underline:true})
+                                                    .cs-form__button-wrap.mt26
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search")
+
+                            .guide-text-option Find Us &gt; Search by - Colombia (CO)
+                            .container
+                                .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+
+                                // block : search(common area)
+                                .c-search-box.c-no-title
+                                    // block : .c-search-box__body(--multi, --double)
+                                    form(action="#" method="get")
+                                        .cs-form
+                                            .cmp-form.cs-form__input-wrap-step.c-form__step1
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="category").font-m-normal-16.font-w-normal-24 Select the product you wish to repair #[em.require *]#[span.sr-only Required Field]
+                                                        select#region.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a category" data-change-label="Choose a category1" ) Choose a category1
+                                                            option(value="Choose a category2" data-change-label="Choose a category2") Choose a category2
+                                                        .c-warning Super category is required.
+                                                    .cs-form__input-inner.cs-form__input-inner2
+                                                        select#category.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a category" data-change-label="Choose a category") Choose a category
+                                                            option(value="Choose a category" data-change-label="Choose a category") Choose a category
+                                                        .c-warning Category is required.
+                                                    .cs-form__input-inner.cs-form__input-inner2
+                                                        select#product.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a product" data-change-label="Choose a product") Choose a product
+                                                            option(value="Choose a product" data-change-label="Choose a product") Choose a product
+                                                        .c-warning Subcategory is required.
+                                            .cmp-form.cs-form__input-wrap-step.c-form__step2
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="searchby").font-m-normal-16.font-w-normal-24 Search by #[em.require *]#[span.sr-only Required Field]
+                                                        select#searchby.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a how to search" data-change-label="Choose a how to search") Choose a how to search
+                                                            option(value="searchByCity" data-change-label="Search by City") Search by City
+                                                            option(value="searchByAddress" data-change-label="Search by Address") Search by Address
+                                                            option(value="currentLocation" data-change-label="Use Current Location") Use Current Location
+                                                        .c-warning Search type is required.
+                                            .cmp-form.cs-form__input-wrap-step.c-form__step3.c-step2-form-fild
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="state").font-m-normal-16.font-w-normal-24 State #[em.require *]#[span.sr-only Required Field]
+                                                        select#state.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a state" data-change-label="Choose a state") Choose a state
+                                                            option(value="Choose a state" data-change-label="Choose a state") Choose a state
+                                                        .c-warning State is required.
+                                                    .cs-form__input-inner
+                                                        label(for="state").font-m-normal-16.font-w-normal-24 City #[em.require *]#[span.sr-only Required Field]
+                                                        select#state.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a City" data-change-label="Choose a City") Choose a City
+                                                            option(value="Choose a City" data-change-label="Choose a City") Choose a City
+                                                        .c-warning City is required.
+                                                    .cs-form__button-wrap.mt26
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search")
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="address").font-m-normal-16.font-w-normal-24 Find service  #[em.require *]#[span.sr-only Required Field] 
+                                                        input#address.font-m-normal-16.font-w-normal-20(type="text" required="required" aria-label="" placeholder="Enter an address")
+                                                        .c-warning Address is required.
+                                                        .button
+                                                            +linkButton({type:"text", name:"Select my address", underline:true})
+                                                    .cs-form__button-wrap.mt26
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search")
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="address").font-m-normal-16.font-w-normal-24 Find service  #[em.require *]#[span.sr-only Required Field] 
+                                                        input#address.font-m-normal-16.font-w-normal-20(type="text" required="required" aria-label="" placeholder="Enter an address")
+                                                        .c-warning Address is required.
+                                                        .button
+                                                            +linkButton({type:"text", name:"Select my address", underline:true})
+                                                    .cs-form__button-wrap.mt26
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search")
+                            
+                            .guide-text-option Find Us &gt; Search by - Chile (CL)
+                            .container
+                                .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+
+                                // block : search(common area)
+                                .c-search-box.c-no-title
+                                    // block : .c-search-box__body(--multi, --double)
+                                    form(action="#" method="get")
+                                        .cs-form
+                                            .cmp-form.cs-form__input-wrap-step.c-form__step1
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="category").font-m-normal-16.font-w-normal-24 Select the product you wish to repair #[em.require *]#[span.sr-only Required Field]
+                                                        select#region.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a category" data-change-label="Choose a category1" ) Choose a category1
+                                                            option(value="Choose a category2" data-change-label="Choose a category2") Choose a category2
+                                                        .c-warning Super category is required.
+                                                    .cs-form__input-inner.cs-form__input-inner2
+                                                        select#category.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a category" data-change-label="Choose a category") Choose a category
+                                                            option(value="Choose a category" data-change-label="Choose a category") Choose a category
+                                                        .c-warning Category is required.
+                                                    .cs-form__input-inner.cs-form__input-inner2
+                                                        select#product.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a product" data-change-label="Choose a product") Choose a product
+                                                            option(value="Choose a product" data-change-label="Choose a product") Choose a product
+                                                        .c-warning Subcategory is required.
+                                            .cmp-form.cs-form__input-wrap-step.c-form__step2
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="searchby").font-m-normal-16.font-w-normal-24 Search by #[em.require *]#[span.sr-only Required Field]
+                                                        select#searchby.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a how to search" data-change-label="Choose a how to search") Choose a how to search
+                                                            option(value="searchByCity" data-change-label="Search by City") Search by City
+                                                            option(value="searchByAddress" data-change-label="Search by Address") Search by Address
+                                                            option(value="currentLocation" data-change-label="Use Current Location") Use Current Location
+                                                        .c-warning Search type by is required.
+                                            .cmp-form.cs-form__input-wrap-step.c-form__step3.c-step2-form-fild
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="state").font-m-normal-16.font-w-normal-24 City #[em.require *]#[span.sr-only Required Field]
+                                                        select#state.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a City" data-change-label="Choose a City") Choose a City
+                                                            option(value="Choose a City" data-change-label="Choose a City") Choose a City
+                                                        .c-warning City is required.
+                                                    .cs-form__button-wrap.mt26
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search")
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="address").font-m-normal-16.font-w-normal-24 Find service  #[em.require *]#[span.sr-only Required Field] 
+                                                        input#address.font-m-normal-16.font-w-normal-20(type="text" required="required" aria-label="" placeholder="Enter an address")
+                                                        .c-warning Address is required.
+                                                        .button
+                                                            +linkButton({type:"text", name:"Select my address", underline:true})
+                                                    .cs-form__button-wrap.mt26
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search")
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="address").font-m-normal-16.font-w-normal-24 Find service  #[em.require *]#[span.sr-only Required Field] 
+                                                        input#address.font-m-normal-16.font-w-normal-20(type="text" required="required" aria-label="" placeholder="Enter an address")
+                                                        .c-warning Address is required.
+                                                        .button
+                                                            +linkButton({type:"text", name:"Select my address", underline:true})
+                                                    .cs-form__button-wrap.mt26
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search")
+
+                            .guide-text-option Find Us &gt; Search by - Peru (PE), Panama (CAC, CAC_EN)
+                            .container
+                                .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+
+                                // block : search(common area)
+                                .c-search-box.c-no-title
+                                    // block : .c-search-box__body(--multi, --double)
+                                    form(action="#" method="get")
+                                        .cs-form
+                                            .cmp-form.cs-form__input-wrap-step.c-form__step1
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="category").font-m-normal-16.font-w-normal-24 Select the product you wish to repair #[em.require *]#[span.sr-only Required Field]
+                                                        select#region.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a category" data-change-label="Choose a category1" ) Choose a category1
+                                                            option(value="Choose a category2" data-change-label="Choose a category2") Choose a category2
+                                                        .c-warning Super category is required.
+                                                    .cs-form__input-inner.cs-form__input-inner2
+                                                        select#category.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a category" data-change-label="Choose a category") Choose a category
+                                                            option(value="Choose a category" data-change-label="Choose a category") Choose a category
+                                                        .c-warning Category is required.
+                                                    .cs-form__input-inner.cs-form__input-inner2
+                                                        select#product.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a product" data-change-label="Choose a product") Choose a product
+                                                            option(value="Choose a product" data-change-label="Choose a product") Choose a product
+                                                        .c-warning Subcategory is required.
+                                            .cmp-form.cs-form__input-wrap-step.c-form__step2
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="searchby").font-m-normal-16.font-w-normal-24 Search by #[em.require *]#[span.sr-only Required Field]
+                                                        select#searchby.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a how to search" data-change-label="Choose a how to search") Choose a how to search
+                                                            option(value="searchByCity" data-change-label="Search by City") Search by City
+                                                            option(value="searchByAddress" data-change-label="Search by Address") Search by Address
+                                                            option(value="currentLocation" data-change-label="Use Current Location") Use Current Location
+                                                        .c-warning Search type is required.
+                                            .cmp-form.cs-form__input-wrap-step.c-form__step3.c-step2-form-fild
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="state").font-m-normal-16.font-w-normal-24 Country #[em.require *]#[span.sr-only Required Field]
+                                                        select#state.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a Country" data-change-label="Choose a Country") Choose a Country
+                                                            option(value="Choose a Country" data-change-label="Choose a Country") Choose a Country
+                                                        .c-warning Country is required.
+                                                    .cs-form__input-inner
+                                                        label(for="state").font-m-normal-16.font-w-normal-24 City #[em.require *]#[span.sr-only Required Field]
+                                                        select#state.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a City" data-change-label="Choose a City") Choose a City
+                                                            option(value="Choose a City" data-change-label="Choose a City") Choose a City
+                                                        .c-warning City is required.
+                                                    .cs-form__button-wrap.mt26
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search")
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="state").font-m-normal-16.font-w-normal-24 Country #[em.require *]#[span.sr-only Required Field]
+                                                        select#state.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a Country" data-change-label="Choose a Country") Choose a Country
+                                                            option(value="Choose a Country" data-change-label="Choose a Country") Choose a Country
+                                                        .c-warning Country is required.
+                                                    .cs-form__input-inner
+                                                        label(for="address").font-m-normal-16.font-w-normal-24 Find service  #[em.require *]#[span.sr-only Required Field] 
+                                                        input#address.font-m-normal-16.font-w-normal-20(type="text" required="required" aria-label="" placeholder="Enter an address")
+                                                        .c-warning Address is required.
+                                                        .button
+                                                            +linkButton({type:"text", name:"Select my address", underline:true})
+                                                    .cs-form__button-wrap.mt26
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search")
+                                                .cs-form__input-wrap
+                                                    .cs-form__input-inner
+                                                        label(for="state").font-m-normal-16.font-w-normal-24 Country #[em.require *]#[span.sr-only Required Field]
+                                                        select#state.font-m-normal-16.font-w-normal-20(required="required" aria-label="")
+                                                            option(value="Choose a Country" data-change-label="Choose a Country") Choose a Country
+                                                            option(value="Choose a Country" data-change-label="Choose a Country") Choose a Country
+                                                        .c-warning Country is required.
+                                                    .cs-form__input-inner
+                                                        label(for="address").font-m-normal-16.font-w-normal-24 Find service  #[em.require *]#[span.sr-only Required Field] 
+                                                        input#address.font-m-normal-16.font-w-normal-20(type="text" required="required" aria-label="" placeholder="Enter an address")
+                                                        .c-warning Address is required.
+                                                        .button
+                                                            +linkButton({type:"text", name:"Select my address", underline:true})
+                                                    .cs-form__button-wrap.mt26
+                                                        .button.c-cta
+                                                            +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search")
+
+                            .guide-text-option Search result - BR type (Search by City)
+                            .container
+                                //- block : c-map-search
+                                //- 검색타입 : is-search
+                                //- 길찾기, 검색 없는 리스트 : is-direction
+                                .c-map-search.is-direction
+                                    .c-map-search__inner
+                                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                                            span.sr-only Search Box
+                                        //- block : c-map
+                                        .c-map
+                                            .c-map__inner
+                                                //- element : c-map__pin
+                                                .c-map__pin.is-active 1
+                                                //- element : c-map-tooltip
+                                                .c-map-tooltip
+                                                    .c-map-tooltip__container
+                                                        .button
+                                                            button(type="button" aria-label="").c-map-tooltip__close
+                                                                span.sr-only Close
+                                                        //- block : c-brand-detail
+                                                        .c-map-tooltip__contents
+                                                            +mapTooltipBrand()
+                                                //- google map
+                                        .c-map-search__body
+                                            .c-map-direction__search
+                                                .c-map-direction__search-title
+                                                    p.font-w-semibold-24.font-m-semibold-20 Search result
+                                                .c-map-direction__search-sub-title
+                                                    p.font-w-normal-16.font-m-normal-14 Quellenstrasse, 1100 Vienna, Austria
+                                            //- result
+                                            .c-map-search__result
+                                                .c-brand-detail-list
+                                                    +mapSearchResultBrand({ isPin: true, isExport: false, isToggle: true })
+                                                    +mapSearchResultBrand({ isPin: false, isExport: false, isToggle: false })
+                                            
+                                            .c-map-search__pagenation
+                                                +pagination
+                            
+                            .guide-text-option Search result - BR type (Searcy by address, Use Current Location)
+                            .container
+                                //- block : c-map-search
+                                //- 검색타입 : is-search
+                                //- 길찾기, 검색 없는 리스트 : is-direction
+                                .c-map-search.is-direction
+                                    .c-map-search__inner
+                                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                                            span.sr-only Search Box
+                                        //- block : c-map
+                                        .c-map
+                                            .c-map__inner
+                                                //- element : c-map__pin
+                                                .c-map__pin.is-active 1
+                                                //- element : c-map-tooltip
+                                                .c-map-tooltip
+                                                    .c-map-tooltip__container
+                                                        .button
+                                                            button(type="button" aria-label="").c-map-tooltip__close
+                                                                span.sr-only Close
+                                                        //- block : c-brand-detail
+                                                        .c-map-tooltip__contents
+                                                            +mapTooltipBrand()
+                                                //- google map
+                                        .c-map-search__body
+                                            .c-from-dragbar-box
+                                                div(style=" display: flex; gap: 10px; flex-wrap: wrap;")
+                                                    .c-form
+                                                        script. 
+                                                            const dragbarVal = {
+                                                                priceOption:[
+                                                                    {'0km':''}, 
+                                                                    {'30Km':'RG00044272'},
+                                                                    {'100Km':'RG00044273'},
+                                                                    {'150Km':'RG00044274'},
+                                                                    {'300Km':''},
+                                                                ]
+                                                            }
+                                                            if(dragbarVal.priceOption){
+                                                                dragbarVal.priceOption = JSON.parse(JSON.stringify(dragbarVal.priceOption).replace(/\&nbsp;/g, " "));
+                                                            }
+                                                        .c-form__box
+                                                            +formRange("Price", "priceOption", "FT00000005", "FT00000006", "FT00000005", "FT00000006", 0, 4)
+
+                                            .c-map-search__result
+                                                .c-brand-detail-list
+                                                    +mapSearchResultBrand({ isPin: true, isExport: false, isToggle: true })
+                                                    +mapSearchResultBrand({ isPin: false, isExport: false, isToggle: false })
+                                            
+                                            .c-map-search__pagenation
+                                                +pagination
+
+                            .guide-text-option Directions Result - Suggested routes &gt; Radio select
+                            .container
+                                .c-find-service-center
+                                // block : c-map-search
+                                // 검색타입 : is-search
+                                // 길찾기, 검색 없는 리스트 : is-direction
+                                .c-map-search.is-direction
+                                    .c-map-search__inner
+                                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                                            span.sr-only Search Box
+                                        // block : c-map
+                                        .c-map
+                                            .c-map__inner
+                                                // element : c-map__pin
+                                                .c-map__pin.is-active 1
+                                                // element : c-map-tooltip
+                                                .c-map-tooltip
+                                                    .c-map-tooltip__container
+                                                        .button
+                                                            button(type="button" aria-label="").c-map-tooltip__close
+                                                                span.sr-only Close
+                                                        // block : c-brand-detail
+                                                        .c-map-tooltip__contents
+                                                            +mapTooltipBrand()
+                                                // google map
+                                        .c-map-search__body
+                                            // block : c-map-direction__search
+                                            .c-map-direction__search
+                                                .c-map-direction__search-title
+                                                    p.font-w-semibold-24.font-m-semibold-20 Get directions
+                                                    button.c-button.c-map-direction__search-close(type="button" aria-label="")
+                                                        span.sr-only Close
+                                                // element : departure
+                                                .c-pin-text.c-box-gray.c-map-direction__search-departure
+                                                    .c-pin-text__pin.c-map-direction__search-pin
+                                                        .c-map__pin.is-black A
+                                                    +mapSearchBox(class="c-pin-text__content")
+                                                        .c-warning.font-m-normal-14.font-w-normal-14 Address is required.
+                                                // element : to
+                                                .c-pin-text.c-box-gray.c-map-direction__search-arrival
+                                                    .c-pin-text__pin.c-map-direction__search-pin
+                                                        .c-map__pin B
+                                                    .c-pin-text__content.font-w-normal-14.font-m-normal-16 1 PARK AVE MT VERNON, NY 10550
+
+                                            // result
+                                            .c-map-search__result
+                                                // block : c-map-direction__result
+                                                .c-map-direction__result
+                                                    .font-w-semibold-18.font-m-semibold-18.c-map-direction__result-title Suggested routes
+                                                    //- When you check a radio, the item changes. 
+                                                    .c-form__box.c-form__radio-box.c-select-route
+                                                        .c-form-box
+                                                            +formRadio("On foot","sort", "FT00000001", "FV00000001", "FT00000001_FV00000001")(aria-controls="resultTarget" aria-label="")
+                                                        .c-form-box
+                                                            +formRadio("Public transportation","sort", "FT00000002", "FV00000002", "FT00000001_FV00000002")(aria-controls="resultTarget" aria-label="")
+                                                        .c-form-box
+                                                            +formRadio("Car","sort", "FT00000003", "FV00000003", "FT00000001_FV00000003")(aria-controls="resultTarget" aria-label="" checked)
+                                                    .c-form-info-list
+                                                        p.font-w-normal-14.font-m-normal-14 * Beta version of the walking route. Be careful -This route may not have sidewalks or pedestrian paths.
+                                                    +mapDirectionResultTitle('departure', 'A', '550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States')
+
+                                                    +mapDirectionResultItem('car')
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__indent 5.5 MI. About 12 mins
+                                                    +mapDirectionResultItem('turn-left')
+                                                        p.c-pin-text__icon 1
+                                                        p.font-w-normal-14.font-m-normal-14 At the roundabout, take the 2nd exit onto Hanger Hill/A317
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                                    +mapDirectionResultItem('turn-left')
+                                                        p.c-pin-text__icon 2
+                                                        p.font-w-normal-14.font-m-normal-14 Head east toward Baker St
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                                    +mapDirectionResultItem('turn-left')
+                                                        p.c-pin-text__icon 3
+                                                        p.font-w-normal-14.font-m-normal-14 Head east toward Baker St
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                                    +mapDirectionResultItem('turn-left')
+                                                        p.c-pin-text__icon 4
+                                                        p.font-w-normal-14.font-m-normal-14 At the roundabout, take the 2nd exit onto Hanger Hill/A317
+                                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+
+                                                    +mapDirectionResultTitle('arrival', 'B', '550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States')
+                                                    
+                                                    .c-public-transportation-info 
+                                                        p.font-w-normal-14.font-m-normal-14 Information from local agencies:
+                                                        p.font-w-normal-14.font-m-normal-14 Contains more information about fares, schedules and service notices
+                                                        p.font-w-normal-14.font-m-normal-14 Public Transport and Circulation Company
+                                                        p.font-w-normal-14.font-m-normal-14 
+                                                            a.color-black(href="javscript:;") SPTRANS
+                                                        p.font-w-normal-14.font-m-normal-14 
+                                                            a.color-black(href="javscript:;") Viação Ouro e Prata 
+                                                            span - +55 11 2626-9632
+                                                        p.font-w-normal-14.font-m-normal-14  
+                                                            a.color-black(href="javscript:;") Viação Penha 
+                                                            span - +55 11 2626-9632

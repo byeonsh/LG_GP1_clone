@@ -1,0 +1,65 @@
+mixin PD0050(option=false)
+    - var initialStyle = "font-w-normal-20 font-m-normal-16"
+    - var headStyle = "font-w-normal-24 font-m-normal-16"
+    - var bodyStyle = "font-w-normal-16 font-m-normal-16"
+
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${controlsId}`)
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+
+    mixin contentsBody(useImg)
+
+        // block - text contents
+        .c-text-contents.c-accordion__body-text
+            .c-accordion__initial(aria-hidden="true" class=initialStyle) A.
+            .text.c-text-contents__bodycopy
+                .cmp-text(data-cmp-data-layer="" class=bodyStyle) 
+                    | Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quibusdam similique tempore culpa 
+                    // GA4
+                    a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") aliquam itaque quis doloribus
+                    | , fugiat, optio dolorum vero odio 
+                    b at atque repellat 
+                    | non, nulla numquam eaque quasi voluptas eos! Quae quidem dolorum temporibus dolore rerum. Possimus, esse quod.
+            //- // block - cta
+            //- .button.c-cta
+            //-     // 23.02.14 - changed markup
+            //-     +defaultButton({name: 'Learn More', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: false})
+            // block - cta
+            .button.c-cta
+                +textButton({name: 'Read More', wSize: 'medium', mSize: 'medium', buttonStyle: 'black arrow', isButton: false})
+        if useImg
+            .image.c-image.c-accordion__body-image
+                +printLazyImage("https://via.placeholder.com/1600x900/000/333/?text=Image", "")
+
+    mixin pack(useImg, controlsId)
+        .c-accordion__box.js-accordion-handle-target
+            .c-accordion__head
+                // block - text contents
+                .c-accordion__head-text.c-text-contents
+                    span.c-accordion__initial(aria-hidden="true" class=initialStyle) Q.
+                    .text.c-text-contents__headline
+                        .cmp-text(data-cmp-data-layer="" class=headStyle) 
+                            strong Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa, quo!
+                +trigger(controlsId)
+            .c-accordion__body(id=`${controlsId}`)
+                +contentsBody(useImg)
+
+    // Component Markup
+    .c-wrapper.PD0050.margin-top.margin-bottom.border-top.bg-default
+        .component
+            .cmp-container
+                // 23.02.14 - changed markup
+                +component-title-area({
+                    alignment:"",
+                    headline : {
+                        text : "FAQ"
+                    }
+                })
+                
+                // block - accordion
+                .c-accordion.js-accordion
+                    each useImg, index in [true, false, true, true, false] 
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(useImg, controlsId)

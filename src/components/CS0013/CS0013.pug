@@ -1,0 +1,386 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_cs-product-category-select.pug
+
+block meta 
+    - var componentId = "CS0013"
+    - var componentName = "CS Search Category Popup"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+    link(rel="stylesheet", href=`../CS0000/CS0000`+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    //- .guide 
+    //-     .grid-1600 
+    //-     .grid-1440
+    //-     .inner
+    //-         .guide-list
+    //-             a(href="../../list-CS.html") List 
+    //-         .guide-title #{componentId}. #{componentName}
+    //-         .guide-wrapper
+    //-             script. 
+    //-                 const guideList = {
+    //-                     '#popup1' : [
+    //-                         {
+    //-                             'name' : 'Show/Hide',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : true, 'add' : 'c-modal--active'},
+    //-                             ]
+    //-                         }
+    //-                     ],
+    //-                     '#popup2' : [
+    //-                         {
+    //-                             'name' : 'Show/Hide',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : true, 'add' : 'c-modal--active'},
+    //-                             ]
+    //-                         }
+    //-                     ],
+    //-                     '#popup3' : [
+    //-                         {
+    //-                             'name' : 'Show/Hide',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : true, 'add' : 'c-modal--active'},
+    //-                             ]
+    //-                         }
+    //-                     ],
+    //-                     '#popup4' : [
+    //-                         {
+    //-                             'name' : 'Show/Hide',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : true, 'add' : 'c-modal--active'},
+    //-                             ]
+    //-                         }
+    //-                     ],
+    //-                     '#popup5' : [
+    //-                         {
+    //-                             'name' : 'Show/Hide',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : true, 'add' : 'c-modal--active'},
+    //-                             ]
+    //-                         }
+    //-                     ],
+    //-                     '#popup6' : [
+    //-                         {
+    //-                             'name' : 'Show/Hide',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : true, 'add' : 'c-modal--active'},
+    //-                             ]
+    //-                         }
+    //-                     ],
+    //-                 };
+
+
+    include ../CS0000/CS-inc.pug
+    -
+        const prdCategoryName2 = [
+            {
+                'prdName':'Washing machines',
+                'pcimg':'../../assets/icon/icon-washing-machines-100-100.svg',
+                'moimg':'../../assets/icon/icon-washing-machines-80-80.svg',
+            },
+        ]
+    
+    mixin productTit(params)
+        - var option = { title: 'title', subtit: 'subtit', ...params }
+        h6.c-modal__content-title.font-m-normal-16.font-w-normal-24 #{option.title}
+        if option.subtit            
+            p.c-modal__content-subtitle.font-m-normal-12.font-w-normal-16 #{option.subtit}
+        else 
+            block 
+    mixin productTit2(params)
+        - var option = { title: 'title', subtit: 'subtit', ...params }
+        h6.c-modal__content-title.font-m-normal-16.font-w-normal-24 #{option.title}
+        if option.subtit            
+            p.c-modal__content-subtitle.font-m-normal-12.font-w-normal-16.c-hidden-pc #{option.subtit}
+        else 
+            block 
+
+    mixin roleList(item, troubleshootItem)
+        if troubleshootItem 
+            .c-wide-list__item(role="listitem" aria-current="false")
+                if block
+                    block
+        else
+            li.c-wide-list__item
+                if block
+                    block
+
+    mixin modelList(params)
+        - var option={contents:both, isTroubleshoot: false, isList:false, modelNumber: '', modelName: '', linkType: false, categoryType: false, categoryName: '', productLength: '', productName: '', ...params}
+            if option.categoryType && option.isTroubleshoot
+                .c-wide-list__item-category.wa-keylist(role="list")
+                    .category-text 
+                    - for (var x = 0; x < option.productLength; x++)
+                        +roleList(option.isList, option.isTroubleshoot)
+                            a(href="#none" data-link-name data-link-destination data-link-menu data-link-page-type)
+                                p.c-text-contents #{option.productName}
+            else if option.linkType && option.isTroubleshoot
+                +roleList(option.isList, option.isTroubleshoot)
+                    a(href="#" data-link-name data-link-destination data-link-menu data-link-page-type)
+                        //- block : text-contents 
+                        p.c-text-contents #{option.productName}
+            else if option.isTroubleshoot
+                +roleList(option.isList, option.isTroubleshoot)
+                    //- block : text-contents 
+                    button.c-text-contents(type="button") #{option.productName}
+
+            else 
+                +roleList(option.isList)
+                    //- block : text-contents 
+                    a(href="#")
+                        div(class="c-text-contents")
+                            .title.c-text-contents__headline
+                                +headline("font-w-normal-20 font-m-normal-16", "h2", `${option.modelNumber}`)
+                                p.c-text-contents__modelnumber.font-m-normal-12.font-w-normal-12 #{option.modelName} 
+                            +printLazyPicture('https://via.placeholder.com/40x40/999/000', 'https://via.placeholder.com/64x64/999/000')       
+
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-label="" aria-expanded="false" aria-controls=`${controlsId}`)
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+
+    mixin contentsBody
+        ul.c-wide-list
+            //- +modelList({isList:true, isTroubleshoot: true, linkType: true, productName: 'All'}) 
+            +modelList({isList:true, isTroubleshoot: true, linkType: true, productName: 'Cooling222'}) 
+            +modelList({isList:true, isTroubleshoot: true, linkType: true, productName: 'Cooling'}) 
+            +modelList({isList:true, isTroubleshoot: true, linkType: true, productName: 'Cooling'}) 
+            +modelList({isList:true, isTroubleshoot: true, linkType: true, productName: 'Cooling'}) 
+            +modelList({isList:true, isTroubleshoot: true, linkType: true, productName: 'Cooling'}) 
+            +modelList({isList:true, isTroubleshoot: true, linkType: true, productName: 'Cooling'}) 
+
+    mixin pack(controlsId)
+        .c-accordion__box.js-accordion-handle-target(role="listitem")
+            .c-accordion__head
+                .c-accordion__head-text.c-text-contents productName
+                +trigger(controlsId)
+            .c-accordion__body(id=`${controlsId}`)
+                +contentsBody  
+
+    // Component Markup
+
+    .guide-text-type CS Search Category Popup ( popup show : add class 'c-modal--active' to c-modal )  
+
+    // Component Markup
+    .c-wrapper.CS0013.type-text
+        .component.cs-component
+            .CS0013__container
+                // step1 (CS Search Category Popup)
+                .c-modal.c-modal__step01.c-modal--active
+                    .c-modal__dimmed
+                    .c-modal__box
+                        .c-modal-head__wrap
+                            .c-modal__head 
+                                .c-modal__title.font-m-light-28.font-w-light-56 Manual &amp; software download
+                                button(type="button" aria-label="").c-modal__closebtn close btn                
+                        .c-modal__content          
+                            .c-modal__content-scroll-box 
+                                .c-modal__content-top 
+                                    +productTit({title:'Appliances', subtit:'Please select the categories below in the appliances.'})
+                                +productCategorySelect({
+                                    type:"popup",
+                                    count:12
+                                })
+                        .c-modal__bottom 
+                            .care-text *Includes business-only products.
+                // step1 type2(CS Search Category Popup)
+                .c-modal.c-modal--active
+                    .c-modal__dimmed
+                    .c-modal__box
+                        .c-modal-head__wrap
+                            .c-modal__head 
+                                .c-modal__title.font-m-light-28.font-w-light-56 Find My Model
+                                button(type="button" aria-label="").c-modal__closebtn close btn  
+                            .breadcrumb
+                                p.font-w-normal-14i.font-m-normal-14i Product reselect : 
+                                nav.cmp-breadcrumb.c-breadcrumb.swiper(data-cmp-data-layer="" aria-label="Choice of category")
+                                    ol.cmp-breadcrumb__list.c-breadcrumb__list.font-m-normal-14.font-w-normal-14.swiper-wrapper
+                                        +bcItem2({text:"Category", current:true})          
+                        .c-modal__content         
+                            .c-modal__content-scroll-box    
+                                .c-modal__content-top  
+                                    +productTit({title:'Categories', subtit:'Please select the categories.'})                           
+                                +productCategorySelect({
+                                    type:"popup",
+                                    count:5
+                                })     
+                        .c-modal__bottom 
+                            .care-text *Includes business-only products.     
+
+                // step2 (CS Search Category Popup)
+                .c-modal.c-modal--active
+                    .c-modal__dimmed
+                    .c-modal__box
+                        .c-modal-head__wrap
+                            .c-modal__head 
+                                .c-modal__title.font-m-light-28.font-w-light-56 Manual &amp; software download
+                                button(type="button" aria-label="").c-modal__closebtn close btn  
+                            .breadcrumb
+                                p.font-w-normal-14i.font-m-normal-14i Product reselect : 
+                                nav.cmp-breadcrumb.c-breadcrumb.swiper(data-cmp-data-layer="" aria-label="Choice of category")
+                                    ol.cmp-breadcrumb__list.c-breadcrumb__list.font-m-normal-14.font-w-normal-14.swiper-wrapper
+                                        +bcItem2({text:"Appliances"})
+                                        +bcItem2({text:"Fridge freezers", current:true})
+                        
+                        .c-modal__content      
+                            .c-modal__content-scroll-box
+                                .c-modal__content-top  
+                                    +productTit({title:'Fridge freezers', subtit:'Please select the sub categories below in the Fridge freezers.'})                           
+                                +productCategorySelect({
+                                    type:"popup",
+                                    count:12
+                                })     
+                        .c-modal__bottom 
+                            .care-text *Includes business-only products.     
+
+                // step3 (CS Search Category Popup)
+                .c-modal.c-modal--active
+                    .c-modal__dimmed
+                    .c-modal__box
+                        .c-modal-head__wrap
+                            .c-modal__head 
+                                .c-modal__title.font-m-light-28.font-w-light-56 Manual &amp; software download
+                                button(type="button" aria-label="").c-modal__closebtn close btn        
+                            .breadcrumb
+                                p.font-w-normal-14i.font-m-normal-14i Product reselect : 
+                                nav.cmp-breadcrumb.c-breadcrumb.swiper(data-cmp-data-layer="" aria-label="Choice of category")
+                                    ol.cmp-breadcrumb__list.c-breadcrumb__list.font-m-normal-14.font-w-normal-14.swiper-wrapper
+                                        +bcItem2({text:"Appliances"})
+                                        +bcItem2({text:"Fridge freezers"})
+                                        +bcItem2({text:"American style", current:true})                
+                        .c-modal__content         
+                            .c-modal__content-scroll-box       
+                                .c-modal__content-top  
+                                    +productTit({title:'American style', subtit:'Please select the model name below in the American style.'})   
+                                    .c-result.font-m-normal-12.font-w-normal-16
+                                        span.c-result__number 50
+                                        | result        
+                                // block : list
+                                ul.c-list
+                                    // block : modelList
+                                    +modelList({isList:true, modelNumber: 'GSXV90MCDE', modelName: 'LG InstaView Door-in-Door™'})
+                                    +modelList({isList:true, modelNumber: 'GSXV90MCDE', modelName: 'LG InstaView Door-in-Door™'})
+                                    +modelList({isList:true, modelNumber: 'GSXV90MCDE', modelName: 'LG InstaView Door-in-Door™'})
+                                    +modelList({isList:true, modelNumber: 'GSXV90MCDE', modelName: 'LG InstaView Door-in-Door™'})
+                                    +modelList({isList:true, modelNumber: 'GSXV90MCDE', modelName: 'LG InstaView Door-in-Door™'})
+                                    +modelList({isList:true, modelNumber: 'GSXV90MCDE', modelName: 'LG InstaView Door-in-Door™'})
+                                    +modelList({isList:true, modelNumber: 'GSXV90MCDE', modelName: 'LG InstaView Door-in-Door™'})
+                                    +modelList({isList:true, modelNumber: 'GSXV90MCDE', modelName: 'LG InstaView Door-in-Door™'})    
+                                    +modelList({isList:true, modelNumber: 'GSXV90MCDE', modelName: 'LG InstaView Door-in-Door™'})  
+                                    +modelList({isList:true, modelNumber: 'GSXV90MCDE', modelName: 'LG InstaView Door-in-Door™'})  
+                                    +modelList({isList:true, modelNumber: 'GSXV90MCDE', modelName: 'LG InstaView Door-in-Door™'})  
+                                    +modelList({isList:true, modelNumber: 'GSXV90MCDE', modelName: 'LG InstaView Door-in-Door™'})  
+                                    +modelList({isList:true, modelNumber: 'GSXV90MCDE', modelName: 'LG InstaView Door-in-Door™'})  
+                                    +modelList({isList:true, modelNumber: 'GSXV90MCDE', modelName: 'LG InstaView Door-in-Door™'})    
+                        .c-modal__bottom 
+                            .care-text *Includes business-only products.<br>*The above image may be slightly different from the actual image.  
+
+                // step2 option .c-type-product (CS Search Troubleshoot Popup)
+                .c-modal.c-type-product.c-modal--active
+                    .c-modal__dimmed
+                    .c-modal__box
+                        .c-modal-head__wrap
+                            .c-modal__head 
+                                .c-modal__title.font-m-light-28.font-w-light-56 Troubleshoot
+                                button(type="button" aria-label="").c-modal__closebtn close btn 
+                            .breadcrumb
+                                p.font-w-normal-14i.font-m-normal-14i Product reselect : 
+                                nav.cmp-breadcrumb.c-breadcrumb.swiper(data-cmp-data-layer="" aria-label="Choice of category")
+                                    ol.cmp-breadcrumb__list.c-breadcrumb__list.font-m-normal-14.font-w-normal-14.swiper-wrapper
+                                        +bcItem2({text:"Appliances"})
+                                        +bcItem2({text:"Fridge freezers", current:true})
+                        .c-modal__content                                      
+                            // wide-type
+                            .c-modal__content-inner
+                                .c-modal__content-top  
+                                    +productTit2({title:'What’s going on with your product?', subtit:`After selecting main topic, Sub topic is exposed. If there is no sub topic, don't need to select it.`})
+                                    // block : list
+
+                                .c-list-area.type-accordion 
+                                    .mobile-only    
+                                        .c-list-area__box
+                                            .c-list-area__scroll
+                                                .c-accordion.js-accordion(role="list")
+                                                    each val, index in [1,2,3,4,5,6,7,8,9,10] 
+                                                        - var controlsId = `faq-set-0${index}`; 
+                                                        +pack(controlsId)
+
+                                    .pc-only 
+                                        .c-list-area__box
+                                            .c-list-area__scroll
+                                                // 20230317 add .c-list-area__scroll-inner
+                                                .c-list-area__scroll-inner
+                                                    .c-wide-list.wa-keylist(role="list")
+                                                        // block : modelList
+                                                        // active : --active
+                                                        //- +modelList({isList:true, isTroubleshoot: true, categoryType: false, productName: 'All Topic'})
+                                                        +modelList({isList:true, isTroubleshoot: true, categoryType: false, productName: 'Cooling'})    
+                                                        +modelList({isList:true, isTroubleshoot: true, categoryType: false, productName: 'Door'})   
+                                                        +modelList({isList:true, isTroubleshoot: true, categoryType: false, productName: 'Leaking'})    
+                                                        +modelList({isList:true, isTroubleshoot: true, categoryType: false, productName: 'Noise'})    
+                                                        +modelList({isList:true, isTroubleshoot: true, categoryType: false, productName: 'Icemaker issues'})    
+                                                        +modelList({isList:true, isTroubleshoot: true, categoryType: false, productName: 'Cooling'})    
+
+                                        .c-list-area__box.c-list-area__box-category
+                                            p.c-list-area__disabled-text.font-w-normal-16 Please select a topic.
+                                            .c-list-area__scroll
+                                                // 20230317 add .c-list-area__scroll-inner
+                                                .c-list-area__scroll-inner
+                                                    .c-wide-list
+                                                        // disabled : .c-list-area__sub-topic--disabled
+                                                        .c-list-area__sub-topic.c-list-area__sub-topic--disabled
+                                                            // block : modelList
+                                                            - for (var x = 0; x < 1; x++)
+                                                                //- +modelList({isList:true, isTroubleshoot: true, categoryType: true, categoryName: 'All Topic', productLength: 0, productAllName : 'All sub topic', productName: 'All sub topic'}) 
+                                                                +modelList({isList:true, isTroubleshoot: true, categoryType: true, categoryName: 'Cooling', productLength: 5, productAllName : 'All', productName: 'Cooling'}) 
+                                                                +modelList({isList:true, isTroubleshoot: true, categoryType: true, categoryName: 'Door', productLength: 8, productAllName : 'All', productName: 'Door'})
+                                                                +modelList({isList:true, isTroubleshoot: true, categoryType: true, categoryName: 'Leaking', productLength: 2, productAllName : 'All', productName: 'Leaking'})
+                                                                +modelList({isList:true, isTroubleshoot: true, categoryType: true, categoryName: 'Noise', productLength: 4, productAllName : 'All', productName: 'Noise'})
+                                                                +modelList({isList:true, isTroubleshoot: true, categoryType: true, categoryName: 'Icemaker issues', productLength: 4, productAllName : 'All', productName: 'Icemaker issues'})
+                                                                +modelList({isList:true, isTroubleshoot: true, categoryType: true, categoryName: 'etc', productLength: 4, productAllName : 'All', productName: 'etc'})
+
+                        .c-modal__bottom 
+               
+                // step2 option .c-type-product (CS Search Troubleshoot Popup - No Data)
+                .c-modal.c-type-product.c-modal--active
+                    .c-modal__dimmed
+                    .c-modal__box
+                        .c-modal-head__wrap
+                            .c-modal__head 
+                                .c-modal__title.font-m-light-28.font-w-light-56 Troubleshoot
+                                button(type="button" aria-label="").c-modal__closebtn close btn 
+                            .breadcrumb
+                                p.font-w-normal-14i.font-m-normal-14i Product reselect : 
+                                nav.cmp-breadcrumb.c-breadcrumb.swiper(data-cmp-data-layer="" aria-label="Choice of category")
+                                    ol.cmp-breadcrumb__list.c-breadcrumb__list.font-m-normal-14.font-w-normal-14.swiper-wrapper
+                                        +bcItem2({text:"Appliances"})
+                                        +bcItem2({text:"Fridge freezers", current:true})
+                        .c-modal__content                                      
+                            // wide-type
+                            .c-modal__content-inner
+                                .c-modal__content-top  
+                                    +productTit2({title:'What’s going on with your product?', subtit:`After selecting main topic, Sub topic is exposed. If there is no sub topic, don't need to select it.`})
+                                    // block : list
+
+                                .c-no-result 
+                                    .c-no-result__wrap
+                                        span.c-no-result__icon 
+                                        p.font-m-normal-16.font-w-normal-20 No results were found.
+                                
+                        .c-modal__bottom 

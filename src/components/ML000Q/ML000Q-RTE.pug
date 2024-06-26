@@ -1,0 +1,815 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_pop-msg.pug
+
+block meta 
+    - var componentId = "ML000Q"
+    - var componentName = "VIP Upgrade"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? "my-warn" : ""}`
+        .c-input-item(class=`${data.active ? "active" : ""}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? "my-info" : ""}`)= data.label
+            if data.type === "textarea"
+                if data.limit
+                    .my-textarea__container
+                        textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class="my-textarea--limit")&attributes(attributes)
+                        .my-count
+                            span.font-w-normal-14.font-m-normal-12 0 / !{data.limit} byte
+                else 
+                    textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder)&attributes(attributes)
+            //- if data.warning
+            //-     +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+            else if data.button
+                if data.validation
+                    .input-button__container.input-button__container--validation
+                        .my-button-validation
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config value= data.value)&attributes(attributes)
+                        .button.c-cta.button-full
+                            +defaultButton({name: data.button, type:"box-outlined", color:"black", size: "medium"})
+                    if data.warning
+                        +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                else
+                    .input-button__container
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config value= data.value)&attributes(attributes)
+                        .button.c-cta.button-full
+                            +defaultButton({name: data.button, type:"box-outlined", color:"black", size: "medium"})
+            else 
+                if data.active
+                    input(type="text" id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value)&attributes(attributes)
+                    if data.type === "password"
+                        button(type="button" class="my-form__eye")
+                            span.sr-only show password
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? "my-form__search" : ""}`,)&attributes(attributes)
+                    if data.type === "password"
+                        button(type="button" class="my-form__eye")
+                            span.sr-only show password
+                if data.warning
+                    +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        if data.submitBtn
+            .button.c-cta.my-button
+                +defaultButton({name: "Sumit", wSize: "large", mSize: "medium"})
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+                
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin ML000Q
+    .guide-text-option ML000Q_RTE
+    .c-wrapper.ML000Q
+        .component
+            .fluid-container
+                .my-component__wrap.border-only-web
+                    .my-component.my-component--validation-success
+                        .my-formbox
+                            .c-input-item__title
+                                .c-text-contents
+                                    .title.c-text-contents__headline
+                                        p.font-w-normal-32.font-m-normal-20 VIP Program - Terms & Conditions
+                            .my-check-msg
+                                .my-check-msg__container
+                                    h4.font-w-normal-18.font-m-normal-16 1. Introduzione
+                                    p.font-w-normal-16.font-m-normal-14 Con la presente Privacy Policy LG Electronics Italia S.p.A. con sede legale in Via Aldo Rossi 4, 20149 Milano (di seguito, “LGE”, “noi” e “nostro”), in qualità di titolare del trattamento, informa gli utenti sulle modalità e finalità del trattamento dei dati personali tramite i Siti, anche mediante l’utilizzo di cookie.
+                                    h4.font-w-normal-18.font-m-normal-16 2. Quali dati trattiamo?
+                                    p.font-w-normal-16.font-m-normal-14 LGE può raccogliere i dati personali dell’utente in vari modi; di seguito elenchiamo alcune delle modalità di raccolta:
+                                    ol 
+                                        li.font-w-normal-16.font-m-normal-14 a. raccogliamo il nome e cognome dell’utente, il suo indirizzo di domicilio o residenza, il suo indirizzo email, il numero di telefono, la sua data di nascita (oppure la circostanza che l’utente è maggiorenne), nonché informazioni su prodotti o servizi quando l’utente ci contatta riguardo a nostri prodotti o servizi, oppure quando l’utente interagisce con i Siti. Tale interazione può consistere, ad esempio, nella registrazione ai Siti mediante la creazione di un account utente, nella partecipazione a sondaggi, nel contatto con il nostro call center, nella pubblicazione di una recensione mediante apposita funzione nei Siti, oppure ancora nell’inoltro di richieste tramite form o moduli presenti sui Siti; i dati così raccolti possono anche essere contenuti all’interno delle registrazioni delle chiamate gestite tramite il nostro call center;
+                                        li.font-w-normal-16.font-m-normal-14 b. raccogliamo il nome e cognome dell’utente, la sua data di nascita (oppure la circostanza che l’utente è maggiorenne), il suo indirizzo di domicilio o residenza, il suo indirizzo email, il numero di telefono, il codice fiscale o la partita IVA, documenti identificativi, nonché le informazioni inerenti le tipologie di servizi di pagamento utilizzati quando l’utente acquista prodotti o servizi LGE, al fine di gestire l’ordine, l’acquisto, il pagamento ed ogni attività o servizio connesso od associato alla conclusione di un contratto di compravendita tramite i Siti (quali ad esempio: consegna, installazione, reso, recesso, ritiro del RAEE, etc..). Per quanto concerne il pagamento, precisiamo tuttavia che LGE non raccoglie né conserva alcun dato relativo ai mezzi di pagamento adoperati dall’interessato (come ad esempio il numero di carta di credito). Questi dati sono raccolti e trattati autonomamente dalle società di pagamento digitale o dagli istituti gestori dei pagamenti coinvolti nei processi di pagamento in base alle rispettive informative sulla privacy. Tali soggetti comunicano a LGE solamente informazioni relative all’effettuazione, o meno, del pagamento (pagamento andato a buon fine, revocato, etc.);
+                                        li.font-w-normal-16.font-m-normal-14 c. possiamo raccogliere categorie speciali di dati, come ad esempio dati relativi allo stato di salute o alla sussistenza di uno stato di invalidità, ai fini di adempiere, in conformità alla normativa applicabile, a richieste di applicazione del regime di IVA agevolata nell’ambito di vendite tramite i Siti di sussidi tecnici e informatici a clienti diversamente abili;
+                                        li.font-w-normal-16.font-m-normal-14 d. raccogliamo il nome e cognome dell’utente, il suo indirizzo di domicilio o residenza, il suo indirizzo email, il numero di telefono e le informazioni bancarie per fornire servizi post vendita (compresi ad esempio prevenzione frodi, resi o rimborsi, garanzie e assistenza clienti), nonché per gestire le sue richieste di informazioni relative ai nostri prodotti o servizi; con il consenso dell’utente, possiamo raccogliere inoltre dati relativi all’immagine o alla voce dell’utente, mediante connessioni e registrazioni audio/video, nel caso in cui l’utente richieda di avvalersi di servizi di assistenza post-vendita mediante sistema videosupporto da remoto (“Servizio Telepresence”). Il servizio di assistenza post-vendita mediante sistema videosupporto da remoto “Telepresence” consente all’utente di instaurare un collegamento audio/video (videochiamata) con un operatore post-vendita al fine di effettuare la diagnostica, assistenza e risoluzione problemi su prodotti o servizi acquistati. Il collegamento avviene mediante piattaforma web, nell’ambito della quale sono raccolti dati relativi relativi al dispositivo e al software (sistema operativo, browser) usato dall’utente durante la sessione. Nel corso della sessione, in base alle informazioni di carattere tecnico e/o legale afferenti al prodotto o al suo utilizzo rilasciate dall’utente, potremmo raccogliere dati necessari, nel nostro legittimo interesse, a migliorare i nostri prodotti.
+                                        li.font-w-normal-16.font-m-normal-14 e. raccogliamo il nome e cognome dell’utente, il suo indirizzo di domicilio o residenza, il suo indirizzo email, il numero di telefono, la sua data di nascita (oppure la circostanza che l’utente è maggiorenne), il suo IBAN e il suo documento d’identità al fine di gestirne iscrizione e/o partecipazione ad appositi eventi o iniziative organizzate da LGE a cui l’utente aderisce, quali ad esempio fiere, promozioni o manifestazioni a premio (nel seguito, gli “Eventi”), ivi compresi gli adempimenti conseguenti, come ad esempio l’accredito dell’utente presso gli Eventi, la consegna di premi a l’utente abbia diritto, oppure ancora rispondere a richieste.
+                                        li.font-w-normal-16.font-m-normal-14 f. raccogliamo il nome e cognome dell’utente, il suo indirizzo di domicilio o residenza, il suo indirizzo email, il numero di telefono per adempiere agli obblighi di legge e regolamentari cui LGE sia eventualmente soggetta;
+                                        li.font-w-normal-16.font-m-normal-14 g. raccogliamo il nome e cognome dell’utente, il suo indirizzo email, il suo numero di telefono nonché informazioni su prodotti o servizi nel caso in cui l’utente abbia acconsentito a ricevere, per telefono o a mezzo email, comunicazioni marketing da parte nostra o a nostro nome, oppure comunicazioni da parte o in nome di nostri partner commerciali con i quali, previo consenso espresso dell’utente, abbiamo condiviso i dati personali dell’utente in conformità alla presente Privacy Policy;
+                                        li.font-w-normal-16.font-m-normal-14 h. raccogliamo il nome e cognome dell’utente, il suo indirizzo email, il suo numero di telefono nonché informazioni su prodotti o servizi nel caso in cui l’utente abbia acconsentito all'analisi delle proprie abitudini, interessi e preferenze per l'offerta di servizi e l'invio delle comunicazioni sopra indicate in linea con gli stessi;
+                                    p.font-w-normal-16.font-m-normal-14 Se l’utente ci fornisce dati personali di terzi, l’utente deve fare quanto necessario affinché la comunicazione dei dati a LGE e il nostro successivo trattamento per le finalità specificate nella presente Privacy Policy avvengano nel rispetto della normativa applicabile, per cui ad esempio l’utente prima di fornirci i dati personali di terzi deve informarli e ottenere il consenso al trattamento, se richiesto dalla suddetta normativa.
+                                    p.font-w-normal-16.font-m-normal-14 I dati di navigazione che possiamo raccogliere quando un utente utilizza i Siti ricadono nelle seguenti categorie:
+                                    ul
+                                        li
+                                            em Dati sui prodotti.
+                                            | Raccogliamo dati riguardanti i prodotti che l’utente acquista o per i quali richiede servizi di assistenza attraverso i Siti. I dati sui prodotti possono includere il codice prodotto o il numero di modello, l’indirizzo IP dell’utente, la categoria del prodotto o informazioni sulla versione firmware e software, il codice Paese o l’identificativo del dispositivo (ad esempio indirizzo MAC, UUID (identificativo univoco universale) e simili.
+                                        li
+                                            em Dati di utilizzo.
+                                            | I dati di utilizzo comprendono tutti i dati raccolti tramite i Siti e riguardano, ad esempio, le tipologie di azioni effettuate sui Siti (quali i click effettuati), i dati di registrazione dell’utente, oppure ancora come l’utente sta utilizzando i Siti.
+                                        li
+                                            em Indirizzi IP.
+                                            | Quando un utente utilizza i Siti, potremmo automaticamente registrare l’indirizzo IP (vale a dire l’indirizzo univoco che identifica il dispositivo dell’utente su Internet), che viene automaticamente riconosciuto dal nostro server.
+                                    p.font-w-normal-16.font-m-normal-14 I dati di navigazione sono utilizzati al solo fine di ottenere informazioni statistiche anonime sull’utilizzo dei Siti e per controllarne il regolare funzionamento e sono cancellati immediatamento dopo il loro trattamento. Tali dati potrebbero essere inoltre utilizzati al fine di accertare responsabilità in caso di eventuali reati informatici ai danni dei Siti o per tutelare i nostri diritti.
+                                    h4.font-w-normal-18.font-m-normal-16 3. In che modo utilizziamo i dati personali degli utenti, e su quale base giuridica?
+                                    p.font-w-normal-16.font-m-normal-14 Trattiamo i dati personali raccolti tramite i Siti per le seguenti finalità:
+                                    ul
+                                        li per la conclusione di un contratto di compravendita tramite i Siti, ivi compresi tutti gli adempimenti propedeutici, conseguenti o connessi; nel caso di utenti diversamente abili intitolati ad effettuare acquisti in regime di IVA agevolata, il trattamento delle relative categorie speciali di dati sarà effettuato al solo fine di verificare il possesso del richiedente dei requisiti di legge per poter beneficiare di tale agevolazione;
+                                        li per rispondere o soddisfare una richiesta da parte di un utente, come ad esempio fornire riscontri o prestare servizi richiesti, quali servizi di assistenza pre e post vendita,ivi compreso verificare che tali servizi siano stati regolarmente prestati all’utente che ne abbia fatto richiesta, nonché per assicurare e gestire la partecipazione agli Eventi cui l’utente abbia scelto di aderire; nel caso in cui l’utente desideri avvalersi di servizi di assistenza post-vendita mediante sistema videosupporto da remote “Telepresence”, provvederemo a raccogliere lo specifico consenso in tal senso da parte dell’utente.
+                                        li con il consenso dell’utente, al fine di effettuare attività di marketing (direttamente da parte nostra, oppure tramite nostri affiliati e partner commerciali che agiscono per nostro conto) attraverso mezzi automatizzati (email e newsletter, SMS/MMS) per informare l’utente riguardo ad offerte speciali, aggiornamenti, novità su altri prodotti o servizi, per inviare all’utente materiale promozionale, per effettuare indagini di mercato e sul grado di soddisfazione dell’utente su prodotti o servizi di LGE (customer satisfaction);
+                                        li con il consenso dell’utente, al fine di comunicare i dati personali raccolti a nostri partner commerciali specializzati nell’offerta di servizi assicurativi o di estensione garanzia su prodotti LG, per proprie finalità di marketing anche finalizzate alla vendita diretta di beni o servizi, in qualità di autonomi Titolari;
+                                        li con il consenso dell’utente, al fine di analizzare le proprie abitudini, interessi e preferenze per l'offerta di servizi e l'invio di comunicazioni in linea con gli stessi;
+                                        li per assicurare che i Siti siano aggiornati e rispondenti alle necessità degli utenti, per analizzare, rivedere e migliorare i prodotti o i servizi offerti da LGE, per fornire agli utenti un’esperienza di navigazione dei Siti user-friendly. Le informazioni utilizzate per questa finalità rimarranno strettamente anonime e non saranno utilizzate per identificare alcun utente né saranno aggregate a dati personali di utenti;
+                                        li nel caso specifico delle registrazioni di telefonate gestite tramite il nostro call center, il trattamento è finalizzato alla verifica, monitoraggio, ottimizzazione e miglioramento dei processi interni aziendali di assistenza alla clientela tramite il suddetto call center;
+                                        li per notificare all’utente eventuali modifiche alla presente Privacy Policy o ai termini di utilizzo o funzionalità dei Siti, se necessario;
+                                        li per effettuate la creazione di un accont utente, interagire con i Siti (incluso trasmettere richieste e pubblicare/modificare recensioni), consentire all’utente di accedere ad aree riservate dei Siti e utilizzarne le relative funzionalità, come ad esempio registrare prodotti, tracciare riparazioni o controllare lo stato di avanzamento di richieste formulate;
+                                        li per adempiere a obblighi derivanti da legge regolamenti o normativa comunitaria e tutelare i nostri diritti e il nostro patrimonio, anche in giudizio.
+                                        li per adempiere a obblighi derivanti da legge regolamenti o normativa comunitaria e tutelare i nostri diritti e il nostro patrimonio, anche in giudizio.
+                                    p.font-w-normal-16.font-m-normal-14 p.font-w-normal-16.font-m-normal-14 Trattiamo i dati personali raccolti tramite i Siti per le seguenti finalità:
+                                    ul
+                                        li
+                                            em esecuzione di un contratto, adempimento di obblighi pre-contrattuali, o rispondere a una richiesta da parte dell’utente.
+                                            | Ad esempio, nel caso in cui l’utente proceda con l'acquisto di un prodotto o servizio LGE oppure debba ricevere un servizio connesso o associato all’acquisto di prodotti o servizi (come ad esempio assistenza post vendita da parte di LGE o esercizio del diritto di recesso), oppure abbia formulato una richiesta nei nostri confronti;
+                                        li
+                                            em interesse legittimo:
+                                            | nel caso in cui il trattamento sia necessario per perseguire un legittimo interesse di LGE o di un terzo. Nel caso di LGE, ciò può comprendere il trattamento dei dati personali dell’utente al fine di prevenire, scoprire e compiere indagini su attività illecite, quali la violazione dei termini di utilizzo e altre condotte abusive sui Siti e la commissione di frodi, oppure ancora al fine di verificare, monitorare, ottimizzare e migliorare i nostri prodotti e processi di assistenza alla clientela, come ad esempio il nostro servizio di call center;
+                                        li
+                                            em consenso:
+                                            | nella misura in cui l’utente abbia deciso di prestarlo, come ad esempio nel caso di trattamento dati per finalità di marketing e/o profilazione, ricerche di mercato, indagini sul grado di soddisfazione del cliente (customer satisfaction) e comunicazione dei dati a terzi per finalità di marketing, nonché nel caso di richieste di attivazione di servizi di assistenza post-vendita mediante sistema videosupporto da remote “Telepresence”. L’utente ha il diritto di revocare il proprio consenso in ogni momento. Per maggiori informazioni si prega di consultare la sezione 10 che segue;
+                                        li
+                                            em obbligo di legge:
+                                            | nella misura in cui l’utente abbia deciso di prestarlo, come ad esempio nel caso di trattamento dati per finalità di marketing e/o profilazione, ricerche di mercato, indagini sul grado di soddisfazione del cliente (customer satisfaction) e comunicazione dei dati a terzi per finalità di marketing, nonché nel caso di richieste di attivazione di servizi di assistenza post-vendita mediante sistema videosupporto da remote “Telepresence”. L’utente ha il diritto di revocare il proprio consenso in ogni momento. Per maggiori informazioni si prega di consultare la sezione 10 che segue;
+                                    h4.font-w-normal-18.font-m-normal-16 4. Cosa accade se l’utente non fornisce i propri dati personali?
+                                    p.font-w-normal-16.font-m-normal-14 Quando l'utente visita e consulta i Siti in genere non raccogliamo né trattiamo dati personali dell'utente poiché il trattamento si limita ai c.d. dati di navigazione, cioè, come indicato alla precedente sezione 2, i dati la cui trasmissione ai Siti è peraltro necessaria per permettere il funzionamento dei sistemi informatici preposti alla gestione dei Siti e dei protocolli di comunicazione di Internet.
+                                    p.font-w-normal-16.font-m-normal-14 Oltre ai dati di navigazione, LGE tratta i dati personali che l'utente fornisce volontariamente quando interagisce con le funzionalità dei Siti, in base alle finalità indicate nella precedente sezione 3, vale a dire per rispondere o soddisfare una richiesta da parte di un utente, per adempiere a obblighi contrattuali nei confronti dell’utente, per effettuate la creazione di un account utente, interagire con i Siti, partecipare ad Eventi, consentire all’utente di accedere ad aree riservate dei Siti e utilizzarne le relative funzionalità.
+                                    p.font-w-normal-16.font-m-normal-14 Per le finalità di trattamento sopra indicate, conferire i dati personali è necessario e un rifiuto da parte dell’utente di conferire i dati personali comporta l'impossibilità per LGE di eseguire i propri obblighi contrattuali e fornire all’utente le funzionalità, i servizi e le informazioni richieste come sopra specificato.
+                                    p.font-w-normal-16.font-m-normal-14 Come indicato nella sezione 3 che precede, con il consenso dell’utente, che è libero e facoltativo, possiamo trattare i dati personali per finalità di marketing e/o profilazione, per fini di ricerche di mercato e indagini sul grado di soddisfazione del cliente (customer satisfaction), nonché per comunicare i dati personali degli utenti a nostri partner commerciali per proprie finalità di marketing.
+                                    p.font-w-normal-16.font-m-normal-14 Per le finalità di trattamento sopra indicate (marketing, profilazione, ricerche di mercato, customer satisfaction e condivisione con terzi per finalità di marketing) conferire i dati personali è facoltativo e il rifiuto di conferirli non avrà nessuna conseguenza sulla prestazione all’utente dei servizi, funzionalità e informazioni richiesti ai, o tramite i, Siti.
+                                    h4.font-w-normal-18.font-m-normal-16 5. Con chi vengono condivisi i dati personali degli utenti?
+                                    p.font-w-normal-16.font-m-normal-14
+                                        em Società affiliate, controllate o controllanti. 
+                                        | LGE comunica i dati personali degli utenti alle proprie società affiliate, controllate e controllanti nel mondo per le finalità descritte nella presente Privacy Policy. Il termine “affiliate”, “controllate” o “controllanti” fa riferimento a società del nostro gruppo che utilizzano il nome LG o che controllano, o che sono soggette al controllo di, società del nostro gruppo, come ad esempio LG Electronics Inc., LG CNS che forniscono servizi centralizzati di hosting e risorse IT alle consociate del Gruppo LG
+                                    p.font-w-normal-16.font-m-normal-14 Possiamo inoltre comunicare i dati personali degli utenti anche ai seguenti soggetti:
+                                    ul
+                                        li
+                                            em terzi fornitori di servizi.
+                                            | Condividiamo i dati personali degli utenti con terzi fornitori di servizi che agiranno quali responsabili del trattamento al fine di rendere possibile l’utilizzo dei Siti o ricevere servizi tramite i Siti. A titolo esemplificativo, tali terzi possono comprendere professionisti, anche in forma associata, che prestano consulenza tecnica, commerciale o amministrativa a LGE per il perseguimento della propria attività e delle finalità descritte nella presente Privacy Policy, società che si occupano della gestione o della manutenzione dell’infrastruttura informatica su cui si basano i Siti, fornitori di servizi di call center o di assistenza pre o post vendita, operatori logistici nel caso fosse necessario consegnare all’utente un bene o un prodotto, agenzie specializzate nella gestione di servizi promozionali e di marketing in nome e per conto di LGE;
+                                        li
+                                            em terzi in ottemperanza ad un obbligo di legge.
+                                            | La comunicazione di dati personali di utenti può avvenire nei confronti di istituzioni, forze dell’ordine, autorità giudiziarie, amministrative, regolatorie o di pubblica sicurezza, nell’ambito di un procedimento legale o amministrativo, o al fine di adempiere ad un obbligo di legge;
+                                        li
+                                            em terzi in caso di operazioni societarie.
+                                            | La comunicazione di dati personali di utenti può avvenire a fronte di eventi quali ad esempio fusioni, cessioni di azienda (o di suo ramo) o altre operazioni straordinarie nell’ambito delle quali LGE potrebbe dover condividere informazioni con potenziali acquirenti o controparti e i relativi consulenti;
+                                        li
+                                            em terzi nel caso in cui ciò sia necessario per tutelare i nostri servizi.
+                                            | La comunicazione di dati di utenti può rendersi necessaria per proteggere i nostri diritti e il nostro patrimonio, ivi compreso in sede giudiziaria;
+                                        li
+                                            em terzi nel caso in cui ciò sia necessario per tutelare l’incolumità personale degli utenti o del loro patrimonio.
+                                            | La comunicazione di dati di utenti può rendersi necessaria per proteggere la sicurezza personale degli utenti o del loro patrimonio, o per ragioni di pubblica sicurezza;
+                                        li
+                                            em terzi nostri partner commerciali.
+                                            | Con il consenso dell’utente, espresso, libero e facoltativo, possiamo comunicare i dati personali di utenti a nostri partner commerciali, nello specifico, professionisti specializzati nella vendita di servizi assicurativi, copertura post-vendita integrativa o estensione di garanzia di prodotti a marchio LG. Tali partner, agendo come autonomi titolari del trattamento, potranno contattare gli utenti al fine di offrire o pubblicizzare prodotti o servizi relativi o connessi a prodotti LG acquistati dagli utenti.
+                                    p.font-w-normal-16.font-m-normal-14 Ad eccezione di quanto sopra indicato, in nessun caso i dati personali degli utenti saranno trattati per finalità di marketing o condivisi con terzi per le proprie finalità di marketing.
+                                    h4.font-w-normal-18.font-m-normal-16 6. Come raccogliamo e trattiamo i dati personali di minori?
+                                    p.font-w-normal-16.font-m-normal-14 La tutela della privacy dei minori è molto importante per noi. LGE non raccoglie o conserva intenzionalmente dati personali di individui di età inferiore a 18 anni, né intenzionalmente consente a tali minori l’utilizzo dei Siti. Gli utenti minori di 18 anni sono pregati di non registrarsi sui Siti e di non fornire dati personali. Qualora dovessimo venire a conoscenza che un minore di anni 18 ci ha fornito dati personali, provvederemo a cancellare tempestivamente tali dati.
+                                    h4.font-w-normal-18.font-m-normal-16 7. I dati degli utenti vengono trasferiti all’estero?
+                                    p.font-w-normal-16.font-m-normal-14 Facendo parte di un gruppo che opera a livello globale, LGE, le nostre affiliate, controllate, controllanti e fornitori possono trovarsi nella condizione di dover trasferire dati personali di utenti al di fuori del Paese in cui questi sono stabiliti, come ad esempio in Corea del Sud, Paese in cui ha sede la nostra società Capogruppo. Ciò può comportare un trasferimento di dati personali di utenti al di fuori dello Spazio Economico Europeo, se l’utente sta utilizzato i Siti all’interno di esso (per “Spazio Economico Europeo” si intende il territorio dell’Unione Europea, oltre a Islanda, Liechtenstein e Norvegia). Il trasferimento all’estero di dati personali è necessario per fornire servizi all’utente e per perseguire le altre finalità indicate nella presente Privacy Policy. Le normative in materia di tutela dei dati personali di alcune delle giurisdizioni presso cui trasferiamo i dati potrebbero non garantire il medesimo livello di tutela di cui gode l’utente stabilito all’interno dello Spazio Economico Europeo. Tuttavia, prima di procedere al trasferimento di dati al di fuori dello Spazio Economico Europeo, LGE adotta idonee precauzioni, anche contrattuali, previste dalla normativa privacy applicabile, al fine di garantire la protezione, la sicurezza e la riservatezza dei dati personali oggetto di trasferimento. LGE adotta le Clausole Contrattuali Standard previste dalla Commissione Europea per trasferire i dati alla società Capogruppo.
+                                    h4.font-w-normal-18.font-m-normal-16 8. Per quanto tempo LGE conserverà i dati personali dell’utente?
+                                    p.font-w-normal-16.font-m-normal-14 Poniamo in essere ogni ragionevole misura per conservare i dati personali degli utenti per il tempo strettamente necessario al fine di fornire servizi o per il raggiungimento delle finalità per le quali i dati sono stati raccolti, oppure ancora in ottemperanza ad obblighi di legge. Applichiamo inoltre specifici criteri per determinare il termine di conservazione appropriato per le varie categorie di dati personali fornite dagli utenti. Ad esempio, conserviamo i dati personali necessari all’esercizio del nostro diritto di difesa in caso di controversie legali, quali i dati personali relativi ad un contratto o alla prestazione di un servizio, per tutta la durata di vigenza del contratto o di prestazione del servizio e per un periodo fino a 10 (dieci) anni successivo. Decorso tale termine, i dati personali saranno cancellati o resi in forma anonima.
+                                    p.font-w-normal-16.font-m-normal-14 Le registrazioni delle telefonate gestite tramite il nostro call center sono conservate per un periodo di 90 giorni, dopodiché vengono cancellate.
+                                    p.font-w-normal-16.font-m-normal-14 Nel caso in cui avessimo raccolto dati personali basandoci sul consenso dell’utente e non avessimo più altra valida base giuridica per proseguire con il loro trattamento, se l’utente ritira il proprio consenso provvederemo a cancellare i dati personali interessati da tale revoca. Per maggiori informazioni sulle modalità di revoca, si rimanda alla sezione 10 che segue.
+                                    h4.font-w-normal-18.font-m-normal-16 9. Cookies
+                                    p.font-w-normal-16.font-m-normal-14 I cookie sono piccoli file di testo inviati all'utente dal sito web visitato. Vengono memorizzati sull’hard disk del computer, consentendo in questo modo al sito web di riconoscere gli utenti e memorizzare determinate informazioni su di loro, al fine di permettere o migliorare il servizio offerto.
+                                    p.font-w-normal-16.font-m-normal-14 Esistono diverse tipologie di cookie. Alcuni sono necessari per poter navigare sul Sito, altri hanno scopi diversi come garantire la sicurezza interna, amministrare il sistema, effettuare analisi statistiche, comprendere quali sono le sezioni del Sito che interessano maggiormente gli utenti o offrire una visita personalizzata del Sito.
+                                    p.font-w-normal-16.font-m-normal-14 Il Sito utilizza cookie che non hanno la possibilità di far partire programmi sul computer dell’utente o di caricare virus sullo stesso e che non permettono alcun tipo di controllo sul computer dell’utente. Non utilizziamo i cookie per accedere a informazioni presenti sul computer dell’utente, per memorizzare dati sullo stesso e per controllare le attività dell’utente. Quanto precede si riferisce sia al computer dell’utente sia ad ogni altro dispositivo che l'utente usa per connettersi al Sito.
+                                    p.font-w-normal-16.font-m-normal-14 I c.d. ‘cookie di sessione’ sono memorizzati temporaneamente e vengono cancellati quando l’utente chiude il browser. Se l’utente si registra al Sito possiamo utilizzare cookie che raccolgono dati personali che ci permettono di identificare l’utente in occasione di visite successive e che ci permettono di facilitare l'accesso - login al Sito (per esempio conservando username e password dell’utente) e la navigazione sullo stesso. Lo stesso dicasi per la memorizzazione delle informazioni relative agli ordini dell'utente presenti nel "carrello". Inoltre utilizziamo i cookie per finalità di sicurezza interna, di amministrazione del sistema, analisi statistica, per comprendere quali sono le sezioni del Sito che interessano maggiormente gli utenti e per offrire una visita personalizzata del Sito. Il Sito potrebbe contenere link ad altri siti. LG Electronics non ha alcun accesso o controllo su cookie, web bacon e altre tecnologie di tracciamento usate sui siti di terzi cui l’utente può accedere dal Sito, sulla disponibilità, su qualsiasi contenuto e materiale che è pubblicato o ottenuto attraverso tali siti e sulle relative modalità di trattamento dei dati personali; LG Electronics a questo proposito declina espressamente ogni relativa responsabilità. L’utente dovrebbe verificare la privacy policy dei siti di terzi cui accede dal Sito per conoscere le condizioni applicabili al trattamento dei dati personali poiché la presente Privacy Policy si applica solo al Sito come sopra definito.
+                                    p.font-w-normal-16.font-m-normal-14 La disabilitazione dei cookie potrebbe limitare la possibilità di usare il Sito e impedire di beneficiare in pieno delle funzionalità e dei servizi presenti sul Sito. Per decidere quali accettare e quali rifiutare, è illustrata di seguito una descrizione dei cookie utilizzati sul Sito.
+                                    h4.font-w-normal-18.font-m-normal-16 9.1 Tipologie di cookie utilizzati
+                                    ul
+                                        li Cookie di prima parte
+                                            | I cookie di prima parte sono impostati dal sito web visitato dall'utente, il cui indirizzo compare nella finestra URL.
+                                        li Cookie di terze parti
+                                            | I cookie di terzi sono impostati da un dominio differente da quello visitato dall'utente. Se un utente visita un sito e una società diversa invia l'informazione sfruttando quel sito, si è in presenza di cookie di terze parti. LG Electronics non ha alcun accesso o controllo su cookie, web bacon e altre tecnologie di tracciamento usate sui siti di terzi cui l’utente può accedere dal Sito. LG Electronics a questo proposito declina espressamente ogni relativa responsabilità. L’utente è invitato a verificare la privacy policy dei siti di terzi cui accede dal Sito per conoscere le condizioni applicabili al trattamento dei dati personali.
+                                        li Cookie di sessione
+                                            | Questi cookie sono memorizzati temporaneamente e vengono cancellati quando l’utente chiude il la finestra di navigazione.
+                                        li Cookie persistenti
+                                            | I cookie persistenti sono memorizzati sul dispositivo degli utenti tra le sessioni del browser, consentendo di ricordare le preferenze o le azioni dell'utente in un sito. Possono essere utilizzati per diversi scopi, ad esempio per ricordare le preferenze e le scelte quando si utilizza un sito o per mostrare pubblicità che possono essere di interesse per l'utente.
+                                        li Cookie essenziali
+                                            | Questi cookie sono strettamente necessari per il funzionamento del Sito. Senza l'uso di tali cookie alcune parti del sito non funzionerebbero. Comprendono, ad esempio, i cookie che consentono di accedere in aree protette del Sito. Questi cookie non raccolgono informazioni per scopi di marketing e non possono essere disattivati.
+                                        li Cookie analitici e di prestazione
+                                            | Questo tipo di cookie permette di riconoscere e contare il numero di visitatori e vedere i movimenti all'interno del Sito per migliorarne il funzionamento, ad esempio, facendo in modo che gli utenti trovino facilmente quello che stanno cercando. Questi cookie non raccolgono informazioni che possono identificare l'utente. Tutte le informazioni raccolte sono anonime.
+                                    p.font-w-normal-16.font-m-normal-14 
+                                        | Il nostro Sito utilizza cookie di Google Analytics. Le informazioni raccolte dai cookie di Google Analytics verranno trasmesse a, e depositate presso i server di Google negli Stati Uniti d'America in conformità con le sue privacy policy. Per prendere visione della privacy e cookie policy di Google è possibile visitare.
+                                        a(href="www.google.com/intl/it/policies/privacy/", target="_blank") www.google.com/intl/it/policies/privacy/
+                                        | Si possono rifiutare cookie di Google Analytics attraverso la pagina 
+                                        a(href="https://tools.google.com/dlpage/gaoptout?hl+en-GB.&hl=it", target="_blank") https://tools.google.com/dlpage/gaoptout?hl+en-GB.&hl=it
+                                    ul
+                                        li Cookie funzionali
+                                            | Questi cookie servono a riconoscere un utente che torna a visitare il Sito. Permettono di personalizzare il contenuti e ricordate le preferenze (ad esempio, la lingua selezionata o la regione). Questi cookie non raccolgono informazioni che possono identificare l'utente. Tutte le informazioni raccolte sono anonime.
+                                        li Cookie di condivisone sui Social Network
+                                            | Questi cookie facilitano la condivisione dei contenuti del sito attraverso social network quali Facebook e Twitter. Per prendere visione della relativa privacy e cookie policy è possibile visitare
+                                            a(href="https://www.facebook.com/help/cookies", target="_blank") https://www.facebook.com/help/cookies
+                                            | e 
+                                            a(href="https://twitter.com/privacy", target="_blank") https://twitter.com/privacy.
+                                        li Cookie di profilazione / di pubblicità
+                                            | Questo tipo di cookie vengono utilizzati per la visualizzazione di pubblicità mirate a utenti che hanno precedentemente visitato questo sito. Il nostro Sito utilizza cookie di Google Adwords. Per prendere visione della privacy e cookie policy di Google è possibile visitare
+                                            a(href="www.google.com/intl/it/policies/privacy/", target="_blank") www.google.com/intl/it/policies/privacy/
+                                            | •	Si possono disattivare i cookie di Google Adwords attraverso la pagina
+                                            a(href="www.google.com/settings/ads/plugin", target="_blank") www.google.com/settings/ads/plugin
+                                    p.font-w-normal-16.font-m-normal-14 Nello specifico, si riporta di seguito la lista dei cookie utilizzati sul Sito e relative descrizione e funzionalità, compresa la durata temporale.
+
+                                    h4.font-w-normal-18.font-m-normal-16 Tipologia di Cookie, Nome del Cookie, Provenienza, Finalità, Durata
+                                    table 
+                                        thead 
+                                            tr 
+                                                th Tipologia di Cookie
+                                                th Nome del Cookie
+                                                th Provenienza
+                                                th Finalità
+                                                th Durata
+                                        tbody 
+                                            tr 
+                                                td Strettamente necessari
+                                                td FRONT_JSESSIONID, CS_JSESSIONID, DOWN_JSESSIONID, MOBR_JSESSIONID, plbw, WMONID
+                                                td LG
+                                                td Mantenimento della sessione..
+                                                td Sessione
+                                            tr 
+                                                td(rowspan="7") Analitici
+                                                td s_cc, s_sq, s_vi, s_invisit, s_nr, s_vnum, s_sv_sid, s_sv_s1, s_sv_p1
+                                                td LG
+                                                td Mantenimento della sessione..
+                                                td Sessione
+                                            tr 
+                                                td s_cc
+                                                td LG
+                                                    | Se lo javascript sul browser di un utente non funziona, sono utilizzati cookie di terze parti (Site Catalyst)
+
+                                                td Questo cookie viene impostato e letto dal codice JavaScript quando la funzionalità ClickMap è abilitata, contiene informazioni sul link precedentemente cliccato dall'utente.
+                                                td Sessione
+                                            tr 
+                                                td s_sq
+                                                td LG
+                                                    | Se lo javascript sul browser di un utente non funziona, sono utilizzati cookie di terze parti (Site Catalyst)
+
+                                                td Questo cookie viene impostato e letto dal codice JavaScript quando la funzionalità ClickMap è abilitata, contiene informazioni sul link precedentemente cliccato dall'utente.
+                                                td Sessione
+                                            tr 
+                                                td s_vi
+                                                td LG
+                                                    | Se lo javascript sul browser di un utente non funziona, sono utilizzati cookie di terze parti (Site Catalyst)
+
+                                                td Questo cookie è utilizzato per identificare un visitatore unico.
+                                                td Persistente
+                                            tr 
+                                                td s_sv_sid
+                                                td LG
+                                                    | Se lo javascript sul browser di un utente non funziona, sono utilizzati cookie di terze parti (Adobe Survey)
+
+                                                td Conserva un numero unico per garantire la corretta memorizzazione di files javascript utilizzati per effettuare sondaggio all'interno del browser.
+                                                td Sessione
+                                            tr 
+                                                td s_sv_s1
+                                                td LG
+                                                    | Se lo javascript sul browser di un utente non funziona, sono utilizzati cookie di terze parti (Adobe Survey)
+
+                                                td 
+                                                    | Memorizza gli ID dei sondaggi che il visitatore ha rinviato cliccando su "Più tardi" quando è stato sollecitato a effettuare un sondaggio.
+                                                    | Memorizza gli ID dei sondaggi che potrebbero portare alla seguente pagina web di un sito.
+                                                    | Memorizza gli ID dei sondaggi iniziati.
+                                                    | Memorizza il momento in cui il sistema di sondaggi ha iniziato l'esecuzione (per i sondaggi rinviati)
+
+                                                td Sessione
+                                            tr 
+                                                td s_sv_p1
+                                                td LG
+                                                    | Se lo javascript sul browser di un utente non funziona, sono utilizzati cookie di terze parti (Adobe Survey)
+
+                                                td 
+                                                    | Memorizza gli ID dei sondaggi effettuati o rifiutati.
+                                                    | Memorizza le informazioni per specificare se il visitatore rientra nei valori di campionamento.
+                                                    | Memorizza un numero sempre crescente utilizzato al momento del sondaggio in uscita dal sito, per verificre che il visitatore abbia lasciato il sito.
+                                                    | Memorizza un flag che indica se il visitatore abbia raggiunto il livello specifico dal cliente e debba essere escluso da ulteriori indagini.
+
+
+                                                td Persistente
+                                            tr 
+                                                td(rowspan="3") Analitici
+                                                td _utma
+                                                td Google Analytics 
+                                                td Questo cookie viene utilizzato per determinare visitatori unici al sito ed è aggiornato ad ogni visualizzazione della pagina. Inoltre, il cookie è dotato di un ID univoco che Google Analytics Analytics utilizza per garantire sia la validità che l'accessibilità del cookie come misura di sicurezza supplementare.
+                                                td 2 anni
+                                            tr 
+                                                td _utmb
+                                                td Google Analytics 
+                                                td Questo cookie viene utilizzato per iniziare e continuare la sessione di un utente con il sito. Quando un utente visualizza una pagina del sito, il codice di Google Analytics tenta di aggiornare il cookie. Se non trova il cookie, ne viene creato uno nuovo e viene stabilita una nuova sessione.
+                                                td 30 minuti
+                                            tr 
+                                                td _utmz
+                                                td Google Analytics 
+                                                td Questo cookie memorizza il tipo di riferimento utilizzato dal visistatore per raggiungere il sito, attraverso un metodo diretto, un link di riferimento, una ricerca o una campagna web, come un annuncio o un link in una e-mail. È utilizzato per calcolare il traffico dei motori di ricerca, le campagne pubblicitarie e la navigazione delle pagine all'interno del sito. Il cookie viene aggiornato ad ogni visualizzazione della pagina del sito.
+                                                td 6 mesi
+                                            tr 
+                                                td Terzi (SNS)
+                                                td pid (twitter) datr, locale, c_user, L, lu, W, xs (Facebook)
+                                                td Twitter, Facebook
+                                                td Condivisioni sui Social Network (SNS). Per abilitare la funzione SNS, vengono inseriti dei cookie di identificazione utente dai siti SNS. (Non includere informazioni private).
+                                                td Sessione
+                                            tr 
+                                                td Funzionali
+                                                td LG_COMPARE_CART
+                                                td LG
+                                                td Questo cookie viene utilizzato per attivare la funzione di confronto.
+                                                td Sessione
+                                            tr 
+                                                td Funzionali
+                                                td LG_RECENTLY_VIEW
+                                                td LG
+                                                td Questo cookie viene utilizzato per abilitare le funzioni "Visualizzazioni recenti".
+                                                td Sessione
+                                            tr 
+                                                td Analitici
+                                                td s_vi_bikx78ecalgbkjkx, x, s_vi_gqfjh (Cookie variables are set randomly)
+                                                td Site Catalyst
+                                                td Aggregazione dei dati di traffico del sito e i comportamenti dei visitatori.
+                                                td Sessione
+                                            tr 
+                                                td Funzionali
+                                                td email_addr
+                                                td LG
+                                                td Questo cookie viene utilizzato per permettere di ricordare l'indirizzo e-mail inserito dagli utenti; alla prossima visita della pagina, l'indirizzo e-mail sarà inserito automaticamente nello spazio.
+                                                td Persistente
+                                            tr 
+                                                td Terzi (Google Maps)
+                                                td NID, PREF
+                                                td Google Maps
+                                                td Display di Google Maps e monitoraggio del suo utilizzo.
+                                                td Persistente
+                                            tr 
+                                                td Funzionali
+                                                td pcVersion
+                                                td LG
+                                                td Questo cookie ricorda la selezione degli utenti per visualizzare la versione desktop.
+                                                td Sessione
+                                            tr 
+                                                td Analitici
+                                                td RT
+                                                td LG
+                                                td Contiene e salva i dati relativi alla sessione, come la durata, numero di pagine visitate, etc.
+                                                td 7 giorni
+                                            tr 
+                                                td Analitici
+                                                td BOOMR_CONSENT
+                                                td LG
+                                                td Contiene le informazioni di opt-in e opt-out degli utenti
+                                                td 1 anno
+                                            tr 
+                                                td Analitici
+                                                td akacd_imab
+                                                td LG
+                                                td Non contiene informazioni personali ma viene usato per gli A/B test (Per la gestione immagini)
+                                                td 7 giorni
+                                            tr 
+                                                td Analitici
+                                                td rfihub
+                                                td LG
+                                                td Utilizzato per tracciare i comportamenti dei visitatori
+                                                td 90 giorni
+                                            tr 
+                                                td Analitici
+                                                td MUID
+                                                td LG
+                                                td Utilizzato per tracciare i comportamenti dei visitatori
+                                                td 30 giorni
+                                            tr 
+                                                td Analitici
+                                                td _ga, _gid, _gcl_au
+                                                td YouTube
+                                                td Utilizzato per tracciare i comportamenti dei visitatori
+                                                td 
+
+                                    h4.font-w-normal-18.font-m-normal-16 9.2 Come modificare le impostazioni sui cookie
+                                    p.font-w-normal-16.font-m-normal-14 La maggior parte dei browser accetta automaticamente i cookie, ma l’utente normalmente può modificare le impostazioni per disabilitare tale funzione. E' possibile bloccare tutti le tipologie di cookie, oppure accettare di riceverne soltanto alcuni e disabilitarne altri.
+                                    p.font-w-normal-16.font-m-normal-14 La sezione "Opzioni" o "Preferenze" nel menu del browser permettono di evitare di ricevere cookie e altre tecnologie di tracciamento utente, e come ottenere notifica dal browser dell’attivazione di queste tecnologie. In alternativa, è anche possibile consultare la sezione “Aiuto” della barra degli strumenti presente nella maggior parte dei browser.
+                                    p.font-w-normal-16.font-m-normal-14 È anche possibile selezionare il browser che stai usando dalla lista di seguito e seguire le istruzioni:
+                                    ul 
+                                        li - Internet Explorer
+                                        li - Chrome
+                                        li - Safari
+                                        li - Firefox
+                                        li - Opera
+                                    h4.font-w-normal-18.font-m-normal-16 10. Revoca del consenso
+                                    p.font-w-normal-16.font-m-normal-14 Come indicato nella precedente sezione 3, ai sensi della presente Privacy Policy, LGE può trattare i dati dell’utente sulla base del consenso, espresso, libero e facoltativo prestato da quest’ultimo, al fine di inviare comunicazioni a mezzo email o SMS/MMS per finalità di marketing, ricerche di mercato e indagine sul grado di soddisfazione del cliente (customer satisfaction), nonché per sottoporre i dati degli utenti a profilazione o per comunicarli a nostri partner commerciali per proprie finalità di marketing. Qualora non desiderasse ricevere più comunicazioni per finalità di marketing, ricerca di mercato o customer satisfaction, ovvero desiderasse che i propri dati personali non vengano sottoposti a profilazione o che non siano più condivisi con terzi partner di LGE per finalità di marketing, l’utente ha la facoltà, in ogni momento, di revocare i consensi prestati per ciascuna delle suddette finalità. Tale revoca può essere esercitata dall’utente in vari modi: selezionando la apposita impostazione all’interno della propria area riservata dei Siti, seguendo le istruzioni di disiscrizione che verranno illustrate di volta in volta in ciascuna comunicazione marketing di cui l’utente sarà destinatario, oppure ancora rivolgendosi al titolare agli indirizzi indicati alla successiva sezione 14.
+                                    p.font-w-normal-16.font-m-normal-14 Per quanto concerne la registrazione delle chiamate gestite tramite il nostro call center, l’utente può opporsi alla registrazione della chiamata comunicandolo in tempo reale all’operatore non appena possibile.
+                                    h4.font-w-normal-18.font-m-normal-16 11. Servizio di Chat,funzioni di messaggistica e recensioni
+                                    p.font-w-normal-16.font-m-normal-14 Alcune sezioni dei Siti consentono all’utente di interagire, attraverso funzioni di messaggistica testuale a campo libero, con operatori umani o sistemi automatizzati, come ad esempio il servizio di chat o form di contatto. Tali funzionalità sono preposte alla prestazione di servizi specifici nei confronti dell’utente che ne faccia richiesta, come ad esempio fornire assistenza pre e post vendita o richiedere informazioni. Poniamo in essere ogni sforzo ragionevole al fine di minimizzare la raccolta di dati personali dell’utente necessari al funzionamento dei servizi e funzionalità sopra indicati; ciò nonostante, al fine di evitare che dati personali non pertinenti possano essere oggetto di trattamento da parte nostra (ad esempio, poiché immagazzinati nei log di sessione della chat), si raccomanda all’utente di fornire solamente i dati e le informazioni espressamente richieste dall’operatore o dal sistema (come ad esempio, nome, cognome e dati di contatto), o comunque quei dati e quelle informazioni strettamente funzionali e necessarie all’erogazione del servizio richiesto (come ad esempio prodotto e numero di modello, o descrizione di difetti o problematiche di funzionamento).
+                                    p.font-w-normal-16.font-m-normal-14 L’utente ha inoltre la possibilità di pubblicare recensioni (o modificare recensioni già pubblicate) mediante apposita funzione presente sui Siti. Si rammenta all’utente che, una volta pubblicata, la recensione (ivi compreso il nome o il nickname inserito dall’autore) sarà pubblicamente visibile a tutti i visitatori dei Siti, senza restrizioni. Si invita pertanto l’utente a non divulgare informazioni o dati personali che non si desidera siano diffuse mediante la rete internet.
+                                    h4.font-w-normal-18.font-m-normal-16 12. Modifiche alla Privacy Policy
+                                    p.font-w-normal-16.font-m-normal-14 Le caratteristiche, le funzionalità ed i servizi offerti dal presente Sito potrebbero in futuro subire delle modifiche. Di conseguenza, la presente Privacy Policy potrà essere aggiornata in ogni momento da LGE. LGE darà comunicazione agli utenti e visitatori dei Siti delle eventuali variazioni apportate.
+                                    h4.font-w-normal-18.font-m-normal-16 13. Sicurezza dei dati
+                                    p.font-w-normal-16.font-m-normal-14 LGE adotta misure di sicurezza al fine di salvaguardare la riservatezza dei dati personali degli utenti. Tuttavia, a causa della natura di Internet, della continua evoluzione tecnologica e di altri fattori al di fuori del nostro controllo, la sicurezza della trasmissione di dati tramite Internet non può essere totalmente garantita, di conseguenza non possiamo assicurare o garantire la sicurezza dei dati e delle informazioni che l'utente ci trasmette e l'utente riconosce ed accetta che tale trasmissione è a suo rischio. Si raccomanda inoltre all’utente di prendere idonee precauzioni nell’utilizzare i Siti, come ad esempio mantenere strettamente riservate le proprie credenziali di accesso ai Siti e cambiarle periodicamente
+                                    h4.font-w-normal-18.font-m-normal-16 14. Quali sono i diritti privacy dell’utente e come esercitarli?
+                                    p.font-w-normal-16.font-m-normal-14 L’utente ha diritto di accedere, rettificare o cancellare i dati conservati da LGE che lo riguardano, nonché il diritto di opporsi a, o limitare, certe tipologie di trattamento (ivi compreso il diritto di revocare il proprio consenso al trattamento precedentemente prestato), nonché di ricevere i dati personali che lo riguardano in un formato strutturato, di uso comune e leggibile da dispositivo automatico (diritto alla portabilità dei dati). L’utente ha infine il diritto di proporre un reclamo ad una competente Autorità di Controllo. Nel caso in cui ritenessimo l’esercizio di diritti privacy da parte dell’utente manifestamente infondato o eccessivo, possiamo riservarci di addebitare all’utente richiedente un ragionevole contributo spese per l’evasione della richiesta, oppure rifiutarci di darvi seguito. Per l’esercizio dei suoi diritti privacy, nonché per richiedere qualunque informazione o chiarimento in merito alla presente Privacy Policy, l’utente può rivolgersi al seguente indirizzo presso il titolare del trattamento.
+                                    p.font-w-normal-16.font-m-normal-16 LG Electronics Italia S.p.A.
+                                    p.font-w-normal-16.font-m-normal-16 Via Aldo Rossi 4
+                                    p.font-w-normal-16.font-m-normal-16 20149 Milano
+                                    p.font-w-normal-16.font-m-normal-16 
+                                        a(href="mailto:privacy.dati@lge.com") privacy.dati@lge.com
+                                    p.font-w-normal-16.font-m-normal-16 L’utente può inoltre contattare il nostro Responsabile della Protezione dei Dati al seguente indirizzo:
+                                        br
+                                        a(href="dpo-eu@lge.com", target="_blank") dpo-eu@lge.com
+                                    p.font-w-normal-16.font-m-normal-16 Ultimo aggiornamento: 24 agosto 2020
+                                .my-check-msg__button
+                                    +formCheckbox('I have read and familiarized myself with the Terms & Conditions and the LG VIP store.', "name", "val1", `checkId1`, count="false")
+                        
+                        .my-formbox
+                            .c-input-item__title
+                                .c-text-contents
+                                    .title.c-text-contents__headline
+                                        p.font-w-normal-32.font-m-normal-20 VIP Program Privacy Policy
+                            .my-check-msg
+                                .my-check-msg__container
+                                    // [Start] 2023-05-12 : UPDATE- fix font-size font-m-normal-14 -> 16
+                                    h4.font-w-normal-18.font-m-normal-16 1. Introduzione
+                                    p.font-w-normal-16.font-m-normal-14 Con la presente Privacy Policy LG Electronics Italia S.p.A. con sede legale in Via Aldo Rossi 4, 20149 Milano (di seguito, “LGE”, “noi” e “nostro”), in qualità di titolare del trattamento, informa gli utenti sulle modalità e finalità del trattamento dei dati personali tramite i Siti, anche mediante l’utilizzo di cookie.
+                                    h4.font-w-normal-18.font-m-normal-16 2. Quali dati trattiamo?
+                                    p.font-w-normal-16.font-m-normal-14 LGE può raccogliere i dati personali dell’utente in vari modi; di seguito elenchiamo alcune delle modalità di raccolta:
+                                    ol 
+                                        li.font-w-normal-16.font-m-normal-14 a. raccogliamo il nome e cognome dell’utente, il suo indirizzo di domicilio o residenza, il suo indirizzo email, il numero di telefono, la sua data di nascita (oppure la circostanza che l’utente è maggiorenne), nonché informazioni su prodotti o servizi quando l’utente ci contatta riguardo a nostri prodotti o servizi, oppure quando l’utente interagisce con i Siti. Tale interazione può consistere, ad esempio, nella registrazione ai Siti mediante la creazione di un account utente, nella partecipazione a sondaggi, nel contatto con il nostro call center, nella pubblicazione di una recensione mediante apposita funzione nei Siti, oppure ancora nell’inoltro di richieste tramite form o moduli presenti sui Siti; i dati così raccolti possono anche essere contenuti all’interno delle registrazioni delle chiamate gestite tramite il nostro call center;
+                                        li.font-w-normal-16.font-m-normal-14 b. raccogliamo il nome e cognome dell’utente, la sua data di nascita (oppure la circostanza che l’utente è maggiorenne), il suo indirizzo di domicilio o residenza, il suo indirizzo email, il numero di telefono, il codice fiscale o la partita IVA, documenti identificativi, nonché le informazioni inerenti le tipologie di servizi di pagamento utilizzati quando l’utente acquista prodotti o servizi LGE, al fine di gestire l’ordine, l’acquisto, il pagamento ed ogni attività o servizio connesso od associato alla conclusione di un contratto di compravendita tramite i Siti (quali ad esempio: consegna, installazione, reso, recesso, ritiro del RAEE, etc..). Per quanto concerne il pagamento, precisiamo tuttavia che LGE non raccoglie né conserva alcun dato relativo ai mezzi di pagamento adoperati dall’interessato (come ad esempio il numero di carta di credito). Questi dati sono raccolti e trattati autonomamente dalle società di pagamento digitale o dagli istituti gestori dei pagamenti coinvolti nei processi di pagamento in base alle rispettive informative sulla privacy. Tali soggetti comunicano a LGE solamente informazioni relative all’effettuazione, o meno, del pagamento (pagamento andato a buon fine, revocato, etc.);
+                                        li.font-w-normal-16.font-m-normal-14 c. possiamo raccogliere categorie speciali di dati, come ad esempio dati relativi allo stato di salute o alla sussistenza di uno stato di invalidità, ai fini di adempiere, in conformità alla normativa applicabile, a richieste di applicazione del regime di IVA agevolata nell’ambito di vendite tramite i Siti di sussidi tecnici e informatici a clienti diversamente abili;
+                                        li.font-w-normal-16.font-m-normal-14 d. raccogliamo il nome e cognome dell’utente, il suo indirizzo di domicilio o residenza, il suo indirizzo email, il numero di telefono e le informazioni bancarie per fornire servizi post vendita (compresi ad esempio prevenzione frodi, resi o rimborsi, garanzie e assistenza clienti), nonché per gestire le sue richieste di informazioni relative ai nostri prodotti o servizi; con il consenso dell’utente, possiamo raccogliere inoltre dati relativi all’immagine o alla voce dell’utente, mediante connessioni e registrazioni audio/video, nel caso in cui l’utente richieda di avvalersi di servizi di assistenza post-vendita mediante sistema videosupporto da remoto (“Servizio Telepresence”). Il servizio di assistenza post-vendita mediante sistema videosupporto da remoto “Telepresence” consente all’utente di instaurare un collegamento audio/video (videochiamata) con un operatore post-vendita al fine di effettuare la diagnostica, assistenza e risoluzione problemi su prodotti o servizi acquistati. Il collegamento avviene mediante piattaforma web, nell’ambito della quale sono raccolti dati relativi relativi al dispositivo e al software (sistema operativo, browser) usato dall’utente durante la sessione. Nel corso della sessione, in base alle informazioni di carattere tecnico e/o legale afferenti al prodotto o al suo utilizzo rilasciate dall’utente, potremmo raccogliere dati necessari, nel nostro legittimo interesse, a migliorare i nostri prodotti.
+                                        li.font-w-normal-16.font-m-normal-14 e. raccogliamo il nome e cognome dell’utente, il suo indirizzo di domicilio o residenza, il suo indirizzo email, il numero di telefono, la sua data di nascita (oppure la circostanza che l’utente è maggiorenne), il suo IBAN e il suo documento d’identità al fine di gestirne iscrizione e/o partecipazione ad appositi eventi o iniziative organizzate da LGE a cui l’utente aderisce, quali ad esempio fiere, promozioni o manifestazioni a premio (nel seguito, gli “Eventi”), ivi compresi gli adempimenti conseguenti, come ad esempio l’accredito dell’utente presso gli Eventi, la consegna di premi a l’utente abbia diritto, oppure ancora rispondere a richieste.
+                                        li.font-w-normal-16.font-m-normal-14 f. raccogliamo il nome e cognome dell’utente, il suo indirizzo di domicilio o residenza, il suo indirizzo email, il numero di telefono per adempiere agli obblighi di legge e regolamentari cui LGE sia eventualmente soggetta;
+                                        li.font-w-normal-16.font-m-normal-14 g. raccogliamo il nome e cognome dell’utente, il suo indirizzo email, il suo numero di telefono nonché informazioni su prodotti o servizi nel caso in cui l’utente abbia acconsentito a ricevere, per telefono o a mezzo email, comunicazioni marketing da parte nostra o a nostro nome, oppure comunicazioni da parte o in nome di nostri partner commerciali con i quali, previo consenso espresso dell’utente, abbiamo condiviso i dati personali dell’utente in conformità alla presente Privacy Policy;
+                                        li.font-w-normal-16.font-m-normal-14 h. raccogliamo il nome e cognome dell’utente, il suo indirizzo email, il suo numero di telefono nonché informazioni su prodotti o servizi nel caso in cui l’utente abbia acconsentito all'analisi delle proprie abitudini, interessi e preferenze per l'offerta di servizi e l'invio delle comunicazioni sopra indicate in linea con gli stessi;
+                                    p.font-w-normal-16.font-m-normal-14 Se l’utente ci fornisce dati personali di terzi, l’utente deve fare quanto necessario affinché la comunicazione dei dati a LGE e il nostro successivo trattamento per le finalità specificate nella presente Privacy Policy avvengano nel rispetto della normativa applicabile, per cui ad esempio l’utente prima di fornirci i dati personali di terzi deve informarli e ottenere il consenso al trattamento, se richiesto dalla suddetta normativa.
+                                    p.font-w-normal-16.font-m-normal-14 I dati di navigazione che possiamo raccogliere quando un utente utilizza i Siti ricadono nelle seguenti categorie:
+                                    ul
+                                        li
+                                            em Dati sui prodotti.
+                                            | Raccogliamo dati riguardanti i prodotti che l’utente acquista o per i quali richiede servizi di assistenza attraverso i Siti. I dati sui prodotti possono includere il codice prodotto o il numero di modello, l’indirizzo IP dell’utente, la categoria del prodotto o informazioni sulla versione firmware e software, il codice Paese o l’identificativo del dispositivo (ad esempio indirizzo MAC, UUID (identificativo univoco universale) e simili.
+                                        li
+                                            em Dati di utilizzo.
+                                            | I dati di utilizzo comprendono tutti i dati raccolti tramite i Siti e riguardano, ad esempio, le tipologie di azioni effettuate sui Siti (quali i click effettuati), i dati di registrazione dell’utente, oppure ancora come l’utente sta utilizzando i Siti.
+                                        li
+                                            em Indirizzi IP.
+                                            | Quando un utente utilizza i Siti, potremmo automaticamente registrare l’indirizzo IP (vale a dire l’indirizzo univoco che identifica il dispositivo dell’utente su Internet), che viene automaticamente riconosciuto dal nostro server.
+                                    p.font-w-normal-16.font-m-normal-14 I dati di navigazione sono utilizzati al solo fine di ottenere informazioni statistiche anonime sull’utilizzo dei Siti e per controllarne il regolare funzionamento e sono cancellati immediatamento dopo il loro trattamento. Tali dati potrebbero essere inoltre utilizzati al fine di accertare responsabilità in caso di eventuali reati informatici ai danni dei Siti o per tutelare i nostri diritti.
+                                    h4.font-w-normal-18.font-m-normal-16 3. In che modo utilizziamo i dati personali degli utenti, e su quale base giuridica?
+                                    p.font-w-normal-16.font-m-normal-14 Trattiamo i dati personali raccolti tramite i Siti per le seguenti finalità:
+                                    ul
+                                        li per la conclusione di un contratto di compravendita tramite i Siti, ivi compresi tutti gli adempimenti propedeutici, conseguenti o connessi; nel caso di utenti diversamente abili intitolati ad effettuare acquisti in regime di IVA agevolata, il trattamento delle relative categorie speciali di dati sarà effettuato al solo fine di verificare il possesso del richiedente dei requisiti di legge per poter beneficiare di tale agevolazione;
+                                        li per rispondere o soddisfare una richiesta da parte di un utente, come ad esempio fornire riscontri o prestare servizi richiesti, quali servizi di assistenza pre e post vendita,ivi compreso verificare che tali servizi siano stati regolarmente prestati all’utente che ne abbia fatto richiesta, nonché per assicurare e gestire la partecipazione agli Eventi cui l’utente abbia scelto di aderire; nel caso in cui l’utente desideri avvalersi di servizi di assistenza post-vendita mediante sistema videosupporto da remote “Telepresence”, provvederemo a raccogliere lo specifico consenso in tal senso da parte dell’utente.
+                                        li con il consenso dell’utente, al fine di effettuare attività di marketing (direttamente da parte nostra, oppure tramite nostri affiliati e partner commerciali che agiscono per nostro conto) attraverso mezzi automatizzati (email e newsletter, SMS/MMS) per informare l’utente riguardo ad offerte speciali, aggiornamenti, novità su altri prodotti o servizi, per inviare all’utente materiale promozionale, per effettuare indagini di mercato e sul grado di soddisfazione dell’utente su prodotti o servizi di LGE (customer satisfaction);
+                                        li con il consenso dell’utente, al fine di comunicare i dati personali raccolti a nostri partner commerciali specializzati nell’offerta di servizi assicurativi o di estensione garanzia su prodotti LG, per proprie finalità di marketing anche finalizzate alla vendita diretta di beni o servizi, in qualità di autonomi Titolari;
+                                        li con il consenso dell’utente, al fine di analizzare le proprie abitudini, interessi e preferenze per l'offerta di servizi e l'invio di comunicazioni in linea con gli stessi;
+                                        li per assicurare che i Siti siano aggiornati e rispondenti alle necessità degli utenti, per analizzare, rivedere e migliorare i prodotti o i servizi offerti da LGE, per fornire agli utenti un’esperienza di navigazione dei Siti user-friendly. Le informazioni utilizzate per questa finalità rimarranno strettamente anonime e non saranno utilizzate per identificare alcun utente né saranno aggregate a dati personali di utenti;
+                                        li nel caso specifico delle registrazioni di telefonate gestite tramite il nostro call center, il trattamento è finalizzato alla verifica, monitoraggio, ottimizzazione e miglioramento dei processi interni aziendali di assistenza alla clientela tramite il suddetto call center;
+                                        li per notificare all’utente eventuali modifiche alla presente Privacy Policy o ai termini di utilizzo o funzionalità dei Siti, se necessario;
+                                        li per effettuate la creazione di un accont utente, interagire con i Siti (incluso trasmettere richieste e pubblicare/modificare recensioni), consentire all’utente di accedere ad aree riservate dei Siti e utilizzarne le relative funzionalità, come ad esempio registrare prodotti, tracciare riparazioni o controllare lo stato di avanzamento di richieste formulate;
+                                        li per adempiere a obblighi derivanti da legge regolamenti o normativa comunitaria e tutelare i nostri diritti e il nostro patrimonio, anche in giudizio.
+                                        li per adempiere a obblighi derivanti da legge regolamenti o normativa comunitaria e tutelare i nostri diritti e il nostro patrimonio, anche in giudizio.
+                                    p.font-w-normal-16.font-m-normal-14 p.font-w-normal-16.font-m-normal-14 Trattiamo i dati personali raccolti tramite i Siti per le seguenti finalità:
+                                    ul
+                                        li
+                                            em esecuzione di un contratto, adempimento di obblighi pre-contrattuali, o rispondere a una richiesta da parte dell’utente.
+                                            | Ad esempio, nel caso in cui l’utente proceda con l'acquisto di un prodotto o servizio LGE oppure debba ricevere un servizio connesso o associato all’acquisto di prodotti o servizi (come ad esempio assistenza post vendita da parte di LGE o esercizio del diritto di recesso), oppure abbia formulato una richiesta nei nostri confronti;
+                                        li
+                                            em interesse legittimo:
+                                            | nel caso in cui il trattamento sia necessario per perseguire un legittimo interesse di LGE o di un terzo. Nel caso di LGE, ciò può comprendere il trattamento dei dati personali dell’utente al fine di prevenire, scoprire e compiere indagini su attività illecite, quali la violazione dei termini di utilizzo e altre condotte abusive sui Siti e la commissione di frodi, oppure ancora al fine di verificare, monitorare, ottimizzare e migliorare i nostri prodotti e processi di assistenza alla clientela, come ad esempio il nostro servizio di call center;
+                                        li
+                                            em consenso:
+                                            | nella misura in cui l’utente abbia deciso di prestarlo, come ad esempio nel caso di trattamento dati per finalità di marketing e/o profilazione, ricerche di mercato, indagini sul grado di soddisfazione del cliente (customer satisfaction) e comunicazione dei dati a terzi per finalità di marketing, nonché nel caso di richieste di attivazione di servizi di assistenza post-vendita mediante sistema videosupporto da remote “Telepresence”. L’utente ha il diritto di revocare il proprio consenso in ogni momento. Per maggiori informazioni si prega di consultare la sezione 10 che segue;
+                                        li
+                                            em obbligo di legge:
+                                            | nella misura in cui l’utente abbia deciso di prestarlo, come ad esempio nel caso di trattamento dati per finalità di marketing e/o profilazione, ricerche di mercato, indagini sul grado di soddisfazione del cliente (customer satisfaction) e comunicazione dei dati a terzi per finalità di marketing, nonché nel caso di richieste di attivazione di servizi di assistenza post-vendita mediante sistema videosupporto da remote “Telepresence”. L’utente ha il diritto di revocare il proprio consenso in ogni momento. Per maggiori informazioni si prega di consultare la sezione 10 che segue;
+                                    h4.font-w-normal-18.font-m-normal-16 4. Cosa accade se l’utente non fornisce i propri dati personali?
+                                    p.font-w-normal-16.font-m-normal-14 Quando l'utente visita e consulta i Siti in genere non raccogliamo né trattiamo dati personali dell'utente poiché il trattamento si limita ai c.d. dati di navigazione, cioè, come indicato alla precedente sezione 2, i dati la cui trasmissione ai Siti è peraltro necessaria per permettere il funzionamento dei sistemi informatici preposti alla gestione dei Siti e dei protocolli di comunicazione di Internet.
+                                    p.font-w-normal-16.font-m-normal-14 Oltre ai dati di navigazione, LGE tratta i dati personali che l'utente fornisce volontariamente quando interagisce con le funzionalità dei Siti, in base alle finalità indicate nella precedente sezione 3, vale a dire per rispondere o soddisfare una richiesta da parte di un utente, per adempiere a obblighi contrattuali nei confronti dell’utente, per effettuate la creazione di un account utente, interagire con i Siti, partecipare ad Eventi, consentire all’utente di accedere ad aree riservate dei Siti e utilizzarne le relative funzionalità.
+                                    p.font-w-normal-16.font-m-normal-14 Per le finalità di trattamento sopra indicate, conferire i dati personali è necessario e un rifiuto da parte dell’utente di conferire i dati personali comporta l'impossibilità per LGE di eseguire i propri obblighi contrattuali e fornire all’utente le funzionalità, i servizi e le informazioni richieste come sopra specificato.
+                                    p.font-w-normal-16.font-m-normal-14 Come indicato nella sezione 3 che precede, con il consenso dell’utente, che è libero e facoltativo, possiamo trattare i dati personali per finalità di marketing e/o profilazione, per fini di ricerche di mercato e indagini sul grado di soddisfazione del cliente (customer satisfaction), nonché per comunicare i dati personali degli utenti a nostri partner commerciali per proprie finalità di marketing.
+                                    p.font-w-normal-16.font-m-normal-14 Per le finalità di trattamento sopra indicate (marketing, profilazione, ricerche di mercato, customer satisfaction e condivisione con terzi per finalità di marketing) conferire i dati personali è facoltativo e il rifiuto di conferirli non avrà nessuna conseguenza sulla prestazione all’utente dei servizi, funzionalità e informazioni richiesti ai, o tramite i, Siti.
+                                    h4.font-w-normal-18.font-m-normal-16 5. Con chi vengono condivisi i dati personali degli utenti?
+                                    p.font-w-normal-16.font-m-normal-14
+                                        em Società affiliate, controllate o controllanti. 
+                                        | LGE comunica i dati personali degli utenti alle proprie società affiliate, controllate e controllanti nel mondo per le finalità descritte nella presente Privacy Policy. Il termine “affiliate”, “controllate” o “controllanti” fa riferimento a società del nostro gruppo che utilizzano il nome LG o che controllano, o che sono soggette al controllo di, società del nostro gruppo, come ad esempio LG Electronics Inc., LG CNS che forniscono servizi centralizzati di hosting e risorse IT alle consociate del Gruppo LG
+                                    p.font-w-normal-16.font-m-normal-14 Possiamo inoltre comunicare i dati personali degli utenti anche ai seguenti soggetti:
+                                    ul
+                                        li
+                                            em terzi fornitori di servizi.
+                                            | Condividiamo i dati personali degli utenti con terzi fornitori di servizi che agiranno quali responsabili del trattamento al fine di rendere possibile l’utilizzo dei Siti o ricevere servizi tramite i Siti. A titolo esemplificativo, tali terzi possono comprendere professionisti, anche in forma associata, che prestano consulenza tecnica, commerciale o amministrativa a LGE per il perseguimento della propria attività e delle finalità descritte nella presente Privacy Policy, società che si occupano della gestione o della manutenzione dell’infrastruttura informatica su cui si basano i Siti, fornitori di servizi di call center o di assistenza pre o post vendita, operatori logistici nel caso fosse necessario consegnare all’utente un bene o un prodotto, agenzie specializzate nella gestione di servizi promozionali e di marketing in nome e per conto di LGE;
+                                        li
+                                            em terzi in ottemperanza ad un obbligo di legge.
+                                            | La comunicazione di dati personali di utenti può avvenire nei confronti di istituzioni, forze dell’ordine, autorità giudiziarie, amministrative, regolatorie o di pubblica sicurezza, nell’ambito di un procedimento legale o amministrativo, o al fine di adempiere ad un obbligo di legge;
+                                        li
+                                            em terzi in caso di operazioni societarie.
+                                            | La comunicazione di dati personali di utenti può avvenire a fronte di eventi quali ad esempio fusioni, cessioni di azienda (o di suo ramo) o altre operazioni straordinarie nell’ambito delle quali LGE potrebbe dover condividere informazioni con potenziali acquirenti o controparti e i relativi consulenti;
+                                        li
+                                            em terzi nel caso in cui ciò sia necessario per tutelare i nostri servizi.
+                                            | La comunicazione di dati di utenti può rendersi necessaria per proteggere i nostri diritti e il nostro patrimonio, ivi compreso in sede giudiziaria;
+                                        li
+                                            em terzi nel caso in cui ciò sia necessario per tutelare l’incolumità personale degli utenti o del loro patrimonio.
+                                            | La comunicazione di dati di utenti può rendersi necessaria per proteggere la sicurezza personale degli utenti o del loro patrimonio, o per ragioni di pubblica sicurezza;
+                                        li
+                                            em terzi nostri partner commerciali.
+                                            | Con il consenso dell’utente, espresso, libero e facoltativo, possiamo comunicare i dati personali di utenti a nostri partner commerciali, nello specifico, professionisti specializzati nella vendita di servizi assicurativi, copertura post-vendita integrativa o estensione di garanzia di prodotti a marchio LG. Tali partner, agendo come autonomi titolari del trattamento, potranno contattare gli utenti al fine di offrire o pubblicizzare prodotti o servizi relativi o connessi a prodotti LG acquistati dagli utenti.
+                                    p.font-w-normal-16.font-m-normal-14 Ad eccezione di quanto sopra indicato, in nessun caso i dati personali degli utenti saranno trattati per finalità di marketing o condivisi con terzi per le proprie finalità di marketing.
+                                    h4.font-w-normal-18.font-m-normal-16 6. Come raccogliamo e trattiamo i dati personali di minori?
+                                    p.font-w-normal-16.font-m-normal-14 La tutela della privacy dei minori è molto importante per noi. LGE non raccoglie o conserva intenzionalmente dati personali di individui di età inferiore a 18 anni, né intenzionalmente consente a tali minori l’utilizzo dei Siti. Gli utenti minori di 18 anni sono pregati di non registrarsi sui Siti e di non fornire dati personali. Qualora dovessimo venire a conoscenza che un minore di anni 18 ci ha fornito dati personali, provvederemo a cancellare tempestivamente tali dati.
+                                    h4.font-w-normal-18.font-m-normal-16 7. I dati degli utenti vengono trasferiti all’estero?
+                                    p.font-w-normal-16.font-m-normal-14 Facendo parte di un gruppo che opera a livello globale, LGE, le nostre affiliate, controllate, controllanti e fornitori possono trovarsi nella condizione di dover trasferire dati personali di utenti al di fuori del Paese in cui questi sono stabiliti, come ad esempio in Corea del Sud, Paese in cui ha sede la nostra società Capogruppo. Ciò può comportare un trasferimento di dati personali di utenti al di fuori dello Spazio Economico Europeo, se l’utente sta utilizzato i Siti all’interno di esso (per “Spazio Economico Europeo” si intende il territorio dell’Unione Europea, oltre a Islanda, Liechtenstein e Norvegia). Il trasferimento all’estero di dati personali è necessario per fornire servizi all’utente e per perseguire le altre finalità indicate nella presente Privacy Policy. Le normative in materia di tutela dei dati personali di alcune delle giurisdizioni presso cui trasferiamo i dati potrebbero non garantire il medesimo livello di tutela di cui gode l’utente stabilito all’interno dello Spazio Economico Europeo. Tuttavia, prima di procedere al trasferimento di dati al di fuori dello Spazio Economico Europeo, LGE adotta idonee precauzioni, anche contrattuali, previste dalla normativa privacy applicabile, al fine di garantire la protezione, la sicurezza e la riservatezza dei dati personali oggetto di trasferimento. LGE adotta le Clausole Contrattuali Standard previste dalla Commissione Europea per trasferire i dati alla società Capogruppo.
+                                    h4.font-w-normal-18.font-m-normal-16 8. Per quanto tempo LGE conserverà i dati personali dell’utente?
+                                    p.font-w-normal-16.font-m-normal-14 Poniamo in essere ogni ragionevole misura per conservare i dati personali degli utenti per il tempo strettamente necessario al fine di fornire servizi o per il raggiungimento delle finalità per le quali i dati sono stati raccolti, oppure ancora in ottemperanza ad obblighi di legge. Applichiamo inoltre specifici criteri per determinare il termine di conservazione appropriato per le varie categorie di dati personali fornite dagli utenti. Ad esempio, conserviamo i dati personali necessari all’esercizio del nostro diritto di difesa in caso di controversie legali, quali i dati personali relativi ad un contratto o alla prestazione di un servizio, per tutta la durata di vigenza del contratto o di prestazione del servizio e per un periodo fino a 10 (dieci) anni successivo. Decorso tale termine, i dati personali saranno cancellati o resi in forma anonima.
+                                    p.font-w-normal-16.font-m-normal-14 Le registrazioni delle telefonate gestite tramite il nostro call center sono conservate per un periodo di 90 giorni, dopodiché vengono cancellate.
+                                    p.font-w-normal-16.font-m-normal-14 Nel caso in cui avessimo raccolto dati personali basandoci sul consenso dell’utente e non avessimo più altra valida base giuridica per proseguire con il loro trattamento, se l’utente ritira il proprio consenso provvederemo a cancellare i dati personali interessati da tale revoca. Per maggiori informazioni sulle modalità di revoca, si rimanda alla sezione 10 che segue.
+                                    h4.font-w-normal-18.font-m-normal-16 9. Cookies
+                                    p.font-w-normal-16.font-m-normal-14 I cookie sono piccoli file di testo inviati all'utente dal sito web visitato. Vengono memorizzati sull’hard disk del computer, consentendo in questo modo al sito web di riconoscere gli utenti e memorizzare determinate informazioni su di loro, al fine di permettere o migliorare il servizio offerto.
+                                    p.font-w-normal-16.font-m-normal-14 Esistono diverse tipologie di cookie. Alcuni sono necessari per poter navigare sul Sito, altri hanno scopi diversi come garantire la sicurezza interna, amministrare il sistema, effettuare analisi statistiche, comprendere quali sono le sezioni del Sito che interessano maggiormente gli utenti o offrire una visita personalizzata del Sito.
+                                    p.font-w-normal-16.font-m-normal-14 Il Sito utilizza cookie che non hanno la possibilità di far partire programmi sul computer dell’utente o di caricare virus sullo stesso e che non permettono alcun tipo di controllo sul computer dell’utente. Non utilizziamo i cookie per accedere a informazioni presenti sul computer dell’utente, per memorizzare dati sullo stesso e per controllare le attività dell’utente. Quanto precede si riferisce sia al computer dell’utente sia ad ogni altro dispositivo che l'utente usa per connettersi al Sito.
+                                    p.font-w-normal-16.font-m-normal-14 I c.d. ‘cookie di sessione’ sono memorizzati temporaneamente e vengono cancellati quando l’utente chiude il browser. Se l’utente si registra al Sito possiamo utilizzare cookie che raccolgono dati personali che ci permettono di identificare l’utente in occasione di visite successive e che ci permettono di facilitare l'accesso - login al Sito (per esempio conservando username e password dell’utente) e la navigazione sullo stesso. Lo stesso dicasi per la memorizzazione delle informazioni relative agli ordini dell'utente presenti nel "carrello". Inoltre utilizziamo i cookie per finalità di sicurezza interna, di amministrazione del sistema, analisi statistica, per comprendere quali sono le sezioni del Sito che interessano maggiormente gli utenti e per offrire una visita personalizzata del Sito. Il Sito potrebbe contenere link ad altri siti. LG Electronics non ha alcun accesso o controllo su cookie, web bacon e altre tecnologie di tracciamento usate sui siti di terzi cui l’utente può accedere dal Sito, sulla disponibilità, su qualsiasi contenuto e materiale che è pubblicato o ottenuto attraverso tali siti e sulle relative modalità di trattamento dei dati personali; LG Electronics a questo proposito declina espressamente ogni relativa responsabilità. L’utente dovrebbe verificare la privacy policy dei siti di terzi cui accede dal Sito per conoscere le condizioni applicabili al trattamento dei dati personali poiché la presente Privacy Policy si applica solo al Sito come sopra definito.
+                                    p.font-w-normal-16.font-m-normal-14 La disabilitazione dei cookie potrebbe limitare la possibilità di usare il Sito e impedire di beneficiare in pieno delle funzionalità e dei servizi presenti sul Sito. Per decidere quali accettare e quali rifiutare, è illustrata di seguito una descrizione dei cookie utilizzati sul Sito.
+                                    h4.font-w-normal-18.font-m-normal-16 9.1 Tipologie di cookie utilizzati
+                                    ul
+                                        li Cookie di prima parte
+                                            | I cookie di prima parte sono impostati dal sito web visitato dall'utente, il cui indirizzo compare nella finestra URL.
+                                        li Cookie di terze parti
+                                            | I cookie di terzi sono impostati da un dominio differente da quello visitato dall'utente. Se un utente visita un sito e una società diversa invia l'informazione sfruttando quel sito, si è in presenza di cookie di terze parti. LG Electronics non ha alcun accesso o controllo su cookie, web bacon e altre tecnologie di tracciamento usate sui siti di terzi cui l’utente può accedere dal Sito. LG Electronics a questo proposito declina espressamente ogni relativa responsabilità. L’utente è invitato a verificare la privacy policy dei siti di terzi cui accede dal Sito per conoscere le condizioni applicabili al trattamento dei dati personali.
+                                        li Cookie di sessione
+                                            | Questi cookie sono memorizzati temporaneamente e vengono cancellati quando l’utente chiude il la finestra di navigazione.
+                                        li Cookie persistenti
+                                            | I cookie persistenti sono memorizzati sul dispositivo degli utenti tra le sessioni del browser, consentendo di ricordare le preferenze o le azioni dell'utente in un sito. Possono essere utilizzati per diversi scopi, ad esempio per ricordare le preferenze e le scelte quando si utilizza un sito o per mostrare pubblicità che possono essere di interesse per l'utente.
+                                        li Cookie essenziali
+                                            | Questi cookie sono strettamente necessari per il funzionamento del Sito. Senza l'uso di tali cookie alcune parti del sito non funzionerebbero. Comprendono, ad esempio, i cookie che consentono di accedere in aree protette del Sito. Questi cookie non raccolgono informazioni per scopi di marketing e non possono essere disattivati.
+                                        li Cookie analitici e di prestazione
+                                            | Questo tipo di cookie permette di riconoscere e contare il numero di visitatori e vedere i movimenti all'interno del Sito per migliorarne il funzionamento, ad esempio, facendo in modo che gli utenti trovino facilmente quello che stanno cercando. Questi cookie non raccolgono informazioni che possono identificare l'utente. Tutte le informazioni raccolte sono anonime.
+                                    p.font-w-normal-16.font-m-normal-14 
+                                        | Il nostro Sito utilizza cookie di Google Analytics. Le informazioni raccolte dai cookie di Google Analytics verranno trasmesse a, e depositate presso i server di Google negli Stati Uniti d'America in conformità con le sue privacy policy. Per prendere visione della privacy e cookie policy di Google è possibile visitare.
+                                        a(href="www.google.com/intl/it/policies/privacy/", target="_blank") www.google.com/intl/it/policies/privacy/
+                                        | Si possono rifiutare cookie di Google Analytics attraverso la pagina 
+                                        a(href="https://tools.google.com/dlpage/gaoptout?hl+en-GB.&hl=it", target="_blank") https://tools.google.com/dlpage/gaoptout?hl+en-GB.&hl=it
+                                    ul
+                                        li Cookie funzionali
+                                            | Questi cookie servono a riconoscere un utente che torna a visitare il Sito. Permettono di personalizzare il contenuti e ricordate le preferenze (ad esempio, la lingua selezionata o la regione). Questi cookie non raccolgono informazioni che possono identificare l'utente. Tutte le informazioni raccolte sono anonime.
+                                        li Cookie di condivisone sui Social Network
+                                            | Questi cookie facilitano la condivisione dei contenuti del sito attraverso social network quali Facebook e Twitter. Per prendere visione della relativa privacy e cookie policy è possibile visitare
+                                            a(href="https://www.facebook.com/help/cookies", target="_blank") https://www.facebook.com/help/cookies
+                                            | e 
+                                            a(href="https://twitter.com/privacy", target="_blank") https://twitter.com/privacy.
+                                        li Cookie di profilazione / di pubblicità
+                                            | Questo tipo di cookie vengono utilizzati per la visualizzazione di pubblicità mirate a utenti che hanno precedentemente visitato questo sito. Il nostro Sito utilizza cookie di Google Adwords. Per prendere visione della privacy e cookie policy di Google è possibile visitare
+                                            a(href="www.google.com/intl/it/policies/privacy/", target="_blank") www.google.com/intl/it/policies/privacy/
+                                            | •	Si possono disattivare i cookie di Google Adwords attraverso la pagina
+                                            a(href="www.google.com/settings/ads/plugin", target="_blank") www.google.com/settings/ads/plugin
+                                    p.font-w-normal-16.font-m-normal-14 Nello specifico, si riporta di seguito la lista dei cookie utilizzati sul Sito e relative descrizione e funzionalità, compresa la durata temporale.
+
+                                    h4.font-w-normal-18.font-m-normal-16 Tipologia di Cookie, Nome del Cookie, Provenienza, Finalità, Durata
+                                    table 
+                                        thead 
+                                            tr 
+                                                th Tipologia di Cookie
+                                                th Nome del Cookie
+                                                th Provenienza
+                                                th Finalità
+                                                th Durata
+                                        tbody 
+                                            tr 
+                                                td Strettamente necessari
+                                                td FRONT_JSESSIONID, CS_JSESSIONID, DOWN_JSESSIONID, MOBR_JSESSIONID, plbw, WMONID
+                                                td LG
+                                                td Mantenimento della sessione..
+                                                td Sessione
+                                            tr 
+                                                td(rowspan="7") Analitici
+                                                td s_cc, s_sq, s_vi, s_invisit, s_nr, s_vnum, s_sv_sid, s_sv_s1, s_sv_p1
+                                                td LG
+                                                td Mantenimento della sessione..
+                                                td Sessione
+                                            tr 
+                                                td s_cc
+                                                td LG
+                                                    | Se lo javascript sul browser di un utente non funziona, sono utilizzati cookie di terze parti (Site Catalyst)
+
+                                                td Questo cookie viene impostato e letto dal codice JavaScript quando la funzionalità ClickMap è abilitata, contiene informazioni sul link precedentemente cliccato dall'utente.
+                                                td Sessione
+                                            tr 
+                                                td s_sq
+                                                td LG
+                                                    | Se lo javascript sul browser di un utente non funziona, sono utilizzati cookie di terze parti (Site Catalyst)
+
+                                                td Questo cookie viene impostato e letto dal codice JavaScript quando la funzionalità ClickMap è abilitata, contiene informazioni sul link precedentemente cliccato dall'utente.
+                                                td Sessione
+                                            tr 
+                                                td s_vi
+                                                td LG
+                                                    | Se lo javascript sul browser di un utente non funziona, sono utilizzati cookie di terze parti (Site Catalyst)
+
+                                                td Questo cookie è utilizzato per identificare un visitatore unico.
+                                                td Persistente
+                                            tr 
+                                                td s_sv_sid
+                                                td LG
+                                                    | Se lo javascript sul browser di un utente non funziona, sono utilizzati cookie di terze parti (Adobe Survey)
+
+                                                td Conserva un numero unico per garantire la corretta memorizzazione di files javascript utilizzati per effettuare sondaggio all'interno del browser.
+                                                td Sessione
+                                            tr 
+                                                td s_sv_s1
+                                                td LG
+                                                    | Se lo javascript sul browser di un utente non funziona, sono utilizzati cookie di terze parti (Adobe Survey)
+
+                                                td 
+                                                    | Memorizza gli ID dei sondaggi che il visitatore ha rinviato cliccando su "Più tardi" quando è stato sollecitato a effettuare un sondaggio.
+                                                    | Memorizza gli ID dei sondaggi che potrebbero portare alla seguente pagina web di un sito.
+                                                    | Memorizza gli ID dei sondaggi iniziati.
+                                                    | Memorizza il momento in cui il sistema di sondaggi ha iniziato l'esecuzione (per i sondaggi rinviati)
+
+                                                td Sessione
+                                            tr 
+                                                td s_sv_p1
+                                                td LG
+                                                    | Se lo javascript sul browser di un utente non funziona, sono utilizzati cookie di terze parti (Adobe Survey)
+
+                                                td 
+                                                    | Memorizza gli ID dei sondaggi effettuati o rifiutati.
+                                                    | Memorizza le informazioni per specificare se il visitatore rientra nei valori di campionamento.
+                                                    | Memorizza un numero sempre crescente utilizzato al momento del sondaggio in uscita dal sito, per verificre che il visitatore abbia lasciato il sito.
+                                                    | Memorizza un flag che indica se il visitatore abbia raggiunto il livello specifico dal cliente e debba essere escluso da ulteriori indagini.
+
+
+                                                td Persistente
+                                            tr 
+                                                td(rowspan="3") Analitici
+                                                td _utma
+                                                td Google Analytics 
+                                                td Questo cookie viene utilizzato per determinare visitatori unici al sito ed è aggiornato ad ogni visualizzazione della pagina. Inoltre, il cookie è dotato di un ID univoco che Google Analytics Analytics utilizza per garantire sia la validità che l'accessibilità del cookie come misura di sicurezza supplementare.
+                                                td 2 anni
+                                            tr 
+                                                td _utmb
+                                                td Google Analytics 
+                                                td Questo cookie viene utilizzato per iniziare e continuare la sessione di un utente con il sito. Quando un utente visualizza una pagina del sito, il codice di Google Analytics tenta di aggiornare il cookie. Se non trova il cookie, ne viene creato uno nuovo e viene stabilita una nuova sessione.
+                                                td 30 minuti
+                                            tr 
+                                                td _utmz
+                                                td Google Analytics 
+                                                td Questo cookie memorizza il tipo di riferimento utilizzato dal visistatore per raggiungere il sito, attraverso un metodo diretto, un link di riferimento, una ricerca o una campagna web, come un annuncio o un link in una e-mail. È utilizzato per calcolare il traffico dei motori di ricerca, le campagne pubblicitarie e la navigazione delle pagine all'interno del sito. Il cookie viene aggiornato ad ogni visualizzazione della pagina del sito.
+                                                td 6 mesi
+                                            tr 
+                                                td Terzi (SNS)
+                                                td pid (twitter) datr, locale, c_user, L, lu, W, xs (Facebook)
+                                                td Twitter, Facebook
+                                                td Condivisioni sui Social Network (SNS). Per abilitare la funzione SNS, vengono inseriti dei cookie di identificazione utente dai siti SNS. (Non includere informazioni private).
+                                                td Sessione
+                                            tr 
+                                                td Funzionali
+                                                td LG_COMPARE_CART
+                                                td LG
+                                                td Questo cookie viene utilizzato per attivare la funzione di confronto.
+                                                td Sessione
+                                            tr 
+                                                td Funzionali
+                                                td LG_RECENTLY_VIEW
+                                                td LG
+                                                td Questo cookie viene utilizzato per abilitare le funzioni "Visualizzazioni recenti".
+                                                td Sessione
+                                            tr 
+                                                td Analitici
+                                                td s_vi_bikx78ecalgbkjkx, x, s_vi_gqfjh (Cookie variables are set randomly)
+                                                td Site Catalyst
+                                                td Aggregazione dei dati di traffico del sito e i comportamenti dei visitatori.
+                                                td Sessione
+                                            tr 
+                                                td Funzionali
+                                                td email_addr
+                                                td LG
+                                                td Questo cookie viene utilizzato per permettere di ricordare l'indirizzo e-mail inserito dagli utenti; alla prossima visita della pagina, l'indirizzo e-mail sarà inserito automaticamente nello spazio.
+                                                td Persistente
+                                            tr 
+                                                td Terzi (Google Maps)
+                                                td NID, PREF
+                                                td Google Maps
+                                                td Display di Google Maps e monitoraggio del suo utilizzo.
+                                                td Persistente
+                                            tr 
+                                                td Funzionali
+                                                td pcVersion
+                                                td LG
+                                                td Questo cookie ricorda la selezione degli utenti per visualizzare la versione desktop.
+                                                td Sessione
+                                            tr 
+                                                td Analitici
+                                                td RT
+                                                td LG
+                                                td Contiene e salva i dati relativi alla sessione, come la durata, numero di pagine visitate, etc.
+                                                td 7 giorni
+                                            tr 
+                                                td Analitici
+                                                td BOOMR_CONSENT
+                                                td LG
+                                                td Contiene le informazioni di opt-in e opt-out degli utenti
+                                                td 1 anno
+                                            tr 
+                                                td Analitici
+                                                td akacd_imab
+                                                td LG
+                                                td Non contiene informazioni personali ma viene usato per gli A/B test (Per la gestione immagini)
+                                                td 7 giorni
+                                            tr 
+                                                td Analitici
+                                                td rfihub
+                                                td LG
+                                                td Utilizzato per tracciare i comportamenti dei visitatori
+                                                td 90 giorni
+                                            tr 
+                                                td Analitici
+                                                td MUID
+                                                td LG
+                                                td Utilizzato per tracciare i comportamenti dei visitatori
+                                                td 30 giorni
+                                            tr 
+                                                td Analitici
+                                                td _ga, _gid, _gcl_au
+                                                td YouTube
+                                                td Utilizzato per tracciare i comportamenti dei visitatori
+                                                td 
+
+                                    h4.font-w-normal-18.font-m-normal-16 9.2 Come modificare le impostazioni sui cookie
+                                    p.font-w-normal-16.font-m-normal-14 La maggior parte dei browser accetta automaticamente i cookie, ma l’utente normalmente può modificare le impostazioni per disabilitare tale funzione. E' possibile bloccare tutti le tipologie di cookie, oppure accettare di riceverne soltanto alcuni e disabilitarne altri.
+                                    p.font-w-normal-16.font-m-normal-14 La sezione "Opzioni" o "Preferenze" nel menu del browser permettono di evitare di ricevere cookie e altre tecnologie di tracciamento utente, e come ottenere notifica dal browser dell’attivazione di queste tecnologie. In alternativa, è anche possibile consultare la sezione “Aiuto” della barra degli strumenti presente nella maggior parte dei browser.
+                                    p.font-w-normal-16.font-m-normal-14 È anche possibile selezionare il browser che stai usando dalla lista di seguito e seguire le istruzioni:
+                                    ul 
+                                        li - Internet Explorer
+                                        li - Chrome
+                                        li - Safari
+                                        li - Firefox
+                                        li - Opera
+                                    h4.font-w-normal-18.font-m-normal-16 10. Revoca del consenso
+                                    p.font-w-normal-16.font-m-normal-14 Come indicato nella precedente sezione 3, ai sensi della presente Privacy Policy, LGE può trattare i dati dell’utente sulla base del consenso, espresso, libero e facoltativo prestato da quest’ultimo, al fine di inviare comunicazioni a mezzo email o SMS/MMS per finalità di marketing, ricerche di mercato e indagine sul grado di soddisfazione del cliente (customer satisfaction), nonché per sottoporre i dati degli utenti a profilazione o per comunicarli a nostri partner commerciali per proprie finalità di marketing. Qualora non desiderasse ricevere più comunicazioni per finalità di marketing, ricerca di mercato o customer satisfaction, ovvero desiderasse che i propri dati personali non vengano sottoposti a profilazione o che non siano più condivisi con terzi partner di LGE per finalità di marketing, l’utente ha la facoltà, in ogni momento, di revocare i consensi prestati per ciascuna delle suddette finalità. Tale revoca può essere esercitata dall’utente in vari modi: selezionando la apposita impostazione all’interno della propria area riservata dei Siti, seguendo le istruzioni di disiscrizione che verranno illustrate di volta in volta in ciascuna comunicazione marketing di cui l’utente sarà destinatario, oppure ancora rivolgendosi al titolare agli indirizzi indicati alla successiva sezione 14.
+                                    p.font-w-normal-16.font-m-normal-14 Per quanto concerne la registrazione delle chiamate gestite tramite il nostro call center, l’utente può opporsi alla registrazione della chiamata comunicandolo in tempo reale all’operatore non appena possibile.
+                                    h4.font-w-normal-18.font-m-normal-16 11. Servizio di Chat,funzioni di messaggistica e recensioni
+                                    p.font-w-normal-16.font-m-normal-14 Alcune sezioni dei Siti consentono all’utente di interagire, attraverso funzioni di messaggistica testuale a campo libero, con operatori umani o sistemi automatizzati, come ad esempio il servizio di chat o form di contatto. Tali funzionalità sono preposte alla prestazione di servizi specifici nei confronti dell’utente che ne faccia richiesta, come ad esempio fornire assistenza pre e post vendita o richiedere informazioni. Poniamo in essere ogni sforzo ragionevole al fine di minimizzare la raccolta di dati personali dell’utente necessari al funzionamento dei servizi e funzionalità sopra indicati; ciò nonostante, al fine di evitare che dati personali non pertinenti possano essere oggetto di trattamento da parte nostra (ad esempio, poiché immagazzinati nei log di sessione della chat), si raccomanda all’utente di fornire solamente i dati e le informazioni espressamente richieste dall’operatore o dal sistema (come ad esempio, nome, cognome e dati di contatto), o comunque quei dati e quelle informazioni strettamente funzionali e necessarie all’erogazione del servizio richiesto (come ad esempio prodotto e numero di modello, o descrizione di difetti o problematiche di funzionamento).
+                                    p.font-w-normal-16.font-m-normal-14 L’utente ha inoltre la possibilità di pubblicare recensioni (o modificare recensioni già pubblicate) mediante apposita funzione presente sui Siti. Si rammenta all’utente che, una volta pubblicata, la recensione (ivi compreso il nome o il nickname inserito dall’autore) sarà pubblicamente visibile a tutti i visitatori dei Siti, senza restrizioni. Si invita pertanto l’utente a non divulgare informazioni o dati personali che non si desidera siano diffuse mediante la rete internet.
+                                    h4.font-w-normal-18.font-m-normal-16 12. Modifiche alla Privacy Policy
+                                    p.font-w-normal-16.font-m-normal-14 Le caratteristiche, le funzionalità ed i servizi offerti dal presente Sito potrebbero in futuro subire delle modifiche. Di conseguenza, la presente Privacy Policy potrà essere aggiornata in ogni momento da LGE. LGE darà comunicazione agli utenti e visitatori dei Siti delle eventuali variazioni apportate.
+                                    h4.font-w-normal-18.font-m-normal-16 13. Sicurezza dei dati
+                                    p.font-w-normal-16.font-m-normal-14 LGE adotta misure di sicurezza al fine di salvaguardare la riservatezza dei dati personali degli utenti. Tuttavia, a causa della natura di Internet, della continua evoluzione tecnologica e di altri fattori al di fuori del nostro controllo, la sicurezza della trasmissione di dati tramite Internet non può essere totalmente garantita, di conseguenza non possiamo assicurare o garantire la sicurezza dei dati e delle informazioni che l'utente ci trasmette e l'utente riconosce ed accetta che tale trasmissione è a suo rischio. Si raccomanda inoltre all’utente di prendere idonee precauzioni nell’utilizzare i Siti, come ad esempio mantenere strettamente riservate le proprie credenziali di accesso ai Siti e cambiarle periodicamente
+                                    h4.font-w-normal-18.font-m-normal-16 14. Quali sono i diritti privacy dell’utente e come esercitarli?
+                                    p.font-w-normal-16.font-m-normal-14 L’utente ha diritto di accedere, rettificare o cancellare i dati conservati da LGE che lo riguardano, nonché il diritto di opporsi a, o limitare, certe tipologie di trattamento (ivi compreso il diritto di revocare il proprio consenso al trattamento precedentemente prestato), nonché di ricevere i dati personali che lo riguardano in un formato strutturato, di uso comune e leggibile da dispositivo automatico (diritto alla portabilità dei dati). L’utente ha infine il diritto di proporre un reclamo ad una competente Autorità di Controllo. Nel caso in cui ritenessimo l’esercizio di diritti privacy da parte dell’utente manifestamente infondato o eccessivo, possiamo riservarci di addebitare all’utente richiedente un ragionevole contributo spese per l’evasione della richiesta, oppure rifiutarci di darvi seguito. Per l’esercizio dei suoi diritti privacy, nonché per richiedere qualunque informazione o chiarimento in merito alla presente Privacy Policy, l’utente può rivolgersi al seguente indirizzo presso il titolare del trattamento.
+                                    p.font-w-normal-16.font-m-normal-16 LG Electronics Italia S.p.A.
+                                    p.font-w-normal-16.font-m-normal-16 Via Aldo Rossi 4
+                                    p.font-w-normal-16.font-m-normal-16 20149 Milano
+                                    p.font-w-normal-16.font-m-normal-16 
+                                        a(href="mailto:privacy.dati@lge.com") privacy.dati@lge.com
+                                    p.font-w-normal-16.font-m-normal-16 L’utente può inoltre contattare il nostro Responsabile della Protezione dei Dati al seguente indirizzo:
+                                        br
+                                        a(href="dpo-eu@lge.com", target="_blank") dpo-eu@lge.com
+                                    p.font-w-normal-16.font-m-normal-16 Ultimo aggiornamento: 24 agosto 2020
+                                .my-check-msg__button
+                                    +formCheckbox('I have read and agreed with VIP program privacy policy.', "name", "val2", `checkId2`, count="false")
+
+                        .button.c-cta.my-button
+                            // case 1. default button
+                            +defaultButton({name: "Join VIP Program", wSize: "large", mSize: "medium", buttonStyle: 'highlight'})(href="#popSignIn", class="js-pop-open")
+                            // case 2. disabled button
+                            // <a class="cmp-button c-button c-button--default highlight m-medium w-large js-pop-open" href="#popSignIn" data-cmp-data-layer="" rolebutton="true" disabled="disabled" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type=""><span class="cmp-button__text c-button__text">Join VIP Program</span></a>
+
+block content
+    // Component Markup
+    +ML000Q
+
+block modal
+        +pop-msg-standard({id : "popSignIn", headline:"Congratulations!", size:"small", headerBorder: false, classes:"c-pop-msg--my-vip"})
+            // block - text contents
+            .c-text-contents 
+                .text.c-text-contents__bodycopy
+                    .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") 
+                        | Your account has been upgrade to VIP.
+                        |
+                        br
+                        |
+                        | You should log in again to start shopping with VIP account.
+            .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap--no-divide-on-mobile.my-pop__button
+                +defaultButton({name: "Sign in again", wSize: "large", mSize: "medium", buttonStyle: 'highlight'})

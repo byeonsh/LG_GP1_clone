@@ -1,0 +1,740 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_cs-form.pug
+
+block meta 
+    - var componentId = "CS0026"
+    - var componentName = "CS Popup"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+
+    mixin popupType(params)
+        - var option = {title: '', content: '', type: 'text', button1Style: 'default', button2Style: 'highlight', modalButton1Style: 'default', modalButton2Style: 'default', button1IsButton: false, button2IsButton: false, large: false, medium: false, scroll: false, border: true, promotion: false, sms: false, closeBtn: true, ...params}
+        - var modal2Attribute = {}
+        - option.modalTypeNumber == 2 ? modal2Attribute = {'role': 'dialog', 'aria-modal': 'true'} : modal2Attribute = {}
+        .c-wrapper.CS0026(class=`type-${option.type}`)
+            .component.cs-component
+                .CS0026__container.c-full(class=`${option.large ? 'c-large' : ''}${option.promotion ? 'cs-promotion' : ''}${option.medium ? ' c-medium': ''}${option.sms ? ' cs-send-sms' : ''}`)
+                    .c-modal(class=`${option.scroll ? 'c-modal__type-scroll' : ''}${option.modalTypeNumber ? ` c-modal__type${option.modalTypeNumber}` : ''}`)&attributes(modal2Attribute)
+                        .c-modal__dimmed
+                        .c-modal__box
+                            .c-modal-head__wrap
+                                if option.title
+                                    .c-modal__head(class=`${option.border ? '' : 'c-border-0' }`) 
+                                        .c-modal__title.font-m-light-24.font-w-light-36 #{option.title}
+                                if option.closeBtn
+                                    button(type="button" aria-label="").c-modal__closebtn close btn
+
+                            .c-modal__content
+                                if option.scroll
+                                    .c-modal__content-scroll-box
+                                        block
+                                else if option.content 
+                                    .c-modal__content-text(class=`${option.contentClass ? `font-m-normal-12 font-w-normal-16` : ``}`) #{option.content}
+                                else if block
+                                        block
+                                if option.button1Text || option.button2Text
+                                    .button.c-cta
+                                        if option.button1IsButton
+                                            +defaultButton({name: `${option.button1Text}`, wSize: 'medium', mSize: 'small', buttonStyle: `${option.button1Style}`, isButton: "none"})(role="button" data-link-name)
+                                        else 
+                                            +defaultButton({name: `${option.button1Text}`, wSize: 'medium', mSize: 'small', buttonStyle: `${option.button1Style}`})
+                                        if option.button2Text
+                                            if option.button2IsButton
+                                                +defaultButton({name: `${option.button2Text}`, wSize: 'medium', mSize: 'small', buttonStyle: `${option.button2Style}`, isButton: "none"})(role="button" data-link-name)
+                                            else
+                                                +defaultButton({name: `${option.button2Text}`, wSize: 'medium', mSize: 'small', buttonStyle: `${option.button2Style}`})
+                            if option.modalButton1Text || option.modalButton2Text
+                                .c-modal__button
+                                    .button.c-cta
+                                        if option.modalButton1IsButton
+                                            +defaultButton({name: `${option.modalButton1Text}`, wSize: 'medium', mSize: 'small', buttonStyle: `${option.modalButton1Style}`, isButton: "none"})(role="button" data-link-name)
+                                        else 
+                                            +defaultButton({name: `${option.modalButton1Text}`, wSize: 'medium', mSize: 'small', buttonStyle: `${option.modalButton1Style}`})
+                                        if option.modalButton2Text
+                                            if option.modalButton2IsButton
+                                                +defaultButton({name: `${option.modalButton2Text}`, wSize: 'medium', mSize: 'small', buttonStyle: `${option.modalButton2Style}`, isButton: "none"})(role="button" data-link-name)
+                                            else
+                                                +defaultButton({name: `${option.modalButton2Text}`, wSize: 'medium', mSize: 'small', buttonStyle: `${option.modalButton2Style}`})
+    // Component Markup
+    .guide-text-type No matching model popup
+    // Component Markup
+    +popupType({title: 'No matching model', content: 'Please try again or choose a different way to register your product.', button1Text: 'Enter manually', button2Text: 'Retry', button2IsButton: true, })
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full
+    //-             .c-modal
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         .c-modal__head 
+    //-                             .c-modal__title.font-m-light-24.font-w-light-36 No matching model
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn                     
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-text Please try again or choose a different way to register your product.
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Enter manually', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+    //-                             +defaultButton({name: 'Retry', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: "none"})(role="button" data-link-name)
+    
+    // Component Markup
+    .guide-text-type Company information popup
+    // Component Markup
+    +popupType({title: `Company information for registration`, button1Text: `Cancel`, button2Text: `Retry`, button2IsButton: true,  })
+        .c-modal__content-text Before registering your B2B product,
+            br
+            |  please fill your company information out first.
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full
+    //-             .c-modal
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         .c-modal__head 
+    //-                             .c-modal__title.font-m-light-24.font-w-light-36 Company information for registration
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn                                          
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-text Before registering your B2B product,
+    //-                         |please fill your company information out first.
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Cancel', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+    //-                             +defaultButton({name: 'Retry', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: "none"})(role="button" data-link-name)
+    
+    // Component Markup
+    .guide-text-type Manual &amp; Software Download_Reference POPUP
+    // Component Markup
+    +popupType({title: 'Reference', content: 'Description: dual smart solution is window application program for efficient window control through dual monitor, dual web and smart resolution function. Supportable OS: Win XP (32-bit), Vista (32-bit), Win 7 (32-bit and 64-bit) , Win 8 (32-bit and 64-bit)', })
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full
+    //-             .c-modal
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         .c-modal__head 
+    //-                             .c-modal__title.font-m-light-24.font-w-light-36 Reference  
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn                       
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-text Description: dual smart solution is window application program for efficient window control through dual monitor, dual web and smart resolution function. Supportable OS: Win XP (32-bit), Vista (32-bit), Win 7 (32-bit and 64-bit) , Win 8 (32-bit and 64-bit)
+
+    .guide-text-type Manual &amp; Software Download POPUP - JP
+    // Component Markup
+    +popupType({title: `取扱説明書、及びソフトウェアのダウンロード`, button1Text: `同意する`, button2Text: `同意しない`, scroll: true, })
+        .c-modal__content-text.font-m-normal-12.font-w-normal-16
+            | ※本ダウンロードサービスは、 以下の「注意事項」をご確認の上、ご利用ください。
+            br
+            | 取扱説明書、 及びソフトウェアのダウンロードに関するご利用条件
+            ol.cmp-text
+                li 取扱説明書、及び製品のソフトウェアは、当社製品をご購入いただいたお客様のための資料です。本サイトで公開している取扱説明書、及び製品のソフトウェアについては、製品を購入されたお客様以外からのお問い合わせの場合、お応えできない場合がありますのでご了承ください。
+                li 本サイトには、当社が発売したすべての製品の取扱説明書を公開しておりません。ご希望の取扱説明書が見つからない場合は、当社またはご購入された販売店にお問い合わせください。
+                li 本サイトに公開されている取扱説明書は、原則として製品が発売された当初のものを掲載しています。従いましてその後の仕様変更などにより、製品に同梱されている取扱説明書の内容と異なる場合がありますので、ご了承ください。
+                li 製品には取扱説明書を補足するための印刷物が同梱されている場合がありますが、本サイトでは製品に同梱されたそれらの印刷物を公開しておりませんので、あらかじめご了承ください。
+                li 上記4において、製品に同梱された印刷物が製品の使用に関しての安全マニュアルである場合も本サイトには公開しておりません。製品をご使用になる前には安全マニュアルをよくお読みの上、製品を安全にお使いください。
+                li 本サイトに掲載されている取扱説明書、及びソフトウェアのご利用、あるいはご利用できなかったことにより、万一損害が生じても当社はその責任を一切負いかねますのであらかじめご了承ください。
+                li 取扱説明書、 及び製品ソフトウェアの著作権はLG Electronics Japan株式会社に帰属しており、許可なく内容の全部、または一部を複製したり、改変することは禁止されております。但し、お客様は製品の使用のために、１部だけプリントアウトすることができます。
+                li 本サイトでの取扱説明書、及びソフトウェアのダウンロードサービスは、予告なく中止または内容を変更する場合があります。あらかじめご了承ください。
+            | 上記内容にご同意頂ける場合には、 「同意する」ボタンをクリックし、 ダウンロードページへお進みください。 同意できない場合には、「同意しない」ボタンをクリックし画面を閉じてください。
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full
+    //-             .c-modal.c-modal__type-scroll
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         .c-modal__head 
+    //-                             .c-modal__title.font-m-light-24.font-w-light-36 取扱説明書、及びソフトウェアのダウンロード
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn                     
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-scroll-box 
+    //-                             .c-modal__content-text.font-m-normal-12.font-w-normal-16
+    //-                                 | ※本ダウンロードサービスは、 以下の「注意事項」をご確認の上、ご利用ください。
+    //-                                 br
+    //-                                 | 取扱説明書、 及びソフトウェアのダウンロードに関するご利用条件
+    //-                                 ol.cmp-text
+    //-                                     li 取扱説明書、及び製品のソフトウェアは、当社製品をご購入いただいたお客様のための資料です。本サイトで公開している取扱説明書、及び製品のソフトウェアについては、製品を購入されたお客様以外からのお問い合わせの場合、お応えできない場合がありますのでご了承ください。
+    //-                                     li 本サイトには、当社が発売したすべての製品の取扱説明書を公開しておりません。ご希望の取扱説明書が見つからない場合は、当社またはご購入された販売店にお問い合わせください。
+    //-                                     li 本サイトに公開されている取扱説明書は、原則として製品が発売された当初のものを掲載しています。従いましてその後の仕様変更などにより、製品に同梱されている取扱説明書の内容と異なる場合がありますので、ご了承ください。
+    //-                                     li 製品には取扱説明書を補足するための印刷物が同梱されている場合がありますが、本サイトでは製品に同梱されたそれらの印刷物を公開しておりませんので、あらかじめご了承ください。
+    //-                                     li 上記4において、製品に同梱された印刷物が製品の使用に関しての安全マニュアルである場合も本サイトには公開しておりません。製品をご使用になる前には安全マニュアルをよくお読みの上、製品を安全にお使いください。
+    //-                                     li 本サイトに掲載されている取扱説明書、及びソフトウェアのご利用、あるいはご利用できなかったことにより、万一損害が生じても当社はその責任を一切負いかねますのであらかじめご了承ください。
+    //-                                     li 取扱説明書、 及び製品ソフトウェアの著作権はLG Electronics Japan株式会社に帰属しており、許可なく内容の全部、または一部を複製したり、改変することは禁止されております。但し、お客様は製品の使用のために、１部だけプリントアウトすることができます。
+    //-                                     li 本サイトでの取扱説明書、及びソフトウェアのダウンロードサービスは、予告なく中止または内容を変更する場合があります。あらかじめご了承ください。
+    //-                                 | 上記内容にご同意頂ける場合には、 「同意する」ボタンをクリックし、 ダウンロードページへお進みください。 同意できない場合には、「同意しない」ボタンをクリックし画面を閉じてください。
+                                    
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: '同意する', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+    //-                             +defaultButton({name: '同意しない', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight'})
+    
+    // Component Markup
+    .guide-text-type Smart Shart popup_dlna
+    // Component Markup
+    +popupType({title: `PC requirements for installing Nero MediaHome 4 essentials program`, scroll: true })
+        .c-modal__content-text - Windows XP (Service pack 2 or later), Windows Vista, Windows XP Media Center Edition 2005 (Service pack 2 or later), Windows Server 2003 (Service pack 1 or later)<br>- Windows 7 Home Premium, Professional, Enterprise or Ultimate (32- and 64-bit)<br>- Windows Vista 64-bit version (application runs in 32-bit mode)<br>- Windows 7 64-bit version (application runs in 32-bit mode)<br>- Hard drive space: more than 200 MB<br>- CPU: 1.2 GHz Intel Pentium III or AMD Sempron™ 2200+ processor<br>- Memory: more than 256 MB RAM<br>- Graphic card: more than 32 MB, resolution of at least 800 x 600 pixels and at least 16-bit coluor settings supported<br>- Windows Internet Explorer 6.0 or later<br>- DirectX 9.0c revision 30 (August 2006) or later<br>- Network environment: 100 MB Ethernet, Wireless LAN WLAN (IEEE 802.11g) or later
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full
+    //-             .c-modal.c-modal__type-scroll
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         .c-modal__head 
+    //-                             .c-modal__title.font-m-light-24.font-w-light-36 PC requirements for installing Nero MediaHome 4 essentials program
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn                          
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-scroll-box 
+    //-                             .c-modal__content-text - Windows XP (Service pack 2 or later), Windows Vista, Windows XP Media Center Edition 2005 (Service pack 2 or later), Windows Server 2003 (Service pack 1 or later)<br>- Windows 7 Home Premium, Professional, Enterprise or Ultimate (32- and 64-bit)<br>- Windows Vista 64-bit version (application runs in 32-bit mode)<br>- Windows 7 64-bit version (application runs in 32-bit mode)<br>- Hard drive space: more than 200 MB<br>- CPU: 1.2 GHz Intel Pentium III or AMD Sempron™ 2200+ processor<br>- Memory: more than 256 MB RAM<br>- Graphic card: more than 32 MB, resolution of at least 800 x 600 pixels and at least 16-bit coluor settings supported<br>- Windows Internet Explorer 6.0 or later<br>- DirectX 9.0c revision 30 (August 2006) or later<br>- Network environment: 100 MB Ethernet, Wireless LAN WLAN (IEEE 802.11g) or later
+    
+    .guide-text-type Copy Link POPUP
+    // Component Markup
+    +popupType({modalTypeNumber: 2})
+        .c-modal__content-text https://www.lg.com/uk/support/announcements-detail/GBNTC2 0220603152433 is copied.
+            p.c-modal__select-text Select Ctrl+V to paste.
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full
+    //-             .c-modal.c-modal__type2(role="dialog" aria-modal="true")
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn                         
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-text https://www.lg.com/uk/support/announcements-detail/GBNTC2 0220603152433 is copied.
+                                p.c-modal__select-text Select Ctrl+V to paste.
+    .guide-text-type Global - Not supported
+    // Component Markup
+    +popupType({title: `Not supported`, content: `Geolocation is not supported for this browser/OS.`, button1Text: `OK`, button1Style: `highlight`})
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full
+    //-             .c-modal
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         .c-modal__head 
+    //-                             .c-modal__title.font-m-light-24.font-w-light-36 Not supported
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn                     
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-text Geolocation is not supported for this browser/OS.
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'OK', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight'})
+                                    
+    .guide-text-type Request a Repair - submit service request popup
+    //- Comoponent Markup
+    //- +popupType({title: `Are you sure to submit your repair service request?`, button1Text: `No, edit my request`, button2Text: `Yes, submit my request`, border: false})
+    // 20230425 markup add
+    .c-wrapper.CS0026.type-text
+        .component.cs-component
+            .CS0026__container.c-full
+                .c-modal
+                    .c-modal__dimmed
+                    .c-modal__box
+                        .c-modal-head__wrap
+                            .c-modal__head.c-border-0
+                                .c-modal__title.font-m-light-24.font-w-light-36 Are you sure to submit your repair service request?
+                            button(type="button" aria-label="").c-modal__closebtn close btn                     
+                        .c-modal__button 
+                            .button.c-cta
+                                +defaultButton({name: 'No, edit my request', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+                                +defaultButton({name: 'Yes, submit my request', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight'})
+
+    .guide-text-type Repair Request - NL
+    // Comoponent Markup
+    //- +popupType({title: `Find product key`, button1Text: `Close`, large: true, closeBtn: false})
+    //-     .c-modal__bgDimd
+    //-         +printLazyPicture("../../mocks/CS0026/img-CS0026.png", "../../mocks/CS0026/img-CS0026.png")
+    // 20230425 markup add
+    .c-wrapper.CS0026.type-text
+        .component.cs-component
+            .CS0026__container.c-full.c-large
+                .c-modal
+                    .c-modal__dimmed
+                    .c-modal__box
+                        .c-modal-head__wrap
+                            .c-modal__head
+                                .c-modal__title.font-m-light-24.font-w-light-36 Find product key
+                                       
+                        .c-modal__content 
+                            .c-modal__bgDimd
+                                +printLazyPicture("../../mocks/CS0026/img-CS0026.png", "../../mocks/CS0026/img-CS0026.png")
+                            button(type="button" aria-label="").c-modal__closebtn close btn                     
+                        .c-modal__button 
+                            .button.c-cta
+                                +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+    
+    .guide-text-type Repair Request - CA_EN, CA_FR
+    // Comoponent Markup 
+    // 20230425 markup add
+    .c-wrapper.CS0026.type-text
+        .component.cs-component
+            .CS0026__container.c-full.c-large
+                .c-modal
+                    .c-modal__dimmed
+                    .c-modal__box
+                        .c-modal-head__wrap
+                            .c-modal__head
+                                .c-modal__title.font-m-light-24.font-w-light-36 Find my product version code
+                                       
+                        .c-modal__content     
+                            .c-modal__bgWhite
+                                .c-modal__varcodeBox
+                                    .box
+                                        .c-modal__content-text.font-m-light-12.font-w-light-16 Appliances
+                                        +printLazyPicture("../../mocks/CS0026/img-CS0026-1.png", "../../mocks/CS0026/img-CS0026-1.png")
+                                    .box
+                                        .c-modal__content-text.font-m-light-12.font-w-light-16 Home entertainment
+                                        +printLazyPicture("../../mocks/CS0026/img-CS0026-2.png", "../../mocks/CS0026/img-CS0026-2.png")
+                            button(type="button" aria-label="").c-modal__closebtn close btn           
+                            .c-modal__content-text.font-m-light-12.font-w-light-16 Located at the end of the model on the serial number sticker    
+                        .c-modal__button 
+                            .button.c-cta
+                                +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+    
+    .guide-text-type Repair Request - TW
+    // Component Markup
+    +popupType({title: `Privacy policy`, button1Text: `Cancel`, button2Text: `Agree`, scroll: true})
+        .c-modal__content-text 
+            | 本隱私權聲明僅適用於本網站(www.lg.com/tw)，不一定適用於台灣樂金電器股份有限公司（本公 司）所架設之其他網站，或與本網站連結之廣告廠商、策略聯盟所有之網站，本網站對於連結網站 之資料處理措施，不負任何責任。在您使用本網站之服務前，請詳細閱讀以下之隱私權保護聲明。 如您不同意以下之聲明，請勿使用本網站。若您使用本網站之服務則視為您已同意以下之聲明。
+            br
+            | 與第三人共用個人資料
+            br
+            | 本公司致力於保護本網站使用者的隱私權。除非經您的同意或依法律之規定，本公司不會將得辨識 您個人之資訊透漏予第三人。但為提供您其他服務或為改善本網站服務品質之需要，本網站可能將 有關客戶、銷售、傳輸方式或相關網站資料的集合統計數據，提供予相關之第三人使用。
+            br
+            | 個人資料之蒐集與使用
+            br
+            | 為提供給您最完善的服務，或處理產品保固之維修，本網站必須詢問您的姓名、地址、電話號碼或 產品型號等個人資料，並使用這些資料來回答您的問題，或是透過郵件或電話與您聯絡，通知您我 們提供之最新產品、服務或優惠辦法，如果您不希望收到這類之資料或郵件，您可以通知本網站表 明拒絕接收這類資料與郵件。如果您在本網站要求提供服務，我們可能需要獲得額外之必要資料來 與您聯絡，以便處理或完成您的要求。本網站為處理或完成您的要求，也會利用您提供之個人資料 與您聯絡，或將因處理所必要之個人資料提供予相關之協力廠商。
+            br
+            | 個人資料之安全防範為
+            br
+            | 防止您的個人資料遭未經授權之團體或個人非法取得或不當使用，並確認您所提供之個人資訊之 正確性，本公司將採用包括但不限於加密技術之方法，以蒐集或傳輸您所提供之重要資訊。惟網際 網路資料傳輸無法保證百分之百安全，因此本公司無法確信或保證您傳送或接收資料安全無虞，請 您自行承擔傳輸過程中之風險。但本公司將盡最大努力確保儲存於系統中之安全性。
+            br
+            | 個人資料之更新為
+            br
+            | 因應本公司之業務需求，本網站於您所提供之資料有不完整、不正確或過時，可要求您補充、更 正或刪除您的個人資料，以確保資料之完整性與正確性。使用者個人資料有變更、或發現個人資料 有不正確時，可隨時要求本網站加以補充、更正或要求本網站停止使用。
+            br
+            | Cookies的使用
+            br
+            | cookies 是網站伺服器用來和使用者瀏覽器溝通的一種技術，它可以在使用者電腦中儲存某些資 訊 cookies 的使用已經成為網站經營的業界標準，這項技術為許多網站所採用 您可以經由您的 瀏覽器設定，接受所有cookies，拒絕接受cookies，或是選擇網站設定cookies時得到通知 為了 便利使用者，本網站可能使用cookies，以供我們辨識您之用 此項技術可幫助本網站收集您是如 何及何時參觀本網站，這項資訊的收集將有助於協助我們持續改善本網站，並提供更適合您個人需 求之服務
+            br
+            | 變更聲明
+            br
+            | 我們可以隨時在未經通告下，變更或終止進入本網站的方式或網頁內容。
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full
+    //-             .c-modal.c-modal__type-scroll
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         .c-modal__head 
+    //-                             .c-modal__title.font-m-light-24.font-w-light-36 Privacy policy
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn                     
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-scroll-box 
+    //-                             .c-modal__content-text 
+    //-                                 | 本隱私權聲明僅適用於本網站(www.lg.com/tw)，不一定適用於台灣樂金電器股份有限公司（本公 司）所架設之其他網站，或與本網站連結之廣告廠商、策略聯盟所有之網站，本網站對於連結網站 之資料處理措施，不負任何責任。在您使用本網站之服務前，請詳細閱讀以下之隱私權保護聲明。 如您不同意以下之聲明，請勿使用本網站。若您使用本網站之服務則視為您已同意以下之聲明。
+    //-                                 br
+    //-                                 | 與第三人共用個人資料
+    //-                                 br
+    //-                                 | 本公司致力於保護本網站使用者的隱私權。除非經您的同意或依法律之規定，本公司不會將得辨識 您個人之資訊透漏予第三人。但為提供您其他服務或為改善本網站服務品質之需要，本網站可能將 有關客戶、銷售、傳輸方式或相關網站資料的集合統計數據，提供予相關之第三人使用。
+    //-                                 br
+    //-                                 | 個人資料之蒐集與使用
+    //-                                 br
+    //-                                 | 為提供給您最完善的服務，或處理產品保固之維修，本網站必須詢問您的姓名、地址、電話號碼或 產品型號等個人資料，並使用這些資料來回答您的問題，或是透過郵件或電話與您聯絡，通知您我 們提供之最新產品、服務或優惠辦法，如果您不希望收到這類之資料或郵件，您可以通知本網站表 明拒絕接收這類資料與郵件。如果您在本網站要求提供服務，我們可能需要獲得額外之必要資料來 與您聯絡，以便處理或完成您的要求。本網站為處理或完成您的要求，也會利用您提供之個人資料 與您聯絡，或將因處理所必要之個人資料提供予相關之協力廠商。
+    //-                                 br
+    //-                                 | 個人資料之安全防範為
+    //-                                 br
+    //-                                 | 防止您的個人資料遭未經授權之團體或個人非法取得或不當使用，並確認您所提供之個人資訊之 正確性，本公司將採用包括但不限於加密技術之方法，以蒐集或傳輸您所提供之重要資訊。惟網際 網路資料傳輸無法保證百分之百安全，因此本公司無法確信或保證您傳送或接收資料安全無虞，請 您自行承擔傳輸過程中之風險。但本公司將盡最大努力確保儲存於系統中之安全性。
+    //-                                 br
+    //-                                 | 個人資料之更新為
+    //-                                 br
+    //-                                 | 因應本公司之業務需求，本網站於您所提供之資料有不完整、不正確或過時，可要求您補充、更 正或刪除您的個人資料，以確保資料之完整性與正確性。使用者個人資料有變更、或發現個人資料 有不正確時，可隨時要求本網站加以補充、更正或要求本網站停止使用。
+    //-                                 br
+    //-                                 | Cookies的使用
+    //-                                 br
+    //-                                 | cookies 是網站伺服器用來和使用者瀏覽器溝通的一種技術，它可以在使用者電腦中儲存某些資 訊 cookies 的使用已經成為網站經營的業界標準，這項技術為許多網站所採用 您可以經由您的 瀏覽器設定，接受所有cookies，拒絕接受cookies，或是選擇網站設定cookies時得到通知 為了 便利使用者，本網站可能使用cookies，以供我們辨識您之用 此項技術可幫助本網站收集您是如 何及何時參觀本網站，這項資訊的收集將有助於協助我們持續改善本網站，並提供更適合您個人需 求之服務
+    //-                                 br
+    //-                                 | 變更聲明
+    //-                                 br
+    //-                                 | 我們可以隨時在未經通告下，變更或終止進入本網站的方式或網頁內容。
+                                    
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Cancel', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+    //-                             +defaultButton({name: 'Agree', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight'})
+                                    
+                                    
+    .guide-text-type Repair Request - BR
+    // Component Markup
+    +popupType({button1Text: `Continue`, modalTypeNumber:2})
+        .c-modal__content-text 
+            | Não encontramos nenhuma assistência Técnica Autorizada próximo da sua região, porém recomendamos seguir com a solicitação selecionando a opção mais próxima.
+            br
+            | Nosso time irá trabalhar para te atender da melhor forma após a abertura da solicitação online.”
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full
+    //-             .c-modal.c-modal__type2(role="dialog" aria-modal="true")
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn                     
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-text 
+    //-                             | Não encontramos nenhuma assistência Técnica Autorizada próximo da sua região, porém recomendamos seguir com a solicitação selecionando a opção mais próxima.
+    //-                             br
+    //-                             | Nosso time irá trabalhar para te atender da melhor forma após a abertura da solicitação online.”
+                                
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Continue', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+
+    .guide-text-type Send Pjone for Repair - BR
+    // Component Markup
+    +popupType({title: `Important`, button1Text: `Close`})
+        .c-modal__content-text 
+            | There is an authorized service center near the informed zip code, therefore the LG collect service is not available for this zip code.
+            br
+            | Find Assistance near your location
+            br
+            br
+            +textButton({name: 'Find a service center', underline:true, wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: false})
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full
+    //-             .c-modal
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         .c-modal__head 
+    //-                             .c-modal__title.font-m-light-24.font-w-light-36 Important
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn                     
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-text 
+    //-                             | There is an authorized service center near the informed zip code, therefore the LG collect service is not available for this zip code.
+    //-                             br
+    //-                             | Find Assistance near your location
+    //-                             br
+    //-                             br
+    //-                             +textButton({name: 'Find a service center', underline:true, wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: false})
+                                
+                                
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+    
+    .guide-text-type Promotion POPUP
+    // Component Markup
+    +popupType({title: `OLED 10 year anniversary promotion`, modalButton1Text: 'Close', modalButton2Style: 'default', medium: true, promotion: true, closeBtn: false})
+        .c-modal__bgDimd
+            .c-modal__txt 
+                +printLazyPicture("../../mocks/CS0026/temp-promotion.png", "../../mocks/CS0026/temp-promotion.png")
+                strong.c-modal__content--title.font-m-normal-14.font-w-normal-20 You are now eligible for OLED 10 year promotions.
+                p.c-modal__content--subtitle.font-m-normal-12 Thank you for registering your OLED TV product.
+                p.c-modal__content--desc.font-m-normal-12 Extra 1 year, free health check, moving installation support, panel damage support TV discount coupon.
+        button(type="button" aria-label="").c-modal__closebtn close btn 
+        div.c-modal__desc.font-m-normal-14.font-w-normal-14 For more information and terms &amp; conditions, please refer to LG.com 
+            a(href="" target="_black") announcements
+            |  or contact LG call centre (centre number) 
+    // 20230425 markup add
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full.cs-promotion.c-medium
+    //-             .c-modal
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         .c-modal__head
+    //-                             .c-modal__title.font-m-light-24.font-w-light-36 OLED 10 year anniversary promotion
+                                       
+    //-                     .c-modal__content 
+    //-                         .c-modal__bgDimd
+    //-                             .c-modal__txt 
+    //-                                 +printLazyPicture("../../mocks/CS0026/temp-promotion.png", "../../mocks/CS0026/temp-promotion.png")
+    //-                                 strong.c-modal__content--title.font-m-normal-14.font-w-normal-20 You are now eligible for OLED 10 year promotions.
+    //-                                 p.c-modal__content--subtitle.font-m-normal-12 Thank you for registering your OLED TV product.
+    //-                                 p.c-modal__content--desc.font-m-normal-12 Extra 1 year, free health check, moving installation support, panel damage support TV discount coupon.
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn 
+    //-                         div.c-modal__desc.font-m-normal-14.font-w-normal-14 For more information and terms &amp; conditions, please refer to LG.com 
+    //-                             a(href="" target="_black") announcements
+    //-                             |  or contact LG call centre (centre number) 
+                                            
+    //-                     .c-modal__button 
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+
+
+                                
+    .guide-text-type Installation requirements - EG-EN
+    // Component Markup
+    +popupType({title: `Installation requirements`, content: `Dear customer, for wall mount installation please make sure the wall mount is available with you`, button1Text: `Agree`,})
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full
+    //-             .c-modal
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         .c-modal__head 
+    //-                             .c-modal__title.font-m-light-24.font-w-light-36 Installation requirements
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn                     
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-text 
+    //-                             | Dear customer, for wall mount installation please make sure the wall mount is available with you
+                                
+                                
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Agree', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+
+
+    .guide-text-option Track My Repair Result - BR
+    // Component Markup
+    +popupType({title: `Delivery details`, content: `14/08/2019 12:48 - Objeto entregue ao destinatário GUARIBA / SP/ CEP:14840970 14/08/2019 12:48 - Objeto entregue ao destinatário GUARIBA / SP/ CEP:14840970 14/08/2019 05:50 - Objeto encaminhado RIBEIRAO PRETO / SP/ CEP:14095970 Detalhe: em trânsito paraAC GUARIBA - GUARIBA / SP 14/08/2019 05:50 - Objeto encaminhado RIBEIRAO PRETO / SP/ CEP:14095970 Detalhe: em trânsito paraAC GUARIBA - GUARIBA / SP 14/08/2019 05:50 - Objeto encaminhado RIBEIRAO PRETO / SP/ CEP:14095970 Detalhe: em trânsito paraAC GUARIBA - GUARIBA / SP 14/08/2019 05:50 - Objeto encaminhado RIBEIRAO PRETO / SP/ CEP:14095970 Detalhe: em trânsito paraAC GUARIBA - GUARIBA / SP`, button1Text: `Close`,})
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full
+    //-             .c-modal
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         .c-modal__head 
+    //-                             .c-modal__title.font-m-light-24.font-w-light-36 Delivery details
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn                     
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-text 14/08/2019 12:48 - Objeto entregue ao destinatário GUARIBA / SP/ CEP:14840970 14/08/2019 12:48 - Objeto entregue ao destinatário GUARIBA / SP/ CEP:14840970 14/08/2019 05:50 - Objeto encaminhado RIBEIRAO PRETO / SP/ CEP:14095970 Detalhe: em trânsito paraAC GUARIBA - GUARIBA / SP 14/08/2019 05:50 - Objeto encaminhado RIBEIRAO PRETO / SP/ CEP:14095970 Detalhe: em trânsito paraAC GUARIBA - GUARIBA / SP 14/08/2019 05:50 - Objeto encaminhado RIBEIRAO PRETO / SP/ CEP:14095970 Detalhe: em trânsito paraAC GUARIBA - GUARIBA / SP 14/08/2019 05:50 - Objeto encaminhado RIBEIRAO PRETO / SP/ CEP:14095970 Detalhe: em trânsito paraAC GUARIBA - GUARIBA / SP
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+
+    .guide-text-type Repair Request Symptom - CA_EN, CA_FR
+    // Component Markup
+    +popupType({title: `Please check before booking service call`, button1Text: `Close`,})
+        .c-modal__content-text 
+            | To ensure you have the correct technician visiting your home and fixing your product on the first visit please locate the serial # sticker on the inside of your fridge. If your refrigerator uses R600 Refrigerant please only select a service center with (S6) in their name. If your Fridge uses any other type of refrigerant then any service center listed including (S6) can repair your product.
+            br
+            br
+            | *At LG we understand that having a non cooling refrigerator is difficult. For added peace of mind LG will provide a 1 year warranty on this repair.
+    // 20230822 markup add
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full
+    //-             .c-modal
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         .c-modal__head 
+    //-                             .c-modal__title.font-m-light-24.font-w-light-36 Please check before booking service call
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn                     
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-text 
+    //-                         | To ensure you have the correct technician visiting your home and fixing your product on the first visit please locate the serial # sticker on the inside of your fridge. If your refrigerator uses R600 Refrigerant please only select a service center with (S6) in their name. If your Fridge uses any other type of refrigerant then any service center listed including (S6) can repair your product.
+    //-                         br
+    //-                         br
+    //-                         | *At LG we understand that having a non cooling refrigerator is difficult. For added peace of mind LG will provide a 1 year warranty on this repair.
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})  
+    +popupType({title: `Veuillez vérifier avant de réserver un appel de service`, button1Text: `Fermer`,})
+        .c-modal__content-text 
+            | Pour s’assurer que le bon technicien se rende chez vous dans le but de réparer votre produit lors de la première visite, veuillez localiser lautocollant avec numéro de série à lintérieur de votre réfrigérateur. Si votre réfrigérateur utilise du réfrigérant R600, veuillez sélectionner uniquement un centre de service avec (S6) dans son nom. Si votre réfrigérateur utilise un autre type de réfrigérant, tout centre de service, y compris ceux avec (S6), peut réparer votre produit.
+            br
+            br
+            | *Chez LG, nous comprenons quil est difficile davoir un réfrigérateur sans refroidissement. Pour une plus grande tranquillité desprit, LG vous fournira une garantie dun an à cette réparation.
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full
+    //-             .c-modal
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         .c-modal__head 
+    //-                             .c-modal__title.font-m-light-24.font-w-light-36 Veuillez vérifier avant de réserver un appel de service
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn                     
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-text 
+    //-                         | Pour s’assurer que le bon technicien se rende chez vous dans le but de réparer votre produit lors de la première visite, veuillez localiser lautocollant avec numéro de série à lintérieur de votre réfrigérateur. Si votre réfrigérateur utilise du réfrigérant R600, veuillez sélectionner uniquement un centre de service avec (S6) dans son nom. Si votre réfrigérateur utilise un autre type de réfrigérant, tout centre de service, y compris ceux avec (S6), peut réparer votre produit.
+    //-                         br
+    //-                         br
+    //-                         | *Chez LG, nous comprenons quil est difficile davoir un réfrigérateur sans refroidissement. Pour une plus grande tranquillité desprit, LG vous fournira une garantie dun an à cette réparation.
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Fermer', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+    // 20230825 markup add
+    .guide-text-type Repair Request Symptom (Live remote) – CA_EN, CA_FR
+    +popupType({title: `Live remote service appointment`, content: `LG live remote service allows one of our trained agents to view, diagnose and trouble shoot your product online reducing the need for a technician visit.`, button1Text: `Click here`,})
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full
+    //-             .c-modal
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         .c-modal__head 
+    //-                             .c-modal__title.font-m-light-24.font-w-light-36 Live remote service appointment
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn                     
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-text 
+    //-                             | LG live remote service allows one of our trained agents to view, diagnose and trouble shoot your product online reducing the need for a technician visit.
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Click here', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+    +popupType({title: `Rendez-vous pour service à distance en direct`, content: `Le service à distance en direct LG permet à lun de nos agents qualifiés de visualiser, diagnostiquer et dépanner votre produit en ligne, éliminant ainsi la visite dun technicien.`, button1Text: `Cliquez ici`,})
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full
+    //-             .c-modal
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         .c-modal__head 
+    //-                             .c-modal__title.font-m-light-24.font-w-light-36 Rendez-vous pour service à distance en direct
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn                     
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-text 
+    //-                             | Le service à distance en direct LG permet à lun de nos agents qualifiés de visualiser, diagnostiquer et dépanner votre produit en ligne, éliminant ainsi la visite dun technicien.
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Cliquez ici', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+
+    .guide-text-type Send SMS
+    // Component Markup
+    //- +popupType({title: `Send announcement URL`, type: `form`, button1Text: `Close`, button2Text: `Send`, button2IsButton: true, sms: true})
+    //-     .c-require.font-m-normal-14.font-w-normal-14 
+    //-         em.require *
+    //-         | Required fields
+    //-     .cs-form
+    //-         .cs-form__wrap
+    //-             .cmp-form
+    //-                 +csForm_Input({id: 'cellPhone', label: 'Cell phone', type:"text", placeholder:"Please enter only numbers", require: 'true', requireMsg: 'Cell phone is required.', invalidMsg: "Cell phone is invalid.", class:'c-subject-rquired-valid' })
+    //-     .c-modal__content-text.font-m-normal-12.font-w-normal-16 Your privacy is important. The phone number you entered will not be used for any other purpose.
+    .c-wrapper.CS0026.type-form
+        .component.cs-component
+            .CS0026__container.c-full.cs-send-sms
+                .c-modal
+                    .c-modal__dimmed
+                    .c-modal__box
+                        .c-modal-head__wrap
+                            .c-modal__head 
+                                .c-modal__title.font-m-light-24.font-w-light-36 Send announcement URL
+                            button(type="button" aria-label="").c-modal__closebtn close btn
+                        .c-modal__content
+                            .c-require.font-m-normal-14.font-w-normal-14
+                                em.require *
+                                | Required fields
+                            .cs-form
+                                .cs-form__wrap
+                                    .cmp-form
+                                        +csForm_Input({id: 'cellPhone', label: 'Cell phone', type:"text", placeholder:"Please enter only numbers", require: 'true', requireMsg: 'Cell phone is required.', invalidMsg: "Cell phone is invalid." ,class:'c-subject-rquired-valid' })
+                            .c-modal__content-text.font-m-normal-12.font-w-normal-16 Your privacy is important. The phone number you entered will not be used for any other purpose.
+                            .button.c-cta
+                                +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+                                +defaultButton({name: 'Send', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(class="c-btn-send" role="button" data-link-name)
+    //-                 //- .cs-captcha
+    //-                 //-     .cs-captcha__area
+    //-                 //-         //Using reCAPTCHA v3
+    //-                 //-         // captcha 영역입니다. 
+
+    .guide-text-type Send SMS(success)
+    // Component Markup
+    +popupType({title: `Send announcement URL`, content: `Message send success`, button1Text: `Close`, sms: true, contentClass: true})
+    //- .c-wrapper.CS0026.type-text
+    //-     .component.cs-component
+    //-         .CS0026__container.c-full.cs-send-sms
+    //-             .c-modal
+    //-                 .c-modal__dimmed
+    //-                 .c-modal__box
+    //-                     .c-modal-head__wrap
+    //-                         .c-modal__head 
+    //-                             .c-modal__title.font-m-light-24.font-w-light-36 Send announcement URL
+    //-                         button(type="button" aria-label="").c-modal__closebtn close btn
+    //-                     .c-modal__content 
+    //-                         .c-modal__content-text.font-m-normal-12.font-w-normal-16 Message send success
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+    
+    .guide-text-type Send SMS(failed)
+    // Component Markup
+    +popupType({title: `Send announcement URL`, content: `Message send failed`, button1Text: `Close`, sms: true, contentClass: true})
+
+
+    //- 20230922 br add
+    .guide-text-type When selecting Use current location without selecting Product (BR)
+    // Component Markup
+    +popupType({title: `Information`, content: `Please select your product.`, button1Text: `Close`, sms: true, contentClass: true})
+
+    .guide-text-type When there are no centers available (BR)
+    // Component Markup
+    +popupType({title: `Information`, button1Text: `Repair request`, contentClass: true})
+        .c-modal__content-text 
+        | Unfortunately, we did not find any Authorized Technical Assistance near the place consulted.
+        br
+        |  In this case, we suggest that you redo your search through the list of cities and consult directly with technical assistance for other ways to send or pick up the product, this being a
+        |  negotiation carried out directly between Technical Assistance and the Customer.
+        br
+        | If you would like a technical visit, click on the button below
+        br
+        br
+        | *If your product is outside the warranty period, a quote will be generated and a visit fee will be charged by Technical Support.
+
+    .guide-text-type After selecting a computing category, when there is no center available when selecting Use current location (BR)
+    // Component Markup
+    +popupType({title: `Information`, button1Text: `To close`, contentClass: true})
+        .c-modal__content-text 
+        | Unfortunately, we did not find any Authorized Technical Assistance near the location consulted.
+        | In this case, we suggest that you redo your search through the list of cities and check directly with technical assistance for other ways to send or collect the product, this procedure being a negotiation carried out directly between Technical Assistance and the customer.
+    
+    .guide-text-type When searching after entering the address directly, when there is no center (BR)
+    // Component Markup
+    +popupType({title: `Information`, button1Text: `CLOSE`, contentClass: true})
+        .c-modal__content-text 
+            | Unfortunately we couldn't find any assistance through your zip code! 
+            br
+            | Try to find assistance by searching for a list of cities.
+
+    .guide-text-type When there is no center after selecting a mobile product (BR)
+    // Component Markup
+    +popupType({title: `Information`, button1Text: `Send a Phone`, contentClass: true})
+        .c-modal__content-text 
+            | Unfortunately we could not find any Authorized Technical Assistance within 30km of the location consulted. In this case we suggest using the LG Collect service to send your product to a nearest Technical Assistance using the Post Office (free shipping for guaranteed products).
+            br
+            | To request a post code (Eticket) click on the link below:
+
+
+
+    .guide-text-type When purchase is not possible
+    // Component Markup
+    +popupType({button1Text: `OK`, modalTypeNumber:2})
+        .c-modal__content-text 
+            | Sorry, currently there is no LG Premium Care offer for your product.
+
+    .guide-text-type When EW is already a registered product
+    // Component Markup
+    +popupType({button1Text: `OK`, modalTypeNumber:2})
+        .c-modal__content-text 
+            | This product is already subscribed to lg premium care. Additional purchase is not possible. 
+
+    .guide-text-type Product Search ‘Enter’ key Block Pop-up
+    // Component Markup
+    +popupType({button1Text: `OK`, modalTypeNumber:2})
+        .c-modal__content-text 
+            | Sorry, please select product from the search result.
+
+
+    .guide-text-type MX - When entering Email-us 
+    // Component Markup
+    +popupType({title: `Servicio vía WhatsApp`, modalButton1Text: 'Close', modalButton2Style: 'default', medium: true, promotion: true, closeBtn: false})
+        .c-modal__bgDimd
+            .c-modal__txt.cs-qr-box
+                .c-modal-info-box
+                    p.font-m-normal-12.font-w-normal-16 ¿Ya conoces nuestro servicio vía WhatsApp?
+                    +defaultButton({name: 'HABLE AHORA', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-submit" aria-label="")
+                .c-modal-qr-wrap    
+                    .c-modal-qr-box
+                        +printLazyImage("https://via.placeholder.com/96x96/000/333/?text=Image")
+                    p.font-m-normal-12.font-w-normal-16 O escanea el código QR a debajo.
+        button(type="button" aria-label="").c-modal__closebtn close btn 

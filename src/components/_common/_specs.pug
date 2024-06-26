@@ -1,0 +1,568 @@
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_resource.pug
+include ../_common/_title-area.pug
+include ../_common/_product-list.pug
+
+//- 
+mixin selling-spec-cell(empty, params)
+    - var options = {...params}
+    - var imageSet = ['https://via.placeholder.com/80x80/999999/333333?text="icon-image"', 'https://via.placeholder.com/318x100/999999/333333?text="icon-image"'];
+    - var image = imageSet[Math.floor(Math.random() * 2)]
+
+    li.text.c-compare-selling__item
+        div.cmp-text.c-compare-selling__spec-name
+            p #{options.name}
+        div.cmp-text.c-compare-selling__spec-desc
+            if empty
+            else
+                p #{options.desc}
+
+        if options.useImageData
+            if empty
+            else 
+                .c-image
+                    +printLazyImage(image)   
+
+mixin selling-spec-line(params)
+    - var options = {list : [], ...params}
+    ul.c-compare-selling__spec-list        
+        if options.count 
+            - for (var x = 0; x < options.count; x++)
+                if(x === options.empty - 1)
+                    +selling-spec-cell(true, options)
+                else
+                    +selling-spec-cell(false, options)
+
+            if options.addCompare
+            - var l = options.count < 5 ? 2 : 1 
+            - for (var x = 0; x < l; x++)
+                .c-compare-selling__item.c-compare-selling__item--empty
+
+        else if options.list
+            each set in options.list
+                +selling-spec-cell(false, set)
+
+mixin selling-spec-scroll-table(params)
+    - var options = {map : [], ...params}
+    .c-compare-selling__scroll-table                                                                              
+        if options.head
+            .c-compare-selling__table-head.text
+                span.cmp-text(data-cmp-data-layer="")= options.head
+
+        each set in options.map
+            - set.count = options.count
+            .c-compare-selling__scroll-container(class={"c-compare-selling__scroll-container--marking" : set.marking})
+                +selling-spec-line(set)
+
+mixin product-spec(params)
+    - var options = {useRemoveItem : false, addCompare : false, displayVariation : false, count : 10, ...params}
+    //- - var productOption = {signature: true, thinq: true, flag: false, compare: false, packageSelect : false, wishlist: false, grade: false,review: false, type:false, groups:false, youreko: false, promotion: false, soldOut: false, vip: false, membership: false, installment: false,limited: false, onlyBuynowCta: false, packageDeal: false,}
+    - var productOption = {sku: 'GSJV70PZTF', ufn: 'American Fridge Freezer 635L Water & Ice Dispenser American Fridge Freezer 635L Water & Ice Dispenser', signature: false}
+    .c-compare-selling__scroll-container
+        .c-compare-selling__product-list
+            if options.displayVariation
+                //- product case variation  
+                //- discontinued
+                .c-compare-selling__item
+                    if options.useRemoveItem
+                        button.c-compare-selling__item-button.c-compare-selling__item-button--remove.cmp-button(type="button" data-cmp-data-layer="")
+                            span.cmp-button__text.sr-only Remove. On click, product will be deleted and page will refresh.
+                    +productCard({
+                        ...productOption,
+                        discontinued: true,
+                    })
+                //- Retailer
+                .c-compare-selling__item
+                    if options.useRemoveItem
+                        button.c-compare-selling__item-button.c-compare-selling__item-button--remove.cmp-button(type="button" data-cmp-data-layer="")
+                            span.cmp-button__text.sr-only Remove. On click, product will be deleted and page will refresh.
+                    +productCard({
+                        ...productOption,
+                        retailer: true,
+                    })
+                //- Out of Stock
+                .c-compare-selling__item
+                    if options.useRemoveItem
+                        button.c-compare-selling__item-button.c-compare-selling__item-button--remove.cmp-button(type="button" data-cmp-data-layer="")
+                            span.cmp-button__text.sr-only Remove. On click, product will be deleted and page will refresh.
+                    +productCard({
+                        ...productOption,
+                        outOfStock: true,
+                    })
+
+            - for (var x = 0; x < (options.displayVariation ? options.count - 3 : options.count); x++)
+                .c-compare-selling__item
+                    if options.useRemoveItem
+                        button.c-compare-selling__item-button.c-compare-selling__item-button--remove.cmp-button(type="button" data-cmp-data-layer="")
+                            span.cmp-button__text.sr-only Remove. On click, product will be deleted and page will refresh.
+                    +productCard({
+                        ...productOption,
+                        gradeIs:true,
+                        grade: 'a',
+                        youreko: true,
+                        repair: true,
+                        membership: '£1,866.98',
+                        Ab: true,
+                        lumpsum: true,
+                        plInfoTxt: true,
+                        ehf: false
+                    })
+
+            if options.addCompare
+                - var l = options.count < 5 ? 2 : 1 
+                - for (var x = 0; x < l; x++)
+                    .c-compare-selling__item
+                        a.c-compare-selling__to-list(href="/template/PLP.html" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+
+//- markup when composite with display "PD0008"
+//- all the same below
+mixin selling-spec-table(params)
+    - var options = {...params}
+    .c-compare-selling__table
+        if options.head
+            .c-compare-selling__table-head.text
+                if options.type = 'all'
+                    h4.cmp-text(data-cmp-data-layer="")= options.head
+                else
+                    span.cmp-text(data-cmp-data-layer="")= options.head
+        +selling-spec-line(params)
+
+mixin specs-summary(params)
+    - var options = {...params}
+    .c-specs-summary
+        //- top : image
+        .c-specs-dimensions
+            .c-specs-dimensions__container
+                .c-specs-dimensions__text-info.text
+                    // This element is always display.
+                    h4.cmp-text(data-cmp-data-layer="" class="font-w-normal-24 font-m-normal-16") Dimension (mm)
+                    // If this data is nullish, must be not display element.
+                    span.cmp-text(data-cmp-data-layer="" class="font-w-normal-32 font-m-normal-20") W 835 x H 1787 x D 734
+
+                .image.c-image
+                    +printLazyPicture('https://via.placeholder.com/327x400/f7f8f9/808080', 'https://via.placeholder.com/1284x549/f7f8f9/808080')
+
+        //- bottom : fixed spec
+        .c-summary-info
+            .c-icon-block-contents
+                - for (var x = 0; x < 4; x++)
+                    .c-text-contents.item
+                        // 23.01.16 - modified markup 
+                        .title.c-text-contents__headline
+                            .cmp-title(data-cmp-data-layer="")
+                                strong.cmp-title__text Main Technology
+                        .text.c-text-contents__bodycopy
+                            .cmp-text(data-cmp-data-layer="") 
+                                | ezDispense™ - Auto Detergent Dispense
+
+mixin disclosure-button
+    - var expand = 'View all Spec'
+    - var collapse = 'Collapse All'
+    - var config = {wSize: 'large', mSize: 'medium', buttonStyle: 'down', isButton: true}
+
+    .c-all-specs-area__more 
+        //- open
+        .button.c-all-specs-area__more-open.active
+            +textButton({...config , name: expand})
+        //- close
+        .button.c-all-specs-area__more-close
+            +textButton({...config , name: collapse})
+
+mixin disclosure-in-button
+    - var collapse = 'Collapse All'
+    - var config = {wSize: 'large', mSize: 'medium', buttonStyle: 'down', isButton: true}
+
+    .c-all-specs-area__in
+        .button.c-all-specs-area__more-close
+            +textButton({...config , name: collapse})
+
+mixin key-specs 
+    .c-compare-selling.c-compare-selling--pick-out
+        .c-compare-selling__group.c-compare-selling__group--bg
+            .c-compare-selling__group-head.title
+                .cmp-title(data-cmp-data-layer="")
+                    h4.cmp-title__text Key Spec
+                    
+            .c-compare-selling__spec
+                - var useImageData = true
+                
+                +selling-spec-table({
+                    type : "key",
+                    list : [
+                        {
+                            name : "Type",
+                            desc : "4K OLED"
+                        },
+                        {
+                            name : "Screen Size",
+                            desc : "65"
+                        },
+                        {
+                            name : "Resolution",
+                            desc : "3840 x 2160"
+                        },
+                        {
+                            name : "Airplay 2 (iOS/Mac Video Casting, Mirroring, Audio Streaming)",
+                            desc : "16:9/Original/4:3/Vertical Zoom/All-Direction Zoom"
+                        },
+                        {
+                            name : "Screen Share (Wireless Mirroring with MiraCast supporting Android/Window device)",
+                            desc : "Yes"
+                        },
+                        {
+                            name : "Colour / Wide Colour Gamut",
+                            desc : "Perfect Colour"
+                        },
+                        {
+                            useImageData,
+                            name : "Colour ",
+                            desc : "Colour display bits / Billion Rich Colours"
+                        },
+                        {
+                            name : "Contrast / Perfect Black",
+                            desc : "Perfect Black"
+                        },
+                        {
+                            name : "Contrast / Dimming",
+                            desc : "Pixel Dimming"
+                        },
+                        {
+                            useImageData,
+                            name : "Refresh Rate",
+                            desc : "Refresh Rate 120Hz"
+                        },
+                    ]
+                })
+
+mixin all-specs
+    .c-compare-selling.c-compare-selling--all
+        .c-compare-selling__group
+            .c-compare-selling__group-head.title
+                .cmp-title(data-cmp-data-layer="")
+                    h3.cmp-title__text All Spec
+                    
+            .c-compare-selling__spec
+                //- display
+                +selling-spec-table({
+                    type : "all",
+                    head : "Display",
+                    list : [
+                        {
+                            name : "Type",
+                            desc : "4K OLED"
+                        },
+                        {
+                            name : "Screen Size",
+                            desc : "65"
+                        },
+                        {
+                            name : "Resolution",
+                            desc : "3840 x 2160"
+                        },
+                        {
+                            name : "Colour / Wide Colour Gamut",
+                            desc : "Perfect Colour"
+                        },
+                        {
+                            name : "Colour ",
+                            desc : "Colour display bits / Billion Rich Colours"
+                        },
+                        {
+                            name : "Contrast / Perfect Black",
+                            desc : "Perfect Black"
+                        },
+                        {
+                            name : "Contrast / Dimming",
+                            desc : "Pixel Dimming"
+                        },
+                        {
+                            name : "Refresh Rate",
+                            desc : "Refresh Rate 120Hz"
+                        },
+                    ]
+                })
+                //- platform
+                +selling-spec-table({
+                    type : "all",
+                    head : "Platform",
+                    list : [
+                        {
+                            name : "Main Processor",
+                            desc : "α9 Gen5 AI Processor 8K"
+                        },
+                        {
+                            name : "Operating System (OS)",
+                            desc : "webOS Smart TV"
+                        },
+                        {
+                            name : "Number of CPUs",
+                            desc : "Quad"
+                        },
+                    ]
+                })
+                //- video
+                +selling-spec-table({
+                    type : "all",
+                    head : "Video",
+                    list : [
+                        {
+                            name : "HEVC",
+                            desc : "4K@120P, 10bit"
+                        },
+                        {
+                            name : "VP9 (Video Decoder)",
+                            desc : "4K@60p, 10bit"
+                        },
+                        {
+                            name : "AV1 (Video Decoder)",
+                            desc : "4K@60p, 10bit"
+                        },
+                        {
+                            name : "G-Sync Compatible",
+                            desc : "Yes"
+                        },
+                        {
+                            name : "FreeSync Compatible",
+                            desc : "Yes"
+                        },
+                        {
+                            name : "HGIG Mode",
+                            desc : "Yes"
+                        },
+                        {
+                            name : "Game Optimizer (VRR/ALLM/GameGenre)",
+                            desc : "Yes / Yes / Yes"
+                        },
+                        {
+                            name : "Picture Mode",
+                            desc : "9 modes (Vivid, Standard, Eco, Cinema, Football, Game, Filmmaker, (ISF)Expert(Bright Room), (ISF)Expert(Dark Room))"
+                        },
+                        {
+                            name : "Dynamic Tone Mapping / Pro",
+                            desc : "Dynamic Tone Mapping Pro"
+                        },
+                    ]
+                })
+                //- 
+                    {
+                        name : "",
+                        desc : ""
+                    },
+
+mixin specs-resource
+    .c-specs-resource
+        //- title
+        .c-text-contents
+            .title.c-text-contents__headline 
+                - var fontStyle = "font-w-light-56 font-m-light-28"
+                +headline(fontStyle, "h2", "Compliance Information")
+                
+        // block - resources
+        ul.c-resources
+            - for(var x = 0 ; x < 4; x++)
+                li
+                    +specSheetItem('pdf')
+        //- cta
+        .button
+            +textButton({
+                name: 'More Compliance Information',
+                wSize: 'medium',
+                mSize: 'medium',
+                buttonStyle: 'default',
+                isButton: false
+            })
+
+mixin specs-disclaimer(params)
+    - var options = {text : "All 2022 LG OLED models feature eco-friendly packaging.", ...params}
+    .c-specs-comment.text
+        span.cmp-text(data-cmp-data-layer)= options.text
+
+//- PD0008, specs modal of PD0003
+mixin specs-lgness(params)
+    - var options = {onLayer : false, useKeyspecs : true,  useSummary : true, ...params}
+
+    //- component title
+    +component-title-area({
+        alignment: "",
+        headline : options.useSummary ? {text : "Summary", level: "h3"} : null
+    })(class="c-region-header--justify-w c-region-header--auto-height")
+        //- title area : right 
+        .c-print-area
+            .button                
+                // If you need to enter multiple CSS, separate them with commas (,).
+                +textButton({name: 'Print', wSize: 'large', mSize: 'large', buttonStyle: 'icon icon-print no-arrow', isButton: false})(class="js-print" href="#" data-css-url="/main.css,../PD0008/PD0008.css")
+                
+    //- summary : product dimension, key feature
+    if options.useSummary
+        +specs-summary(params)
+    //- Key specs
+    if options.useKeyspecs
+        +key-specs
+
+    //- All specs    
+    if options.onLayer
+        +all-specs
+        +specs-resource
+        +specs-disclaimer
+    else 
+        +disclosure-button
+        .c-all-specs-area
+            +all-specs
+            +specs-resource
+            +specs-disclaimer
+            +disclosure-in-button
+
+//- =================================================================
+//- Legacy
+mixin specItem(name, desc)
+    .text.c-compare-selling__item
+        .cmp-text.font-w-normal-16.font-m-normal-12.c-compare-selling__spec-name 
+            p #{name}
+        .cmp-text.font-w-normal-24.font-m-normal-16.c-compare-selling__spec-desc
+            p #{desc}
+
+mixin specList(name, desc, count)
+    .c-compare-selling__spec-list
+        if(count)
+            - for (var x = 1; x < count; x++)
+                +specItem(name, desc)
+        else 
+            +specItem(name, desc)
+
+mixin specs(typePopup = false)
+    if typePopup == false
+        +component-title-area({
+            alignment: "",
+            headline : {
+                text : "Summary"
+            }
+        })(class="c-region-header--justify-w")
+            .c-print-area
+                .button
+                    //- +iconButton({type:"link",comment:false,color:"black",class:"print", otherClass:"js-open-popup js-print-popup",name:"print"})(href="./PD0008-print.html"  target="popup" data-width="1080")
+                    // If you need to enter multiple CSS, separate them with commas (,).
+                    +textButton({name: 'Print', wSize: 'large', mSize: 'large', buttonStyle: 'icon icon-print no-arrow', isButton: false})(class="js-print" href="#" data-css-url="/main.css,../PD0008/PD0008.css")
+                    //- +iconButton({type:"link",comment:false,color:"black",class:"print", otherClass:"js-print",name:"print"})(href="#" data-css-url="/main.css,./PD0008.css")
+    .c-section-container.c-specs-dimensions
+        .c-text-contents
+            .title.c-text-contents__headline 
+                - var pass = false
+                +headline("font-w-normal-32 font-m-normal-20", "pass", "Dimensions")
+        .image.c-image
+            +printLazyPicture('https://via.placeholder.com/327x400/999999/333333', 'https://via.placeholder.com/1284x549/999999/333333')
+    .c-section-container.c-specs-summary.shape-horizontal
+        .c-text-contents
+            .title.c-text-contents__headline 
+                - var pass = false
+                +headline("font-w-normal-32 font-m-normal-20", "pass", "Summary")
+        .c-summary-info.block-mobile 
+            .c-icon-block-contents
+                - for (var x = 0; x < 4; x++)
+                    .c-text-contents.item(class="align-text-center")
+                        // 23.01.16 - modified markup 
+                        .title.c-text-contents__headline
+                            .cmp-title.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")
+                                strong.cmp-title__text Main Technology
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-24.font-m-normal-20(data-cmp-data-layer="") 
+                                | ezDispense™ - Auto Detergent Dispense
+    .c-all-specs-area
+        .c-section-container
+            .c-text-contents
+                .title.c-text-contents__headline 
+                    - var pass = false
+                    +headline("font-w-normal-32 font-m-normal-20", "pass", "Design")
+            ul.c-specs-table
+                - for (var x = 0; x < 7; x++)
+                    li.c-specs-table__item
+                        dl
+                            dt.font-w-normal-16.font-m-normal-16 Door Rim Color
+                            dd.font-w-normal-16.font-m-normal-16 Black Main + Silver Button
+        .c-section-container
+            .c-text-contents
+                .title.c-text-contents__headline 
+                    - var pass = false
+                    +headline("font-w-normal-32 font-m-normal-20", "pass", "Group Title 2")
+            ul.c-specs-table
+                - for (var x = 0; x < 6; x++)
+                    li.c-specs-table__item
+                        dl
+                            dt.font-w-normal-16.font-m-normal-16 Knob Deco
+                            dd.font-w-normal-16.font-m-normal-16 Rose Gold
+        if typePopup == false
+            .c-section-container.c-specs-resource
+                .c-text-contents
+                    .title.c-text-contents__headline 
+                        - var pass = false
+                        +headline("font-w-normal-32 font-m-normal-20", "pass", "Compliance Information")
+                ul.c-resources
+                    - for(var x = 0 ; x < 4; x++)
+                        li
+                            +specSheetItem('pdf')
+                .button
+                    +textButton({name: 'More Compliance Information', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+        
+        .c-specs-comment.c-text-contents
+            .c-text-contents__bodycopy.font-w-normal-16.font-m-normal-14 All 2022 LG OLED models feature eco-friendly packaging.
+    if !typePopup
+        .c-all-specs-area__more 
+            .button.c-all-specs-area__more-open.active
+                +textButton({name: 'See All Specs', wSize: 'large', mSize: 'medium', buttonStyle: 'down', isButton: true})
+                //- +button({type:"box-outlined", color:"black", size:"medium", icon: true, name: "see all specs"})
+            .button.c-all-specs-area__more-close
+                +textButton({name: 'Close', wSize: 'large', mSize: 'medium', buttonStyle: 'down', isButton: true})
+    //- - var headlineStyle = typePrint ? 'font-w-semibold-24 font-m-semibold-20' : 'font-w-semibold-28 font-m-semibold-20'
+    //- - var summaryStyle = typePrint ? 'font-w-semibold-24 font-m-semibold-20' : 'font-w-semibold-20 font-m-semibold-20'
+    //- .c-section-container.c-specs-dimensions
+    //-     .c-text-contents
+    //-         .title.c-text-contents__headline 
+    //-             - var pass = false
+    //-             +headline(headlineStyle, pass, "Dimensions")
+    //-     .image.c-image
+    //-         if typePrint
+    //-             +printLazyImage('https://via.placeholder.com/1284x549/999999/333333')
+    //-         else
+    //-             +printLazyPicture('https://via.placeholder.com/327x400/999999/333333', 'https://via.placeholder.com/1284x549/999999/333333')
+    //- .c-section-container.c-specs-summary.shape-horizontal
+    //-     .c-text-contents
+    //-         .title.c-text-contents__headline 
+    //-             - var pass = false
+    //-             +headline(headlineStyle, "pass", "Summary")
+    //-     .c-summary-info.block-mobile 
+    //-         .c-icon-block-contents
+    //-             - for (var x = 0; x < 4; x++)
+    //-                 .c-text-contents.item
+    //-                     // 23.01.16 - modified markup 
+    //-                     .title.c-text-contents__headline
+    //-                         .cmp-title(data-cmp-data-layer="")
+    //-                             strong.cmp-title__text Main Technology
+    //-                     .text.c-text-contents__bodycopy 
+    //-                         .cmp-text(class=`${summaryStyle}` data-cmp-data-layer="") 
+    //-                             | ezDispense™ - Auto Detergent Dispense
+    //- .c-section-container
+    //-     .c-text-contents
+    //-         .title.c-text-contents__headline 
+    //-             - var pass = false
+    //-             +headline(headlineStyle, "pass", "Design")
+    //-     ul.c-specs-table
+    //-         - for (var x = 0; x < 7; x++)
+    //-             li.c-specs-table__item
+    //-                 dl
+    //-                     dt Door Rim Color
+    //-                     dd Black Main + Silver Button
+    //- .c-section-container
+    //-     .c-text-contents
+    //-         .title.c-text-contents__headline 
+    //-             - var pass = false
+    //-             +headline(headlineStyle, "pass", "Group Title 2")
+    //-     ul.c-specs-table
+    //-         - for (var x = 0; x < 6; x++)
+    //-             li.c-specs-table__item
+    //-                 dl
+    //-                     dt Knob Deco
+    //-                     dd Rose Gold
+    //- if !typePrint                   
+    //-     .c-specs-comment.c-text-contents
+    //-         .c-text-contents__bodycopy All 2022 LG OLED models feature eco-friendly packaging.

@@ -1,0 +1,778 @@
+@charset "UTF-8";
+@use '../../scss/abstract/' as *;
+
+// CS COMMON MIXIN
+
+@mixin input() {
+  font-size: rem(16px);
+  line-height: rem(20px);
+  width: 100%;
+  height: rem(44px);
+  border: rem(1px) solid $mid-gray4;
+  border-radius: rem(12px);
+  padding: rem($padding12px $padding13px);
+  background-color: $light-gray3;
+  color: $black;
+  &:focus-visible {
+    outline: rem(2px) solid currentcolor;
+    outline-offset: 0;
+    outline-offset: rem(-2px);
+  }
+
+  &[disabled] {
+    background-color: $mid-gray1;
+    cursor: default;
+    color: $mid-gray1;
+    &::placeholder {
+      color: $mid-gray1;
+    }
+    + .c-modelnumber-input__button {
+      cursor: default;
+      &--search {
+        opacity: 0.5;
+      }
+    }
+  }
+  &[type='date'] {
+    // CS0012 CS0044
+    // CS0049 CS0050 CS0051 CS0055 CS0070 CS0072 CS0073 CS0074 CS0079
+    position: relative;
+    background-size: 24px;
+    padding-left: rem($padding50px);
+    text-align: left;
+    background: {
+      image: url($icon-calendar-black-24-24);
+      repeat: no-repeat;
+      position: rem(13px);
+      size: rem(24px);
+    }
+
+    &::-webkit-clear-button,
+    &::-webkit-inner-spin-button {
+      display: none;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      color: transparent;
+      cursor: pointer;
+    }
+
+    &::before {
+      content: attr(data-placeholder);
+      width: 100%;
+    }
+
+    &:valid::before {
+      display: none;
+    }
+
+    @include screen(web) {
+      padding-left: rem(46px);
+
+      background: {
+        position: rem(13px) #{'/*!rtl:97%*/'}; /*! RTL last keep colon */
+      }
+    }
+  }
+
+  &::placeholder {
+    color: $black;
+    font-size: rem(16px);
+    line-height: rem(18px);
+    opacity: 0.7;
+  }
+
+  &.c-error {
+    border: 2px solid $active-red;
+    line-height: rem($height16px);
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  @include screen(web) {
+    padding: rem($padding12px $padding14px);
+  }
+}
+@mixin csSelect {
+  @include input();
+  padding-right: rem($padding20px);
+  appearance: none;
+
+  &::-ms-expand {
+    display: none;
+  }
+
+  background: $light-gray3 url($icon-dropdown-open-black-12-8) no-repeat;
+  background-position: right rem(13px) center;
+  background-size: 12px auto;
+
+  &[disabled] {
+    background-color: $mid-gray1;
+    background-image: url($icon-dropdown-open-gray-12-8);
+    background-repeat: no-repeat;
+    background-position: right rem(13px) center;
+    background-size: 12px auto;
+    opacity: 1;
+  }
+}
+@mixin accrodionInput {
+  @include input();
+  background: transparent;
+}
+@mixin accrodionSelect {
+  @include csSelect();
+  background-color: transparent;
+}
+@mixin inputHeight56 {
+  width: 100%;
+  height: rem(56px);
+  border: rem(1px) solid $mid-gray4;
+  border-radius: rem(12px);
+  padding: rem($padding16px $padding17px) !important;
+  background: $light-gray3;
+  color: $black;
+  &::placeholder {
+    color: $black;
+    font-size: rem(20px);
+    opacity: 0.7;
+
+    @include screen(web) {
+      // font-size: rem(16px);
+    }
+  }
+  @include screen(web) {
+    padding: rem($padding16px $padding24px $padding16px $padding58px) !important;
+  }
+}
+@mixin accrodionInputHeight56 {
+  @include inputHeight56();
+  background: transparent;
+}
+@mixin position($top, $left) {
+  position: absolute;
+  top: $top;
+  transform: (translate(-$left, -$top));
+}
+@mixin searchbar_fieldIcons {
+  .fieldIcons {
+    &__root {
+      position: relative;
+    }
+    &__before {
+      content: '';
+      z-index: $stacking-floor;
+      @include position(50%, 50%);
+      left: rem($padding30px);
+      transform: translate(-50%, -50%);
+      width: rem(18px);
+      height: rem(18px);
+      background-repeat: no-repeat;
+      @include screen(web) {
+        width: rem($width24px);
+        height: rem($height24px);
+        // background-size:rem(24px);
+        background-image: url($icon-search-black-24-24);
+      }
+    }
+  }
+  input {
+    max-width: none;
+  }
+}
+@mixin csPreview {
+  width: 100%;
+  margin-bottom: rem($margin8px);
+
+  @include screen(web) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: rem(8px);
+    row-gap: rem(8px);
+  }
+
+  p {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    min-height: rem(44px);
+    padding: rem($padding12px $padding44px $padding12px $padding38px);
+    margin-bottom: rem($margin8px);
+    font-size: rem(16px);
+    line-height: rem(18px);
+    color: $mid-gray3;
+    text-align: left;
+    border-radius: rem($radius12);
+    background: $light-gray3;
+    word-break: break-word;
+    span {
+      display: inline-block;
+      width: 100%;
+      @include ellipsis(1);
+      word-break: break-all;
+    }
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .file-remove {
+      border: none;
+      text-indent: -9999px;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: rem(13px);
+      margin: auto;
+      width: rem(24px);
+      height: rem(24px);
+      background: transparent url($icon-close-circle-dark-24-24) no-repeat;
+      cursor: pointer;
+    }
+
+    &::before {
+      content: '';
+      display: inline-block;
+      background: url($icon-fileclip);
+      background-size: rem(20px);
+      position: absolute;
+      top: 50%;
+      left: rem(13px);
+      transform: translate(0, -50%);
+      width: rem(20px);
+      height: rem(20px);
+    }
+
+    @include screen(web) {
+      margin-bottom: 0;
+      padding: rem($padding12px) rem($padding46px);
+    }
+  }
+}
+@mixin accordionPreview {
+  @include csPreview;
+  p {
+    background: transparent;
+    border: 1px solid $mid-gray1;
+  }
+}
+@mixin csLabel {
+  display: block;
+  color: $gray3;
+  margin-bottom: rem($margin8px);
+  font-size: rem(16px);
+  line-height: rem(18px);
+  text-align: left;
+  margin-top: rem($margin16px);
+}
+@mixin list-dot($paddingLeft, $width, $height, $bgColor) {
+  position: relative;
+  padding-left: $paddingLeft;
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: $width;
+    height: $height;
+    background: $bgColor;
+    border-radius: 50%;
+  }
+}
+.c-info-msg {
+  color: $gray6;
+  margin: rem($margin8px $margin13px);
+}
+
+// component
+[class*='c-wrapper CS0'] {
+  // border: 4px dashed red;
+  // COMMON CLASS CONTROL
+  .c-hidden-pc {
+    @include screen(web) {
+      display: none !important;
+    }
+  }
+  .c-hidden-mo {
+    @include screen(mobile) {
+      display: none !important;
+    }
+  }
+  // COMMON - INPUT REQUIRE / WARNING
+  .c-require {
+    color: #646464;
+    text-align: right;
+    @include screen(web) {
+      font-size: rem(16px);
+      line-height: rem(16px);
+    }
+  }
+
+  .require {
+    font-style: normal;
+    color: $heritage-red;
+  }
+  // .c-image {
+  //     overflow: hidden;
+  //     border-radius: rem($radius20);
+  //     @include screen(web) {
+  //         border-radius: rem($radius28);
+  //     }
+  // }
+  .c-warning {
+    display: none;
+  }
+
+  // arrow button
+  .c-btn-arrow {
+    width: rem(36px);
+    border: none;
+    backdrop-filter: blur(7.5px);
+    display: block;
+    height: rem(36px);
+    border-radius: 100%;
+    background: {
+      repeat: no-repeat;
+      position: center;
+    }
+    @include screen(web) {
+      width: rem(44px);
+      height: rem(44px);
+    }
+    &--black {
+      background: {
+        image: url($icon-arrow-darkgray-right-24-24);
+        color: rgba(255, 255, 255, 0.3);
+        size: 16px;
+      }
+      &:hover {
+        border: none;
+        background-color: $active-red;
+        background-image: url($icon-arrow-white-right-24-24);
+      }
+    }
+    &--white {
+      background: {
+        image: url($icon-arrow-white-right-24-24);
+        color: rgba(255, 255, 255, 0.3);
+        size: 16px;
+      }
+      &:hover {
+        border: none;
+        background-color: $active-red;
+        background-image: url($icon-arrow-white-right-24-24);
+      }
+    }
+    &--border- {
+      &yes {
+        border: 1px solid $mid-gray2;
+      }
+      &no {
+        border: none;
+      }
+    }
+    &--bg-black {
+      background: {
+        image: url($icon-arrow-white-right-24-24);
+        color: $mid-gray3;
+        size: 16px;
+      }
+      opacity: 0.5;
+      &:hover {
+        background-color: $active-red;
+        opacity: 1;
+      }
+    }
+
+    &.m-small {
+      width: rem($width36px);
+      height: rem($height36px);
+      background-size: rem(12px);
+      transform: #{'/*!rtl:rotate(#{$degree180})*/'}; /*! 230516 RTL */
+    }
+    &.m-large {
+      width: rem($width44px);
+      height: rem($height44px);
+      background-size: rem(16px);
+    }
+    &--large,
+    &.w-large {
+      @include screen(web) {
+        width: rem($width64px);
+        height: rem($height64px);
+        background-size: rem(24px);
+      }
+    }
+    &.w-large {
+      @include screen(web) {
+        transform: #{'/*!rtl:rotate(#{$degree180})*/'}; /*! 230516 RTL */
+      }
+    }
+
+    &.w-small {
+      @include screen(web) {
+        width: rem($width44px);
+        height: rem($height44px);
+        background-size: rem(16px);
+      }
+    }
+  }
+
+  .c-button-wrap {
+    margin-top: rem($margin24px);
+
+    @include screen(web) {
+      margin-top: rem($margin24px);
+    }
+
+    .button {
+      padding-top: rem($padding12px);
+      padding-bottom: rem($padding24px);
+      text-align: center;
+      line-height: rem(12px);
+      border-top: 1px solid $mid-gray1;
+
+      @include screen(web) {
+        padding-top: rem($padding24px);
+        padding-bottom: rem($padding48px);
+      }
+    }
+  }
+
+  .c-accordion__body {
+    .c-button-wrap {
+      .button {
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  // CS BREADCRUMB
+  .breadcrumb {
+    padding: rem($padding20px 0);
+    border-bottom: 1px solid $mid-gray1;
+    background-color: $light-gray3;
+    @include screen(web) {
+      @include flex-context;
+      @include container($design-grid-full, true);
+      display: flex;
+      align-items: center;
+      padding: rem($padding20px $padding48px);
+    }
+    p {
+      flex-shrink: 0;
+      margin-bottom: rem($margin20px);
+      padding: rem(0 $padding16px);
+      color: $mid-gray3;
+      font-weight: 400;
+      @include screen(web) {
+        margin-bottom: 0;
+        margin-right: rem(8px);
+        padding: 0;
+      }
+    }
+  }
+  .c-breadcrumb {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: rem(0 $padding16px);
+    text-align: left;
+    @include screen(web) {
+      padding-right: 0;
+      padding-left: 0;
+    }
+    &__list {
+      @include container($design-full, true);
+      @include inset-padding-hz;
+      padding-right: 0 !important;
+      padding-left: 0 !important;
+      margin-bottom: 0;
+    }
+    &__item {
+      position: relative;
+      width: auto !important;
+      padding-right: rem($padding14px);
+      margin-right: rem($margin7px);
+      color: $gray3;
+      &:not(:last-child)::after {
+        content: '>';
+        display: flex;
+        align-items: center;
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100%;
+      }
+      &.active {
+        .c-breadcrumb__item-link {
+          font-weight: $font-semibold;
+          color: $black;
+        }
+      }
+      &-link {
+        color: $gray3;
+      }
+    }
+    a,
+    strong,
+    button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: rem(38px);
+      padding: rem(0 $padding13px);
+      border: 1px solid $mid-gray1;
+      border-radius: rem($radius28);
+    }
+    a,
+    button {
+      background-color: $warm-gray;
+      &:focus-visible {
+        outline-color: $black;
+        outline-offset: rem(-3px);
+      }
+    }
+    strong {
+      background-color: $white;
+    }
+  }
+
+  // form
+  .c-button-delete {
+    display: none;
+    position: absolute;
+    right: rem(16px);
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    width: rem(24px);
+    height: rem(24px);
+    background: url($icon-close-circle-dark-24-24);
+    text-indent: -9999px;
+    border: none;
+    cursor: pointer;
+    &--active {
+      display: block;
+    }
+  }
+
+  // form in accordion
+  .type-accordion {
+    .c-accordion {
+      .cs-form {
+        input,
+        select {
+          &[disabled] {
+            border: 1px solid $mid-gray1;
+            background-color: $white;
+            &::placeholder {
+              color: $mid-gray1;
+            }
+            // + .c-modelnumber-input__button {
+            //     cursor: default;
+            //     &--search {
+            //         opacity: 0.5;
+            //     }
+            // }
+          }
+        }
+      }
+    }
+  }
+
+  // upload button
+  .c-btn-upload {
+    &__inner {
+      display: flex;
+      align-items: center;
+      margin-top: rem($margin8px);
+
+      label {
+        margin: 0;
+      }
+
+      .btn-upload {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: rem(80px);
+        height: rem(36px);
+        margin-right: rem($margin8px);
+        font-size: rem(14px);
+        font-weight: 600;
+        color: $black;
+        background: #fff;
+        border: 1px solid $mid-gray2;
+        border-radius: rem($radius99);
+        padding: rem(0 $padding10px);
+        cursor: pointer;
+
+        @include screen(web) {
+          min-width: rem(100px);
+          height: rem(44px);
+          margin-right: rem($margin16px);
+          font-size: rem(16px);
+        }
+
+        &:hover {
+          color: #fff;
+          background-color: $active-red !important;
+          border-color: $active-red !important;
+        }
+
+        &--focus {
+          outline: 1px solid $black;
+        }
+      }
+    }
+  }
+
+  // s --- searchbar searchLayer z-index fix
+  .searchbar {
+    .searchLayer {
+      &.c-display {
+        z-index: 29 !important;
+      }
+    }
+  }
+  // e --- searchbar searchLayer z-index fix
+  // s --- 230810 .c-dot color edit
+  .c-dot {
+    color: $red;
+  }
+  // s --- 230810 .c-dot color edit
+}
+// s --- 230811 supporttab scroll add
+.supporttab,
+.productcategorylist {
+  .c-tabs__inner {
+    overflow: hidden;
+    overflow-x: auto;
+  }
+}
+.supporttab {
+  .c-tabs__inner {
+    .c-tabs__tablist {
+      height: auto;
+      min-height: rem(54px);
+      @include screen(web) {
+        @include flex-context;
+        @include container($design-grid-full, false);
+        max-height: rem(96px);
+        min-height: rem(84px);
+      }
+      li {
+        height: auto;
+      }
+      h3 {
+        // -webkit-line-clamp: 1;
+        // line-height: 1.5rem;
+        @include screen(web) {
+          word-break: break-word;
+          white-space: normal;
+          @include ellipsis(1);
+          white-space: normal;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          @include ellipsis(4);
+          padding: rem(0 $padding10px);
+        }
+      }
+    }
+  }
+  .type-tabs__wide {
+    .c-tabs__inner {
+      .c-tabs__tablist {
+        li:first-child {
+          padding-left: rem($padding16px);
+        }
+        li:last-child {
+          padding-right: rem($padding16px);
+        }
+      }
+    }
+  }
+}
+// e --- 230811 supporttab scroll add end
+
+// WCAG_FR pagination style 적용
+.MuiBox-root {
+  .MuiPagination-ul {
+    gap: rem($margin5px);
+    .MuiPaginationItem-circular {
+      display: block;
+      width: rem($icon36px);
+      height: rem($icon36px);
+      padding: rem($padding8px) 0;
+      text-align: center;
+      border-radius: $radius-full;
+      cursor: pointer;
+      font-size: rem(16px);
+      line-height: 1;
+      min-width: initial;
+      border: rem($border1) solid $light-gray3;
+      &.Mui-disabled {
+        opacity: 0.3;
+      }
+      &:focus-visible {
+        outline: rem(2px) solid currentcolor;
+        outline-offset: rem(1px);
+      }
+      &.Mui-selected {
+        border-color: $active-red;
+        border-width: rem(1.5px);
+      }
+      &:hover {
+        background-color: transparent;
+      }
+    }
+    .MuiPaginationItem-previousNext {
+      &:after {
+        content: '';
+        display: block;
+        margin: 0 auto;
+        background : {
+          image: url($icon-arrow-gray3-right-18-18);
+          position: center center;
+          size: 100% auto;
+          repeat: no-repeat;
+        }
+        width: rem($icon18px);
+        height: rem($icon18px);
+      }
+    }
+    li{
+      &:first-child, &:last-child {
+        .MuiPaginationItem-previousNext {
+          svg {display: none;}
+          border: rem($border1) solid $mid-gray1;
+          background-color: rgba($white, 0.3);
+        }
+      }
+      &:first-child {
+        .MuiPaginationItem-previousNext {
+          &:after {
+            transform: none #{'/*!rtl:rotate(#{$degree180})*/'}; /*! RTL last keep colon */
+          }
+        }
+      }
+      &:last-child {
+        .MuiPaginationItem-previousNext {
+          &:after {
+            transform: rotate($degree180) #{'/*!rtl:none*/'}; /*! RTL last keep colon */
+          }
+        }
+      }
+    }
+  }
+}

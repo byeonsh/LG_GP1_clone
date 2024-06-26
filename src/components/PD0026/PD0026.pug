@@ -1,0 +1,112 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_resource.pug
+include ../_common/_forms.pug
+
+block meta 
+    - var componentId = "PD0026"
+    - var componentName = "Business Download Resource"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+    
+block scripts
+    //- script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+
+    mixin noData
+        .c-no-data 
+            strong.font-w-normal-24.font-m-normal-16 Please select product category and model.
+    
+    mixin specResource(title, extension, number)
+        .c-specs-resource
+            .c-text-contents
+                .title.c-text-contents__headline 
+                    +headline("font-w-light-36 font-m-light-24", "pass", title)
+            .c-resources
+                - for(var x = 0 ; x < number; x++)
+                    +specSheetItem(extension)
+
+    .guide-text-option  Filter/Button Use = Yes
+    .c-wrapper.PD0026.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                // block : c-category-filter
+                form.cmp-form.c-category-filter
+                    fieldset.c-category-filter__inner
+                        legend.sr-only select product category and model
+                        .c-category-filter__head.font-w-normal-16.font-m-normal-16 Show
+                        .c-category-filter__body.font-w-normal-16.font-m-normal-16
+                            .c-form__item
+                                +formSelect("", "downloadCategory", "Select a Category", false)
+                                    option(value="" disabled selected) Category
+                                    option(value="products") Products
+                                    option(value="energyStorageSystem") Energy Storage System
+                                    option(value="certification") Certification
+                                    option(value="dataSheets") Data Sheets
+                                .c-warning Please select Category.
+                            .c-form__item
+                                +formSelect("", "downloadSub", "Select a Sub Category", false)(disabled)
+                                    option(value="" disabled selected) Sub Category
+                                    option(value="subCategory1") Sub Category1
+                                    option(value="subCategory2") Sub Category2
+                                    option(value="subCategory3") Sub Category3
+                                .c-warning Please select Sub Category.
+                            .c-form__item
+                                +formSelect("", "downloadModel", "Select a Model", false)(disabled)
+                                    option(value="" disabled selected) Model
+                                    option(value="model1") model1
+                                    option(value="model2") model2
+                                    option(value="model3") model3
+                                .c-warning Please select Model.
+                            .c-cta.button
+                                +defaultButton({name: 'Submit', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(type="submit" disabled)
+                // block : c-content-area(no data)
+                .c-content-area
+                    +noData
+                // block : c-content-area
+                .c-content-area
+                    +specResource("Certification", "pdf", 4)
+                    +specResource("Installation Manual", "html", 1)
+
+    .guide-text-option Filter/Button Use = No
+    .c-wrapper.PD0026.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                // block : c-content-area
+                .c-content-area
+                    +specResource("Certification", "pdf", 4)
+                    +specResource("Installation Manual", "html", 1)

@@ -1,0 +1,1171 @@
+@use '../abstract/' as *;
+
+@mixin input() {
+  font-size: rem(16px);
+  line-height: rem(20px);
+  width: 100%;
+  height: rem(44px);
+  border: rem(1px) solid $mid-gray4;
+  border-radius: rem(12px);
+  padding: rem($padding12px $padding13px);
+  background-color: $light-gray3;
+  color: $black;
+
+  &:focus-visible {
+    outline: rem(2px) solid currentcolor;
+    outline-offset: 0;
+    outline-offset: rem(-2px);
+  }
+
+  &[disabled] {
+    background-color: #cbc8c2;
+    cursor: default;
+    color: $mid-gray4;
+    &::placeholder {
+      color: $mid-gray4;
+      opacity: 1;
+    }
+    + .c-modelnumber-input__button {
+      cursor: default;
+      &--search {
+        opacity: 0.5;
+      }
+    }
+  }
+  &[type='date'] {
+    position: relative;
+    background-size: 24px;
+    padding-left: rem($padding50px);
+    text-align: left;
+    background: {
+      image: url($icon-calendar-black-24-24);
+      repeat: no-repeat;
+      position: rem(13px);
+      size: rem(24px);
+    }
+
+    &::-webkit-clear-button,
+    &::-webkit-inner-spin-button {
+      display: none;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      color: transparent;
+      cursor: pointer;
+    }
+
+    &::before {
+      content: attr(data-placeholder);
+      width: 100%;
+    }
+
+    &:valid::before {
+      display: none;
+    }
+
+    @include screen(web) {
+      padding-left: rem(46px);
+
+      background: {
+        position: rem(13px) #{'/*!rtl:97%*/'}; /*! RTL last keep colon */
+      }
+    }
+  }
+
+  &::placeholder {
+    color: $black;
+    font-size: rem(16px);
+    line-height: rem(18px);
+    opacity: 0.7;
+  }
+
+  &.c-error {
+    border: 2px solid $active-red;
+
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  @include screen(web) {
+    padding: rem($padding12px $padding14px);
+  }
+}
+
+/* stylelint-disable-next-line scss/at-mixin-pattern */
+@mixin csSelect {
+  @include input;
+  padding-right: rem($padding20px);
+  appearance: none;
+
+  &::-ms-expand {
+    display: none;
+  }
+
+  background: $light-gray3 url($icon-dropdown-open-black-12-8) no-repeat;
+  background-position: right rem(13px) center;
+  background-size: 12px auto;
+
+  &[disabled] {
+    background-color: $mid-gray1;
+    background-image: url($icon-dropdown-open-gray-12-8);
+    background-repeat: no-repeat;
+    background-position: right rem(13px) center;
+    background-size: 12px auto;
+    opacity: 1;
+  }
+}
+@mixin position($top, $left) {
+  position: absolute;
+  top: $top;
+  transform: (translate(-$left, -$top));
+}
+
+@mixin cs-form() {
+  .cs-form {
+    &__wrap {
+      &:first-child {
+        #postalCode {
+          .cmp-form {
+            &__inner {
+              div:first-child {
+                width: 100%;
+              }
+              .button {
+                white-space: nowrap;
+                .c-button--text-underline {
+                  font-size: rem(12px);
+                  line-height: rem(14px);
+                  @include screen(web) {
+                    font-size: rem(14px);
+                    line-height: rem(16px);
+                  }
+                }
+              }
+              @include screen(web) {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: rem(8px);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .cmp-form {
+      .c-search-input {
+        position: relative;
+        input[type='text'] {
+          background-color: $ivory6;
+          @include screen(web) {
+            padding-left: rem(41px);
+          }
+        }
+
+        &__button {
+          border: 0;
+          background-color: transparent;
+          cursor: pointer;
+          text-indent: -9999px;
+
+          &--search {
+            display: none;
+            position: absolute;
+            left: rem(13px);
+            top: rem(12px);
+            width: rem(20px);
+            height: rem(20px);
+            background: {
+              image: url($icon-search-black-24-24);
+              repeat: no-repeat;
+              size: cover;
+            }
+
+            @include screen(web) {
+              display: block;
+            }
+          }
+
+          &--delete {
+            display: none;
+            position: absolute;
+            right: rem(16px);
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            width: rem(24px);
+            height: rem(24px);
+            background: url($icon-close-circle-24-24);
+            text-indent: -9999px;
+            border: none;
+            cursor: pointer;
+          }
+
+          &--active {
+            display: block;
+          }
+        }
+      }
+      .fieldIcons {
+        &__root {
+          position: relative;
+        }
+
+        &__before {
+          content: '';
+          z-index: $stacking-floor;
+          @include position(50%, 50%);
+          left: rem($padding30px);
+          transform: translate(-50%, calc(-50% + rem(2px)));
+          width: rem(18px);
+          height: rem(18px);
+          background-image: url($icon-search);
+          background-repeat: no-repeat;
+          @include screen(web) {
+            left: rem($padding24px);
+            right: auto;
+            transform: translate(0%, -50%);
+          }
+        }
+
+        input {
+          @include input;
+          max-width: rem(1086px);
+          padding: rem($padding15px $padding17px);
+          background: $light-gray3;
+          @include screen(web) {
+            padding: rem($padding18px $padding16px $padding18px $padding50px);
+          }
+        }
+      }
+
+      label {
+        display: block;
+        color: $gray3;
+      }
+
+      input:not(input[type='radio']) {
+        @include input;
+        width: 100%;
+        background: $white;
+      }
+
+      select {
+        @include csSelect;
+        background: $white url($icon-dropdown-open-black-12-8) no-repeat;
+        background-position: right rem(13px) center;
+
+        &[disabled='disabled'] {
+          background-color: $ivory6;
+          color: $grayb;
+
+          &::placeholder {
+            opacity: 0.7;
+          }
+        }
+      }
+      .c-textarea-box {
+        position: relative;
+
+        p {
+          font-size: rem(14px);
+          line-height: rem(16px);
+          color: $mid-gray2;
+          text-align: right;
+          margin-top: rem($margin8px);
+          .counting-num {
+            padding-right: rem($padding4px);
+          }
+        }
+      }
+      .c-form {
+        &__radio-box {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+
+          @include screen(web) {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: rem(8px);
+            margin-top: rem($margin24px);
+          }
+
+          .c-form-box {
+            margin: 0;
+            @include screen(web) {
+              flex-shrink: 0;
+              margin-right: rem(80px);
+
+              &:last-child {
+                margin-right: 0;
+              }
+            }
+          }
+        }
+      }
+      // .button {
+      //     margin-top: rem($margin8px);
+
+      //     @include screen(web) {
+      //         display: flex;
+      //         justify-content: center;
+      //         margin-top: 0;
+
+      //         .c-button {
+      //             width: auto;
+      //             font-size: rem(14px);
+      //             line-height: rem(16px);
+      //         }
+      //     }
+      // }
+
+      .c-btn-upload {
+        &__inner {
+          display: flex;
+          align-items: center;
+          margin-top: rem($margin8px);
+
+          label {
+            margin: 0;
+          }
+
+          .btn-upload {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: rem(80px);
+            height: rem(36px);
+            margin-right: rem($margin8px);
+            font-size: rem(14px);
+            font-weight: 600;
+            color: $black;
+            background: #fff;
+            border: 1px solid $mid-gray2;
+            border-radius: rem($radius99);
+            padding: rem(0 $padding10px);
+            cursor: pointer;
+
+            @include screen(web) {
+              min-width: rem(100px);
+              height: rem(44px);
+              margin-right: rem($margin16px);
+              font-size: rem(16px);
+            }
+
+            &:hover {
+              color: #fff;
+              background-color: $active-red !important;
+              border-color: $active-red !important;
+            }
+
+            &--focus {
+              outline: 1px solid $black;
+            }
+          }
+        }
+      }
+
+      .file {
+        position: absolute;
+        width: rem(1px);
+        height: rem(1px);
+        padding: 0;
+        margin: rem(-1px);
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0 none;
+      }
+
+      .c-file-msg {
+        color: $gray6;
+        margin-top: rem($margin8px);
+        margin-bottom: rem($margin10px);
+
+        @include screen(web) {
+          margin: 0;
+        }
+      }
+
+      #preview {
+        width: 100%;
+        margin-bottom: rem($margin8px);
+
+        @include screen(web) {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: rem(8px 24px);
+        }
+
+        p:not(.cs-preview__file) {
+          position: relative;
+          display: flex;
+          align-items: center;
+          width: 100%;
+          height: rem(44px);
+          padding-left: rem($padding42px);
+          margin-bottom: rem($margin8px);
+          line-height: rem(20px);
+          color: $mid-gray3;
+          text-align: left;
+          border-radius: rem($radius12);
+          background: $light-gray3;
+          .file-remove {
+            border: none;
+            text-indent: -9999px;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: rem(16px);
+            margin: auto;
+            width: rem(24px);
+            height: rem(24px);
+            background: transparent url($icon-close-circle-24-24) no-repeat;
+            cursor: pointer;
+          }
+
+          &::before {
+            content: '';
+            display: inline-block;
+            background: url($icon-fileclip);
+            position: absolute;
+            top: 50%;
+            left: rem(13px);
+            transform: translate(0, -50%);
+            width: rem(20px);
+            height: rem(20px);
+            background-size: cover;
+          }
+          @include screen(web) {
+            height: rem(44px);
+            margin-bottom: 0;
+            padding: rem($padding13px) rem($padding42px);
+            font-size: rem(16px);
+            line-height: rem(20px);
+            .file-remove {
+              right: rem(13px);
+              width: rem(20px);
+              height: rem(20px);
+              background-size: cover;
+            }
+            &::before {
+              left: rem(13px);
+            }
+          }
+        }
+      }
+
+      .c-info-msg {
+        color: $gray6;
+      }
+    }
+
+    &__chk {
+      margin-top: rem($margin24px);
+
+      @include screen(web) {
+        margin-top: rem($margin48px);
+      }
+
+      .c-checkbox-item {
+        input {
+          top: rem(8px);
+        }
+
+        .label {
+          display: inline-block;
+          text-align: left;
+          padding-left: rem($padding30px);
+          margin-top: rem($margin8px);
+          position: relative;
+
+          @include screen(web) {
+            margin-top: rem(0);
+          }
+
+          &::before {
+            margin-left: rem(-30px);
+            position: absolute;
+          }
+        }
+
+        a.link {
+          margin-left: rem($margin4px);
+          color: $red;
+          text-decoration: underline;
+        }
+      }
+    }
+
+    &__desc {
+      margin-bottom: rem($margin8px);
+      color: $mid-gray3;
+      line-height: rem(14px);
+
+      @include screen(web) {
+        margin-bottom: rem($margin10px);
+        line-height: rem(24px);
+      }
+    }
+
+    @include screen(web) {
+      &__wrap {
+        @include screen(web) {
+          display: flex;
+          flex-wrap: wrap;
+          gap: rem(24px);
+        }
+      }
+
+      &__inner {
+        display: flex;
+        gap: rem(8px);
+      }
+
+      .cmp-form {
+        flex: 1 1 40%;
+        .c-info-box {
+          padding-bottom: 0;
+        }
+        label {
+          margin-bottom: rem($margin8px);
+          margin-top: 0;
+          line-height: rem(18px);
+          font-size: rem(16px);
+        }
+
+        &:nth-child(n + 2) {
+          label {
+            margin-top: 0;
+          }
+        }
+      }
+
+      .button {
+        grid-column: 1/3;
+        margin-top: rem($margin26px);
+      }
+    }
+  }
+
+  .type-form {
+    text-align: initial;
+
+    .container {
+      > .button {
+        margin: 0 rem($margin25px) rem($margin30px);
+        text-align: center;
+        line-height: rem(12px);
+
+        a {
+          text-decoration: underline;
+          text-transform: capitalize;
+          font-size: rem(14px);
+        }
+      }
+
+      + .c-cta {
+        border-top: 1px solid $mid-gray1;
+        margin-top: rem($margin24px);
+        padding: rem($padding12px 0 $padding24px);
+
+        @include screen(web) {
+          margin-top: rem($margin48px);
+          padding: rem($padding24px 0 $padding48px);
+        }
+      }
+    }
+
+    .cs-form {
+      .cmp-form {
+        .fieldIcons {
+          &__root {
+            position: relative;
+          }
+
+          &__before {
+            content: '';
+            z-index: $stacking-floor;
+            @include position(50%, 50%);
+            left: rem($padding30px);
+            transform: translate(-50%, calc(-50% + 2px));
+            width: rem(18px);
+            height: rem(18px);
+            background-image: url($icon-search);
+            background-repeat: no-repeat;
+
+            @include screen(web) {
+              left: rem($padding24px);
+              right: auto;
+              transform: translate(0%, -50%);
+            }
+          }
+
+          input {
+            @include input;
+            max-width: rem(1086px);
+            padding: rem($padding15px $padding17px);
+
+            @include screen(web) {
+              padding: rem($padding18px $padding16px $padding18px $padding50px);
+            }
+
+            &::placeholder {
+              opacity: 0.7;
+            }
+          }
+        }
+
+        label {
+          display: block;
+          color: $gray3;
+          text-align: left;
+          margin-top: rem($margin12px);
+          margin-bottom: rem($margin8px);
+          font-size: rem(16px);
+          line-height: rem(18px);
+        }
+
+        input[type='text'],
+        input[type='email'],
+        input[type='date'],
+        textarea {
+          @include input;
+          width: 100%;
+          background: $light-gray3;
+        }
+
+        select {
+          @include csSelect;
+          padding-right: rem($padding20px);
+          appearance: none;
+          &::-ms-expand {
+            display: none;
+          }
+          // background: $light-gray3 url($icon-dropdown-open-black-12-8) no-repeat;
+          // background-size: 12px auto;
+
+          &[disabled='disabled'] {
+            background-color: $ivory6;
+            background-image: url($icon-dropdown-open-gray-12-8);
+            color: $grayb;
+            background-repeat: no-repeat;
+            background-position: right 5% center;
+            background-size: 12px auto;
+
+            &::placeholder {
+              opacity: 0.7;
+            }
+
+            @include screen(web) {
+              background-position: right 3% center;
+            }
+          }
+        }
+
+        input {
+          &[type='date'] {
+            position: relative;
+            background-size: 24px;
+            padding-left: rem($padding50px);
+            border-radius: $radius12;
+
+            background: {
+              image: url($icon-calendar-black-24-24);
+              color: $light-gray3;
+              repeat: no-repeat;
+              position: rem(16px) #{'/*!rtl:97%*/'}; /*! RTL last keep colon */
+              size: rem(24px);
+            }
+
+            text-align: left #{'/*!rtl:right*/'}; /*! RTL last keep colon */
+
+            &::-webkit-clear-button,
+            &::-webkit-inner-spin-button {
+              display: none;
+            }
+
+            &::-webkit-calendar-picker-indicator {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: transparent;
+              color: transparent;
+              cursor: pointer;
+            }
+
+            &::before {
+              content: attr(data-placeholder);
+              width: 100%;
+            }
+
+            &:valid::before {
+              display: none;
+            }
+
+            @include screen(web) {
+              padding-left: rem(57px);
+
+              background: {
+                position: rem(24px) #{'/*!rtl:97%*/'}; /*! RTL last keep colon */
+              }
+            }
+          }
+        }
+
+        // .c-textarea-box {
+        //     position: relative;
+
+        //     p {
+        //         // position: absolute;
+        //         right: rem(16px);
+        //         bottom: rem(20px);
+        //         opacity: 0.3;
+
+        //         @include screen(web) {
+        //             font-size: rem(24px);
+        //             line-height: rem(28px);
+        //             bottom: rem(24px);
+        //         }
+        //     }
+        // }
+
+        textarea {
+          width: 100%;
+          height: rem(138px);
+          border-radius: $radius12;
+          padding: rem($padding15px $padding13px);
+          background-color: $white;
+          border: 1px solid $graycb;
+          font-size: rem(14px);
+          @include screen(web) {
+            height: rem(256px);
+            font-size: rem(16px);
+            line-height: rem(20px);
+          }
+          &.c-error {
+            border: 2px solid $active-red;
+            &:focus-visible {
+              outline: none;
+            }
+          }
+        }
+
+        // .button {
+        //     margin-top: rem($margin20px);
+
+        //     .c-button {
+        //         background: $white;
+
+        //         &.active {
+        //             background: pink;
+        //             background: $active-red;
+        //             color: $white;
+        //         }
+
+        //         @include screen(web) {
+        //             height: rem($height64px);
+        //             padding: rem(0 $padding28px);
+        //         }
+        //     }
+        // }
+
+        .c-btn-upload {
+          &__inner {
+            display: flex;
+            align-items: center;
+            margin-top: rem($margin8px);
+
+            label {
+              margin: 0;
+            }
+
+            .btn-upload {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              min-width: rem(80px);
+              height: rem(36px);
+              margin-right: rem($margin8px);
+              font-size: rem(14px);
+              font-weight: 600;
+              color: $black;
+              background: #fff;
+              border: 1px solid $mid-gray2;
+              border-radius: rem($radius99);
+              cursor: pointer;
+              padding: rem(0 $padding10px);
+              @include screen(web) {
+                min-width: rem(100px);
+                height: rem(44px);
+                margin-right: rem($margin16px);
+                font-size: rem(16px);
+              }
+
+              &:hover {
+                color: #fff;
+                background-color: $active-red !important;
+                border-color: $active-red !important;
+              }
+
+              &--focus {
+                outline: 1px solid $black;
+              }
+            }
+          }
+        }
+
+        .file {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          border: 0 none;
+        }
+
+        .c-file-msg {
+          color: $gray6;
+          margin-top: rem($margin8px);
+          margin-bottom: rem($margin10px);
+
+          @include screen(web) {
+            margin: 0;
+          }
+        }
+
+        + .button {
+          .c-button {
+            width: 100%;
+          }
+
+          @include screen(web) {
+            display: flex;
+            justify-content: center;
+
+            .c-button {
+              width: auto;
+            }
+          }
+        }
+
+        #preview {
+          width: 100%;
+          margin-bottom: rem($margin8px);
+
+          @include screen(web) {
+            display: flex;
+            flex-wrap: wrap;
+            gap: rem(8px);
+            row-gap: rem(8px);
+          }
+
+          p:not(.cs-preview__file) {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: rem(52px);
+            padding-left: rem($padding48px);
+            margin-bottom: rem($margin8px);
+            font-size: rem(16px);
+            line-height: rem(18px);
+            color: $mid-gray3;
+            text-align: left;
+            border-radius: rem($radius99);
+            background: $light-gray3;
+
+            .file-remove {
+              border: none;
+              text-indent: -9999px;
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              right: rem(16px);
+              margin: auto;
+              width: rem(24px);
+              height: rem(24px);
+              background: transparent url($icon-close-circle-24-24) no-repeat;
+              cursor: pointer;
+            }
+
+            &::before {
+              content: '';
+              display: inline-block;
+              background: url($icon-fileclip);
+              position: absolute;
+              top: 50%;
+              left: rem(16px);
+              transform: translate(0, -50%);
+              width: rem(24px);
+              height: rem(24px);
+            }
+
+            @include screen(web) {
+              height: rem(60px);
+              margin-bottom: 0;
+              padding: rem($padding13px) rem($padding56px);
+              font-size: rem(24px);
+              line-height: rem(24px);
+
+              .file-remove {
+                right: rem(24px);
+              }
+
+              &::before {
+                left: rem(24px);
+              }
+            }
+          }
+        }
+
+        .c-info-msg {
+          color: $gray6;
+          margin: rem($margin8px $margin16px);
+
+          @include screen(web) {
+            margin: rem($margin8px $margin25px);
+          }
+        }
+        .cs-captcha {
+          display: grid;
+          grid-template-columns: 1fr rem(48px);
+          grid-gap: rem(8px 12px);
+
+          @include screen(web) {
+            grid-template-columns: 1fr rem(130px);
+            grid-gap: rem(16px);
+          }
+
+          label {
+            display: none;
+          }
+
+          &__area {
+            height: rem(100px);
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+            background-color: $white;
+            border-radius: rem(12px);
+
+            @include screen(web) {
+              grid-column: 1 / 3;
+              height: rem(178px);
+              border-radius: rem(12px);
+            }
+          }
+
+          &__input-box {
+            grid-column: 1 / 3;
+            grid-row: 2 / 3;
+
+            @include screen(web) {
+              grid-column: 1 / 2;
+            }
+          }
+
+          &__button {
+            display: flex;
+            flex-direction: column;
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            gap: rem(4px);
+            width: rem(48px);
+
+            @include screen(web) {
+              flex-direction: row;
+              grid-row: 2 / 3;
+              width: auto;
+              gap: 10px;
+            }
+
+            button {
+              width: rem(48px);
+              height: rem(48px);
+              border: 1px solid $mid-gray2;
+              background-color: $white;
+              border-radius: rem($radius99);
+
+              @include screen(web) {
+                width: rem(60px);
+                height: rem(60px);
+              }
+            }
+
+            &--reset {
+              background : {
+                image: url($icon-sound-black-38-38);
+                position: center;
+                repeat: no-repeat;
+              }
+              @include screen(web) {
+                background-image: url($icon-sound-black-40-40);
+              }
+            }
+
+            &--sound {
+              background : {
+                image: url($icon-reset-38-38);
+                position: center;
+                repeat: no-repeat;
+              }
+              @include screen(web) {
+                background-image: url($icon-reset-40-40);
+              }
+            }
+          }
+        }
+      }
+
+      &__chk {
+        margin-top: rem($margin24px);
+
+        .c-checkbox {
+          &-item {
+            input {
+              top: rem(8px);
+            }
+
+            .label {
+              // align-items: center;
+              display: inline-block;
+              text-align: left;
+              padding-left: rem($padding30px);
+              position: relative;
+
+              &::before {
+                margin-left: rem(-30px);
+                position: absolute;
+                @include screen(web) {
+                  top: rem(2px);
+                }
+              }
+            }
+
+            a.link {
+              margin-left: rem($margin4px);
+              color: $heritage-red;
+              text-decoration: underline;
+            }
+          }
+        }
+
+        .cs-form__desc {
+          color: $gray3;
+          margin-top: rem($margin8px);
+          border-bottom: 1px solid $grayd;
+          padding-bottom: rem($padding40px);
+        }
+      }
+      &__info {
+        border-top: 1px solid $mid-gray1;
+        border-bottom: 1px solid $mid-gray1;
+        margin-top: rem($margin24px);
+        padding-top: rem($padding24px);
+        padding-bottom: rem($padding24px);
+        p {
+          margin-bottom: rem($margin12px);
+        }
+        &--inner {
+          // gap:rem(12px);
+          dl {
+            margin-bottom: rem($margin12px);
+            dt {
+              margin-bottom: rem($margin8px);
+              color: $dark-gray1;
+            }
+            dd {
+              margin-bottom: 0;
+              color: $mid-gray3;
+            }
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
+
+      @include screen(web) {
+        &__wrap {
+          @include screen(web) {
+            display: flex;
+            flex-wrap: wrap;
+            gap: rem(24px);
+          }
+        }
+
+        &__inner {
+          display: flex;
+          gap: rem(8px);
+        }
+
+        .cmp-form {
+          flex: 1 1 40%;
+
+          // label {
+          //     margin-bottom: rem($margin8px);
+          //     // margin-top: rem($margin24px);
+          //     line-height: rem(22px);
+          // }
+
+          &:nth-child(n + 3) {
+            label {
+              margin-top: 0;
+            }
+
+            input,
+            select {
+              margin-bottom: 0;
+            }
+          }
+        }
+        &__chk {
+          margin-top: rem($margin48px);
+        }
+        &__info {
+          margin-top: rem($margin48px);
+          padding-top: rem($padding48px);
+          padding-bottom: rem($padding48px);
+          p {
+            margin-bottom: rem($margin20px);
+          }
+          &--inner {
+            display: flex;
+            flex-wrap: wrap;
+            gap: rem(24px 20px);
+            dl {
+              width: calc(50% - rem(12px));
+              margin-bottom: 0;
+            }
+          }
+        }
+        .button {
+          grid-column: 1/3;
+          margin-top: rem($margin26px);
+        }
+      }
+    }
+
+    .c-cta {
+      &:nth-last-child(2) {
+        margin-top: rem($margin20px);
+      }
+    }
+  }
+  // cmp-form-empty (add)
+  .cmp-form-empty {
+    flex: 1 1 40%;
+  }
+}

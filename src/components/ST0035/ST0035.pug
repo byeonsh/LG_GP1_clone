@@ -1,0 +1,214 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_video.pug
+include ../_common/_pop-msg.pug
+include ../_common/_carousel.pug
+
+block meta 
+    - var componentId = "ST0035"
+    - var componentName = "Interactive Gallery Image"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [ 
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-left', 'remove' : 'align-center, align-right'},
+                                    {'toggle' : false, 'add' : 'align-center', 'remove' : 'align-left, align-right'},
+                                    {'toggle' : false, 'add' : 'align-right', 'remove' : 'align-left, align-center'},
+                                ]
+                            },
+                        ],
+                        '.c-content-box__banner' : [ 
+                            {
+                                'name' : 'Font Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-white', 'remove' : 'font-black'},
+                                    {'toggle' : false, 'add' : 'font-black', 'remove' : 'font-white'},
+                                ]
+                            },
+                        ],
+                        '.c-content-box__bodycopy' : [ 
+                            {
+                                'name' : 'Text Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-text-left', 'remove' : 'align-text-center, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-center', 'remove' : 'align-text-left, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-right', 'remove' : 'align-text-left, align-text-center'},
+                                ]
+                            }
+                        ],                        
+                        '.c-interactive-gallery .c-carousel__item' : [ 
+                            {
+                                'name' : 'Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-left', 'remove' : 'align-center, align-right'},
+                                    {'toggle' : false, 'add' : 'align-center', 'remove' : 'align-left, align-right'},
+                                    {'toggle' : false, 'add' : 'align-right', 'remove' : 'align-left, align-center'},
+                                ]
+                            }
+                        ],
+                        '.c-interactive-gallery .c-text-contents__bodycopy' : [ 
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            },
+                        ],
+                    };
+    - var headlineStyle = "font-w-light-56 font-m-light-28"
+    - var boxHeadStyle = "font-w-normal-24 font-m-normal-16"
+    - var boxBodyStyle = "font-w-normal-24 font-m-normal-16"
+
+    mixin printImg(ratio)
+        if(ratio == '3-4')
+            +printLazyPicture("https://via.placeholder.com/380x506/777777", "https://via.placeholder.com/412x549/777777")
+        if(ratio == '1-1')
+            +printLazyPicture("https://via.placeholder.com/380x380/777777", "https://via.placeholder.com/412x412/777777")
+        if(ratio == '4-3')
+            +printLazyPicture("https://via.placeholder.com/380x285/777777", "https://via.placeholder.com/412x309/777777")
+        if(ratio == '9-16')
+            +printLazyPicture("https://via.placeholder.com/380x675/777777", "https://via.placeholder.com/412x732/777777")
+
+    mixin box-contents(options)
+        .c-content-box__banner.font-white
+            +printImg(options.ratio)
+            .c-content-box__headline(class=`${boxHeadStyle}`)= options.title
+        if options.bodycopy
+            .text.c-content-box__bodycopy.align-text-center
+                .cmp-text(class=`${boxBodyStyle}` data-cmp-data-layer="")
+                    p &quot;#{options.bodycopy}&quot;
+
+    mixin printBox(options)
+        if options.link
+            // GA4
+            a.c-content-box(data-ratio=`${options.ratio}` href=`${options.link}`, target="_blank", title="Opens in a new window." data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                +box-contents(options)
+        else if options.popup
+            a.c-content-box(data-ratio=`${options.ratio}` class='js-pop-open' href=`#${options.popup}`, data-toggle="modal" title="Opens in a new layer popup", role="button")
+                +box-contents(options)
+        else
+            .c-content-box(data-ratio=`${options.ratio}`)
+                +box-contents(options)
+
+    mixin component-title
+        // block : text-contents
+        .c-text-contents
+            .align-container
+                .c-text-contents__inner
+                    .title.c-text-contents__headline
+                        +headline(headlineStyle, pass, "Heading can be up to 100 characters lorem ipsum dolor sit amet, consectetuer adipiscing elit aenean commodo.")
+
+    .guide-text-option Option : 8
+    .c-wrapper.ST0035.margin-top.margin-bottom.align-left.bg-default
+        .component
+            .cmp-container
+                +component-title 
+                .c-block-image.length-8
+                    ul.c-block-image__container
+                        li.c-block-image__cover
+                            +printBox({ratio: '3-4', popup: 'popInteractiveGallery1', link: '', title: 'lorem ipsum 01', bodycopy: ''})
+                        li.c-block-image__cover
+                            +printBox({ratio: '1-1', popup: '', link: '#', title: 'lorem ipsum 02', bodycopy: 'Lorem ipsum dolor sit amet, Aenean commodo ligula eget dolor. Cum sociis natoque'})
+                        li.c-block-image__cover
+                            +printBox({ratio: '4-3', popup: 'popInteractiveGallery3', link: '', title: 'lorem ipsum 03', bodycopy: ''})
+                        li.c-block-image__cover
+                            +printBox({ratio: '9-16', popup: '', link: './ST0035.html', title: 'lorem ipsum 04', bodycopy: 'Lorem ipsum dolor sit amet, Aenean commodo ligula eget dolor. Cum sociis natoque'})
+                        li.c-block-image__cover
+                            +printBox({ratio: '1-1', popup: 'popInteractiveGallery5', link: '', title: 'lorem ipsum 05', bodycopy: 'Lorem ipsum dolor sit amet, Aenean commodo ligula eget dolor. Cum sociis natoque'})
+                        li.c-block-image__cover
+                            +printBox({ratio: '9-16', popup: '', link: '', title: 'lorem ipsum 06', bodycopy: 'Lorem ipsum dolor sit amet, Aenean commodo ligula eget dolor. Cum sociis natoque'})
+                        li.c-block-image__cover
+                            +printBox({ratio: '4-3', popup: '', link: '', title: 'lorem ipsum 07', bodycopy: 'Lorem ipsum dolor sit amet, Aenean commodo ligula eget dolor. Cum sociis natoque'})
+                        li.c-block-image__cover
+                            +printBox({ratio: '4-3', popup: '', link: '', title: 'lorem ipsum 08', bodycopy: 'Lorem ipsum dolor sit amet, Aenean commodo ligula eget dolor. Cum sociis natoque'})
+
+    .guide-text-option Option :7
+    .c-wrapper.ST0035.margin-top.margin-bottom.align-left.bg-default
+        .component
+            .cmp-container
+                +component-title 
+                .c-block-image.length-7
+                    ul.c-block-image__container
+                        li.c-block-image__cover
+                            +printBox({ratio: '3-4', popup: '', link: '', title: 'lorem ipsum 01', bodycopy: ''})
+                        li.c-block-image__cover
+                            +printBox({ratio: '4-3', popup: '', link: '', title: 'lorem ipsum 02', bodycopy: ''})
+                        li.c-block-image__cover
+                            +printBox({ratio: '1-1', popup: '', link: '', title: 'lorem ipsum 03', bodycopy: 'Lorem ipsum dolor sit amet, Aenean commodo ligula eget dolor. Cum sociis natoque'})
+                        li.c-block-image__cover
+                            +printBox({ratio: '3-4', popup: '', link: '', title: 'lorem ipsum 04', bodycopy: ''})
+                        li.c-block-image__cover
+                            +printBox({ratio: '1-1', popup: '', link: '', title: 'lorem ipsum 05', bodycopy: 'Lorem ipsum dolor sit amet, Aenean commodo ligula eget dolor. Cum sociis natoque'})
+                        li.c-block-image__cover
+                            +printBox({ratio: '9-16', popup: '', link: '', title: 'lorem ipsum 06', bodycopy: 'Lorem ipsum dolor sit amet, Aenean commodo ligula eget dolor. Cum sociis natoque'})
+                        li.c-block-image__cover
+                            +printBox({ratio: '4-3', popup: '', link: '', title: 'lorem ipsum 07', bodycopy: 'Lorem ipsum dolor sit amet, Aenean commodo ligula eget dolor. Cum sociis natoque'})
+
+    .guide-text-option Option : 6
+    .c-wrapper.ST0035.margin-top.margin-bottom.align-left.bg-default
+        .component
+            .cmp-container
+                +component-title 
+                .c-block-image.length-6
+                    ul.c-block-image__container
+                        li.c-block-image__cover
+                            +printBox({ratio: '3-4', popup: '', link: '', title: 'lorem ipsum 01', bodycopy: ''})
+                        li.c-block-image__cover
+                            +printBox({ratio: '1-1', popup: '', link: '', title: 'lorem ipsum 02', bodycopy: 'Lorem ipsum dolor sit amet, Aenean commodo ligula eget dolor. Cum sociis natoque'})
+                        li.c-block-image__cover
+                            +printBox({ratio: '4-3', popup: '', link: '', title: 'lorem ipsum 03', bodycopy: ''})
+                        li.c-block-image__cover
+                            +printBox({ratio: '1-1', popup: '', link: '', title: 'lorem ipsum 04', bodycopy: 'Lorem ipsum dolor sit amet, Aenean commodo ligula eget dolor. Cum sociis natoque'})
+                        li.c-block-image__cover
+                            +printBox({ratio: '1-1', popup: '', link: '', title: 'lorem ipsum 05', bodycopy: ''})
+                        li.c-block-image__cover
+                            +printBox({ratio: '3-4', popup: '', link: '', title: 'lorem ipsum 06', bodycopy: ''})
+
+block modal
+    //- Interactive Gallery Image Popup
+    +printLayerPopup('popInteractiveGallery1', {headline: 'lorem ipsum 01'})
+    +printLayerPopup('popInteractiveGallery3', {headline: 'lorem ipsum 03'})
+    +printLayerPopup('popInteractiveGallery5', {headline: 'lorem ipsum 05'})

@@ -1,0 +1,321 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_video.pug
+include ../_common/_hero-banner.pug
+include ../_common/_spec-info.pug
+
+block meta 
+    - var componentId = "CS0034"
+    - var componentName = "Text Banner"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    include ../CS0000/CS-inc.pug
+
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Top margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'Bottom margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'BG Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'bg-white', 'remove' : 'bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-lightgray', 'remove' : 'bg-white, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-darkgray', 'remove' : 'bg-white, bg-lightgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-black', 'remove' : 'bg-white, bg-lightgray, bg-darkgray'},
+                                ]
+                            },
+                            {
+                                'name' : 'Width',
+                                'buttons' : [ 
+                                    {'toggle' : false, 'add' : 'width-wide', 'remove' : 'width-narrow, width-content'},
+                                    {'toggle' : false, 'add' : 'width-narrow', 'remove' : 'width-wide, width-content'},
+                                    {'toggle' : false, 'add' : 'width-content', 'remove' : 'width-wide, width-narrow'},
+                                ]
+                            },
+                            {
+                                'name' : 'contents border',
+                                'buttons' : [ 
+                                    {'toggle' : false, 'add' : 'border-top', 'remove' : 'border-bottom'},
+                                    {'toggle' : false, 'add' : 'border-bottom', 'remove' : 'border-top'},
+                                ]
+                            },
+                        ],
+                        '.type-text, .type-disclaimer' : [
+                            {
+                                'name' : 'Text Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-text-left', 'remove' : 'align-text-center, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-center', 'remove' : 'align-text-left, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-right', 'remove' : 'align-text-left, align-text-center'},
+                                ]
+                            }
+                        ], 
+                        '.type-side' : [
+                            {
+                                'name' : 'Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-left', 'remove' : 'align-right'},
+                                    {'toggle' : false, 'add' : 'align-right', 'remove' : 'align-left'},
+                                ]
+                            }
+                        ],                       
+                        '.c-text-contents__bodycopy, .c-text-contents__disclaimer' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            }
+                        ],
+                        // type : box-color
+                        '.type-side2' : [
+                            {
+                                'name' : 'Box Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'box-white', 'remove' : 'box-warmgray, box-lightgray,box-midgray1,box-midgray2, box-black'},
+                                    {'toggle' : false, 'add' : 'box-warmgray', 'remove' : 'box-white, box-lightgray,box-midgray1,box-midgray2, box-black'},
+                                    {'toggle' : false, 'add' : 'box-lightgray', 'remove' : 'box-white, box-warmgray, box-midgray1, box-midgray2, box-black'},
+                                    {'toggle' : false, 'add' : 'box-midgray1', 'remove' : 'box-white, box-warmgray,  box-lightgray, box-midgray2, box-black'},
+                                    {'toggle' : false, 'add' : 'box-midgray2', 'remove' : 'box-white, box-warmgray, box-lightgray, box-midgray1, box-black'},
+                                    {'toggle' : false, 'add' : 'box-black', 'remove' : 'box-white, box-warmgray, box-lightgray, box-midgray1, box-midgray2'},
+                                ]
+                            }
+                        ]
+                    };
+
+    mixin roleList(item)
+        if item 
+            .c-list__item(role="listitem")
+                if block
+                    block
+        else
+            .c-list__item
+                if block
+                    block
+
+    mixin textListItem(params)
+        - var option={contents:both, useQuote:false, isList:false, headline:'', bodycopy:'', ...params}
+            +roleList(option.isList)
+                //- block : text-contents                 
+                div(class=`c-text-contents ${option.bodycopy}`)
+                    .title.c-text-contents__headline
+                        +headline(`${option.headline}`)
+                    case option.contents
+                        when "list"
+                            .text.c-text-contents__bodycopy
+                                .cmp-text(data-cmp-data-layer="")
+                                    //- element : list
+                                    ul
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+
+                        when "desc"
+                            .text.c-text-contents__bodycopy 
+                                .cmp-text(data-cmp-data-layer="") 
+                                    p Body text can be up to 700 characters. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient. Body text can be up to 200 characters.
+
+                        default
+                            .text.c-text-contents__bodycopy 
+                                .cmp-text(data-cmp-data-layer="") 
+                                    p Body text can be up to 700 characters. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient. Body text can be up to 200 characters.
+                            //- element : list
+                            .text.c-text-contents__bodycopy
+                                .cmp-text(data-cmp-data-layer="")
+                                    ul
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                    //- block :cta 
+                    .button.c-cta
+                        +defaultButton({name: 'Button text', wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})
+
+                    //- block :cta 
+                    .button.c-cta
+                        +linkButton({type:"text", icon:true})
+                    //- element : quote
+                    if option.useQuote
+                        .c-text-contents__quote 
+                            .text.c-text-contents__quote-text
+                                .cmp-text.font-w-normal-32.font-m-normal-20(data-cmp-data-layer="") 
+                                    p “Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo”
+                            .text.c-text-contents__quote-name
+                                .cmp-text.font-w-normal-20.font-m-normal-16(data-cmp-data-layer="") 
+                                    p Lorem ipsum dolor sit amet
+
+
+    .guide-text-type Text Banner
+
+    // Component Markup
+    // .c-default-margin class added
+    //- .guide-text-type Type1. Text
+    //- .guide-text-option Option. 1Column
+    //- .c-wrapper.CS0034.margin-top.margin-bottom
+    //-     // Add class by column
+    //-     .component.column1.type-text
+    //-         .cmp-container
+    //-             // block : list
+    //-             .c-list
+    //-                 // block : textListItem
+    //-                 +textListItem({contents:'desc', useQuote:true, isList:false, headline:'font-w-light-36 font-m-light-24', bodycopy:'font-w-normal-20 font-m-normal-16'})
+
+    //  Type1. Side Text
+    .guide-text-type Type1
+    .c-wrapper.CS0034.margin-top.margin-bottom
+        .component.type-side
+            .cmp-container
+                // block : text-contents
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        .cmp-title.font-w-light-56.font-m-light-28(data-cmp-data-layer="")
+                            strong Lorem ipsum dolor sit amet, consectetuer adipiscing
+                    .text.c-text-contents__subcopy
+                        .cmp-text.font-w-normal-20.font-m-normal-16(data-cmp-data-layer="") 
+                            p Lorem ipsum dolor
+                    .text.c-text-contents__bodycopy
+                        .cmp-text.font-w-normal-20.font-m-normal-16(data-cmp-data-layer="") 
+                            p Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                // block cta 
+                .button.c-cta
+                    +defaultButton({name: 'Button text', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+
+    .guide-text-type optional: Side Text - added class .type-side2
+    // if you need default margin - added class .c-default-margin
+    .c-wrapper.CS0034.type-text.margin-top.margin-bottom
+        .component.type-side.type-side2
+            .cmp-container
+                // block : text-contents
+                .c-text-contents(id='tit-01')
+                    // __headline Unnecessary by design. Handle display:none to match the component structure
+                    .title.c-text-contents__headline
+                        .cmp-title.font-w-semibold-46.font-m-semibold-26(data-cmp-data-layer="")
+                            strong Repair request
+                    .text.c-text-contents__subcopy
+                        h2.cmp-text.font-w-light-36.font-m-light-24(data-cmp-data-layer="") Repair request
+                    .text.c-text-contents__bodycopy
+                        .cmp-text.font-w-normal-14.font-m-normal-16(data-cmp-data-layer="") 
+                            p Request repair service conveniently online
+                // block cta 
+                .button.c-cta
+                    +buttonArrow({link:'true', color:'black', border:'yes', wsize:'large', msize:'small'})(aria-describedby='tit-01')
+
+
+    //  Type2. Disclaimer
+    .guide-text-type Type2. Disclaimer
+    // 20230425 Class position changes (due to default spacing)
+    .c-wrapper.CS0034.margin-top.margin-bottom.type-disclaimer
+        // Add class by width option size
+        .component.width-1440
+            .cmp-container
+                // block : text-contents
+                .c-text-contents
+                    .text.c-text-contents__disclaimer 
+                        .cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")
+                            p *Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+
+    .guide-text-type Type3. added class .type-text__border
+    // .c-default-margin class added
+    .c-wrapper.CS0034.type-text
+        .component.type-text__border
+            .cmp-container
+                // block : text-contents
+                .c-text-contents
+                    .text
+                        .cmp-text.font-m-normal-14.font-w-normal-14(data-cmp-data-layer="")
+                            p Every day, LG home appliances change lives for the better. We are convinced that perfect technologies by themselves cannot be the highest value.
+                            | Technique that makes progress a part of everyday life is what really matters. In this section, you will find many useful accessories to help you get 100% off your LG product.
+                            | Download accessories catalog in PDF
+                            br
+                            a(href="" role="button" data-link-name) Download accessories catalog in PDF
+
+    // Type4
+    .guide-text-type Type4_global
+    .c-wrapper.CS0034
+        .component.type-side.type-side__link
+            .cmp-container
+                .c-text-contents
+                    .text
+                        .cmp-text.font-w-normal-20
+                            p Find the nearest LG service center.
+                .button__group
+                    .button.c-cta
+                        +defaultButton({name: 'Sign in', wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                        +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+
+                    .button.c-cta 
+                        +textButton({name: 'Go to LG service center', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+
+    // Type5 radius text box
+    .guide-text-type Type5_radius box
+    .c-wrapper.CS0034
+        .component
+            .cmp-container.type-radius
+                .c-text-contents
+                    .text
+                        .cmp-text.font-w-normal-16
+                            p ** The company reserves the right not to accept the return of accessories and spare parts that have been purchased in any case **
+    
+    // Type5 radius text box
+    .guide-text-type Type6_list
+    .c-wrapper.CS0034
+        .component
+            .cmp-container
+                dl.c-text-list 
+                    dt Assumption :
+                    dd.font-m-normal-14.font-w-normal-14 AC running 10 hrs / day
+                    dd.font-m-normal-14.font-w-normal-14 Compressor run time 80%
+                    dd.font-m-normal-14.font-w-normal-14 Annual AC operation : 8 months  
+
+    // Type5 radius text box
+    .guide-text-type local - Policy
+    .c-wrapper.CS0034
+        .component
+            .cmp-container
+                // block : text-contents
+                .c-text-contents
+                    .text
+                        .cmp-text.font-m-normal-16.font-w-normal-20(data-cmp-data-layer="")
+                            p LG Electronics Australia Pty Ltd (“LGEAP”) is committed to the highest standards of conduct and ethical behaviour in all of our business activities and to promoting and supporting a culture of ethical behaviour, corporate compliance and good corporate governance.
+                            | The LGEAP whistleblower policy encourages the reporting of any suspected unethical, illegal or fraudulent conduct involving LGEAP’s business and provides measures so that persons eligible to make a report, may do so confidentially and with protection against intimidation, disadvantage or reprisal.
+                            br
+                            | For more information and to request a copy of LG Electronics Australia’s whistleblower policy, please email 
+                            a.cmp-text-link(href="mailTo:compliance@lg.com.au" role="button" data-link-name) compliance@lg.com.au

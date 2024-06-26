@@ -1,0 +1,433 @@
+include ../_common/_image.pug
+include ../_common/_pagination.pug
+include ../_common/_filter.pug
+include ../_common/_product-list.pug
+include ../_common/_pagination.pug
+
+
+mixin printTab(div, num, selected)
+	if selected
+		li.swiper-slide.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0" data-cmp-hook-tabs="tab" aria-selected="true")
+			if block
+				block
+	else 
+		li.swiper-slide.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1" data-cmp-hook-tabs="tab" aria-selected="false")
+			if block
+				block                  
+
+mixin printTabPanel(div, num, selected)
+	if selected 
+		.c-tabs__tabpanel.c-tabs__tabpanel--active.cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+			if block
+				block
+	else 
+		.c-tabs__tabpanel.cmp-tabs__tabpanel(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+			if block
+				block
+
+mixin bestList(count=5, bannerColor = true, imgSample = false)
+	.c-result-area
+		.c-result-area__product-list(id="resultTarget")
+			// block - product list
+			.c-carousel.carousel.swiper
+				ul.swiper-wrapper.c-product-list.productcollection__items.best-list
+					- all = count == 0 ? 6 : count;
+					- for(var x = 0; x < all; x++)
+						li.c-product-list__item.productcollection__item.swiper-slide(data-cmp-data-layer="")
+							//- flag: [],
+							//- compare: true,
+							//- wishlist: true || false,
+							//- sku: '',
+							//- ufn: '',
+							//- grade: 'a',
+							//- review: true,
+							//- modelid: '',
+							//- type: 'color' || 'inch',
+							//- groups: [],
+							//- youreko: false,
+							//- signature: false,
+							//- thinq: false,
+							//- soldOut: false,
+							//- outOfStock: false,
+							//- discontinued: false,
+							//- promotion: "Black Friday Promotion",
+							//- limited: true,
+							//- vip: true,
+							//- installment: true,
+							//- membership: '£1,866.98',
+							//- retailer: false,
+							- var baseOptions = {imageUrl:'https://via.placeholder.com/350x350/999999/000000', packageDeal : false, flag: false, compare : false, wishlist : false,grade : "a", review : true,type:false,groups:null,signature : false, thinq : false,youreko : true,noprice : false,writeAReview : false,campaignArea : false,keyfeature : false, retailer : false,promotion: false,limited: false,membership: '£1,866.98',vip: false,installment: false,soldOut: false}
+							if (x == 0)
+								+productCard(  
+									{
+										...baseOptions,
+										best: '1',
+										outOfStock: false,
+										sku:'GSJV70PZTF',
+										ufn:'Total No Frost (Frost Free) | Tall Fridge Freezer | 384L | GBB62PZGCC',
+										gradeIs:true,
+										grade: 'a',
+										gradeBlock2: false,
+										discountTxt: true,
+										priceValue:"€2.199,00",
+										installment: true,
+										installmentTxt:[{txt:'Der niedrigste Preis der letzten 30 Tage',icon:''}],
+									}
+								)
+							if (x == 1)
+								+productCard(  
+									{
+										...baseOptions,
+										best: '2',
+										outOfStock: true,
+										sku:'GSJV70PZTA',
+										ufn:'Total No Frost (Frost Free) | Tall Fridge Freezer | 384L | GBB62PZGCC',
+										gradeIs:true,
+										grade: 'a',
+										gradeBlock2: false,
+										installment: true,
+									}
+								)
+							if (x == 2)
+								+productCard(  
+									{
+										...baseOptions,
+										best: '3',
+										compare: false,
+										wishlist: false,
+										sku: 'GSJV70PZTF',
+										ufn: 'LG Soundbar SQC1',
+										gradeIs:true,
+										grade: 'f',
+										gradeBlock2: false,
+										review: false,
+										modelid: 'MD07535502',
+										type:false,
+										groups:false,
+										youreko: true,
+										signature: false,
+										soldOut: false,
+										outOfStock: false,
+										discontinued: true,
+										promotion: "",
+										limited: false,
+										vip: false,
+										installment: false,
+										noprice: true,
+									}
+								)
+							if (x == 3)
+								+productCard(
+									{
+										...baseOptions,
+										best: '4',
+										outOfStock: true,
+										sku:'65ART90E6QA', 
+										ufn:'American Fridge Freezer 635L Water & Ice Dispenser4',
+									}
+								)
+							if (x == 4)
+								+productCard(
+									{
+										...baseOptions,
+										best: '5',
+										outOfStock: false,
+										sku:'65ART90E6QA', 
+										ufn:'American Fridge Freezer 635L Water & Ice Dispenser5',
+									}
+								)
+				.c-carousel__handler.c-carousel__handler--away-from-carousel.c-carousel__handler--dial
+					.cmp-carousel__actions
+						+carouselBtn({type:"pagination", direction:"prev"})
+					+carouselPagination
+					.cmp-carousel__actions
+						+carouselBtn({type:"pagination", direction:"next"})
+			.best__banner
+				.best__banner__floor
+					if (imgSample)
+						picture
+							<source media="(max-width: 768px)" srcset="https://www.lg.com/content/dam/lge/demo/gp1_ui/Test_Mobile.png">
+							<source media="(min-width: 769px)" srcset="https://www.lg.com/content/dam/lge/demo/gp1_ui/Test_Desktop.png">
+							<img class="c-image__img" src="https://www.lg.com/content/dam/lge/demo/gp1_ui/Test_Desktop.png" alt="" loading="">
+					else 		
+						picture
+							<source media="(max-width: 768px)" srcset="https://via.placeholder.com/656x700/999999/000000">
+							<source media="(min-width: 769px)" srcset="https://via.placeholder.com/464x700/999999/000000">
+							<img class="c-image__img" src="https://via.placeholder.com/464x700/999999/000000" alt="" loading="">
+
+				.best__banner__floating(class=bannerColor ? 'font-white' : 'font-black')
+					.c-text-contents
+						//- .text.c-text-contents__eyebrow
+						//- 	.cmp-text.font-w-normal-16.font-m-normal-16
+						//- 		|Experience a new side of life
+						.title.c-text-contents__headline
+							.cmp-text.font-w-semibold-48.font-m-semibold-28
+								|Enjoy a quality cinematic experience
+
+mixin checkoutPackagesList(count=5)
+	.c-result-area
+		.c-result-area__product-list
+			// block - product list
+			.c-carousel.carousel.swiper
+				ul.swiper-wrapper.c-product-list.productcollection__items.best-list
+					- all = count == 0 ? 6 : count;
+					- for(var x = 0; x < all; x++)
+						li.c-product-list__item.productcollection__item.swiper-slide(data-cmp-data-layer="")
+							//- flag: [],
+							//- compare: true,
+							//- wishlist: true || false,
+							//- sku: '',
+							//- ufn: '',
+							//- grade: 'a',
+							//- review: true,
+							//- modelid: '',
+							//- type: 'color' || 'inch',
+							//- groups: [],
+							//- youreko: false,
+							//- signature: false,
+							//- thinq: false,
+							//- soldOut: false,
+							//- outOfStock: false,
+							//- discontinued: false,
+							//- promotion: "Black Friday Promotion",
+							//- limited: true,
+							//- vip: true,
+							//- installment: true,
+							//- membership: '£1,866.98',
+							//- retailer: false,
+							- var baseOptions = {imageUrl:'https://via.placeholder.com/350x350/999999/000000', packageDeal : false, flag: false, compare : false, wishlist : false,grade : "a", review : true,type:false,groups:null,signature : false, thinq : false,youreko : true,noprice : false,writeAReview : false,campaignArea : false,keyfeature : false, retailer : false,promotion: false,limited: false,membership: '£1,866.98',vip: false,installment: false,soldOut: false}
+							if (x == 0)
+								+productCard(  
+									{
+										...baseOptions,
+										hiddenHead: true,
+										outOfStock: false,
+										sku:'GSJV70PZTF',
+										ufn:'Total No Frost (Frost Free) | Tall Fridge Freezer | 384L | GBB62PZGCC',
+										gradeIs:true,
+										grade: 'a',
+										gradeBlock2: false,
+										discountTxt: true,
+										priceValue:"€2.199,00",
+										installment: true,
+										installmentTxt:[{txt:'Der niedrigste Preis der letzten 30 Tage',icon:''}],
+									}
+								)
+							if (x == 1)
+								+productCard(  
+									{
+										...baseOptions,
+										outOfStock: true,
+										sku:'GSJV70PZTA',
+										ufn:'Total No Frost (Frost Free) | Tall Fridge Freezer | 384L | GBB62PZGCC',
+										gradeIs:true,
+										grade: 'a',
+										gradeBlock2: false,
+										installment: true,
+									}
+								)
+							if (x == 2)
+								+productCard(  
+									{
+										...baseOptions,
+										compare: false,
+										wishlist: false,
+										sku: 'GSJV70PZTF',
+										ufn: 'LG Soundbar SQC1',
+										gradeIs:true,
+										grade: 'f',
+										gradeBlock2: false,
+										review: false,
+										modelid: 'MD07535502',
+										type:false,
+										groups:false,
+										youreko: true,
+										signature: false,
+										soldOut: false,
+										outOfStock: false,
+										discontinued: true,
+										promotion: "",
+										limited: false,
+										vip: false,
+										installment: false,
+										noprice: true,
+									}
+								)
+							if (x == 3)
+								+productCard(
+									{
+										...baseOptions,
+										outOfStock: true,
+										sku:'65ART90E6QA', 
+										ufn:'American Fridge Freezer 635L Water & Ice Dispenser4',
+									}
+								)
+				.c-carousel__handler.c-carousel__handler--away-from-carousel.c-carousel__handler--dial
+					.cmp-carousel__actions
+						+carouselBtn({type:"pagination", direction:"prev"})
+					+carouselPagination
+					.cmp-carousel__actions
+						+carouselBtn({type:"pagination", direction:"next"})
+
+mixin PR0016 
+	// Component Markup
+	.c-wrapper.PR0016
+		.component
+			.cmp-container
+				- var nameFontStyle = "font-w-semibold-16 font-m-normal-14i font-semibold"
+				- var descFontStyle = "font-w-normal-14 font-m-normal-14"
+				- var useAnchor = false
+				- var useActiveImage = true
+
+				// Component Markup
+				.c-floating-wrap.bg-default
+					+roll-selector([
+						{useDualImage: true, useActiveImage, name:"All",  nameFontStyle},
+						{useDualImage: true, name:"TV/Audio/Video", nameFontStyle },
+						{useDualImage: true, name:"Appliances", nameFontStyle },
+						{useDualImage: true, name:"Test1", nameFontStyle },
+						{useDualImage: true, name:"Test2", nameFontStyle },
+					], useAnchor, 'tab')
+
+				.c-tabs.tabs.panelcontainer.has-navigation
+					.cmp-tabs.can-sticky
+						.c-tabs__inner.swiper
+							ul.c-tabs__tablist.cmp-tabs__tablist.swiper-wrapper(role="tablist")
+								+printTab(13, 1, true)
+									.c-tab__title All
+								+printTab(13, 2, false)
+									.c-tab__title TV &amp; Soundbars
+								+printTab(13, 3, false)
+									.c-tab__title Lifestyle Screens
+								+printTab(13, 4, false)
+									.c-tab__title Speakers 
+								+printTab(13, 5, false)
+									.c-tab__title Projectors   
+								+printTab(13, 6, false)
+									.c-tab__title Video
+								+printTab(13, 7, false)
+									.c-tab__title Wireless Earbuds
+								+printTab(13, 8, false)
+									.c-tab__title test8
+								+printTab(13, 9, false)
+									.c-tab__title test9
+								+printTab(13, 10, false)
+									.c-tab__title testtest10
+								+printTab(13, 11, false)
+									.c-tab__title testtest11
+								+printTab(13, 12, false)
+									.c-tab__title test12
+								+printTab(13, 13, false)
+									.c-tab__title testtesttest13
+						.tabs-swiper-navigation
+							button.tabs-swiper__arrow.prev(type="button" class="js-carousel-prev" data-cmp-hook-carousel="previous" aria-label="Previous")
+							button.tabs-swiper__arrow.next(type="button" class="js-carousel-next" data-cmp-hook-carousel="next" aria-label="Next") 
+
+				+printTabPanel(13, 1, true)
+					// Content area inside the tab
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 Best Selling TOP5
+							+bestList(5, true, true)
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 Checkout the packages
+							+checkoutPackagesList(3, true, true)
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 Best reviewed TOP5
+							+bestList(1, false)
+
+				+printTabPanel(13, 2, false)
+					// Content area inside the tab
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 Best Selling TOP4
+							+bestList(4)
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 Checkout the packages
+							+checkoutPackagesList(3, true, true)
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 Best reviewed TOP3
+							+bestList(3, false)
+				+printTabPanel(13, 3, false)
+					// Content area inside the tab
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 Best Selling TOP3
+							+bestList(3, false)
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 Checkout the packages
+							+checkoutPackagesList(3, true, true)
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 Best reviewed TOP3
+							+bestList(3, false)
+				+printTabPanel(13, 4, false)
+					// Content area inside the tab
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 Best Selling TOP2
+							+bestList(2)
+				+printTabPanel(13, 5, false)
+					// Content area inside the tab
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 Best Selling TOP
+							+bestList(1)
+				+printTabPanel(13, 6, false)
+					// Content area inside the tab
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 Best Selling Video
+							+bestList(5, false)
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 Best reviewed TOP5
+							+bestList(5)
+				+printTabPanel(13, 7, false)
+					// Content area inside the tab
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 Best Selling Wireless Earbuds
+							+bestList(5)
+				+printTabPanel(13, 8, false)
+					// Content area inside the tab
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 8888 Best Selling
+							+bestList(5)
+				+printTabPanel(13, 9, false)
+					// Content area inside the tab
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 9999 Best Selling
+							+bestList(5)
+				+printTabPanel(13, 10, false)
+					// Content area inside the tab
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 101010 Best Selling
+							+bestList(5)
+				+printTabPanel(13, 11, false)
+					// Content area inside the tab
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 111111 Best Selling
+							+bestList(5)
+				+printTabPanel(13, 12, false)
+					// Content area inside the tab
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 121212 Best Selling
+							+bestList(5)
+				+printTabPanel(13, 13, false)
+					// Content area inside the tab
+					.best-box
+						.best-box__inner
+							h3.best__title.title.font-w-semibold-56.font-m-semibold-28 131313 Best Selling
+							+bestList(5)
+							

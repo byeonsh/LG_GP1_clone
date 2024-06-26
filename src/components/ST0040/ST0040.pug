@@ -1,0 +1,115 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_headline.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "ST0040"
+    - var componentName = "PLP Stock"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+    mixin slideItem(name, cta)
+        .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+            .c-stock-list__item
+                // GA4
+                a.image.c-image.c-stock-list__item--top(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                    +printLazyImage('https://via.placeholder.com/180x60/999999/333333')
+                if(name || cta)
+                    .c-stock-list__item--bottom
+                        if(name)
+                            // GA4
+                            a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                                span.font-w-normal-24.font-m-normal-18 amazon
+                        if(cta)
+                            .cta-wrap
+                                +defaultButton({name: 'Buy Now', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: false})
+    mixin handler                           
+        .c-carousel__handler
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"prev"})
+            +carouselPagination
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"next"})
+
+
+    // Component Markup
+    .guide-text-type Type1. Default
+    .guide-text-option Option1. more than 3
+    .c-wrapper.ST0040.type-category.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +component-title-area({
+                    headline : {
+                        style: 'font-w-light-56 font-m-light-28',
+                        text : "Stock List"
+                    },
+                })(class="c-region-header--vacate-side")
+                .c-stock-list
+                    .carousel.panelcontainer
+                        // block - carousel
+                        .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                            .cmp-carousel__content.swiper-wrapper
+                                - for (var x = 0; x < 6; x++)
+                                    +slideItem(true, true)
+
+                            +handler 
+    .guide-text-option Option2. 3 or less
+    .c-wrapper.ST0040.type-category.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +component-title-area({
+                    headline : {
+                        style: 'font-w-light-56 font-m-light-28',
+                        text : "Stock List"
+                    },
+                })(class="c-region-header--vacate-side")
+                .c-stock-list
+                    .carousel.panelcontainer
+                        // block - carousel
+                        .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                            .cmp-carousel__content.swiper-wrapper
+                                - for (var x = 0; x < 2; x++)
+                                    +slideItem(true, true)
+                            +handler
+    

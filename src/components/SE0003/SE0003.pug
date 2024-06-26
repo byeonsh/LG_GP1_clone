@@ -1,0 +1,171 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_headline.pug
+include ../_common/_product-list.pug
+include ../_common/_filter.pug
+include ../_common/_hero-banner.pug
+include ../_common/_pop-msg.pug
+include ../_common/_forms.pug
+
+
+
+block meta 
+    - var componentId = "SE0003"
+    - var componentName = "SE-SearchResults"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+//- 기존에 없고 새로 제작한 컴포넌트.
+
+mixin myInputForm(data)
+    .my-input
+        .cs-search-bar
+            .searchbar
+                #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                    .searchBar__searchInner
+                        form.searchBar__form(autocomplete='off' action='#')
+                            span.fieldIcons__root
+                                span.fieldIcons__input
+                                    input.textInput__input.field__input.font-w-normal-14.font-m-normal-16(name='search_query' value='' role='searchbox' placeholder="Please type model number" title="search bar" autofocus="autofocus")
+                                    +iconButton({type:"button",color:"black", class:"delete", otherClass:"searchbar__delete", name:"delete"})
+                                    a(title="search" href="#" data-link-name data-link-destination).fieldIcons__before
+                                        span.icon__root.sr-only Search   
+        .button.c-pop-msg__close.c-pop-msg__close--on-top
+            button.cmp-button.c-pop-msg__close-button.js-pop-close(type="button", aria-controls=`${dialogId}` data-cmp-data-layer="")
+                span.cmp-button__text Cancel
+        +csSearchTopicsContent
+
+mixin csSearchTopics
+    .cs-search-result__suggest
+        .c-text-contents.align-text-center
+            +myInputForm([
+                {
+                    type:"text",
+                    id:"ModelNumber",
+                    required:false,
+                },
+            ])
+            .text.c-text-contents__bodycopy.display-only-web
+                span.font-w-normal-20.font-m-normal-16 How to Find My Model Number?
+
+mixin csSearchBarTitle(paras)
+    - let data = { ...paras }
+    .cs-search-bar__title(class=`${data.class ? data.class:''}`)
+        span.font-w-normal-16.font-m-normal-16 !{data.title}
+        if data.description
+            span.cs-search-bar__description !{data.description}
+        if data.button
+            +button({type:"text", color:"black", underline:true, name: data.button})
+        if data.fold
+            .button.c-cta.cs-search-bar__fold
+                // to dev - id value is sample.
+                button.cmp-button.c-accordion__button(aria-expanded="false" aria-controls=`${data.ariaControls}`)
+                    span.c-accordion__button-text.expand.sr-only Expand
+                    span.c-accordion__button-text.collapse.sr-only Collapse
+
+mixin csRecentList(list)
+    ul.cs-search-bar__recent-list(role="list")
+        each set, index in list
+            li.cs-search-bar__recent-item(role="listitem" id=`label_recent_${index}`)
+                a(href='#' data-link-name data-link-destination).font-w-normal-20.font-m-normal-14= set.list
+                button(type="button" class='cs-search-bar__close' data-cmp-data-layer='' aria-describedby=`label_recent_${index}`)
+                    span.sr-only close
+
+mixin csSearchLink(isTag, params)
+    - let data = { ...params }
+    .cs-search-bar__search-link
+        each set in data
+            .cs-search-bar__search-item(class=`${isTag ? 'cs-search-bar__search-tag' : ''}`)
+                a(href=`${set.href}` data-link-name data-link-destination)
+                    .cs-search-bar__search-cont
+                        span.font-w-normal-24.font-m-normal-16.cs-search-bar__search-title !{set.title}
+                        if set.tag
+                            span.font-w-normal-16.font-m-normal-12.cs-search-bar__tag-item= set.tag
+                    span.font-w-normal-16.font-m-normal-12= set.category
+
+mixin csSearchNone()
+    .cs-search-bar__search-none
+        span.font-w-light-36.font-m-light-28 There are no related products
+        span.font-w-normal-24.font-m-normal-16 Please check the spelling and try your search again.
+
+
+mixin csSearchTopicsContent
+    .cs-search-topics__content
+        .cs-search-topics__content-inr
+            //- .cs-search-topics__box
+            +csSearchNone()
+            
+            +csSearchBarTitle({ title:"Recent Searches", button:"Clear All", class:"cs-bdt-m cs-bdt-w"})
+            +csRecentList([
+                { 
+                    list:"oled",
+                },
+                { 
+                    list:"OLED TV",
+                },
+                { 
+                    list:"Lg tv",
+                },
+                { 
+                    list:"Repair",
+                },
+                { 
+                    list:"Life's is good music",
+                },
+            ])
+    
+            +csSearchLink(true, [
+                {
+                    href:'#',
+                    title:'55’’ LG <em>OLED</em> TV - B7',
+                    tag:'OLED55C7V.AEK',
+                    category:'TVs'
+                },
+                {
+                    href:'#',
+                    title:"55’’ LG <em>OLED</em> TV – C7",
+                    tag:'OLED55B7V.AEK',
+                    category:'TVs'
+                },
+                {
+                    href:'#',
+                    title:"55’’ LG <em>OLED</em> TV – E7",
+                    tag:'OLED55E7N.AEK',
+                    category:'TVs'
+                },
+                {
+                    href:'#',
+                    title:"65’’ LG <em>OLED</em> TV – B7",
+                    tag:'OLED55E7N.AEK',
+                    category:'TVs'
+                },
+                {
+                    href:'#',
+                    title:"65’’ LG <em>OLED</em> TV – B7",
+                    tag:'OLED55E7N.AEK',
+                    category:'TVs'
+                },
+            ])
+ 
+
+
+block content
+    // Component Markup
+    .c-wrapper.SE0003
+        .component
+            .SE0003
+                .cs-search-result.cs-search-topics
+                    +csSearchTopics
+

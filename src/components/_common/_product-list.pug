@@ -1,0 +1,1902 @@
+include ../_common/_toast.pug
+
+//- flag: [],
+//- compare: true,
+//- wishlist: true || false,
+//- sku: '',
+//- ufn: '',
+//- grade: 'a',
+//- gradeBlock2: false,
+//- review: true,
+//- modelid: '',
+//- type: 'color' || 'inch',
+//- groups: [],
+//- youreko: false,
+//- signature: false,
+//- thinq: false,
+//- soldOut: false,
+//- outOfStock: false,
+//- discontinued: false,
+//- hiddenCta: false,
+//- packageSelect: false,
+//- ehf: false, //CA
+//- repair : false,  //FR - Repairability Index Label
+//- Ab:false,
+
+mixin productCard($params)
+    - var config = {...$params}
+    // GA4
+    .c-product-item(data-pim-category1="" data-pim-category2="" data-pim-category3="" data-pim-category4="" data-pim-sku="" data-pim-model-name="" data-pim-model-year="" data-pim-flag="" data-pim-modeltype="" data-shop-stock-status="" data-shop-msrp="" data-shop-price="")
+        .c-product-item__top-container
+            // [Start] 2023-05-22 : UPDATE- if no .c-product-item__head add if(!config.hiddenHead)
+            if(!config.hiddenHead)
+                .c-product-item__head
+                    if (config.best)
+                        .c-product-item__best
+                            span.sr-only= `Best`
+                            span= `${config.best}`
+                    if (config.flag)
+                        .c-product-item__tag
+                            .c-product-item__tag--flag
+                                if(config.flag.length <= 2)
+                                    - const arr= [ "Redemption", "Time Deal", "Sale", "Coupon", "Bundle", "Black Friday", "Holiday Special", "Pre order", "Pre Order"]
+                                    - for (var x = 0; x < config.flag.length; x++)
+                                        if(arr.includes(config.flag[x]) || config.flagHighlight)
+                                            span.flag-highlight= config.flag[x]
+                                        else
+                                            span= config.flag[x]     
+                    if (config.compare)
+                        .c-product-item__compare
+                            .c-checkbox-item
+                                label.checkbox(id=`compare-${config.modelid}`)
+                                    // for PD0014 test
+                                    input(type="checkbox" onclick="if(document.querySelector('.PD0014')) {this.checked ? document.querySelector('.PD0014').classList.remove('hidden') : document.querySelector('.PD0014').classList.add('hidden');}" aria-labelledby=`ufn-${config.modelid} compare-${config.modelid}`)
+                                    span.label Compare
+                    if (config.packageSelect)
+                        .c-product-item__select
+                            +formCheckbox(false, `pdpPackageItem${config.packageSelect}`, `${config.sku}`, `pdpPackageItem${config.packageSelect}`, count="false", false)
+                                strong.sr-only= `${config.sku} Select`
+                    if (config.wishlist)
+                        .c-product-item__wishlist
+                            //- span.number 120
+                            .c-tooltip
+                                .button
+                                    // Add 'active' class when button is activated
+                                    button(type="button" aria-expanded="false" class="cmp-button c-icon-button c-icon-button--wish c-tooltip__button" data-cmp-data-layer="")
+                                        span.sr-only add to wishlist
+                                .c-tooltip__container.top-right
+                                    .c-tooltip__contents.c-tooltip__contents--small
+                                        .c-text-contents
+                                            .text.c-text-contents__bodycopy
+                                                .cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")
+                                                    p Add items to your MY LG wishlist
+                                        .button
+                                            +linkButton({type:"text",color:"black", underline:true, name: 'View Wishlist'})
+            .c-product-item__headline
+                if (config.sku)
+                    .c-product-item__sku-inner
+                        .c-product-item__sku= config.sku
+                        //- A button was added as a script. So it was deleted.
+                        //- button.btn-copy
+                        //-     span.sr-only Copy model name
+                if (config.ufn)
+                    .c-product-item__ufn
+                        // GA4
+                        a(href="/template/PDP.html" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" id=`ufn-${config.modelid}`)= config.ufn
+            //- [Start] 2024-01-09 : ADD- review The second case(inhouseReview) 
+            //- if(config.review)
+            if(config.inhouseReview || config.review)
+                .c-product-item__rating
+                    //- if (config.grade)
+                    //-     - var tagGrade = config.grade == "A" ? 'a' : config.grade
+                    //-     .c-product-item__download
+                    //-         a(href="#" role="button").c-product-item__download--click Product sheet
+                    //-         .c-tooltip
+                    //-             .button
+                    //-                 button.c-tooltip__button.c-energy-grade(type="button" aria-expanded="false" class=`c-energy-grade--${tagGrade}`)
+                    //-                     span.sr-only= `Energy Grade : ${tagGrade}`
+                    //-             .c-tooltip__container
+                    //-                 .c-tooltip__contents
+                    //-                     a(href="#" role="button").font-w-bold-12i.font-m-bold-12i UK
+                    //-                     a(href="#" role="button").font-w-bold-12i.font-m-bold-12i EU
+                    if (config.review)
+                        .c-product-item__rating
+                            //-.c-product-item__rating--filled-star
+                            .c-product-item__rating--number.font-w-normal-14i.font-m-normal-14i
+                                .rating(data-bv-show="inline_rating", data-bv-product-id=`${config.modelid}`, data-bv-redirect-url="/template/PDP.html#pdp_review") 5.0 (10)
+                            .c-product-item__rating--number.font-w-normal-14i.font-m-normal-14i
+                                // BV 1
+                                // .rating(data-modelid=`${modelid}`)
+                                //     span
+                                //         span.sr-only 5.0 out of 5 stars.
+                                //         // GA4
+                                //         a(href='/template/PDP.html#pdp_review' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 5.0 (10)
+                                // or
+                                // BV2
+                                // .rating(data-bv-show="inline_rating", data-bv-product-id=`${modelid}`, data-bv-redirect-url="/template/PDP.html#pdp_review") 5.0 (10)
+                                // or
+                                // LGCOM
+                                // .rating
+                                //    span
+                                //        span.sr-only 5.0 out of 5 stars.
+                                //        // GA4
+                                //        a(href='/template/PDP.html#pdp_review' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 5.0 (10)
+                                // or
+                                // SP
+                                // .rating(data-shoppilot='oled65b2rla')
+                                //    // GA4
+                                //    a(href='/template/PDP.html#pdp_review' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 5.0 (10)
+                    //- second case (inhouse review)
+                    if(config.inhouseReview)
+                        .c-star
+                            .c-star__front-image
+                                .c-star__back-image(style=`width:${config.ratingPercent};` aria-hidden="true")
+                            span.font-w-normal-14.font-m-normal-14= config.ratingGrade
+                            span.font-w-normal-14.font-m-normal-14= config.reviewNum
+                    //- [End] 2024-01-09 :  ADD- review The second case(inhouseReview) 
+            if(config.type && config.groups)
+                .c-product-item__groups
+                    - var count = config.groups.length
+                    //- - var limited = count >= 5
+                    - var limited = count >= 6
+                    - var limitedInch = count >= 6
+                    .c-product-item__model-group(class=`group-type-${config.type}${limited ? ' limited' : limitedInch ? ' limited' : ''}`)
+                        ul.inner(role="menu")
+                            case config.type
+                                when 'inch'
+                                    - for (var x = 0; x < count; x++)
+                                        li(role="menuitem")
+                                            button.swatch(aria-label=`${config.groups[x]} inch TV` type="button" class=`${x==0 ? 'active' : ''}` aria-pressed=`${x==0 ? 'true' : 'false'}`)
+                                                span(aria-hidden="true")= `${config.groups[x]}"`
+                                when 'color'
+                                    - for (var x = 0; x < count; x++)
+                                        li(role="menuitem")
+                                            button.swatch(aria-label="target color name" type="button" class=`${x==0 ? ' active' : ''}` class=`${config.groups[x]}` aria-pressed=`${x==0 ? 'true' : 'false'}`)
+                                                span.sr-only(aria-hidden="true") color name
+
+                        if(limitedInch && config.type=='inch')
+                            .limited-number(aria-hidden='true')= `(${count})`
+                        if(limited && config.type=='color')
+                            .limited-number(aria-hidden='true')= `(${count})`
+            else
+                .c-product-item__groups
+            .c-product-item__img
+                .c-product-item__visual-image
+                    // GA4
+                    a.image.c-image(href="/template/PDP.html" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        if(config.imageSize == '450')
+                            +printLazyImage('https://via.placeholder.com/450x450/999999/000000')
+                        else
+                            +printLazyImage('/mocks/product-350.png')
+            if (config.signature)
+                .c-product-item__brand
+                    if(config.signature)
+                        +printLazyImage("/assets/icon/icon-lg-signature-black-90-9.svg")
+                        // When using the dark theme, display the white version of the signature logo image.
+                        // <img class="cmp-image__image c-image__img" src="/assets/icon/icon-lg-signature-white-90-9.svg" alt="LG SIGNATURE" loading="lazy">
+        .c-product-item__bottom-container
+            if(config.youreko)
+                .c-product-item__energy-saving(style="max-width:222px;height:66px;background:#fafafa;line-height:66px;text-align:center;overflow:hidden") Energy Saving Banner Area
+                // Energy Saving Banner
+                // -UK, AT, PL 사용
+                // -3rd party service 사용 : youreko (https://www.youreko.com/)
+                // -RO1국가 기준 적용 국가 없음
+                // -Click interaction : youreco에서 제공하는 ‘Energy Saving’ 
+                // Layer Pop-up 표시
+            else
+                .c-product-item__energy-saving
+
+            if(config.proins)            
+                +product_rating("A", 'MD07546559', false, false, false, false, false, true)
+
+            if(config.gradeIs)
+                .c-product-item__rating
+                    // Product information sheet(Energy label)
+                    // -사용 국가(DE, IT, PT, FR, TR, CA)
+                    // -FR : 워시타워 등의 일부 제품에서 한 상품에 두가지의 Product sheet가 등록될 수 있음
+                    // -Click interaction : Product information sheet 문서가 새창으로 열림.
+
+                    if (config.grade)
+                        - var tagGrade = config.grade == "A" ? 'a' : config.grade
+                        .c-product-item__download
+                            .c-tooltip
+                                .button
+                                    - var label = config.grade
+                                    - var tagGrade = label == "A" ? 'a' : config.grade
+                                    //- a(href="#", target="_blank", rel="noopener noreferrer" role="button" data-link-name="").c-tooltip__button.c-energy-grade
+                                    button.c-tooltip__button.c-energy-grade(type="button" aria-expanded="false")
+                                        //- +printLazyImage(`../../assets/icon/label-ap-a3.svg`)
+                                        +printLazyPicture('../../assets/icon/icon-energy-grade-a-47-28.png', '../../assets/icon/icon-energy-grade-a-54-32.png')
+                                        span.sr-only= `Energy Grade : ${tagGrade}`
+                                .c-tooltip__container
+                                    .c-tooltip__contents
+                                        a(href="#" role="button").font-w-bold-12i.font-m-bold-12i UK
+                                        a(href="#" role="button").font-w-bold-12i.font-m-bold-12i EU
+                            if(config.gradeBlock2)
+                                .c-tooltip
+                                    .button
+                                        - var label = config.grade
+                                        - var tagGrade = label == "A" ? 'a' : config.grade
+                                        //- a(href="#", target="_blank", rel="noopener noreferrer" role="button" data-link-name="").c-tooltip__button.c-energy-grade
+                                        button.c-tooltip__button.c-energy-grade(type="button" aria-expanded="false")
+                                            //- +printLazyImage(`../../assets/icon/label-ap-a3.svg`)
+                                            +printLazyPicture(`../../assets/icon/label-energy-grade-${tagGrade}.svg`, `../../assets/icon/label-energy-grade-${tagGrade}.svg`)
+                                            span.sr-only= `Energy Grade : ${tagGrade}`
+                                    .c-tooltip__container
+                                        .c-tooltip__contents
+                                            a(href="#" role="button").font-w-bold-12i.font-m-bold-12i UK
+                                            a(href="#" role="button").font-w-bold-12i.font-m-bold-12i EU
+                            .c-tooltip
+                                //- a(href="#" role="button").c-product-item__download--click Product information sheet
+                                button.c-product-item__download--click.c-tooltip__button Product information sheet
+                                .c-tooltip__container
+                                    .c-tooltip__contents
+                                        a(href="#" role="button").font-w-bold-12i.font-m-bold-12i WM
+                                        a(href="#" role="button").font-w-bold-12i.font-m-bold-12i WD
+            //-[Start] FR - Repairability Index Label
+            if(config.repair)
+                .c-product-item__repair
+                    // Repairability Index
+                    // -FR만 사용 
+                    // -Click interaction : 수리편의성에 대한 문서 image가 새창으로 열림.
+                    a.c-product-item__repair--click(href="#" target="_blank" role="button" rel="noopener noreferrer" data-link-name="")
+                        //- RO - dev request one image
+                        //- +printLazyPicture(`../../assets/image/icon-repair-index-fr-71-44.png`, '../../assets/image/icon-repair-index-fr-76-47.png')
+                        .cmp-image(data-cmp-data-layer="")
+                            img.cmp-image__image.c-image__img(src="../../assets/image/icon-repair-index-fr-96-56.png" alt="")
+                        span.cmp-text Repairability index
+            //-[End] FR - Repairability Index Label
+            //- if(config.discontinued)
+            //-     .c-product-item__price
+            //-         .price-area
+            //-             .price-box
+            //-                 .c-price__flag--notice
+            //-                     span Discontinued
+
+            if(!config.noprice)
+                .c-product-item__price
+                    .price-area
+                        if config.retailer
+                            .price-box
+                                .c-price__flag--retail See Retailer for Pricing
+                        else
+                            if config.promotion
+                                .price-box
+                                    .c-price__flag--promotion
+                                        if config.prmRed
+                                            span.red= config.promotion
+                                        else 
+                                            span= config.promotion
+                            if config.limited
+                                .price-box
+                                    if config.limited
+                                        .c-price__flag--limited
+                                            span It's a limited product so you should hurry!
+                                                //- span.qty 19
+                            //- if config.limited || config.vip
+                            //-     .price-box
+                            //-         if config.vip
+                            //-             .c-price__flag--vip
+                            //-                 span VIP Price
+                            //-         if config.limited
+                            //-             .c-price__flag--limited
+                            //-                 span Limited Quantities
+                            //-                     span.qty 19
+                            mixin priceBox
+                                if config.outOfStock || config.soldOut
+                                    .price-box(class="dimmed" aria-hidden="true")
+                                        if block
+                                            block
+                                else
+                                    .price-box
+                                        if block
+                                            block
+                            if(config.discountTxt)
+                                +priceBox
+                                    .product-price
+                                        .c-price
+                                            //- .c-price__previous= config.priceValue == "" ? '£1,499.98' : config.priceValue
+                                            del.c-price__previous
+                                                if config.chpay
+                                                    span 
+                                                        span.smallFont ￥
+                                                        span 99990.
+                                                        span.smallFont 00
+                                                else if config.vnpay
+                                                    span 
+                                                        span 99990.00
+                                                        sup.smallFont ₫ 
+                                                else if config.omnibus
+                                                    span £1,499.98
+                                                else
+                                                    span £1,499.98
+                                            span= config.omnibus ? '*' : ''
+                                        .c-price
+                                            .c-price__discount
+                                                // 2024-01-03 할인가 유형별 전체 재정의 전까지 임시로 'discountPer' 사용
+                                                if(config.discountPer)
+                                                    span 25% Off
+                                                else
+                                                    span Save
+
+                                                    if config.chpay
+                                                        span 
+                                                            span.smallFont ￥
+                                                            span 99990.
+                                                            span.smallFont 00
+                                                    else if config.vnpay
+                                                        span 
+                                                            span 99990.00
+                                                            sup.smallFont ₫ 
+                                                    else
+                                                        span= config.priceValue == "" ? '£1,499.98' : config.priceValue
+                            if(config.Ab)
+                                +priceBox
+                                    // 할인 금액(율)은 원가와 최종판매가의 차액 및 율을 표시하며, 
+                                    // 금액 or % 설정은 아래의 Preference Code로 관리 중
+                                    // MSRP’ 표기의 경우 DE에서는 ‘UVP’로 표기됨
+                                    // 230919, 'UVP' 텍스트 'Ab'로 교체
+                                    .product-price.uvp-type
+                                        .c-price
+                                            .c-price__price Ab 
+                                        .c-price
+                                            del.c-price__previous €7,4990.00
+                                            span= `${config.omnibus ? '*' : ''}`
+                                        .c-price
+                                            // 2024-04-26.c-price__discount--highlight 추가
+                                            if (config.multishop)
+                                                .c-price__discount.c-price__discount--highlight 
+                                                    span Save £233.00
+                                            else
+                                                .c-price__discount 
+                                                    span 33% Rabatt
+                            if(config.brMsrp)
+                                +priceBox
+                                    //BR 에서 추가
+                                    .product-price
+                                        .c-price
+                                            .c-price__price De 
+                                        .c-price
+                                            del.c-price__previous R$20.129,00
+                                        .c-price
+                                            .c-price__discount 
+                                                span por
+                            if(config.mrpPricing)
+                                +priceBox
+                                    .product-price.uvp-type.mrp-type
+                                        if(config.mrpPricingtitle)
+                                            .c-price
+                                                .c-price__mrp-des MRP(Incl. of all taxes)
+                                        .c-price
+                                            del.c-price__previous ₹NNNNNN
+                                        .c-price
+                                            .c-price__discount 
+                                                span NN% Off
+                            +priceBox     
+                                //금액표기가 길어질경우 product-price클래스에 flex-column클래스 추가하여 상하 배치 가능                           
+                                .product-price.pdb(class=`${config.priceAreaColumn ? 'flex-column' : ''}`)                                
+                                    .c-price
+                                        - var priceValue = config.priceValue == "" ? '£1,499.98' : config.priceValue
+                                        // 중국화폐일 경우 화폐단위 표시와 소수점 작게 표시
+                                        if (config.chpay)
+                                            .c-price__purchase 
+                                                span.smallFont ￥
+                                                span 99990.
+                                                span.smallFont 00
+                                        else if (config.jppay)
+                                            .c-price__purchase 
+                                                span ￥10,000
+                                        else if (config.vnpay)
+                                            .c-price__purchase 
+                                                span 83.083.500
+                                                sup.smallFont ₫ 
+                                        else
+                                            if(config.priceValue)
+                                                .c-price__purchase=`${priceValue}`
+                                            else if (!config.priceValue && config.multishop)
+                                                .c-price__purchase 
+                                                    // 2024-04-26 .price-percen 추가
+                                                    span.price-percent -21%
+                                                    |£1,499.98
+                                            else
+                                                .c-price__purchase £1,499.98
+
+                                    if config.membership && config.vip
+                                        .c-price__flag--vip
+                                            span.flag VIP Price
+                                            span= config.vip
+                                    else if config.membership && !config.vip
+                                        .c-price__flag--member
+                                            if config.afterLogin
+                                                span.flag Membership Price
+                                            else 
+                                                span.flag Member Only
+                                            if config.chpay
+                                                span 
+                                                    span.smallFont ￥
+                                                    span 99990.
+                                                    span.smallFont 00
+                                            else if config.vnpay
+                                                span 
+                                                    span 99990.00
+                                                    sup.smallFont ₫ 
+                                            else if !config.afterLogin
+                                                span= config.membership
+                                    else if config.vip && !config.membership
+                                        .c-price__flag--vip
+                                            span.flag VIP Price
+                                            if !config.afterLogin
+                                                span= config.vip
+                            if(config.lumpsum)
+                                +priceBox
+                                    // 일시불 할인 문구
+                                    // - BR만 사용(MX 추가될 예정) 
+                                    // - Checkout page에서 일시불을 선택하는 경우 5% 할인을 해주는 내용을 표시
+                                    // - Brazil E-commerce 시장에서 공통적으로 적용되는 특이사항으로 마켓 poilicy
+                                    // - 5% 할인 가격은 OBS B2C, B2E, B2B2C 가격 기준에서 5% 할인가격으로 OBS로부터 수신 받아야 함 (Membership 할인 가격에서의 5% 할인가는 아님) 
+                                    // - 표시되는 문구는 Data 값과 Front 문구를 조합하여 관리됨 ex) à vista 5% off {data}
+                                    // - Click interaction : 없음
+                                    .product-price
+                                        .c-price
+                                            .c-price__otherinfo= config.lumpsumTxt
+                                        .c-price
+                                            if (config.priceValueBold)
+                                                .c-price__discount.font-semibold
+                                                    span= config.priceValue
+                                            else 
+                                                .c-price__discount
+                                                    span= config.priceValue
+                            if(config.brNopix)
+                                +priceBox
+                                    //BR 에서 사용
+                                    .product-price
+                                        .c-price
+                                            .c-price__otherinfo.font-semibold= config.brNopixTxt
+                            if(config.plInfoTxt)
+                                +priceBox
+                                    // 30일 이내 최저가격 표시
+                                    // - PL만 사용 
+                                    // - 적용되는 국가의 Online판매 관련 법에 따라 OBS 연동 Model들에 한해 30일 이내 최저가격을 표기
+                                    // - OBS에서 30일 이내 최저가격 계산하여 API로 전달됨 (DB Column 명 : obs_lowest_price) 
+                                    // - obs_group 회원 등급에 따라 B2C lowest price 데이터 노출 (VIP Price)
+                                    // - Admin 설정에 따라 표시 유/무 결정됨
+                                    // - Click interaction : 없음
+                                    // - 표시되는 문구는 Data 값과 Front 문구를 조합하여 관리됨 ex) Nejnižší cena za posledních 30 dní {data}
+                                    .product-price
+                                        .c-price
+                                            .c-price__otherinfo Nejnižší cena za posledních 30 dní : 
+                                                span NN NNN Kč
+                            if config.outOfStock || config.soldOut
+                                .price-box
+                                    if config.outOfStock
+                                        .c-price__flag--notice
+                                            span Out of stock
+                                    if config.soldOut
+                                        .c-price__flag--notice
+                                            span Sold out
+                            if(config.ehf)
+                                +priceBox
+                                    // EHF 세금
+                                    // - CA만 사용 
+                                    // - 환경 처리 수수료(EHF)는 구매하는 품목의 재활용 비용을 반영한 값
+                                    // - 수수료 산정은 각 Category 및 Size별로 하기 Page에 따릅니다. https://recyclemyelectronics.ca/bc/residential/environmental-handling-fee-ehf/ (Admin 기입방식인지 자동 Mapping되는지 확인 필요 - OBS)
+                                    // - Click interaction : 없음
+                                    .product-price
+                                        .infoTooltipWrap 
+                                            .c-price__plus Environmental Handling Fee(EHF)
+                                            .infoTooltipArea
+                                                button.btnInfoTooltip 
+                                                    span.hidden Infomation 
+                                                .infoTooltipNote Please note, the EHF fee associated with this item is based on the delivery address postal code. For more details on the EHF fee visit.
+                                                    .linkMore
+                                                        a Learn more    
+                                                    span.bottomArrow
+                                                    button.btnClose 
+                                                        span.hidden close
+                                                        
+                            if config.installment && !config.outOfStock
+                                // Installment
+                                // - 최소 할부 가능금액 확인 영역
+                                // - OBS에서 전달해주는 값으로 표시
+                                // - 표시되는 문구는 Data 값과 Front 문구를 조합하여 관리됨 ex) {data} /  mo for {data} mos at {data}%
+                                // - 일부 국가의 경우 Payment사에 따라 각각 병렬표시되며, 뒷 영역에 Payment사 로고 표시
+                                // - CA의 경우 Installment Pop-up 노출에 법적이슈가 있어 표시안함 => 23.07.19 에 다시 노출하기로 변경
+                                if config.installmentTxt
+                                    each item in config.installmentTxt
+                                        +priceBox
+                                            .c-price
+                                                .c-price__installment.c-product-item__button
+                                                    if item.txt == 'chinaTxt'
+                                                        a(href="#" role="button") 
+                                                            span 
+                                                                span.smallFont ￥
+                                                                span 99990.
+                                                                span.smallFont 00
+                                                            span /期 分3期起（0手续费，最高可至24期）
+                                                    else if item.LearnMoreAnchor
+                                                        p= item.txt
+                                                            a(href="#" role="button") Learn more
+                                                    else if item.installmentNoButton
+                                                        span= item.txt
+                                                    else if item.icon
+                                                        if item.icon == 'afterpay'
+                                                            a(href="#" role="button")
+                                                                span.payment_afterpay=`${config.omnibus ? '*'+item.txt : item.txt}`
+                                                                    span.c-image-installment.payment_afterpay_logo
+                                                                //- +printLazyImage('../../mocks/PD0003/icon-logo-afterpay-black-144-30.png')
+                                                        else if item.icon =='zip'
+                                                            a(href="#" role="button")
+                                                                span.payment_zippay=`${config.omnibus ? '*'+item.txt : item.txt}`
+                                                                    span.c-image-installment.payment_zippay_logo
+                                                                //- +printLazyImage('../../mocks/PD0003/icon-logo-zip-black-81-31.png')       
+                                                        else if item.icon =='tamara'
+                                                            a(href="#" role="button")= `${config.omnibus ? '*'+item.txt : item.txt}`
+                                                                +printLazyImage('../../mocks/PD0003/icon-logo-tamara-49-16.svg')   
+                                                    else 
+                                                        a(href="#" role="button")= `${config.omnibus ? '*'+item.txt : item.txt}`
+                                    //- +priceBox
+                                    //-     .c-price
+                                    //-         .c-price__installment.c-product-item__button
+                                    //-             a(href="#" role="button") N payments of £1,959.98 with 
+                                    //-                 +printLazyImage('../../mocks/PD0003/icon-logo-afterpay-black-144-30.png')
+                                    //- +priceBox
+                                    //-     .c-price
+                                    //-         .c-price__installment.c-product-item__button
+                                    //-             a(href="#" role="button") N payments of £1,329.00 with
+                                    //-                 +printLazyImage('../../mocks/PD0003/icon-logo-zip-black-81-31.png')
+                            
+                            if(config.subscribe)
+                                +priceBox
+                                    .product-price.pdb
+                                        .c-price
+                                            .c-price__subscribe.c-product-item__button 
+                                                a(href="#")
+                                                    span.link= config.subscribe[0]
+                                                    span.info= config.subscribe[1]
+            if(config.writeAReview)
+                .button.c-product-item__write-a-review
+                    +button({name:"Write a Review", type:"text",color:"black", icon:true})(data-modelid=`${config.modelid}`, class="js-write-review c-icon-button c-icon-button--write-review")
+            if(config.campaignArea)
+                .c-product-item__campaign-area
+                    // Option : target="_blank"
+                    // GA4
+                    a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        if(config.campaignArea == "1")
+                            .c-product-item__campaign-area--default
+                                .campaign-title.font-bold Campaign Title
+                                .campaign-date 01/01/2021 ~ 01/30/2021
+                            .c-product-item__campaign-area--hover
+                                .campaign-bodycopy Buy a participating LG French Door Fridge and receive up to $300 Cash Back*
+                        else if(config.campaignArea == "2")
+                            .c-product-item__campaign-area--default
+                                .campaign-title.font-bold Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title
+                                .campaign-date 01/01/2021 ~ 01/30/2021
+                            .c-product-item__campaign-area--hover
+                                .campaign-bodycopy Buy a participating LG French Door Fridge and receive up to $300 Cash Back*
+                        else if(config.campaignArea == "3")
+                            .c-product-item__campaign-area--default
+                                .campaign-title.font-bold Campaign Title
+                                .campaign-date 01/01/2021 ~ 01/30/2021
+                            .c-product-item__campaign-area--hover
+                                .campaign-bodycopy Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back*
+
+                        else
+                            .c-product-item__campaign-area--default
+                                .campaign-title.font-bold Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title
+                                .campaign-date 01/01/2021 ~ 01/30/2021
+                            .c-product-item__campaign-area--hover
+                                .campaign-bodycopy Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back*
+            if(config.keyfeature)
+                .c-text-contents.c-product-item__keyfeature
+                    ul
+                        - for (var x = 0; x < config.keyfeature.features.length; x++)
+                                li= config.keyfeature.features[x]
+            if(!config.hiddenCta)
+                .cta-wrap
+                    if(config.discontinued || config.soldOut)
+                       +defaultButton({name:'Learn more',wSize: 'medium', mSize: 'medium',buttonStyle: 'default',isButton:false})(href="/template/PDP.html" aria-describedby=`ufn-${config.modelid}`)
+                    else if(config.onlyBuynowCta)
+                        if(config.outOfStock)
+                            +defaultButton({name:'Get stock alert',wSize: 'medium', mSize: 'medium',buttonStyle: 'default js-pop-open',isButton:false})(href="#popStockAlert" role="button" aria-describedby=`ufn-${config.modelid}`)
+                        else
+                            +defaultButton({name:'Buy Now',wSize: 'medium', mSize: 'medium',buttonStyle: 'highlight',isButton:false})(href="/template/PBP.html" aria-describedby=`ufn-${config.modelid}`)
+                    else if(config.packageDeal)
+                        if(config.outOfStock)
+                            +defaultButton({name:'Get stock alert',wSize: 'medium', mSize: 'medium',buttonStyle: 'default js-pop-open',isButton:false})(href="#popStockAlert" role="button")
+                        else if(config.unavailable)
+                            +defaultButton({name:'Not available',wSize: 'medium', mSize: 'medium',buttonStyle: 'default',isButton:false})(disabled)
+                        else
+                            - var className = "cmp-button c-button c-button--default w-medium m-medium"
+                            - var pressed = config.packageDealMsg=="pressed add"
+                            //- this code from "defaultButton"
+                            button(type="button" class=`${className} ${pressed ? "highlight" : "default"}` aria-describedby=`ufn-${config.modelid}` aria-pressed=`${pressed ? true : false}` data-cmp-data-layer data-link-name=`${pressed ? "remove_from_package" : "add_to_package"}`)
+                                span.cmp-button__text.c-button__text.unpressed Add to package
+                                span.cmp-button__text.c-button__text.pressed Added
+                    else if(config.outOfStock)
+                        +defaultButton({name:'Learn More',wSize: 'medium', mSize: 'medium',buttonStyle: 'default',isButton:false})(href="/template/PDP.html" aria-describedby=`ufn-${config.modelid}`)
+                        if config.outOfStock == 'selected'
+                            +defaultButton({name:'Get stock alert',wSize: 'medium', mSize: 'medium',buttonStyle: 'default js-pop-open',isButton:false})(href="#popStockAlert" role="button" aria-describedby=`ufn-${config.modelid}`)
+                        else
+                            +defaultButton({name:'Get stock alert',wSize: 'medium', mSize: 'medium',buttonStyle: 'default js-pop-open',isButton:false})(href="#popStockAlert" role="button" aria-describedby=`ufn-${config.modelid}`)
+                    //- [Start] 2023-05-22 : UPDATE- add case if(config.AddtoBasket)
+                    else if(config.AddtoBasket)
+                        +defaultButton({name:'Add to basket',wSize: 'medium', mSize: 'medium',buttonStyle: 'highlight',isButton:false})(href="#" aria-describedby=`ufn-${config.modelid}`)
+                    else
+                        +defaultButton({name:'Learn more',wSize: 'medium', mSize: 'medium',buttonStyle: 'default',isButton:false})(href="/template/PDP.html" aria-describedby=`ufn-${config.modelid}`)
+                        +defaultButton({name:'Buy now',wSize: 'medium', mSize: 'medium',buttonStyle: 'highlight',isButton:false})(href="/template/PBP.html" aria-describedby=`ufn-${config.modelid}`)
+
+mixin productCarouselList(num=4, params)
+    - var options = {handlerStyle : null, ...params}
+    .c-product-list.c-product-list--carousel.js-product-list
+        .carousel.panelcontainer
+            // block - carousel
+            .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                .cmp-carousel__content.swiper-wrapper
+                    +sampleCarouselList(num)
+                .c-carousel__handler(class={[options.handlerStyle] : options.handlerStyle != null})
+                    .cmp-carousel__actions
+                        +carouselBtn({type:"pagination", direction:"prev"})
+                    +carouselPagination
+                    .cmp-carousel__actions
+                        +carouselBtn({type:"pagination", direction:"next"})
+
+//- mixin productDefaultList
+//-     // block - product list
+//-     ul.c-product-list&attributes(attributes)
+//-         li.c-product-list__item
+//-             +productItem(
+//-                 {
+//-                     flag:[],
+//-                     promotion: "",
+//-                     limited: false,
+//-                     vip: false,
+//-                     installment: false,
+//-                     membership: '',
+//-                     soldOut: false,
+//-                     outOfStock: false ,
+//-                     imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+//-                     type:'color',
+//-                     groups:['white','black','HE_RP4_Burgundy'],
+//-                     sku:'GSJV70PZTF',
+//-                     modelid: 'MD07535474',
+//-                     name:'American Fridge Freezer 635L Water & Ice Dispenser',
+//-                     grade:'f',
+//-                 }
+//-             )
+//-         li.c-product-list__item
+//-             +productItem(
+//-                 {
+//-                     flag:['new','sale'],
+//-                     promotion: "",
+//-                     limited: false,
+//-                     vip: false,
+//-                     installment: false,
+//-                     membership: '£1,866.98',
+//-                     soldOut: false,
+//-                     outOfStock: false ,
+//-                     imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+//-                     type:'color',
+//-                     groups:['white','black','HE_RP4_Burgundy'],
+//-                     sku:'GSJV70PZTF',
+//-                     modelid: 'MD07535404',
+//-                     name:'American Fridge Freezer 635L Water & Ice Dispenser',
+//-                     grade:'f',
+//-                 }
+//-             )
+//-         li.c-product-list__item
+//-             +productItem(
+//-                 {
+//-                     flag:['new'],
+//-                     promotion: "",
+//-                     limited: false,
+//-                     vip: false,
+//-                     installment: true,
+//-                     membership: '£1,866.98',
+//-                     soldOut: false,
+//-                     outOfStock: false ,
+//-                     imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+//-                     type:'color',
+//-                     groups:['white','black','HE_RP4_Burgundy'],
+//-                     sku:'GSJV70PZTF',
+//-                     modelid: 'MD07535502',
+//-                     name:'American Fridge Freezer 635L Water & Ice Dispenser',
+//-                     grade:'f',
+//-                 }
+//-             )
+//-         li.c-product-list__item
+//-             +productItem(
+//-                 {
+//-                     flag:[],
+//-                     promotion: "",
+//-                     limited: false,
+//-                     vip: false,
+//-                     installment: true,
+//-                     membership: '£1,866.98',
+//-                     soldOut: false,
+//-                     outOfStock: false ,
+//-                     imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+//-                     type:'color',
+//-                     groups:['white','black','HE_RP4_Burgundy'],
+//-                     sku:'GSJV70PZTF',
+//-                     modelid: 'MD07536888',
+//-                     name:'American Fridge Freezer 635L Water & Ice Dispenser',
+//-                     grade:'f',
+//-                 }
+//-             )
+//-         li.c-product-list__item
+//-             +productItem(
+//-                 {
+//-                     flag:[],
+//-                     promotion: "",
+//-                     limited: false,
+//-                     vip: false,
+//-                     installment: false,
+//-                     membership: '',
+//-                     soldOut: false,
+//-                     outOfStock: true ,
+//-                     imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+//-                     type:'color',
+//-                     groups:['white','black','HE_RP4_Burgundy'],
+//-                     sku:'MD07535378',
+//-                     modelid: 'MD07535378',
+//-                     name:'American Fridge Freezer 635L Water & Ice Dispenser',
+//-                     grade:'f',
+//-                 }
+//-             )
+//-         li.c-product-list__item
+//-             +productItem(
+//-                 {
+//-                     flag:[],
+//-                     promotion: "",
+//-                     limited: false,
+//-                     vip: false,
+//-                     installment: true,
+//-                     membership: '£1,866.98',
+//-                     soldOut: true,
+//-                     outOfStock: false ,
+//-                     imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+//-                     type:'color',
+//-                     groups:['white','black','HE_RP4_Burgundy'],
+//-                     sku:'GSJV70PZTF',
+//-                     modelid: 'MD07535414',
+//-                     name:'American Fridge Freezer 635L Water & Ice Dispenser',
+//-                     grade:'f',
+//-                 }
+//-             )
+//-         li.c-product-list__item
+//-             +productItem(
+//-                 {
+//-                     flag:[],
+//-                     promotion: "Black Friday Promotion",
+//-                     limited: false,
+//-                     vip: false,
+//-                     installment: true,
+//-                     membership: '£1,866.98',
+//-                     soldOut: false,
+//-                     outOfStock: false ,
+//-                     imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+//-                     type:'color',
+//-                     groups:['white','black','HE_RP4_Burgundy'],
+//-                     sku:'GSJV70PZTF',
+//-                     modelid: 'MD07535381',
+//-                     name:'American Fridge Freezer 635L Water & Ice Dispenser',
+//-                     grade:'f',
+//-                 }
+//-             )
+//-         li.c-product-list__item
+//-             +productItem(
+//-                 {
+//-                     flag:['new','sale'],
+//-                     promotion: "",
+//-                     limited: false,
+//-                     vip: false,
+//-                     installment: true,
+//-                     membership: '£1,866.98',
+//-                     soldOut: false,
+//-                     outOfStock: false ,
+//-                     imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+//-                     type:'color',
+//-                     groups:['white','black','HE_RP4_Burgundy'],
+//-                     sku:'GSJV70PZTF',
+//-                     modelid: 'MD07558328',
+//-                     name:'American Fridge Freezer 635L Water & Ice Dispenser',
+//-                     grade:'f',
+//-                 }
+//-             )
+//-         li.c-product-list__item
+//-             +productItem(
+//-                 {
+//-                     flag:['limited offer'],
+//-                     promotion: "",
+//-                     limited: false,
+//-                     vip: false,
+//-                     limited: false,
+//-                     vip: false,
+//-                     installment: true,
+//-                     membership: '£1,866.98',
+//-                     soldOut: false,
+//-                     outOfStock: false ,
+//-                     imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+//-                     type:'color',
+//-                     groups:['white','black','HE_RP4_Burgundy'],
+//-                     sku:'GSJV70PZTF',
+//-                     modelid: 'MD07158328',
+//-                     name:'American Fridge Freezer 635L Water & Ice Dispenser',
+//-                     grade:'f',
+//-                 }
+//-             )
+//-         //- LG Signature 추가
+//-         li.c-product-list__item
+//-             +productItem(
+//-                 {
+//-                     flag:[],
+//-                     promotion: "",
+//-                     limited: false,
+//-                     vip: false,
+//-                     installment: true,
+//-                     membership: '£1,866.98',
+//-                     soldOut: false,
+//-                     outOfStock: false ,
+//-                     imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+//-                     type:'inch',
+//-                     groups:['55','66','77'],
+//-                     sku:'GSJV70PZTF',
+//-                     modelid: 'MD07358328',
+//-                     name:'American Fridge Freezer 635L Water & Ice Dispenser',
+//-                     grade:'f',
+//-                 }
+//-             )
+//-         //- Model Group 4개이상
+//-         li.c-product-list__item
+//-             +productItem(
+//-                 {
+//-                     flag:[],
+//-                     promotion: "",
+//-                     limited: false,
+//-                     vip: false,
+//-                     installment: true,
+//-                     membership: '£1,866.98',
+//-                     soldOut: false,
+//-                     outOfStock: false ,
+//-                     imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+//-                     type:'color',
+//-                     groups:['HA_Black-Stainless-Steel', 'white', 'black', 'HA_Styler_Mirror', 'HA_REF_White','red','HE_RP4_Blue_Green'],
+//-                     sku:'GSJV70PZTF',
+//-                     modelid: 'MD07258328',
+//-                     name:'American Fridge Freezer 635L Water & Ice Dispenser',
+//-                     grade:'f',
+//-                 }
+//-             )
+//-         //- Rebate up to...
+//-         li.c-product-list__item
+//-             +productItem(
+//-                 {
+//-                     flag:[],
+//-                     promotion: "",
+//-                     limited: false,
+//-                     vip: false,
+//-                     installment: true,
+//-                     membership: '£1,866.98',
+//-                     soldOut: false,
+//-                     outOfStock: false ,
+//-                     imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+//-                     type:'inch',
+//-                     groups:['55','66','77','55','66','77','55','66','77'],
+//-                     sku:'GSJV70PZTF',
+//-                     modelid: 'MD07458328',
+//-                     name:'American Fridge Freezer 635L Water & Ice Dispenser',
+//-                     grade:'f',
+//-                 }
+//-             )
+
+mixin productItemSlide($params)
+    .cmp-carousel__item.swiper-slide.c-carousel__item.c-product-list__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+        +productCard($params)
+
+mixin bundleItemSlide($params)
+    .cmp-carousel__item.swiper-slide.c-carousel__item.c-product-list__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+        +bundleItem($params)
+
+mixin summaryItemSlide($params)
+    .cmp-carousel__item.swiper-slide.c-carousel__item.c-product-list__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+        +summaryItem($params)
+
+mixin bundleBannerSlide($params)
+    .cmp-carousel__item.swiper-slide.c-carousel__item.c-product-list__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+        +productCard($params)
+
+mixin productItem($params)
+    - var config = {useFlagFeatureIcon : true, ...$params}
+    // GA4
+    .c-product-item(data-pim-category1="" data-pim-category2="" data-pim-category3="" data-pim-category4="" data-pim-sku="" data-pim-model-name="" data-pim-model-year="" data-pim-flag="" data-pim-modeltype="" data-shop-stock-status="" data-shop-msrp="" data-shop-price="")
+        .c-product-item__top-container
+            if (config.flag)
+                +product_flag(config.flag, config.useFlagFeatureIcon)
+            +product_image(config.imageUrl)
+            +product_brand(config.signature, config.thinq)
+            if(config.type && config.groups)
+                +product_model-group({type:config.type, groups:config.groups})
+            +product_name(config.sku, config.name)(class="c-product-item__model-display-name")
+            if(!config.discontinued)
+                +product_rating(config.grade, config.modelid)
+            // 2023-01-13 add .c-product-item__energy-saving
+            .c-product-item__energy-saving
+            if(config.writeAReview)
+                +product_write-review-button(config.modelid)
+            if(config.campaignArea)
+                +product_campaign-area(config.campaignArea)
+            if(!config.noprice)
+                +product_price({vip: config.vip, limited: config.limited, installment: config.installment, membership: config.membership, soldOut: config.soldOut, outOfStock: config.outOfStock, promotion: config.promotion, retailer: config.retailer})
+            if (config.keyfeature)
+                +product_keyfeature(config.keyfeature)
+        .c-product-item__bottom-container
+            //- if(!config.discontinued)
+            //-     .cta-wtb
+            //-         +linkButton({type:"text",color:"black", icon:true, name: "Where to Buy"})
+            +product_cta({soldOut: config.soldOut, outOfStock: config.outOfStock, discontinued: config.discontinued})
+            //- .c-product-item__compare.font-w-normal-14i.font-m-normal-14i
+            //-     .c-checkbox-item
+            //-         label.checkbox
+            //-             input(type="checkbox")
+            //-             span.label Compare
+            //-     .cta-wtb
+            //-         +linkButton({type:"text",color:"black", icon:true, name: "Where to Buy", href:"/template/PDP.html#pdp_where"})
+
+mixin bundleItem($params)
+    // GA4
+    .c-product-item(data-pim-category1="" data-pim-category2="" data-pim-category3="" data-pim-category4="" data-pim-sku="" data-pim-model-name="" data-pim-model-year="" data-pim-flag="" data-pim-modeltype="" data-shop-stock-status="" data-shop-msrp="" data-shop-price="")
+        .c-product-item__top-container
+            //- if($params.compare)
+            //-     +product_compare($params.compare)
+            +product_image($params.imageUrl)
+            if($params.skuLink)
+                +product_name($params.sku, $params.name, $params.fontstyle, $params.useLink, $params.skuLink)(class="c-product-item__model-display-name")
+            else
+                +product_name($params.sku, $params.name, $params.fontstyle)(class="c-product-item__model-display-name")
+            if($params.modelid)
+                +product_rating(null,$params.modelid)
+            if($params.energy)
+                // RO only UK,AT,PL - Energy saving
+                .c-product-item__energy-saving(style="max-width:222px;height:66px;background:#fafafa;line-height:66px;text-align:center;overflow:hidden") Energy Saving Banner Area
+            if($params.labels)
+                if($params.gradeBlock2)
+                    // RO - Energy labels FR
+                    .c-product-item-wrapper
+                        .c-product-item__download
+                            .c-tooltip
+                                .button
+                                    - var label = $params.grade
+                                    - var tagGrade = label == "A" ? 'a' : $params.grade
+                                    //- a(href="#", target="_blank", rel="noopener noreferrer" role="button" data-link-name="").c-tooltip__button.c-energy-grade
+                                    button.c-tooltip__button.c-energy-grade(type="button" aria-expanded="false")    
+                                        //- +printLazyImage(`../../assets/icon/label-ap-a3.svg`)
+                                        +printLazyPicture(`../../assets/icon/icon-energy-grade-a-47-28.png`, '../../assets/icon/icon-energy-grade-a-54-32.png')
+                                        span.sr-only= `Energy Grade : ${tagGrade}`
+                                .c-tooltip__container
+                                    .c-tooltip__contents
+                                        a(href="#" role="button").font-w-bold-12i.font-m-bold-12i UK
+                                        a(href="#" role="button").font-w-bold-12i.font-m-bold-12i EU
+                            .c-tooltip
+                                .button
+                                    - var label = $params.grade
+                                    - var tagGrade = label == "A" ? 'a' : $params.grade
+                                    //- a(href="#", target="_blank", rel="noopener noreferrer" role="button" data-link-name="").c-tooltip__button.c-energy-grade.e-labels
+                                    button.c-tooltip__button.c-energy-grade.e-labels(type="button" aria-expanded="false")
+                                        //- +printLazyImage(`../../assets/icon/label-ap-a3.svg`)
+                                        +printLazyPicture(`../../assets/icon/label-energy-grade-${tagGrade}.svg`, `../../assets/icon/label-energy-grade-${tagGrade}.svg`)
+                                        span.sr-only= `Energy Grade : ${tagGrade}`
+                                .c-tooltip__container
+                                    .c-tooltip__contents
+                                        // 2023-01-27 : Add role to download link for tagging
+                                        a(href="#" role="button").font-w-bold-12i.font-m-bold-12i UK
+                                        a(href="#" role="button").font-w-bold-12i.font-m-bold-12i EU
+                            .c-tooltip
+                                //- a(href="#" role="button").c-product-item__download--click.font-w-normal-16.font-m-normal-12.c-product-labels Product information sheet
+                                button.c-product-item__download--click.c-tooltip__button.font-w-normal-16.font-m-normal-12.c-product-labels Product information sheet
+                                .c-tooltip__container
+                                    .c-tooltip__contents
+                                        a(href="#" role="button").font-w-bold-12i.font-m-bold-12i WM
+                                        a(href="#" role="button").font-w-bold-12i.font-m-bold-12i WD
+                else
+                    // RO - Energy labels
+                    +product_rating("A", 'MD07546559', specsheet=false, false)
+            if($params.repair)
+                // RO only FR - Repairability Index Label
+                .c-product-item__repair
+                    a.c-product-item__repair--click(href="#" target="_blank" role="button" rel="noopener noreferrer" data-link-name="")
+                        //- RO - dev request one image
+                        //- +printLazyPicture(`../../assets/image/icon-repair-index-fr-71-44.png`, '../../assets/image/icon-repair-index-fr-76-47.png')
+                        .cmp-image(data-cmp-data-layer="")
+                            img.cmp-image__image.c-image__img(src="../../assets/image/icon-repair-index-fr-96-56.png" alt="")
+                        span.cmp-text indice de réparabilité
+            +product_price({installment: $params.installment, membership: $params.membership, soldOut: $params.soldOut, outOfStock: $params.outOfStock, promotion: $params.promotion, ehf:$params.ehf, cashDiscount:$params.cashDiscount, lowPrice30Days:$params.lowPrice30Days, onlyPurchase:$params.onlyPurchase, priceFontStyle: $params.priceFontStyle, subPriceFontStyle: $params.subPriceFontStyle})
+            if($params.description)
+                +product_description({description: $params.description, descriptionFontStyle : $params.descriptionFontStyle})
+        if($params.whereToBuy || $params.soldOut || $params.outOfStock || $params.cta)
+            .c-product-item__bottom-container
+                //- +product_cta({addCart: $params.addCart, whereToBuy: $params.whereToBuy})
+                +product_cta({soldOut: $params.soldOut, outOfStock: $params.outOfStock})
+                if($params.whereToBuy)
+                    .c-product-item__compare.font-w-normal-14i.font-m-normal-14i
+                        .c-checkbox-item
+                            label.checkbox
+                                input(type="checkbox")
+                                span.label Compare
+                        .cta-wtb
+                            +linkButton({type:"text",color:"black", icon:true, name: "Where to Buy"})
+
+mixin ptoItem($params)
+    // block - product item
+    // GA4
+    div.c-product-item(href="#" data-pim-category1="" data-pim-category2="" data-pim-category3="" data-pim-category4="" data-pim-sku="" data-pim-model-name="" data-pim-model-year="" data-pim-flag="" data-pim-modeltype="" data-shop-stock-status="" data-shop-msrp="" data-shop-pbp-coupon="" data-shop-pbp-coupon-dc="" data-shop-price="")
+        +product_image(`https://via.placeholder.com/${$params.imgSize}/999999/000000`, false)
+        .c-text-contents
+            .text.c-text-contents__eyebrow.sku
+                .cmp-text(class=`${$params.fontClass.sku}`)
+                    p
+                        span OLED65C25LB
+            .text.c-text-contents__headline
+                .cmp-text(data-cmp-data-layer="" class=`${$params.fontClass.headline}`)
+                    p TV LG OLED evo C2 | 2022 | 65'' (165 cm) | UHD | Processeur α9 Gen5 AI
+            .c-price
+                //- .c-price__purchase(class=`${$params.fontClass.price}`) $2,470.67
+                +product_price({installment: $params.installment, membership: $params.membership, soldOut: $params.soldOut, outOfStock: $params.outOfStock, promotion: $params.promotion, priceFontStyle: $params.fontClass.priceFontStyle, subPriceFontStyle: $params.fontClass.subPriceFontStyle, discount: $params.discount, ...$params})
+
+mixin summaryItem($params)
+    .c-product-item
+        +product_image(`https://via.placeholder.com/${$params.imgSize}/999999/000000`)
+        .c-text-contents
+            .text.c-text-contents__eyebrow.sku
+                // GA4
+                a.cmp-text(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="" class=`${$params.fontClass.sku}`)
+                    p
+                        span GSJV70PZTF
+            // GA4
+            a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").text.c-text-contents__headline
+                .cmp-text(data-cmp-data-layer="" class=`${$params.fontClass.headline}`)
+                    p 5.2 cu. ft. Large Smart wi-fi Enabled Front Load Washer
+            .c-price(class=`${priceStyle}`)
+                .c-price__purchase(class=`${$params.fontClass.price}`) $2,470.67
+        .c-cta.button
+            +linkButton({type:"box-outlined", size:"small", name: `${$params.btnName}`})
+
+mixin product_compare(params)
+    .c-product-item__tag
+        // c-product-item__compare is only used if there is a c-toggle-button (compare) button.
+        // i.e.) PD0001, PD0015, Search Result
+        .c-product-item__compare.font-w-normal-14i.font-m-normal-14i
+            .c-checkbox-item
+                label.checkbox
+                    input(type="checkbox")
+                    span.label Compare
+
+mixin promotion-badge
+    // block - badge
+    .c-badge&attributes(attributes)
+        .c-badge__align-box
+            if block
+                block
+
+mixin sns-share-with-tooltip
+    include ../_common/_sns-list.pug
+    .c-tooltip.c-tooltip__share
+        .button
+            button(type="button" class="cmp-button c-icon-button c-icon-button--share c-tooltip__button" data-cmp-data-layer="" aria-controls="snsShare")
+                span.sr-only Share
+        .c-tooltip__container.top-right(id="snsShare")
+            // 2022-11-04
+            .c-tooltip__contents
+                // sns list
+                +snsList
+
+mixin product_flag(tagNames, useFlagFeatureIcon = true)
+    .c-product-item__tag
+        .c-product-item__tag--flag.font-w-bold-12i.font-m-bold-12i
+            //- if(tagNames.length == 1 && tagNames == "limited offer")
+            //-     span.c-product-item__tag--flag-limited= tagNames[0]
+            //- else if(tagNames.length <= 2)
+            //-     - for (var x = 0; x < tagNames.length; x++)
+            //-             span= tagNames[x]
+            if(tagNames.length <= 2)
+                - for (var x = 0; x < tagNames.length; x++)
+                    if(tagNames[x] == 'Pre Order')
+                        span.flag-highlight= tagNames[x]
+                    else
+                        span= tagNames[x]
+        if useFlagFeatureIcon
+            .c-product-item__tag--button.c-product-item__button
+                // 2022-11-04
+                // 2022-10.25 : number added to wishlist
+                span.number 120
+                .c-tooltip
+                    .button
+                        // Add 'active' class when button is activated
+                        button(type="button" aria-expanded="false" class="cmp-button c-icon-button c-icon-button--wish c-tooltip__button" data-cmp-data-layer="")
+                            span.sr-only add to wishlist
+                    .c-tooltip__container.top-right
+                        .c-tooltip__contents.c-tooltip__contents--small
+                            .c-text-contents
+                                .text.c-text-contents__bodycopy
+                                    .cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")
+                                        p Add items to your MY LG wishlist
+                            .button
+                                +linkButton({type:"text",color:"black", underline:true, name: 'View Wishlist'})
+
+                +sns-share-with-tooltip
+
+mixin product_image(imgUrl, useLink= true)
+    .c-product-item__visual-image
+        if useLink
+            // GA4
+            a.image.c-image(href="/template/PDP.html" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                +printLazyImage(imgUrl)
+        else
+            .image.c-image
+                +printLazyImage(imgUrl)
+
+mixin product_brand(flag, thinq)
+    if(flag)
+        .c-product-item__brand
+            +printLazyImage("/assets/icon/icon-lg-signature-black-90-9.svg")
+            if(thinq)
+                +printLazyImage("/assets/icon/icon-lg-thinq-black-46-9.svg")
+
+mixin product_model-group(params)
+    //- type:color인 경우 : 색상을 groups 배열에 입력
+    //- type:inch인 경우 : inch값을 groups 배열에 입력
+    - var option={type:'color', groups:['color1','color2', 'color3'], ...params}
+    - var count = option.groups.length
+    - var limited = count >= 5
+
+    .c-product-item__model-group(class=`group-type-${option.type}${limited ? ' limited' : ''}`)
+        // 2022-10-25 remove classname for font size
+        .inner(role="group")
+            case option.type
+                when 'inch'
+                    - for (var x = 0; x < count; x++)
+                        button.swatch(aria-label=`${option.groups[x]} inch TV` type="button" class=`${x==0 ? 'active' : ''}` aria-pressed=`${x==0 ? 'true' : 'false'}`)
+                            span(aria-hidden="true")= `${option.groups[x]}"`
+
+                when 'color'
+                    - for (var x = 0; x < count; x++)
+                        button.swatch(aria-label="target color name" type="button" class=`${x==0 ? ' active' : ''}` aria-pressed=`${x==0 ? 'true' : 'false'}` style=`background: ${option.groups[x]}`)
+                            span.sr-only(aria-hidden="true") color name
+
+        if(limited && option.type=='inch')
+            .limited-number= `(${count})`
+        if(limited && option.type=='color')
+            .limited-number= `(${count})`
+
+mixin product_name(sku, name, fontstyle, useLink = true, skuLink, clipboard = false, ret = false, tagname = false)
+    - var font = {headline : "font-w-normal-24 font-m-normal-20", sku : "font-w-normal-16 font-m-normal-12", ...fontstyle}
+    .c-text-contents&attributes(attributes)
+        if (skuLink)
+            .text.c-text-contents__eyebrow.sku
+                // GA4
+                a.cmp-text(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="" class=`${font.sku}`)
+                    p
+                        span= skuLink
+        if (!!sku)
+            .text.c-text-contents__eyebrow.sku
+                .cmp-text(data-cmp-data-layer="" class=`${font.sku}`)
+                    if (clipboard)
+                        // RO clipboard
+                        .c-text-contents__clipboard
+                            p
+                                span= sku
+                                //- A button was added as a script. So it was deleted.
+                                //- button.btn-copy
+                                //-     span.sr-only Copy model name
+                            if (ret)
+                                // RO LG Recommends Windows text
+                                .c-text(class="c-text__recommends-widows font-w-normal-16 font-m-normal-12") LG Recommends windows    
+                    else
+                        p
+                            span= sku
+
+        if (useLink)
+            // GA4
+            a(href="/template/PDP.html" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").text.c-text-contents__headline
+                .cmp-text(data-cmp-data-layer="" class=`${font.headline}`)
+                    p= name
+        else
+            .text.c-text-contents__headline
+                if(tagname == "h1")
+                    h1.cmp-text(data-cmp-data-layer="" class=`${font.headline}`)
+                        p= name
+                else
+                    .cmp-text(data-cmp-data-layer="" class=`${font.headline}`)
+                        p= name
+
+mixin product_rating(grade, modelid='MD07546559', specsheet=false, rating=true, catalog=false, summary=false, labels=false, bottomSheet=false, gradeBlock2=false)
+    - const mobilesize = bottomSheet ? '47-28' : '34-20'
+    .c-product-item-wrapper
+        if(grade)
+            - var tagGrade = grade == "A" ? 'a' : grade
+                .c-product-item__download
+                    // 2023-01-27 : Add role to download link for tagging
+                    if(specsheet)
+                        .c-tooltip
+                            .button
+                                // <button> should be used when a tooltip is required when clicking the energy grade button like in the UK,
+                                // and <a> should be used when it is to be downloaded immediately when clicked.
+                                if labels == true
+                                    - var label = grade
+                                    - var tagGrade = label == "A" ? 'a' : label
+                                    //- a(href="#", target="_blank", rel="noopener noreferrer" role="button" data-link-name="").c-tooltip__button.c-energy-grade.e-labels
+                                    button.c-tooltip__button.c-energy-grade.e-labels(type="button" aria-expanded="false")
+                                        //- +printLazyImage(`../../assets/icon/label-ap-a3.svg`)
+                                        +printLazyPicture(`../../assets/icon/icon-energy-grade-a-${mobilesize}.png`, '../../assets/icon/icon-energy-grade-a-54-32.png')
+                                        span.sr-only= `Energy Grade : ${tagGrade}`
+                                else
+                                    //- a(href="#", target="_blank", rel="noopener noreferrer" role="button" data-link-name="").c-tooltip__button.c-energy-grade
+                                    button.c-tooltip__button.c-energy-grade(type="button" aria-expanded="false")
+                                        //- +printLazyImage(`../../assets/icon/label-ap-a3.svg`)
+                                        +printLazyPicture(`../../assets/icon/label-energy-grade-${tagGrade}.svg`, `../../assets/icon/label-energy-grade-${tagGrade}.svg`)
+                                        span.sr-only= `Energy Grade : ${tagGrade}`
+                                // 2022-10-25 : remove id attribute
+                                .c-tooltip__container
+                                    .c-tooltip__contents
+                                        // 2023-01-27 : Add role to download link for tagging
+                                        a(href="#" role="button").font-w-bold-12i.font-m-bold-12i UK
+                                        a(href="#" role="button").font-w-bold-12i.font-m-bold-12i EU
+                        if(gradeBlock2)
+                            .c-tooltip
+                                .button
+                                    // <button> should be used when a tooltip is required when clicking the energy grade button like in the UK,
+                                    // and <a> should be used when it is to be downloaded immediately when clicked.
+                                    - var label = grade
+                                    - var tagGrade = label == "A" ? 'a' : label
+                                    //- a(href="#", target="_blank", rel="noopener noreferrer" role="button" data-link-name="").c-tooltip__button.c-energy-grade
+                                    button.c-tooltip__button.c-energy-grade(type="button" aria-expanded="false")
+                                        //- +printLazyImage(`../../assets/icon/label-ap-a3.svg`)
+                                        //- +printLazyPicture(`../../assets/icon/icon-energy-grade-a-${mobilesize}.png`, '../../assets/icon/icon-energy-grade-a-54-32.png')
+                                        +printLazyPicture(`../../assets/icon/label-energy-grade-${tagGrade}.svg`, `../../assets/icon/label-energy-grade-${tagGrade}.svg`)
+                                        span.sr-only= `Energy Grade : ${tagGrade}`
+
+                                // 2022-10-25 : remove id attribute
+                                .c-tooltip__container
+                                    .c-tooltip__contents
+                                        // 2023-01-27 : Add role to download link for tagging
+                                        a(href="#" role="button").font-w-bold-12i.font-m-bold-12i UK
+                                        a(href="#" role="button").font-w-bold-12i.font-m-bold-12i EU
+                        
+                        .c-tooltip
+                            //- a(href="#" role="button").c-product-item__download--click.font-w-normal-16.font-m-normal-12.c-product-labels Product information sheet
+                            button.c-product-item__download--click.c-tooltip__button.font-w-normal-16.font-m-normal-12.c-product-labels Product information sheet
+                            .c-tooltip__container
+                                .c-tooltip__contents
+                                    a(href="#" role="button").font-w-bold-12i.font-m-bold-12i WM
+                                    a(href="#" role="button").font-w-bold-12i.font-m-bold-12i WD
+                    else                        
+                        .c-tooltip
+                            .button
+                                // <button> should be used when a tooltip is required when clicking the energy grade button like in the UK,
+                                // and <a> should be used when it is to be downloaded immediately when clicked.
+                                - var label = grade
+                                - var tagGrade = label == "A" ? 'a' : label
+                                //- a(href="#", target="_blank", rel="noopener noreferrer" role="button" data-link-name="").c-tooltip__button.c-energy-grade
+                                button.c-tooltip__button.c-energy-grade(type="button" aria-expanded="false")
+                                    //- +printLazyImage(`../../assets/icon/label-ap-a3.svg`)
+                                    +printLazyPicture(`../../assets/icon/icon-energy-grade-a-${mobilesize}.png`, '../../assets/icon/icon-energy-grade-a-54-32.png')
+                                    span.sr-only= `Energy Grade : ${tagGrade}`
+
+                            // 2022-10-25 : remove id attribute
+                            .c-tooltip__container
+                                .c-tooltip__contents
+                                    // 2023-01-27 : Add role to download link for tagging
+                                    a(href="#" role="button").font-w-bold-12i.font-m-bold-12i UK
+                                    a(href="#" role="button").font-w-bold-12i.font-m-bold-12i EU
+                        if(gradeBlock2)
+                            .c-tooltip
+                                .button
+                                    // <button> should be used when a tooltip is required when clicking the energy grade button like in the UK,
+                                    // and <a> should be used when it is to be downloaded immediately when clicked.
+                                    - var label = grade
+                                    - var tagGrade = label == "A" ? 'a' : label
+                                    //- a(href="#", target="_blank", rel="noopener noreferrer" role="button" data-link-name="").c-tooltip__button.c-energy-grade
+                                    button.c-tooltip__button.c-energy-grade(type="button" aria-expanded="false")
+                                        //- +printLazyImage(`../../assets/icon/label-ap-a3.svg`)
+                                        //- +printLazyPicture(`../../assets/icon/icon-energy-grade-a-${mobilesize}.png`, '../../assets/icon/icon-energy-grade-a-54-32.png')
+                                        +printLazyPicture(`../../assets/icon/label-energy-grade-${tagGrade}.svg`, `../../assets/icon/label-energy-grade-${tagGrade}.svg`)
+                                        span.sr-only= `Energy Grade : ${tagGrade}`
+
+                                // 2022-10-25 : remove id attribute
+                                .c-tooltip__container
+                                    .c-tooltip__contents
+                                        // 2023-01-27 : Add role to download link for tagging
+                                        a(href="#" role="button").font-w-bold-12i.font-m-bold-12i UK
+                                        a(href="#" role="button").font-w-bold-12i.font-m-bold-12i EU
+                                        
+                        //a(href="#" role="button").c-product-item__download--click.font-w-normal-16.font-m-normal-12 Product information sheet
+                        .c-tooltip
+                            .button
+                                button.c-tooltip__button(type="button" aria-expanded="false").font-w-normal-16.font-m-normal-12 Product information sheet
+
+                            // 2023-06-21 : add
+                            .c-tooltip__container
+                                .c-tooltip__contents
+                                    a(href="#" role="button").font-w-bold-12i.font-m-bold-12i WM
+                                    a(href="#" role="button").font-w-bold-12i.font-m-bold-12i WD
+                    if (catalog)
+                        .button.c-product-item__download--catalog
+                            +linkButton({type:"text",color:"black", underline:true, name:"Catalog"})(role="button")
+
+        //- .rating(itemprop='aggregateRating' itemscope='' itemtype='http://schema.org/AggregateRating' data-modelid='MD07548335')
+        //-     a(href='*modelUrlPath*#pdp_review')
+        if(rating)
+            .c-product-item__rating
+                .c-product-item__rating--filled-star
+                .c-product-item__rating--filled-star
+                .c-product-item__rating--filled-star
+                .c-product-item__rating--filled-star
+                .c-product-item__rating--filled-star
+                .c-product-item__rating--number.font-w-normal-14.font-m-normal-12
+                    if(summary)
+                        // BV 1
+                        #BVRRSummaryContainer(data-modelid='MD07548335')
+                            .rating-area.bv
+                                .rating
+                                    .review-number
+                                        // GA4
+                                        a(href='#pdp_review' aria-label='4.8 out of 5 stars. 25 reviews.' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 4.8 (25)
+                                    .write-a-review-area
+                                        // GA4
+                                        a.write-a-review(href='#pdp_review' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Write a review
+                        // or
+                        // BV2
+                        // div(data-bv-show='rating_summary' data-bv-product-id='MD08001965')
+                        //     .rating-area.bv
+                        //         .rating
+                        //             .review-number
+                        //                 a(href='#pdp_review' aria-label='4.8 out of 5 stars. 25 reviews.') 4.8 (25)
+                        //             .write-a-review-area
+                        //                 // GA4
+                        //                 a.write-a-review(href='#pdp_review' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Write a review
+                        // or
+                        // LGCOM
+                        // .rating-area.inhouse
+                        //     .rating.inhouse-review
+                        //         .review-number
+                        //             a(href='#pdp_review' aria-label='4.8 out of 5 stars. 25 reviews.') 4.8 (25)
+                        //         .write-a-review-area
+                        //             // GA4
+                        //             a.write-a-review(href='#' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Write a review
+                        // or
+                        // SP
+                        //.rating-area.sp
+                        //    #shoppilot-inline-rating-container
+                    else
+                        // BV 1
+                        .rating(data-modelid=`${modelid}`)
+                            span
+                                span.sr-only 5.0 out of 5 stars.
+                                // GA4
+                                a(href='/template/PDP.html#pdp_review' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 5.0 (10)
+                        // or
+                        // BV2
+                        // .rating(data-bv-show="inline_rating", data-bv-product-id=`${modelid}`, data-bv-redirect-url="/template/PDP.html#pdp_review") 5.0 (10)
+                        // or
+                        // LGCOM
+                        // .rating
+                        //    span
+                        //        span.sr-only 5.0 out of 5 stars.
+                        //        a(href='/template/PDP.html#pdp_review') 5.0 (10)
+                        // or
+                        // SP
+                        // .rating(data-shoppilot='oled65b2rla')
+                        //    // GA4
+                        //    a(href='/template/PDP.html#pdp_review' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 5.0 (10)
+
+//- mixin product_rating_type02(grade, modelid='MD07546559', rating=true, catalog=false, summary=false)
+    .wrapper
+        if(grade)
+            - var tagGrade = grade == "A" ? 'a' : grade
+            .c-product-item__download
+                // 2023-01-27 : Add role to download link for tagging
+                .c-tooltip
+                    .button
+                        // <button> should be used when a tooltip is required when clicking the energy grade button like in the UK,
+                        // and <a> should be used when it is to be downloaded immediately when clicked.
+                        button.c-tooltip__button.c-energy-grade(type="button" aria-expanded="false" class=`c-energy-grade--${tagGrade}`)
+                            span.sr-only= `Energy Grade : ${tagGrade}`
+                    // 2022-10-25 : remove id attribute
+                    .c-tooltip__container
+                        .c-tooltip__contents
+                            // 2023-01-27 : Add role to download link for tagging
+                            a(href="#" role="button").font-w-bold-12i.font-m-bold-12i UK
+                            a(href="#" role="button").font-w-bold-12i.font-m-bold-12i EU
+                a(href="#" role="button").c-product-item__download--click.font-w-normal-16.font-m-normal-12 Product sheet
+
+                if (catalog)
+                    .button.c-product-item__download--catalog
+                        +linkButton({type:"text",color:"black", underline:true, name:"Catalog"})(role="button")
+
+        //- .rating(itemprop='aggregateRating' itemscope='' itemtype='http://schema.org/AggregateRating' data-modelid='MD07548335')
+        //-     a(href='*modelUrlPath*#pdp_review')
+        if(rating)
+            .c-product-item__rating
+                .c-product-item__rating--filled-star
+                .c-product-item__rating--number.font-w-normal-14.font-m-normal-12
+                    if(summary)
+                        // BV 1
+                        #BVRRSummaryContainer(data-modelid='MD07548335')
+                            .rating-area.bv
+                                .rating
+                                    .review-number
+                                        // GA4
+                                        a(href='#pdp_review' aria-label='4.8 out of 5 stars. 25 reviews.' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 4.8 (25)
+                                    .write-a-review-area
+                                        // GA4
+                                        a.write-a-review(href='#pdp_review' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Write a review
+                        // or
+                        // BV2
+                        // div(data-bv-show='rating_summary' data-bv-product-id='MD08001965')
+                        //     .rating-area.bv
+                        //         .rating
+                        //             .review-number
+                        //                 a(href='#pdp_review' aria-label='4.8 out of 5 stars. 25 reviews.') 4.8 (25)
+                        //             .write-a-review-area
+                        //                 // GA4
+                        //                 a.write-a-review(href='#pdp_review' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Write a review
+                        // or
+                        // LGCOM
+                        // .rating-area.inhouse
+                        //     .rating.inhouse-review
+                        //         .review-number
+                        //             a(href='#pdp_review' aria-label='4.8 out of 5 stars. 25 reviews.') 4.8 (25)
+                        //         .write-a-review-area
+                        //             // GA4
+                        //             a.write-a-review(href='#' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Write a review
+                        // or
+                        // SP
+                        //.rating-area.sp
+                        //    #shoppilot-inline-rating-container
+                    else
+                        // BV 1
+                        .rating(data-modelid=`${modelid}`)
+                            span
+                                span.sr-only 5.0 out of 5 stars.
+                                // GA4
+                                a(href='/template/PDP.html#pdp_review' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 5.0 (10)
+                        // or
+                        // BV2
+                        // .rating(data-bv-show="inline_rating", data-bv-product-id=`${modelid}`, data-bv-redirect-url="/template/PDP.html#pdp_review") 5.0 (10)
+                        // or
+                        // LGCOM
+                        // .rating
+                        //    span
+                        //        span.sr-only 5.0 out of 5 stars.
+                        //        a(href='/template/PDP.html#pdp_review') 5.0 (10)
+                        // or
+                        // SP
+                        // .rating(data-shoppilot='oled65b2rla')
+                        //    // GA4
+                        //    a(href='/template/PDP.html#pdp_review' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 5.0 (10)
+
+
+mixin product_write-review-button(modelid='MD07546559')
+    .button.c-product-item__write-a-review
+        +button({name:"Write a Review", type:"text",color:"black", icon:true})(data-modelid=`${modelid}`, class="js-write-review c-icon-button c-icon-button--write-review")
+
+mixin product_description(params)
+    - var fontStyle = params.descriptionFontStyle ? params.descriptionFontStyle : "font-w-normal-16.font-m-normal-16"
+    .c-text-contents.c-product-item__description
+        p(class=fontStyle)= params.description
+
+mixin product_keyfeature(params)
+    - var option={bodycopy:'font-w-normal-14 font-m-normal-14', feature: [], ...params}
+    .c-text-contents.c-product-item__keyfeature
+        ul(class=`${option.bodycopy}`)
+            each feature in option.features
+                li= feature
+
+mixin product_campaign-area(htmlCase)
+    .c-product-item__campaign-area
+        // Option : target="_blank"
+        // GA4
+        a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+            if(htmlCase == "1")
+                .c-product-item__campaign-area--default
+                    .campaign-title.font-bold Campaign Title
+                    .campaign-date 01/01/2021 ~ 01/30/2021
+                .c-product-item__campaign-area--hover
+                    .campaign-bodycopy Buy a participating LG French Door Fridge and receive up to $300 Cash Back*
+            else if(htmlCase == "2")
+                .c-product-item__campaign-area--default
+                    .campaign-title.font-bold Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title
+                    .campaign-date 01/01/2021 ~ 01/30/2021
+                .c-product-item__campaign-area--hover
+                    .campaign-bodycopy Buy a participating LG French Door Fridge and receive up to $300 Cash Back*
+            else if(htmlCase == "3")
+                .c-product-item__campaign-area--default
+                    .campaign-title.font-bold Campaign Title
+                    .campaign-date 01/01/2021 ~ 01/30/2021
+                .c-product-item__campaign-area--hover
+                    .campaign-bodycopy Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back*
+
+            else
+                .c-product-item__campaign-area--default
+                    .campaign-title.font-bold Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title Campaign Title
+                    .campaign-date 01/01/2021 ~ 01/30/2021
+                .c-product-item__campaign-area--hover
+                    .campaign-bodycopy Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back* Buy a participating LG French Door Fridge and receive up to $300 Cash Back*
+
+//- mixin product_price(params)
+//-     - var options = {limited: false, retailerFontStyle : null, ...params}
+//-     - var priceStyle = options.priceFontStyle || "font-w-semibold-24 font-m-semibold-24"
+//-     - var subPriceStyle = options.subPriceFontStyle || "font-w-normal-14i font-m-normal-14i"
+//-     - var soldOutStyle = options.soldOutFontStyle || "font-w-semibold-20 font-m-semibold-20"
+//-     - var retailerStyle = options.retailerFontStyle || "font-w-semibold-16 font-m-semibold-14"
+//-     .price-area
+//-         if options.promotion
+//-             .price-box(class=`${subPriceStyle}`)
+//-                 .c-price__flag--promotion
+//-                     span= options.promotion
+//-         if  options.limited || options.vip
+//-             // 2023-01-13 change html for vip price and limited quantities
+//-             .price-box(class=`${subPriceStyle}`)
+//-                 if options.vip
+//-                     .c-price__flag--vip
+//-                         span VIP Price
+//-                 if options.limited
+//-                     .c-price__flag--limited
+//-                         span Limited Quantities
+//-                             //- span.qty 19
+//-         if !options.retailer && options.installment
+//-             .price-box(class=`${subPriceStyle}`)
+//-                 .c-price
+//-                     .c-price__installment.c-product-item__button
+//-                         // 2023-01-27 : Add role for tagging
+//-                         a(href="#" role="button") £699.99/mo for 3 mos at 0% or
+//-         if !options.retailer
+//-             .price-box 
+//-                 .c-price(class=`${priceStyle}`)
+//-                     .c-price__purchase £1,499.98
+//-                     .c-price__purchase 
+//-                         span.smallFont ￥
+//-                         span 99990.
+//-                         span.smallFont 00
+//-                 if !options.onlyPurchase
+//-                     .product-price(class=`${subPriceStyle}`)
+//-                         .c-price
+//-                             .c-price__previous £2,199.98
+//-                         .c-price
+//-                             if (options.discount)
+//-                                 .c-price__discount 
+//-                                     span= options.discount
+//-                             else
+//-                                 .c-price__discount 
+//-                                     span Save
+//-                                     span £2,199.98
+//-             .price-box
+//-                 .c-price
+//-                     .c-price__previous UVP €7,4990.00
+//-                 .c-price
+//-                         .c-price__discount 
+//-                             span 33% Rabatt
+//-             .price-box
+//-                 .infoTooltipWrap 
+//-                     .c-price__plus Plus $15.50 EHF
+//-                     .infoTooltipArea
+//-                         button.btnInfoTooltip 
+//-                             span.hidden Infomation 
+//-                         .infoTooltipNote Please note, the EHF fee associated with this item is based on the delivery address postal code. For more details on the EHF fee visit.
+//-                             .linkMore
+//-                                 a Learn More    
+//-                             span.bottomArrow
+//-                             button.btnClose 
+//-                                 span.hidden close
+                    
+//-         if !options.retailer && options.membership
+//-             .price-box(class=`${subPriceStyle}`)
+//-                 .c-price__flag--member
+//-                     span.flag LG Members only
+//-                     span= options.membership
+//-         if options.outOfStock || options.soldOut
+//-             // 2023-01-13 class changed for font size in sold out, out of stock
+//-             .price-box(class=`${soldOutStyle}`)
+//-                 if options.outOfStock
+//-                     .c-price__flag--notice
+//-                         span Out of stock
+//-                 if options.soldOut    
+//-                     .c-price__flag--notice
+//-                         span Sold out
+//-         if options.retailer
+//-             .price-box(class=`${retailerStyle}`) 
+//-                 .c-price__flag--retail See Retailer for Pricing
+
+mixin product_price(params)
+    - var options = {limited: false, retailerFontStyle : null, ...params}
+    - var priceStyle = options.priceFontStyle || "font-w-semibold-24 font-m-semibold-24"
+    - var subPriceStyle = options.subPriceFontStyle || "font-w-normal-14i font-m-normal-14i"
+    - var soldOutStyle = options.soldOutFontStyle || "font-w-semibold-20 font-m-semibold-20"
+    - var retailerStyle = options.retailerFontStyle || "font-w-semibold-16 font-m-semibold-14"
+    .price-area
+        if options.promotion
+            .price-box(class=`${subPriceStyle}`)
+                .c-price__flag--promotion
+                    span= options.promotion
+        if  options.limited || options.vip
+            // 2023-01-13 change html for vip price and limited quantities
+            .price-box(class=`${subPriceStyle}`)
+                if options.vip
+                    .c-price__flag--vip
+                        span VIP Price
+                if options.limited
+                    .c-price__flag--limited
+                        span It's a limited product so you should hurry!
+                            //- span.qty 19
+        if !options.retailer && options.installment
+            .price-box(class=`${subPriceStyle}`)
+                .c-price
+                    .c-price__installment.c-product-item__button
+                        // 2023-01-27 : Add role for tagging
+                        a(href="#" role="button") £699.99/mo for 3 mos at 0% or
+        if !options.retailer
+            .price-box
+                .product-price
+                    .c-price
+                        .c-price__price 
+                            span Ab 
+                    .c-price
+                        del.c-price__previous 
+                            span €7,4990.00
+                    .c-price
+                        .c-price__discount 
+                            span 33% Rabatt
+            .price-box
+                .c-price(class=`${priceStyle}`)
+                    .c-price__purchase £1,499.98
+                    //RO CN
+                    .c-price__purchase 
+                        span.smallFont ￥
+                        span 99990.
+                        span.smallFont 00
+                    //RO VN
+                    .c-price__purchase
+                        span 11.990.000
+                        sup.smallFont ₫
+                if !options.retailer && options.membership
+                    .product-price(class=`${subPriceStyle}`)
+                        .c-price__flag--member
+                            span.flag Members only
+                            span= options.membership
+        if !options.onlyPurchase
+            .price-box(class=`${subPriceStyle}`)
+                .c-price
+                    del.c-price__previous £2,199.98
+                .c-price
+                    if (options.discount)
+                        .c-price__discount
+                            span= options.discount
+                    else
+                        .c-price__discount
+                            span Save
+                            span £2,199.98
+                .c-price
+                    span £2,199.98 
+        if options.cashDiscount
+            // RO only BR
+            .price-box.cash_discount
+                .product-price
+                    .c-price
+                        .c-price__otherinfo à vista 5% off
+                    .c-price
+                        .c-price__discount 
+                            span R£1,959.98
+        if options.lowPrice30Days
+            // RO only CZ,PL
+            .price-box.low_price_30_days
+                .product-price
+                    .c-price
+                        .c-price__otherinfo Nejnižší cena za posledních 30 dní :
+                    .c-price
+                        .c-price__discount 
+                            span NN NNN Kč
+        if options.ehf
+            .price-box
+                .infoTooltipWrap 
+                    .c-price__plus Plus $15.50 EHF
+                    .infoTooltipArea
+                        button.btnInfoTooltip 
+                            span.hidden Infomation 
+                        .infoTooltipNote Please note, the EHF fee associated with this item is based on the delivery address postal code. For more details on the EHF fee visit.
+                            .linkMore
+                                a Learn More    
+                            span.bottomArrow
+                            button.btnClose 
+                                span.hidden close
+        if options.outOfStock || options.soldOut
+            // 2023-01-13 class changed for font size in sold out, out of stock
+            .price-box(class=`${soldOutStyle}`)
+                if options.outOfStock
+                    .c-price__flag--notice
+                        span Out of stock
+                if options.soldOut
+                    .c-price__flag--notice
+                        span Sold out
+        if options.retailer
+            .price-box(class=`${retailerStyle}`)
+                .c-price__flag--retail See Retailer for Pricing
+
+mixin product_cta(params)
+    - var options = {use2ndOnly : false, custom2ndBtn : {}, ...params}
+    - var defaultButtonName = (options.whereToBuy) ? "Where to Buy" : "Learn More"
+    - var pdpButtonName = "Buy Now"
+    .cta-wrap
+        //- 1st button
+        if(!options.use2ndOnly)
+            if(options.whereToBuy)
+                //- +linkButton({name: defaultButtonName, href:"/template/PDP.html#pdp_where"})
+                +defaultButton({name:defaultButtonName,wSize: 'medium', mSize: 'small',buttonStyle: 'default',isButton:false})(href="/template/PDP.html#pdp_where")
+            else
+                //- +linkButton({name: defaultButtonName, href: "/template/PDP.html"})
+                +defaultButton({name:defaultButtonName,wSize: 'medium', mSize: 'small',buttonStyle: 'default',isButton:false})(href="/template/PDP.html")
+        //- 2nd button
+        if(options.addCart)
+            +defaultButton({name:'Add to Cart',wSize: 'medium', mSize: 'small',buttonStyle: 'default',isButton:false, ...options.custom2ndBtn})
+            //- +linkButton({type:"box", color:"red", name: "Add to Cart", comment: false, ...options.custom2ndBtn})
+        else if(options.whereToBuy)
+            +defaultButton({name:defaultButtonName,wSize: 'medium', mSize: 'small',buttonStyle: 'default',isButton:false, ...options.custom2ndBtn})(href="/template/PDP.html#pdp_where")
+            //- +linkButton({type:"box-outlined", color:"black", href:"/template/PDP.html#pdp_where", name: defaultButtonName, comment: false, ...options.custom2ndBtn})
+        else if(options.outOfStock || options.soldOut)
+            +defaultButton({name:'Get Stock Alert',wSize: 'medium', mSize: 'small',buttonStyle: 'default',isButton:false, ...options.custom2ndBtn})(href="#popStockAlert" role="button")
+            //- +linkButton({type:"box", color:"gray6", name: "Get Stock Alert", href:"#popStockAlert", class:"js-pop-open", roleButton:"true", comment: false, ...options.custom2ndBtn})
+        else if(options.discontinued)
+        else
+            +defaultButton({name: pdpButtonName, wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false, ...options.custom2ndBtn})(href="/template/PBP.html" aria-label="label 필요시 제공")
+            //- +linkButton({type:"box", color:"red", name: pdpButtonName, href:"/template/PBP.html", comment: false, ...options.custom2ndBtn})
+
+mixin sampleCarouselList(num=4)
+    +productItemSlide(
+        {
+            flag:['New','Pre Order'],
+            promotion: "",
+            installment: true,
+            membership: '£1,866.98',
+            soldOut: false,
+            outOfStock: false ,
+            imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+            type:'inch',
+            groups:['55','66','77','55','66','77','55','66','77'],
+            sku:'GSJV70PZTF',
+            modelid: 'MD07553044',
+            ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+            grade:'f',
+            labels:true,
+            review: true,
+            wishlist:true
+        }
+    )
+    +productItemSlide(
+        {
+            flag:[],
+            promotion: "",
+            installment: true,
+            membership: '£1,866.98',
+            soldOut: false,
+            outOfStock: false ,
+            imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+            type:'inch',
+            groups:['55','66','77'],
+            sku:'GSJV70PZTF',
+            modelid: 'MD07535404',
+            ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+            grade:'f',
+            review: true,
+            wishlist:true,
+        }
+    )
+    +productItemSlide(
+        {
+            flag:['Pre Order'],
+            promotion: "",
+            installment: true,
+            membership: '£1,866.98',
+            soldOut: false,
+            outOfStock: false ,
+            imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+            type:'color',
+            groups:['HA_Black-Stainless-Steel', 'white', 'black', 'HA_Styler_Mirror', 'HA_REF_White','red','HE_RP4_Blue_Green'],
+            sku:'GSJV70PZTF',
+            modelid: 'MD07535502',
+            ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+            grade:'f',
+            review: true,
+            wishlist:true,
+        }
+    )
+    +productItemSlide(
+        {
+            flag:['New','Pre Order'],
+            promotion: "",
+            installment: true,
+            membership: '£1,866.98',
+            soldOut: false,
+            outOfStock: false ,
+            imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+            type:'color',
+            groups:['white','black','HE_RP4_Burgundy'],
+            sku:'GSJV70PZTF',
+            modelid: 'MD07536888',
+            ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+            grade:'f',
+            review: true,
+            wishlist:true,
+        }
+    )
+    - if(num > 4)
+        - for(var x = 0; x < num-4; x++)
+            +productItemSlide(
+                {
+                    flag:['New','Pre Order'],
+                    promotion: "",
+                    installment: true,
+                    membership: '£1,866.98',
+                    soldOut: false,
+                    outOfStock: false ,
+                    imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                    type:'color',
+                    groups:['white','black','steel'],
+                    sku:'GSJV70PZTF',
+                    modelid: 'MD07536888',
+                    ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                    grade:'a2',
+                    review: true,
+                    wishlist:true,
+                    labels:true
+                }
+            )
+
+mixin bundleCarouselList
+    +bundleItemSlide(
+        {
+            soldOut: false,
+            outOfStock: false ,
+            imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+            sku:'GSJV70PZTF',
+            modelid: 'MD07553044',
+            name:'American Fridge Freezer 635L Water & Ice Dispenser',
+        }
+    )
+    +bundleItemSlide(
+        {
+            installment: true,
+            membership: '£1,866.98',
+            soldOut: false,
+            outOfStock: false ,
+            imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+            sku:'GSJV70PZTF',
+            modelid: 'MD07535404',
+            name:'American Fridge Freezer 635L Water & Ice Dispenser',
+        }
+    )
+    +bundleItemSlide(
+        {
+            promotion: "Black Friday Promotion",
+            installment: true,
+            membership: '£1,866.98',
+            soldOut: false,
+            outOfStock: false ,
+            imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+            sku:'GSJV70PZTF',
+            modelid: 'MD07535502',
+            name:'American Fridge Freezer 635L Water & Ice Dispenser',
+        }
+    )
+    +bundleItemSlide(
+        {
+            flag:['New','Pre Order'],
+            promotion: "",
+            installment: true,
+            membership: '£1,866.98',
+            soldOut: false,
+            outOfStock: false ,
+            imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+            sku:'GSJV70PZTF',
+            modelid: 'MD07536888',
+            name:'American Fridge Freezer 635L Water & Ice Dispenser',
+        }
+    )
+

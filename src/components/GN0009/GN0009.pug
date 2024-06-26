@@ -1,0 +1,194 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_headline.pug
+include ../_common/_video.pug
+include ../_common/_title-area.pug
+include ../_common/_sns-list.pug
+
+block meta 
+    - var componentId = "GN0009"
+    - var componentName = "Press Image Gallery"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-gn.html") List
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+            
+    mixin galleryItem(type, text= true)
+        .cmp-carousel__item.swiper-slide
+            .c-gallery-picture
+                .c-gallery-inner
+                    case type
+                        when 1
+                            .image.c-image
+                                .cmp-image(data-cmp-data-layer='')
+                                    picture
+                                        source(media="(max-width: 768px)", srcset="https://via.placeholder.com/768x453/646464/000000")
+                                        source(media="(min-width: 769px)", srcset="https://via.placeholder.com/1440x850/646464/000000")
+                                        img.c-image__img(src='https://via.placeholder.com/1440x850/646464/000000', alt='', loading="lazy")
+                            +floating-video("brightcove")
+                        when 2
+                            .image.c-image
+                                .cmp-image(data-cmp-data-layer='')
+                                    picture
+                                        source(media="(max-width: 768px)", srcset="https://via.placeholder.com/768x453/646464/000000")
+                                        source(media="(min-width: 769px)", srcset="https://via.placeholder.com/1440x850/646464/000000")
+                                        img.c-image__img(src='https://via.placeholder.com/1440x850/646464/000000', alt='', loading="lazy")
+                            +floating-video("youtube")
+                        default
+                            .image.c-image
+                                .cmp-image(data-cmp-data-layer='')
+                                    picture
+                                        source(media="(max-width: 768px)", srcset="https://via.placeholder.com/768x453/646464/000000")
+                                        source(media="(min-width: 769px)", srcset="https://via.placeholder.com/1440x850/646464/000000")
+                                        img.c-image__img(src='https://via.placeholder.com/1440x850/646464/000000', alt='', loading="lazy")            
+            .c-gallery-text
+                if text 
+                    .text.c-text-contents
+                        .cmp-text.c-text-contents__bodycopy(data-cmp-data-layer="") 
+                            // 20223-01-13 change font size
+                            p.font-w-normal-24.font-m-normal-16 LG Delivers ‘Sustainable Life, Joy for All’ With Latest Home Solutions at IFA 2023. LG Smart Cottage, a compact, prefabricated home seamlessly integrating various appliances and technologies of LG
+                else
+
+        if block
+            block
+
+    mixin thumbItem(type)
+        case type
+            when 1
+                .cmp-carousel__item.swiper-slide.video-thumb
+                    .image.c-image
+                        .cmp-image(data-cmp-data-layer='')
+                            img.c-image__img(src='https://via.placeholder.com/220x130/bdb5a5/000000', alt='', loading="lazy")           
+            when 2
+                .cmp-carousel__item.swiper-slide.video-thumb
+                    .image.c-image
+                        .cmp-image(data-cmp-data-layer='')
+                            img.c-image__img(src='https://via.placeholder.com/220x130/bdb5a5/000000', alt='', loading="lazy")
+            default
+                .cmp-carousel__item.swiper-slide
+                    .image.c-image
+                        .cmp-image(data-cmp-data-layer='')
+                            img.c-image__img(src='https://via.placeholder.com/220x130/bdb5a5/000000', alt='', loading="lazy")
+        if block
+            block
+    
+    // Component Markup
+    mixin resourceList(typeList)
+        ul.downloadList.c-resources__item
+            each data, index in typeList
+                li
+                    a(href="#" role="download")
+                        .downloadList__item
+                            .c-resources__item--extension(class=`c-resources__item--extension-${data}`)
+                                span.sr-only=`extension : ${data}`
+                            if index == 0
+                                = `Download Title is overflowing.${data}`
+                            else
+                                = `Download Title.${data}`
+                        .c-resources__item--download-button.c-resources__item--download-button--icon
+                            .c-icon-button.c-icon-button--download
+                                span.sr-only Download
+
+    mixin multimedia-download        
+            .c-doc-date.c-text-contents__date
+                span.cmp-date.date.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") 31/03/2022
+                
+            .c-sns-share.c-print-area
+                .c-tooltip.c-downloadList
+                    .button
+                        //- +iconButton({type:"link",comment:false,color:"black",class:"download",name:"Download"})
+                        +iconButton({type:"button", color:"black",class:"download", otherClass:"c-tooltip__button", name:"Download", ariaControls:"download", expanded:"false"})
+                    .c-tooltip__container.top-right(id="download")
+                        .c-tooltip__contents
+                            //- download resource list
+                            //- +resourceList(["jpg", "jpg", "pdf", "pdf", "dwg", "zip", "txt"])
+                            +resourceList(["pdf", "pdf", "dwg", "zip", "txt"])
+                    //- block : tooltip
+                .c-tooltip.c-snsList
+                    .button
+                        +iconButton({type:"button",color:"black",class:"share",otherClass:"c-tooltip__button", name:"Share", ariaControls:"snsShare", expanded:"false"})
+                        
+                    .c-tooltip__container.top-right(id="snsShare")
+                        // 2022-11-04
+                        .c-tooltip__contents
+                            // sns list
+                            +snsList
+
+    .guide-text-type Press Image Gallery
+    .c-wrapper.type-download.margin-top.margin-bottom.bg-default(class=componentId)
+        .component
+            .cmp-container
+                +component-title-area({
+                    headline : {
+                        style: 'font-w-semibold-56 font-m-semibold-28',
+                        text : "Lorem ipsum dolor sit amet"
+                    },
+                })
+                .c-text-contents.c-attached-file
+                    .contents.c-text-contents__contentsline
+                        +multimedia-download
+                .c-gallery.c-gallery-container
+                    .carousel.panelcontainer
+                        .cmp-carousel.swiper.c-carousel.c-carousel--gallery(data-cmp-data-layer="")
+                            .cmp-carousel__content.swiper-wrapper
+                                +galleryItem(1)
+                                +galleryItem(2)
+                                +galleryItem()
+                                +galleryItem(1)
+                                +galleryItem(2)
+                                +galleryItem()
+                        .cmp-carousel.swiper.c-carousel.c-carousel--thumbnail(data-cmp-data-layer="")
+                            .cmp-carousel__content.swiper-wrapper
+                                +thumbItem(1)
+                                +thumbItem(2)
+                                +thumbItem()
+                                +thumbItem(1)
+                                +thumbItem(2)
+                                +thumbItem()
+                        .c-carousel__handler
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"prev"})
+                            +carouselPagination()
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"next"})
+

@@ -1,0 +1,126 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+
+block meta 
+    - var componentId = "CS0011"
+    - var componentName = "Step_DateTime"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-label="" aria-controls=`${controlsId}`)
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+    
+    mixin contentsBody(stepNumber)
+        // block - text contents
+        .c-text-contents.c-accordion__body-text
+            case stepNumber 
+                when 3
+                    .cs-form
+                        .cs-form__wrap
+                            .cmp-form
+                                label(for="reservationDate").c-select-label.font-m-normal-16.font-w-normal-16 Reservation date #[em.require *]#[span.sr-only Required Field]
+                                // Add class in case of error .c-error
+                                select#reservationDate.font-m-normal-16.font-w-normal-16(required="required" data-cmp-hook-formssearch="sort" aria-label="" aria-describedby="reservationDate")
+                                    option(value="Select Date" data-change-label="Select Date") Select date
+                                    option(value="Select Date-2" data-change-label="Select Date-2") Select date-2
+                                .c-warning Reservation date is required.
+
+                            .cmp-form
+                                label(for="timeSchedule").c-select-label.font-m-normal-16.font-w-normal-16 Time schedule #[em.require *]#[span.sr-only Required Field]
+                                // Add class in case of error .c-error
+                                // Add attribute in case of disable
+                                select#timeSchedule.font-m-normal-16.font-w-normal-16(required="required" data-cmp-hook-formssearch="sort" aria-label="" aria-describedby="timeSchedule" disabled="disabled")
+                                    option(value="Select Time" data-change-label="Select Time") Select time
+                                    option(value="Select Time-2" data-change-label="Select Time-2") Select time-2
+                                .c-warning Time schedule is required.
+                    .c-button-wrap
+                        .button.c-cta
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton:"none"})(role="button" class="c-check-date")
+
+    mixin contentsBody3(stepNumber)
+        // block - text contents
+        .c-text-contents.c-accordion__body-text
+            case stepNumber 
+                when 3
+                    .c-result__txtBox.font-m-normal-12.font-w-normal-16 My reservation date &amp; time : 
+                        br.c-hidden-pc
+                        | 11/26/2022 10:00 am ~ 11:00 am
+                    .button.c-cta
+                        +textButton({name: 'Edit', wSize: 'small', mSize: 'small', buttonStyle: 'default'})(role="button")
+
+    mixin pack(faq, stepNumber, controlsId)
+        .c-accordion__box.js-accordion-handle-target.c-mobile-accordion
+            .c-accordion__head
+                // block - text contents
+                // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+                //- .c-accordion__head-text.c-text-contents.c-step-active
+                .c-accordion__head-text.c-text-contents
+                    span.c-accordion__initial.font-m-normal-16.font-w-normal-20(aria-hidden="true") 
+                        span.c-accordion__step 
+                        span.c-accordion__head-flag.font-m-normal-14.font-w-semibold-18 
+                +trigger(controlsId)
+            // This area is accordion content. Please include only this area during development.
+            .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+                +contentsBody(stepNumber)
+    -
+        const stepList = [
+            {
+                'eyebrow': 'Your preferred date & time',
+                'stepNumber': 3
+            },
+        ]
+
+    mixin pack3(faq, stepNumber, controlsId)
+        // If you need to expand all the accordions on the result page, add a class .c-accordion__box--expand
+        // .c-accordion__box.js-accordion-handle-target.c-accordion__box--expand
+        .c-accordion__box.js-accordion-handle-target.c-accordion__box--expand
+            .c-accordion__head
+                // block - text contents
+                // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+                // .c-accordion__head-text.c-text-contents.c-step-active
+                .c-accordion__head-text.c-text-contents
+                    span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true") 
+                        span.c-accordion__step 
+                        span.c-accordion__head-flag.font-m-normal-14.font-w-semibold-18 
+                +trigger(controlsId)
+            .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+                +contentsBody3(stepNumber)
+
+    .guide-text-type Step_DateTime
+    
+    // 20230316 full markup change
+    // Component Markup
+    .c-wrapper.CS0011.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0011__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(faq, faq.stepNumber, controlsId)
+        
+    .guide-text-option Result
+    .c-wrapper.CS0011.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0011__container
+                // Add class when displaying result - .type-accordion__result
+                .c-accordion.js-accordion.type-accordion__result
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack3(faq, faq.stepNumber, controlsId)

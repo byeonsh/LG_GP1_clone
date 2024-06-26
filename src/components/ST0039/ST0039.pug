@@ -1,0 +1,165 @@
+extends ../_common/_layout.pug
+include ../_common/_image.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_carousel.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "ST0039"
+    - var componentName = "Link Icon - Text (Tab)"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                        '.cmp-container > .c-text-contents .c-text-contents__bodycopy' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            },
+                        ],
+                        '.cmp-tabs .c-text-contents__bodycopy' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            },
+                        ]
+                    };
+
+    // Component Markup
+    mixin image
+        // block : image
+        .image.c-image
+            +printLazyImage(`https://via.placeholder.com/360x360/999999/333333`)
+            if block
+                block
+
+    mixin img-contents
+        // block : media contents
+        // option : target (_blank or _self)
+        // GA4
+        a.c-media-contents(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+            // Image case
+            +image
+
+    mixin carouselItem(type)
+        .cmp-carousel__item.swiper-slide(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+            +img-contents
+            // block : text contents
+            .c-text-contents
+                .text.c-text-contents__bodycopy
+                    .cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")
+                        p Body text can be up to 200 characters. Lorem ipsum.
+            if block
+                block
+
+    mixin printTab(div, num, selected)
+        if selected
+            li.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0", data-cmp-hook-tabs="tab", aria-selected="true")
+                if block
+                    block
+        else 
+            li.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1", data-cmp-hook-tabs="tab", aria-selected="false")
+                if block
+                    block
+
+    mixin printTabPanel(div, num, selected)
+        if selected 
+            .cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+        else 
+            .cmp-tabs__tabpanel(id=`tabs-1-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-1-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+    
+    mixin printContents(num)
+        .carousel.panelcontainer.carousel-box
+            // block : carousel
+            .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                .cmp-carousel__content.swiper-wrapper
+                    - for (var x = 0; x < num; x++)
+                        +carouselItem
+                .c-carousel__handler
+                    .cmp-carousel__actions
+                        +carouselBtn({type:"pagination", direction:"prev"})
+                    +carouselPagination
+                    .cmp-carousel__actions
+                        +carouselBtn({type:"pagination", direction:"next"})
+
+    .c-wrapper.ST0039.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +component-title-area({
+                    headline : {
+                        style: 'font-w-light-56 font-m-light-28',
+                        text : "Title can be up to 30 characters"
+                    },
+                    description : {
+                        style : 'font-w-normal-24 font-m-normal-14',
+                        text : "Sub title can be up to 80 characters Sub title can be up to 80 characters"
+                    },
+                })(class="c-region-header--vacate-side")
+                .tabs.panelcontainer.tabs-margin
+                    .cmp-tabs(data-cmp-data-layer="", data-placeholder-text="false")
+                        .cmp-tabs__inner
+                            ul.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                +printTab(1, 1, true) tab menu name 1
+                                +printTab(1, 2, false) tab menu name 2
+                                +printTab(1, 3, false) tab menu name 3
+                                +printTab(1, 4, false) tab menu name 4
+                                +printTab(1, 5, false) tab menu name 5
+                        +printTabPanel(1, 1, true)
+                            +printContents(12)
+                        +printTabPanel(1, 2, false)
+                            +printContents(7)
+                        +printTabPanel(1, 3, false)
+                            +printContents(6)
+                        +printTabPanel(1, 4, false)
+                            +printContents(5)
+                        +printTabPanel(1, 5, false)
+                            +printContents(3)

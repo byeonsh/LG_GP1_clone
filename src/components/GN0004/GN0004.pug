@@ -1,0 +1,142 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_headline.pug
+include ../_common/_pop-msg.pug
+
+block meta 
+    - var componentId = "GN0004"
+    - var componentName = "Subscribe - Newsroom"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-gn.html") List
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+
+    mixin subscribeEmail(type, label, id, placeholder, labelSrOnly=false)
+        - var labelStyle = "font-w-normal-24 font-m-normal-16"
+        .c-input-item
+            label(for=`${id}` class=labelStyle class={'sr-only' : labelSrOnly})= label
+            input(type=`${type}` id=`${id}`, placeholder=`${placeholder}`)&attributes(attributes)
+
+    .guide-text-type Type1. Newsroom - Subscribe
+    .c-wrapper.margin-top.margin-bottom.border-top(class=componentId)
+        .component.type-subscribe
+            .cmp-container
+                //- block : text-contents
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        h1.cmp-title.font-w-semibold-56.font-m-semibold-28(data-cmp-data-layer="") Subscribe
+                    .text.c-text-contents__bodycopy 
+                        p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") Sign up to receive LG Newsroom announcements by email.
+                .c-subscribe-box
+                    .c-subscribe-box__form
+                        .c-subscribe-box__item
+                            .c-subscribe-box__item--input
+                                +subscribeEmail("email", "Email", "subscribeEmail", "Email account", false)
+                        .button.c-subscribe-box__button
+                            +defaultButton({name: 'Subscribe', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+                            +textButton({name: 'Click here to cancel your email subscription', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline: true, isButton: true})(class='font-family-headline c-button__subscribe--cancel')
+
+    .guide-text-type Type2. Newsroom - Unsubscribe
+    .c-wrapper.margin-top.margin-bottom(class=componentId)
+        .component.type-unsubscribe
+            .cmp-container
+                //- block : text-contents
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        h1.cmp-title.font-w-semibold-56.font-m-semibold-28(data-cmp-data-layer="") Enter your email to unsubscribe
+                .c-subscribe-box
+                    .c-subscribe-box__form
+                        .c-subscribe-box__item
+                            .c-subscribe-box__item--input
+                                +subscribeEmail("email", "Email", "unsubscribeEmail", "Email account", false)
+                        .button.c-subscribe-box__button
+                            +defaultButton({name: 'Confirm', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+    .guide-text-type GN0004 Popup
+    div(style="display: flex; gap: 20px; flex-wrap: wrap; padding: 10px 25px 25px; align-items: center;") 
+        .button.c-cta
+            +linkButton({href:"#popSample1", type:"box", color:"red", class:"js-pop-open", name:"Confirm Alert Sample1", roleButton:"true"})
+        .button.c-cta
+            +linkButton({href:"#popSample2", type:"box", color:"red", class:"js-pop-open", name:"Close Alert Sample2", roleButton:"true"})
+        .button.c-cta
+            +linkButton({href:"#popSample3", type:"box", color:"red", class:"js-pop-open", name:"Popup - Newsletter Unsubscribe", roleButton:"true"})
+        .button.c-cta
+            +linkButton({href:"#popSample4", type:"box", color:"red", class:"js-pop-open", name:"Popup - Newsletter Subscribe", roleButton:"true"})
+
+block modal
+    +printSimpleLayerPopup('popSample1', {desc: "Please enter the required information in the text area", btn: "Confirm", color: "red", btnCloseNone: false})
+    
+    +printSimpleLayerPopup('popSample2', {desc: "Please enter the required information in the text area Please enter the required information in the text area", btn: "Close", color: "default", btnCloseNone: false})
+    
+    +pop-msg-standard({id : `popSample3`, headline:"Newsletter Unsubscribe"})
+        .c-text-contents 
+            .text.c-text-contents__bodycopy
+                .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="")
+                    | Please click below to cancel your subscription to LG Newsroom email alerts. In a few minutes you will receive an email requesting confirmation of this cancellation.Please allow up to two weeks for your request to be processed.Thank you for your patience.
+        .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap--no-divide-on-mobile
+            +defaultButton({name: 'Cancel', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popSample3")
+            +defaultButton({name: 'Confirm', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+    
+    +pop-msg-standard({id : `popSample4`, headline:"Newsletter Subscribe", headerBorder: false, size:"medium"})
+        .c-pop-msg__contents.c-pop-msg__contents--popNewsSubscribe 
+            - var inLayer = true
+            .c-pop-msg__start-description
+                .c-text-contents__bodycopy
+                    +required-text-indicate
+            form(action="#" method="post").c-post-form                
+               .c-post-form__item
+                    .c-input-item
+                        +formCheckbox(false, name2 , value2, id+"2", disabled)(required = require)
+                            span.font-w-normal-16.font-m-normal-14.c-pop-msg__gray-form-agree
+                                //- | I agree with the data protection policy 
+                                | I have read and understand the 
+                                // GA4
+                                //- a.font-underline(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") read privacy policy
+                                a.font-underline(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Privacy Policy
+                                +required-text-sr
+                        +invalid-warning("Agreement check is not checked.", "aria-error-connection")       
+                    .post-info
+                        .cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")
+                            | The emails sent from the Global Newsroom are distinct from the marketing consent issued through LG.com and are used solely for newsletter distribution purposes. For more details, please refer to the 'Privacy Policy' on the Global website.
+        .button.c-pop-msg__button-wrap
+            +defaultButton({name: 'Cancel', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popSample4")
+            +defaultButton({name: 'Confirm', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(type="submit")

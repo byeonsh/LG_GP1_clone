@@ -1,0 +1,739 @@
+include ./CT0100-inc.pug
+
+mixin buyProductPrice(params)
+    - var priceStyle = params.priceFontStyle || "font-w-semibold-32 font-m-semibold-24"
+    - var subPriceStyle = params.subPriceFontStyle || "font-w-normal-14i font-m-normal-12"
+    - var soldOutStyle = params.soldOutFontStyle || "font-w-semibold-18 font-m-semibold-18"
+    - var subBenefitStyle = params.subBenefitFontStyle || "font-w-normal-16 font-m-normal-12"
+
+    if (params.productLabel)
+        // [Start] 2023-05-26 : UPDATE- UPDATE- Change markup level, change common mixin(product_rating)
+        .product-label__container
+            +product_rating(params.productLabel, modelid='MD07546559', specsheet=true, rating=false, catalog=false, summary=false, labels=false)
+        // [End] 2023-05-26 : UPDATE- UPDATE- Change markup level, change common mixin(product_rating)
+    .price-area
+        if(params.promotion)
+            .price-box(class=`${subPriceStyle}`)
+                .c-price__flag--promotion(class=params.promotion=="Limited Quantities" ? "limited" : "")
+                    span= params.promotion
+        if(params.vipPremierBenefit)
+            .price-box
+                .c-price
+                    ul.c-price__vipPremierBenefit-list
+                        each setData in params.vipPremierBenefit
+                            li.font-red(class=`${subBenefitStyle}`)
+                                span= setData
+        if(params.installment)
+            .price-box(class=`${subPriceStyle}`)
+                .c-price
+                    if(typeof params.installment === "number")
+                        - for(let i = 0; i < params.installment; i++)
+                            .c-price__installment.c-product-item__button
+                                a(href="#" role="button") 3 months 0% Installment<sup>*</sup>
+                    else if params.installmentText
+                        .c-price__installment.c-product-item__button
+                            a(href="#" role="button")= params.installmentText
+                    else if params.installmentTag
+                        .c-price__installment.c-product-item__button !{params.installmentTag}
+                    else if params.installmentImgText    
+                        each installmentImgText in params.installmentImgText  
+                            .c-price__installment.c-product-item__button
+                                a(href="#" role="button")= installmentImgText.installmentText
+                                    if installmentImgText.installmentImg
+                                        span.image.c-image-installment
+                                            img(src=`${installmentImgText.installmentImg}`)
+                    else
+                        .c-price__installment.c-product-item__button
+                            a(href="#" role="button") 3 months 0% Installment<sup>*</sup>
+        if(params.previousPriceVN)
+            .product-price.font-w-normal-14i.font-m-normal-14
+                .c-price
+                    .c-price__previous= params.previousPriceVN
+                        if (params.previousPriceVN && params.pricesup)
+                            sup.c-price__unit ₫
+        .price-box 
+            .c-price(class=`${priceStyle}`)
+                // [Start] 2023-05-30 : UPDATE -about product price
+                if (params.pricesup)
+                    .c-price__purchase
+                        span= params.pricesup
+                            sup.c-price__unit ₫
+                else
+                    .c-price__purchase= params.purchase
+                // [End] 2023-05-30 : UPDATE -about product price
+            //- [Start] 2023-09-13 : ADD- Includes $15 EHF fee
+            if params.includeEHF
+                span.c-price__EHF-fee.font-w-normal-16.font-m-normal-12 !{params.includeEHF}
+            //- [End] 2023-09-13 : ADD- Includes $15 EHF fee
+            if(!params.previousPriceVN && !params.discountVN)
+                .product-price(class=`${subPriceStyle}`)
+                    .c-price
+                        // [Start] 2023-05-30 : UPDATE -about product price
+                        //- .c-price__previous= params.previousPrice
+                        .c-price__previous= params.previousPrice
+                            if (params.previousPrice && params.pricesup)
+                                sup.c-price__unit ₫
+                        // [End] 2023-05-30 : UPDATE -about product price
+                    .c-price
+                        if (params.discount)
+                            .c-price__discount 
+                                span Save
+                                span= params.discount
+                                    // [Start] 2023-05-30 : UPDATE -about product price
+                                    if (params.discount && params.pricesup)
+                                        sup.c-price__unit ₫
+                                    // [Start] 2023-05-30 : UPDATE -about product price
+        if(params.discountVN)
+            .product-price.font-w-normal-14i.font-m-normal-14
+                .c-price
+                    if (params.discountVN)
+                        .c-price__discount 
+                            span= params.discountVN
+                                if (params.discountVN && params.pricesup)
+                                    sup.c-price__unit ₫
+        if(params.installmentBottom)
+            .price-box(class=`${subPriceStyle}`)
+                .c-price
+                    if(typeof params.installmentBottom === "number")
+                        - for(let i = 0; i < params.installmentBottom; i++)
+                            .c-price__installment.c-product-item__button
+                                a(href="#" role="button") Chỉ 1.412.016 VNĐ/tháng(12 tháng) với 0% lãi suất
+                    else if params.installmentText
+                        .c-price__installment.c-product-item__button
+                            a(href="#" role="button")= params.installmentText
+                    else if params.installmentTag
+                        .c-price__installment.c-product-item__button !{params.installmentTag}
+                    else
+                        .c-price__installment.c-product-item__button
+                            a(href="#" role="button") Chỉ 1.412.016 VNĐ/tháng(12 tháng) với 0% lãi suất
+        if (params.installmentPlus)
+            .price-box(class=`${subPriceStyle}`)
+                .c-price__installmentPlus
+                    span= params.installmentPlus
+        if(typeof params.membership === "object")
+            each item in params.membership
+                .price-box(class=`${subPriceStyle}`)
+                    .c-price__flag--member
+                        span.flag= item.title
+                        span= item.cost
+        else
+            if(params.membership)
+                .price-box(class=`${subPriceStyle}`)
+                    .c-price__flag--member
+                        span.flag LG Members only
+                        span= params.membership
+
+        if(params.outOfStock || params.soldOut)    
+            .price-box(class=`${soldOutStyle}`)
+                if(params.outOfStock)
+                    .c-price__flag--notice
+                        span Out of stock
+                if(params.soldOut)    
+                    .c-price__flag--notice
+                        span Sold out
+
+mixin product-card-info
+    .c-product-card-info.text
+        .cmp-text.c-product-card-info__text.font-w-normal-14.font-m-normal-12(data-cmp-data-layer="")
+            p You can pay with
+        .c-product-card-info__image
+            <svg width="360" height="18" viewBox="0 0 360 18" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <g clip-path="url(#clip0_66_364417)">
+                    <path d="M21.7929 0.317913L14.4959 17.7278H9.73513L6.14424 3.8339C5.92623 2.97813 5.73667 2.66462 5.07365 2.30408C3.99174 1.71682 2.20414 1.16614 0.631348 0.824179L0.738174 0.317913H8.40154C9.37836 0.317913 10.2565 0.968163 10.4783 2.09304L12.3747 12.1673L17.0618 0.317913H21.7929ZM40.4466 12.0436C40.4658 7.44859 34.0928 7.19546 34.1366 5.14282C34.1502 4.51812 34.745 3.85393 36.047 3.6844C36.6923 3.59993 38.4703 3.53549 40.487 4.46354L41.278 0.771636C40.1944 0.378294 38.8001 -0.000244141 37.0653 -0.000244141C32.6137 -0.000244141 29.4809 2.3662 29.4545 5.75475C29.4258 8.26111 31.6906 9.65973 33.3969 10.4926C35.1523 11.3454 35.7413 11.8935 35.7346 12.6564C35.7222 13.8242 34.3346 14.3398 33.0378 14.3601C30.7742 14.3949 29.4606 13.7476 28.4135 13.2608L27.5972 17.0749C28.6495 17.5576 30.5919 17.9789 32.6056 18C37.337 18 40.4321 15.6629 40.4466 12.0436ZM52.2016 17.728H56.367L52.7311 0.317913H48.8865C48.022 0.317913 47.2928 0.821276 46.97 1.59519L40.2118 17.7278H44.9409L45.88 15.127H51.6582L52.2019 17.7278L52.2016 17.728ZM47.1764 11.5591L49.5469 5.02235L50.9113 11.5591H47.1767H47.1764ZM28.228 0.317913L24.5039 17.7278H20.0004L23.7259 0.317913H28.228Z" fill="#1434CB"/>
+                </g>
+                <g clip-path="url(#clip1_66_364417)">
+                    <path d="M87.5338 17.7541V17.8004H87.577C87.5851 17.8005 87.5931 17.7985 87.6001 17.7945C87.6029 17.7925 87.6052 17.7899 87.6067 17.7868C87.6082 17.7837 87.6089 17.7803 87.6088 17.7768C87.6089 17.7734 87.6082 17.7701 87.6067 17.7671C87.6052 17.764 87.6029 17.7615 87.6001 17.7596C87.5931 17.7554 87.5851 17.7533 87.577 17.7537H87.5338V17.7541ZM87.5774 17.7214C87.5959 17.7203 87.6143 17.7256 87.6293 17.7364C87.6353 17.7414 87.6401 17.7476 87.6432 17.7548C87.6464 17.7619 87.6478 17.7696 87.6474 17.7774C87.6477 17.7841 87.6465 17.7907 87.644 17.797C87.6415 17.8032 87.6377 17.8088 87.6328 17.8134C87.6213 17.8234 87.6067 17.8295 87.5914 17.8306L87.6493 17.8965H87.6047L87.5515 17.8311H87.5343V17.8965H87.4971V17.7215H87.578L87.5774 17.7214ZM87.5659 17.9569C87.5854 17.9571 87.6048 17.9532 87.6227 17.9453C87.6399 17.9379 87.6556 17.9273 87.6689 17.914C87.6823 17.9007 87.6929 17.885 87.7003 17.8677C87.7155 17.8311 87.7155 17.7899 87.7003 17.7532C87.6928 17.736 87.6822 17.7203 87.6689 17.7069C87.6556 17.6937 87.6399 17.683 87.6227 17.6756C87.6047 17.6682 87.5853 17.6645 87.5659 17.6647C87.5461 17.6645 87.5264 17.6682 87.508 17.6756C87.4904 17.6829 87.4743 17.6935 87.4607 17.7069C87.4403 17.7279 87.4264 17.7545 87.4209 17.7833C87.4155 17.8121 87.4185 17.8418 87.4298 17.8689C87.4369 17.8862 87.4474 17.902 87.4607 17.9152C87.4743 17.9285 87.4904 17.9392 87.508 17.9465C87.5263 17.9543 87.546 17.9582 87.5659 17.9581M87.5659 17.6226C87.6167 17.6226 87.6655 17.6425 87.7018 17.6781C87.7193 17.6953 87.7332 17.7157 87.7427 17.7382C87.7526 17.7613 87.7577 17.7862 87.7577 17.8113C87.7577 17.8365 87.7526 17.8614 87.7427 17.8845C87.733 17.9069 87.7191 17.9273 87.7018 17.9445C87.684 17.9615 87.6634 17.9753 87.6408 17.985C87.6171 17.9951 87.5916 18.0002 87.5659 18.0001C87.5398 18.0002 87.514 17.9951 87.49 17.985C87.4672 17.9755 87.4463 17.9618 87.4286 17.9445C87.4113 17.9266 87.3976 17.9056 87.3882 17.8825C87.3783 17.8594 87.3732 17.8345 87.3732 17.8094C87.3732 17.7842 87.3783 17.7593 87.3882 17.7362C87.3978 17.7137 87.4117 17.6933 87.4292 17.6762C87.4467 17.6587 87.4676 17.6449 87.4906 17.6357C87.5146 17.6256 87.5404 17.6205 87.5665 17.6207M69.8546 16.9468C69.8546 16.6131 70.0732 16.3389 70.4305 16.3389C70.772 16.3389 71.0024 16.6013 71.0024 16.9468C71.0024 17.2923 70.772 17.5546 70.4305 17.5546C70.0732 17.5546 69.8546 17.2805 69.8546 16.9468ZM71.3916 16.9468V15.9971H70.9788V16.2285C70.8479 16.0575 70.6493 15.9503 70.3792 15.9503C69.8471 15.9503 69.4295 16.3676 69.4295 16.9472C69.4295 17.5268 69.8469 17.9442 70.3792 17.9442C70.6491 17.9442 70.8479 17.8368 70.9788 17.666V17.8965H71.3912V16.9468H71.3916ZM85.3404 16.9468C85.3404 16.6131 85.559 16.3389 85.9164 16.3389C86.2582 16.3389 86.4883 16.6013 86.4883 16.9468C86.4883 17.2923 86.2582 17.5546 85.9164 17.5546C85.5591 17.5546 85.3404 17.2805 85.3404 16.9468ZM86.8779 16.9468V15.2349H86.4647V16.2285C86.3338 16.0575 86.1352 15.9503 85.8651 15.9503C85.333 15.9503 84.9154 16.3676 84.9154 16.9472C84.9154 17.5268 85.3328 17.9442 85.8651 17.9442C86.1352 17.9442 86.3338 17.8368 86.4647 17.666V17.8965H86.8779V16.9468ZM76.5153 16.3194C76.7813 16.3194 76.9522 16.4862 76.9958 16.7799H76.0108C76.0548 16.5057 76.2213 16.3194 76.5154 16.3194M76.5236 15.9492C75.9673 15.9492 75.578 16.3541 75.578 16.9462C75.578 17.5499 75.9829 17.9431 76.5513 17.9431C76.8372 17.9431 77.0991 17.8718 77.3295 17.6771L77.1272 17.3712C76.968 17.4984 76.7654 17.5698 76.5749 17.5698C76.3088 17.5698 76.0666 17.4466 76.007 17.1048H77.4167C77.4208 17.0534 77.4249 17.0016 77.4249 16.9461C77.4208 16.3542 77.0548 15.9491 76.5234 15.9491M81.5076 16.9461C81.5076 16.6124 81.7262 16.3382 82.0835 16.3382C82.425 16.3382 82.6554 16.6006 82.6554 16.9461C82.6554 17.2916 82.425 17.5539 82.0835 17.5539C81.7262 17.5539 81.5075 17.2798 81.5075 16.9461M83.0445 16.9461V15.9971H82.6319V16.2285C82.5005 16.0575 82.3023 15.9503 82.0323 15.9503C81.5002 15.9503 81.0826 16.3676 81.0826 16.9472C81.0826 17.5268 81.4999 17.9442 82.0323 17.9442C82.3023 17.9442 82.5005 17.8368 82.6319 17.666V17.8965H83.0446V16.9468L83.0445 16.9461ZM79.1763 16.9461C79.1763 17.522 79.5772 17.943 80.1891 17.943C80.475 17.943 80.6655 17.8794 80.8715 17.7167L80.6733 17.383C80.5183 17.4943 80.3555 17.5539 80.1759 17.5539C79.8463 17.5499 79.604 17.3116 79.604 16.9461C79.604 16.5806 79.8463 16.3424 80.1759 16.3382C80.3551 16.3382 80.5178 16.3978 80.6733 16.5092L80.8715 16.1755C80.6652 16.0127 80.4747 15.9491 80.1891 15.9491C79.5772 15.9491 79.1763 16.37 79.1763 16.9461ZM84.4982 15.9491C84.26 15.9491 84.1049 16.0605 83.9977 16.2273V15.9971H83.5886V17.8955H84.0019V16.8313C84.0019 16.5172 84.1369 16.3426 84.4067 16.3426C84.4951 16.3414 84.5828 16.3576 84.6649 16.3904L84.7921 16.0013C84.7007 15.9653 84.5816 15.9495 84.498 15.9495M73.4326 16.1481C73.234 16.0171 72.9603 15.9495 72.6584 15.9495C72.1775 15.9495 71.8678 16.18 71.8678 16.5572C71.8678 16.8667 72.0984 17.0577 72.5229 17.1173L72.7179 17.145C72.9442 17.1768 73.0511 17.2364 73.0511 17.3436C73.0511 17.4904 72.9008 17.5742 72.6184 17.5742C72.3325 17.5742 72.1261 17.4828 71.987 17.3756L71.793 17.6975C72.0194 17.8643 72.3053 17.9438 72.6149 17.9438C73.1632 17.9438 73.4809 17.6857 73.4809 17.3242C73.4809 16.9905 73.2309 16.8159 72.8177 16.7564L72.6231 16.7282C72.4444 16.705 72.3012 16.669 72.3012 16.5418C72.3012 16.403 72.4362 16.3195 72.6627 16.3195C72.905 16.3195 73.1396 16.4109 73.2546 16.4822L73.4333 16.1485L73.4326 16.1481ZM78.7593 15.9498C78.5211 15.9498 78.366 16.0612 78.2592 16.228V15.9971H77.8501V17.8955H78.2629V16.8313C78.2629 16.5172 78.3979 16.3426 78.6678 16.3426C78.7562 16.3414 78.8439 16.3576 78.926 16.3904L79.0532 16.0013C78.9618 15.9653 78.8427 15.9495 78.7591 15.9495M75.2365 15.9971H74.5614V15.4212H74.1441V15.9971H73.759V16.3744H74.1441V17.2405C74.1441 17.6809 74.315 17.9433 74.8034 17.9433C74.9826 17.9433 75.1889 17.8877 75.3199 17.7965L75.2006 17.443C75.0774 17.5144 74.9424 17.5503 74.8351 17.5503C74.6287 17.5503 74.5614 17.4231 74.5614 17.2326V16.3748H75.2365V15.9971ZM69.0645 17.896V16.7046C69.0645 16.2559 68.7785 15.954 68.3176 15.9499C68.0753 15.9459 67.8253 16.0213 67.6503 16.2877C67.5194 16.0772 67.313 15.9499 67.0229 15.9499C66.8201 15.9499 66.622 16.0095 66.4669 16.2318V15.9971H66.0537V17.8955H66.4701V16.8429C66.4701 16.5134 66.6529 16.3382 66.9351 16.3382C67.2092 16.3382 67.3479 16.5169 67.3479 16.8387V17.8953H67.7653V16.8427C67.7653 16.5131 67.9558 16.338 68.2298 16.338C68.5117 16.338 68.6462 16.5167 68.6462 16.8385V17.895L69.0645 17.896Z" fill="#231F20"/>
+                    <path d="M87.7693 11.5811V11.3035H87.697L87.6133 11.494L87.5302 11.3035H87.4577V11.5811H87.509V11.3719L87.5872 11.5524H87.6404L87.7186 11.3715V11.5811H87.7695H87.7693ZM87.3106 11.5811V11.351H87.4032V11.3042H87.1667V11.351H87.2593V11.5811H87.3102H87.3106Z" fill="#F79410"/>
+                    <path d="M79.5525 12.7716H73.2964V1.52856H79.5526L79.5525 12.7716Z" fill="#FF5F00"/>
+                    <path d="M73.6928 7.15033C73.6928 4.86968 74.7607 2.83807 76.4236 1.52881C75.1649 0.536305 73.608 -0.00236066 72.0051 7.77699e-06C68.0565 7.77699e-06 64.8557 3.20127 64.8557 7.15033C64.8557 11.0994 68.0565 14.3007 72.0051 14.3007C73.6081 14.3031 75.1649 13.7644 76.4237 12.7719C74.7609 11.4628 73.6928 9.4311 73.6928 7.15033Z" fill="#EB001B"/>
+                    <path d="M87.9926 7.15033C87.9926 11.0994 84.7918 14.3007 80.8432 14.3007C79.2401 14.303 77.683 13.7644 76.4241 12.7719C78.0874 11.4626 79.1553 9.4311 79.1553 7.15033C79.1553 4.86957 78.0874 2.83807 76.4241 1.52881C77.683 0.536335 79.24 -0.00231915 80.8431 7.50572e-06C84.7917 7.50572e-06 87.9925 3.20127 87.9925 7.15033" fill="#F79E1B"/>
+                </g>
+                <g clip-path="url(#clip2_66_364417)">
+                    <path d="M97.1143 0.495972L97.2073 17.4381L108.732 17.3722C109.944 17.2493 111.309 16.9597 112.262 16.2174C112.786 15.8098 113.308 15.2704 113.649 14.5782V17.4032L122.105 17.3412C128.942 16.8828 131.258 12.1644 131.223 9.07164C131.187 5.84731 129.049 0.892366 121.353 0.526973L113.649 0.495972V10.8C113.194 9.79397 112.215 8.81491 110.111 8.23074C111.707 7.32033 112.426 5.90024 112.258 4.40986C112.099 2.992 111.495 1.06242 107.794 0.557974L97.1143 0.495972ZM105.601 2.73192C107.723 3.11389 108.145 4.3155 108.151 5.22364C108.156 6.21071 107.599 7.50245 105.601 7.60297L101.059 7.58747V2.76293L105.601 2.73192ZM117.749 2.74743L120.226 2.7823C125.115 2.7225 126.695 6.18695 126.678 8.98252C126.663 11.3045 125.729 15.1655 120.226 15.1517L117.687 15.1207L117.749 2.74743ZM106.93 9.8273C109.092 10.0474 109.901 11.3067 109.953 12.4585C109.998 13.4735 109.523 14.9722 106.992 15.1672H101.075V9.8893L106.93 9.8273Z" fill="#0B2972"/>
+                    <path d="M138.621 0C133.094 0 128.615 4.0318 128.615 9.00194C128.615 13.9721 133.094 18 138.621 18C144.148 18 148.63 13.9721 148.63 9.00194C148.63 4.0318 144.148 0 138.621 0ZM138.675 2.03057C141.864 2.03057 144.449 5.12444 144.449 8.93994C144.449 12.7554 141.864 15.8493 138.675 15.8493C135.486 15.8493 132.901 12.7554 132.901 8.93994C132.901 5.12444 135.486 2.03057 138.675 2.03057Z" fill="#FFB20C"/>
+                </g>
+                <g clip-path="url(#clip3_66_364417)">
+                    <rect x="155" width="70.6154" height="18" fill="url(#pattern0_66_364417)"/>
+                </g>
+                <g clip-path="url(#clip4_66_364417)">
+                    <path d="M246.676 17.8517L245.186 15.5779H243.696V17.8517H241.747V10.0134H245.172C247.121 10.0134 248.42 11.0725 248.42 12.7674C248.432 13.2408 248.314 13.7084 248.08 14.1201C247.847 14.5319 247.505 14.8723 247.093 15.1049L248.936 17.8517H246.676ZM243.696 13.8337H245.136C245.884 13.8337 246.47 13.4172 246.47 12.7746C246.47 12.1392 245.884 11.7367 245.136 11.7367H243.696V13.8337ZM251.845 11.7097V13.136H255.326V14.8025H251.845V16.164H255.82V17.8589H249.896V10.0202H255.82V11.7151L251.845 11.7079V11.7097ZM264.513 13.9129C264.513 16.2432 262.749 17.8531 260.283 17.8531H257.134V10.0134H260.284C262.748 10.0134 264.513 11.6165 264.513 13.9115L264.513 13.9129ZM262.543 13.9129C262.54 13.6222 262.479 13.3349 262.363 13.0682C262.247 12.8016 262.079 12.561 261.868 12.3607C261.657 12.1604 261.408 12.0046 261.136 11.9025C260.864 11.8003 260.574 11.754 260.283 11.7662H259.083V16.1021H260.284C260.577 16.112 260.87 16.0626 261.144 15.9569C261.418 15.8512 261.668 15.6914 261.879 15.4869C262.09 15.2824 262.257 15.0375 262.371 14.7668C262.486 14.4961 262.544 14.2052 262.543 13.9115L262.543 13.9129ZM267.535 10.0148V17.8531H265.586V10.0134L267.535 10.0148ZM274.999 11.759H272.747V17.8603H270.812V11.7576H268.558V10.0134H274.998V11.7576L274.999 11.759ZM238.576 15.035C238.434 15.3909 238.183 15.6933 237.861 15.8999C237.538 16.1065 237.159 16.2069 236.776 16.187C236.189 16.1722 235.631 15.9286 235.221 15.5083C234.811 15.0879 234.582 14.5241 234.582 13.937C234.582 13.35 234.811 12.7861 235.221 12.3658C235.631 11.9455 236.189 11.7019 236.776 11.687C237.159 11.6659 237.539 11.7658 237.862 11.9725C238.185 12.1793 238.435 12.4824 238.576 12.839H240.638C240.235 11.0455 238.759 9.86616 236.782 9.86616C234.417 9.864 232.63 11.574 232.63 13.932C232.63 16.29 234.417 18 236.783 18C238.76 18 240.236 16.8206 240.638 15.0271C240.638 15.034 238.576 15.034 238.576 15.034L238.576 15.035ZM240.172 0.347042V8.18532H238.237V5.24772H235.046V8.18532H233.097V0.345959H235.046V3.4956H238.237V0.345959L240.172 0.347042ZM262.578 8.18532H260.629V4.25124L258.885 6.93468V6.94872H257.805V6.93468L256.053 4.22316L256.067 8.17776H254.119V0.339121H255.574L258.349 4.52664L261.131 0.339121H262.586L262.579 8.1846L262.578 8.18532ZM266.144 2.04192V3.46824H269.625V5.12784H266.146V6.4908H270.122V8.18568H264.196V0.345959H270.12V2.04084L266.144 2.04192ZM247.142 0C244.042 0 241.528 2.394 241.528 5.34564C241.527 6.35532 241.824 7.3428 242.382 8.18424H245.086C244.516 7.75351 244.095 7.15436 243.883 6.47145C243.672 5.78855 243.68 5.05643 243.907 4.37854C244.134 3.70066 244.569 3.11129 245.149 2.69372C245.729 2.27614 246.426 2.05148 247.141 2.05148C247.856 2.05148 248.553 2.27614 249.133 2.69372C249.714 3.11129 250.148 3.70066 250.375 4.37854C250.602 5.05643 250.611 5.78855 250.399 6.47145C250.188 7.15436 249.767 7.75351 249.196 8.18424H251.901C252.458 7.34263 252.756 6.35526 252.755 5.34564C252.755 2.39364 250.248 0 247.141 0H247.142ZM245.306 6.22116C245.43 6.61255 245.676 6.95424 246.007 7.19675C246.338 7.43925 246.738 7.56998 247.149 7.56998C247.56 7.56998 247.96 7.43925 248.291 7.19675C248.622 6.95424 248.868 6.61255 248.992 6.22116H245.306Z" fill="#E11931"/>
+                </g>
+                <g clip-path="url(#clip5_66_364417)">
+                    <path d="M288.1 17.2C288.8 17.2 289.6 17.2 290.3 16.9C291 16.6 291.7 16.4 292.2 15.9C292.7 15.4 293.2 14.8 293.6 13.9C294 13 294.1 12 294.1 10.7C294.1 8.70002 293.6 7.20002 292.7 6.20002C291.8 5.20002 290.4 4.60002 288.6 4.60002C286.8 4.60002 287.9 4.60002 287.4 4.70002C286.9 4.80002 286.5 4.90002 286 5.10002C286 5.10002 285.8 5.10002 285.7 5.10002H285.5C285.5 5.20002 285.5 -0.0999756 285.5 -0.0999756H283V14.4C283 15 283.1 15.4 283.4 15.8C283.7 16.2 284.1 16.4 284.5 16.6C285 16.8 285.5 16.9 286.1 17C286.7 17 287.3 17.1 288 17.1L288.1 17.2ZM288 15C287.6 15 287.2 15 286.9 15C286.6 15 286.2 14.8 286 14.7C285.8 14.6 285.6 14.3 285.6 14V7.50002C286 7.30002 286.5 7.10002 287 7.00002C287.5 6.90002 287.9 6.80002 288.4 6.80002C289.2 6.80002 289.8 7.00002 290.2 7.30002C290.6 7.60002 291 8.10002 291.3 8.70002C291.5 9.30002 291.7 10.1 291.7 11C291.7 11.9 291.7 12.5 291.4 13.1C291.2 13.7 290.9 14.2 290.3 14.6C289.8 15 289.1 15.2 288.1 15.2L288 15ZM299.1 2.90002V0.600024H296.4V2.90002H299.1ZM299 16.9V4.90002H296.5V16.9H299ZM304.5 16.9V0.300024H302V16.9H304.5ZM310 16.9V0.300024H307.5V16.9H310Z" fill="#1D37A4"/>
+                    <path d="M318.1 17.2C319 17.2 319.8 17.2 320.5 17C321.2 16.8 321.8 16.7 322.4 16.4V14.1C322.1 14.2 321.8 14.4 321.4 14.5C321 14.6 320.6 14.8 320.1 14.9C319.6 15 319.1 15 318.6 15C317.4 15 316.5 14.7 315.8 14C315.3 13.4 315 12.6 314.9 11.5H323.4C323.4 10.3 323.3 9.19998 323 8.19998V7.89998C322.5 6.89998 322 6.09998 321.2 5.49998C320.4 4.89998 319.4 4.59998 318.1 4.59998C316.8 4.59998 315 5.09998 314 6.19998C313 7.29998 312.5 8.89998 312.5 11C312.5 13.1 312.7 13.5 313.2 14.5C313.7 15.5 314.3 16.2 315.2 16.6C316.1 17.1 317.1 17.3 318.3 17.3L318.1 17.2ZM320.7 9.59998H314.9C314.9 9.19998 315 8.89998 315.1 8.59998V8.39998C315.4 7.79998 315.7 7.29998 316.2 7.09998C316.7 6.89998 317.2 6.69998 317.8 6.69998C318.8 6.69998 319.5 6.99998 320 7.59998C320.4 7.99998 320.6 8.69998 320.7 9.49998V9.69998V9.59998ZM330 17.2C331.1 17.2 332 17.2 332.8 17C333.6 16.8 334.3 16.6 334.8 16.1C335.3 15.6 335.5 15.1 335.5 14.3V8.49998C335.5 7.89998 335.5 7.39998 335.2 6.89998C334.9 6.39998 334.8 6.09998 334.5 5.79998C334.2 5.49998 333.8 5.19998 333.4 5.09998C333 4.99998 332.6 4.79998 332.1 4.69998C331.6 4.59998 331.2 4.59998 330.7 4.59998C329.8 4.59998 328.9 4.59998 328 4.89998C327.1 5.19998 326.5 5.29998 326 5.59998V7.99998C326.5 7.59998 327.1 7.29998 327.8 7.09998C328.5 6.89998 329.2 6.79998 329.9 6.79998C330.6 6.79998 331.6 6.99998 332.1 7.39998C332.6 7.79998 332.9 8.39998 332.9 9.29998V10.4H332.7C332.7 10.3 332.6 10.2 332.5 10.2H332.3C331.9 9.89998 331.5 9.79998 331 9.69998C330.5 9.59998 330 9.59998 329.4 9.59998C328.5 9.59998 327.7 9.69998 327 9.99998C326.3 10.3 325.8 10.7 325.5 11.3C325.2 11.9 325 12.6 325 13.5C325 14.4 325.1 14.9 325.4 15.4C325.7 15.9 326.1 16.3 326.5 16.6C326.9 16.9 327.5 17.1 328.1 17.2C328.7 17.3 329.3 17.4 329.9 17.4L330 17.2ZM330.3 15.3C329.9 15.3 329.4 15.3 329 15.1C328.6 15 328.3 14.7 328 14.5C327.7 14.2 327.6 13.8 327.6 13.3C327.6 12.8 327.8 12.2 328.3 11.9C328.8 11.6 329.5 11.4 330.4 11.4C331.3 11.4 331.7 11.4 332.3 11.7C332.6 11.7 332.8 11.8 333 11.9V14.3C333 14.7 332.8 15 332.5 15.1H332.4C332 15.3 331.3 15.3 330.3 15.3ZM342 17.2C342.8 17.2 343.5 17.1 344.3 16.8C345.1 16.5 345.6 16.1 346.1 15.6C346.6 15 346.8 14.3 346.8 13.4C346.8 12.7 346.7 12.2 346.5 11.8C346.3 11.4 346 11 345.6 10.8C345.2 10.6 344.8 10.3 344.4 10.2C344 10.1 343.6 9.89998 343.2 9.79998C342.8 9.69998 342.4 9.49998 342 9.39998C341.6 9.29998 341.3 9.09998 341.1 8.89998C340.9 8.69998 340.8 8.39998 340.8 7.99998C340.8 7.59998 341 7.19998 341.4 6.99998C341.8 6.79998 342.3 6.69998 343 6.69998C343.7 6.69998 344.3 6.79998 344.8 6.99998C345.3 7.19998 345.9 7.49998 346.4 7.79998V5.59998C345.9 5.29998 345.3 5.09998 344.8 4.89998C344.3 4.69998 343.6 4.59998 342.7 4.59998C342.2 4.59998 341.7 4.59998 341.1 4.79998C340.5 4.99998 340.1 5.19998 339.6 5.39998C339.2 5.69998 338.8 6.09998 338.5 6.59998C338.2 7.09998 338.1 7.59998 338.1 8.29998C338.1 8.99998 338.2 9.39998 338.4 9.79998C338.6 10.2 338.9 10.6 339.3 10.8C339.7 11 340.1 11.3 340.5 11.4C340.9 11.6 341.4 11.7 341.8 11.8C342.2 11.9 342.6 12.1 343 12.2C343.4 12.3 343.7 12.5 343.9 12.7C344.1 12.9 344.3 13.2 344.3 13.6C344.3 14 344.1 14.4 343.7 14.7C343.3 15 342.8 15.1 342.1 15.1C341.4 15.1 341.1 15.1 340.6 14.9C340.2 14.8 339.7 14.6 339.3 14.4C338.9 14.2 338.5 14 338.1 13.7V16.1C338.7 16.4 339.3 16.6 339.9 16.8C340.5 17 341.2 17.1 342.1 17.1L342 17.2ZM354.3 17.2C355.2 17.2 356 17.2 356.7 17C357.4 16.8 358 16.7 358.6 16.4V14.1C358.3 14.2 358 14.4 357.6 14.5C357.2 14.7 356.8 14.8 356.3 14.9C355.8 15 355.3 15 354.8 15C353.6 15 352.7 14.7 352 14C351.5 13.4 351.2 12.6 351.1 11.5H359.6C359.6 10.3 359.5 9.19998 359.2 8.19998V7.89998C358.7 6.89998 358.2 6.09998 357.4 5.49998C356.6 4.89998 355.6 4.59998 354.3 4.59998C353 4.59998 351.2 5.09998 350.2 6.19998C349.2 7.29998 348.7 8.89998 348.7 11C348.7 13.1 348.9 13.5 349.4 14.5C349.9 15.5 350.5 16.2 351.4 16.6C352.3 17.1 353.3 17.3 354.5 17.3L354.3 17.2ZM356.9 9.59998H351.1C351.1 9.19998 351.2 8.89998 351.3 8.59998V8.39998C351.6 7.79998 351.9 7.29998 352.4 7.09998C352.9 6.89998 353.4 6.69998 354 6.69998C355 6.69998 355.7 6.99998 356.2 7.59998C356.6 7.99998 356.8 8.69998 356.9 9.49998V9.69998V9.59998Z" fill="#F63F3F"/>
+                </g>
+                <defs>
+                    <pattern id="pattern0_66_364417" patternContentUnits="objectBoundingBox" width="1" height="1">
+                        <use xlink:href="#image0_66_364417" transform="matrix(0.010084 0 0 0.0395604 -0.0380835 -0.153846)"/>
+                    </pattern>
+                    <clipPath id="clip0_66_364417">
+                        <rect width="55.7356" height="18" fill="white" transform="translate(0.631348)"/>
+                    </clipPath>
+                    <clipPath id="clip1_66_364417">
+                        <rect width="24.7474" height="18" fill="white" transform="translate(64.3669)"/>
+                    </clipPath>
+                    <clipPath id="clip2_66_364417">
+                        <rect width="51.516" height="18" fill="white" transform="translate(97.1143)"/>
+                    </clipPath>
+                    <clipPath id="clip3_66_364417">
+                        <rect width="68" height="18" fill="white" transform="translate(156.63)"/>
+                    </clipPath>
+                    <clipPath id="clip4_66_364417">
+                        <rect width="42.3695" height="18" fill="white" transform="translate(232.63)"/>
+                    </clipPath>
+                    <clipPath id="clip5_66_364417">
+                        <rect width="77" height="18" fill="white" transform="translate(283)"/>
+                    </clipPath>
+                    <image id="image0_66_364417" width="107" height="35" xlink:href="data:image/png;base64,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"/>
+                </defs>
+            </svg>
+
+mixin CT0100(option=false, empty=false, zipcode=false)
+    .c-wrapper.no-crop.CT0100
+        .component
+            .fluid-container
+                // 2023-05-31 : UPDATE - added total area type zipcode 
+                .my-component.buy-summary-area
+                    //- div(class=`${zipcode === true ? 'my-component buy-summary-area buy-summary-area--zipcode' : 'my-component buy-summary-area'}`)
+                    .buy-summary-area__primary
+                        if(option === false || option === "Guest" || option === "other")
+                            .my-component__header
+                                +buyBasket({num:'9'})
+                                // [Start] 2023-04-03 : ADD - All checkbox 추가			
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                                // [End] 2023-04-03 : ADD - All checkbox 추가			
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '0',
+                                        name: "OLW480B",
+                                        inStock : true,
+                                        applyCoupon:true,
+                                        purchase: '₱ 2,099.98',
+                                        installment: true,
+                                        installmentTag:'3 months 0% Installment*',
+                                        productLabel: false,
+                                    })
+                                // [Start] 2023-05-24 : UPDATE- productLabel name
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock : true,
+                                        purchase: '₱ 2,099.98',
+                                        installment: true,
+                                        installmentTag:'3 months 0% Installment*',
+                                        productLabel: false,
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        inStock : true,
+                                        plag:"Pre Order",
+                                        deliveryStartDate:"02/01/2023",
+                                        purchase: '₱ 2,099.98',
+                                        installment: true,
+                                        installmentTag:'3 months 0% Installment*',
+                                        productLabel: false,
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        inStock : true,
+                                        title:"LG TONE Free UFP8 - Enhanced Active Noise Cancelling True Wireless Bluetooth UVnano Earbuds / white / Delivery only / 2 years / Delivery only",
+                                        purchase: '₱ 209.00',
+                                        installment: true,
+                                        installmentTag:'3 months 0% Installment*',
+                                        productLabel: false,
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '4',
+                                        name: "OLW480B",
+                                        inStock : true,
+                                        title:"2022 Magic Remote",
+                                        purchase: '₱ 24.50',
+                                        installment: true,
+                                        installmentTag:'3 months 0% Installment*',
+                                        productLabel: false,
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '5',
+                                        name: "OLED65C25LB",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ®(64.5'' Diag)IntGel® core™ i7 / 16GB / 2TB / Intel®  Iris® Plus Graphics / Noble Steel / Services A​ / 2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '₱ 2,099.98',
+                                        accBtn: true,
+                                        applyCoupon: true,
+                                        installment: true,
+                                        installmentTag:'3 months 0% Installment*',
+                                        bundle: [
+                                            {
+                                                name: "OLED65C25LB",
+                                                title: "LG LED65C25LB.AEU",
+                                            },
+                                            {
+                                                name: "sp8ya",
+                                                title: "LG Soundbar SP8YA",
+                                            },
+                                        ]
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '5',
+                                        name: "OLED65C25LB",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ®(64.5'' Diag)IntGel® core™ i7 / 16GB / 2TB / Intel®  Iris® Plus Graphics / Noble Steel / Services A​ / 2 years / Delivery",
+                                        outStock : true,
+                                        purchase: '₱ 2,099.98',
+                                        accBtn: true,
+                                        applyCoupon: true,
+                                        installment: true,
+                                        installmentTag:'3 months 0% Installment*',
+                                        bundle: [
+                                            {
+                                                name: "OLED65C25LB",
+                                                title: "LG LED65C25LB.AEU",
+                                            },
+                                            {
+                                                name: "sp8ya",
+                                                title: "LG Soundbar SP8YA",
+                                            },
+                                        ]
+                                    })
+                                // [End] 2023-05-24 : UPDATE- productLabel name
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Estimated to arrive within 3-5 business days. Delivery time may vary depending on circumstances.
+                        if(option === "unit")
+                            .my-component__header
+                                +buyBasket({num:'3'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '2,099.98€',
+                                        accBtn:true,
+                                        bundleBtn : false,
+                                        applyCoupon: true,
+                                        installment: true
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '2,099.98€',
+                                        outStock : false,
+                                        accBtn: true,
+                                        noCoupon: true,
+                                        installment: true
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        purchase: '2,099.98€',
+                                        accBtnDis: true,
+                                        bundleBtn : false,
+                                        installment: true,
+                                    })
+                                
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Membership benefits, Receive an extra 2% membership discount, Free Delivery for All 
+                                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="") LG.com
+                                |  orders
+                        if(option === "sup")
+                            .my-component__header
+                                +buyBasket({num:'3'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        pricesup: '2,099.98',
+                                        accBtn: true, 
+                                        bundleBtn : false,
+                                        applyCoupon: true,
+                                        installment: true,
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        pricesup: '2,099.98',
+                                        outStock : false,
+                                        accBtn: true,
+                                        noCoupon: true,
+                                        installment: true
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        pricesup: '2,099.98',
+                                        accBtnDis: true,
+                                        bundleBtn : false,
+                                        installment: true
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '4',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        pricesup: '2,099.98',
+                                        accBtn:true,
+                                        bundleBtn : false,
+                                        applyCoupon: true,
+                                        installmentBottom: true,
+                                        productLabel: false,
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '5',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        pricesup: '2,099.98',
+                                        accBtn:true,
+                                        bundleBtn : false,
+                                        applyCoupon: true,
+                                        installmentBottom: true,
+                                        productLabel: false,
+                                        previousPriceVN: "39.990.000",
+                                        discountVN: "Tiết kiệm 15.960.000",
+                                    })
+                                
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Membership benefits, Receive an extra 2% membership discount, Free Delivery for All 
+                                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="") LG.com
+                                |  orders
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 All items in the basket must be eligible for Klarna & the total amount in the basket cannot exceed £2,500 for the financing option to appear in checkout.
+                        if(option === "Member-Empty")
+                            .my-component__header
+                                +buyBasket({num:'3', empty: true})
+                            .c-product-have
+                                .c-text-contents
+                                    .c-text-contents__title
+                                        span.font-w-light-36.font-m-normal-20
+                                            | There are no items in your Cart.
+                                    //- +linkButton({type:"box", size:"medium", color:"red", name:"Continue Shopping"})  
+                                    +defaultButton({name: 'Continue Shopping', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+                            // [Start] 2023-06-02 : Fixed - Text
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Membership benefits, Receive an extra 2% membership discount, Free Delivery for All 
+                                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="") LG.com
+                                |  orders.
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 All items in the basket must be eligible for Klarna & the total amount in the basket cannot exceed £2,500 for the financing option to appear in checkout.
+                            // [Start] 2023-06-02 : Fixed - Text
+                        if(option === "Guest-Empty")
+                            .my-component__header
+                                +buyBasket({num:'3', empty: true})
+                            .c-product-have.c-product-have--guest
+                                .c-text-contents
+                                    .c-text-contents__title
+                                        // [Start] 2023-06-02 : Fixed - Text
+                                        span.font-w-light-36.font-m-normal-20
+                                            | There are no items in your Cart.
+                                        // [End] 2023-06-02 : Fixed - Text
+                                    //- +linkButton({type:"box", size:"medium", color:"red", name:"Continue Shopping"})  
+                                    +defaultButton({name: 'Continue Shopping', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+                            //- p.buy-banner.font-w-normal-18.font-m-normal-16 Membership benefits, Receive an extra 2% membership discount, Free Delivery for All 
+                            //-     a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="") LG.com
+                            //-     |  orders
+                        if(option === "unit-Empty")
+                            .my-component__header
+                                +buyBasket({num:'3', empty: true})
+                            .c-product-have.c-product-have--guest
+                                .c-text-contents
+                                    .c-text-contents__title
+                                        span.font-w-light-36.font-m-normal-20
+                                            | There are no items in your Cart.
+                                    +defaultButton({name: 'Continue Shopping', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+                        if(option === "sup-Empty")
+                            .my-component__header
+                                +buyBasket({num:'3', empty: true})
+                            .c-product-have.c-product-have--guest
+                                .c-text-contents
+                                    .c-text-contents__title
+                                        span.font-w-light-36.font-m-normal-20
+                                            | There are no items in your Cart.
+                                    +defaultButton({name: 'Continue Shopping', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+                    .buy-summary-area__secondary
+                        .buy-summary-area__payment(class=`${empty?"empty":""}`)
+                            // [End] 2023-05-09 : ADD - class empty 추가		
+                            //- if(option === "Guest" || option === "Guest-Empty")
+                            //-     .c-product-have
+                            //-         .c-text-contents.align-text-center
+                            //-             .c-text-contents__title
+                            //-                 span.font-w-semibold-32.font-m-semibold-26 Have an account?
+                            //-             .c-text-contents__bodycopy
+                            //-                 span.font-w-normal-16.font-m-normal-16 Join or sign in to see items you may have added using another computer or device.
+                            if(option === false || option === "Guest")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'left',
+                                        unitName: '₱ ',
+                                        totalPriceTitle: "Total Payable",
+                                        taxIncludePH: true,
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxIncludePH: true,
+                                        priceListCustomize : [
+                                            {title:'VAT Amount (12%)',price:'295.00', unitName:'₱ ', sub: [{title:'VAT(12%)', price:'295.00', unitName:' ',}]},
+                                            {title:'Delivery',price:'Free', unitName:' ', sub: [{title:'OLW480B', price:'Free', unitName:' ',}]},
+                                            {title:'Installation', price:'Free', unitName:' ', sub: [{title:'Installation', price:'Free', unitName:' ',}]},
+                                        ],
+                                        btnName:"Checkout",
+                                        card: true,
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your basket.", remove: true},
+                                            {type:"error", text:"“OLW480B” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"All items in the basket must be eligible for Klarna & the total amount in the basket must be within {{min_amount}} - {{Max_amount}} for financing option to appear in checkout", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "unit")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'right',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:true,
+                                        coupon: false,
+                                        delivery: true,
+                                        deliveryInstall: true,
+                                        service: true,
+                                        card: true,
+                                        point: false,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your basket.", remove: true},
+                                            {type:"error", text:"“OLW480B” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"All items in the basket must be eligible for Klarna & the total amount in the basket must be within {{min_amount}} - {{Max_amount}} for financing option to appear in checkout", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "sup")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'sup',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:true,
+                                        taxIncludeTax:true,
+                                        coupon: false,
+                                        delivery: true,
+                                        deliveryInstall: true,
+                                        service: true,
+                                        card: true,
+                                        point: true,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your basket.", remove: true},
+                                            {type:"error", text:"“OLW480B” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"All items in the basket must be eligible for Klarna & the total amount in the basket must be within {{min_amount}} - {{Max_amount}} for financing option to appear in checkout", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            // [Start] 2023-05-30 : UPDATE -about product price
+                            if(option === "unit")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'right',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:true,
+                                        taxIncludeTax:true,
+                                        coupon: false,
+                                        delivery: true,
+                                        deliveryInstall: true,
+                                        service: true,
+                                        card: true,
+                                        point: false,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your basket.", remove: true},
+                                            {type:"error", text:"“OLW480B” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"All items in the basket must be eligible for Klarna & the total amount in the basket must be within {{min_amount}} - {{Max_amount}} for financing option to appear in checkout", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "sup")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'sup',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:true,
+                                        taxIncludeTax:true,
+                                        coupon: false,
+                                        delivery: true,
+                                        deliveryInstall: true,
+                                        service: true,
+                                        card: true,
+                                        point: false,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your basket.", remove: true},
+                                            {type:"error", text:"“OLW480B” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"All items in the basket must be eligible for Klarna & the total amount in the basket must be within {{min_amount}} - {{Max_amount}} for financing option to appear in checkout", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "other")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'left',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        discount: true,
+                                        taxInclude: true,
+                                        taxIncludeTax: true,
+                                        shipping: true,
+                                        freeShipping: true,
+                                        deliveryInstallation: true,
+                                        coupon: true,
+                                        delivery: true,
+                                        deliveryInstall: true,
+                                        freight: true,
+                                        service: true,
+                                        priceListCustomize : [
+                                            {title:'Original price',price:'39.990.000', emphasis:false},
+                                            {title:'Save',price:'- 15.960.000', emphasis:false},
+                                            {title: 'Delivery charge', price:'0', sub:[{title: 'OLW480b', price: '0'},{title: 'TONE-UFP8', price: '0'}]},
+                                            {title: 'Service charge', price:'0', sub:[{title: 'Installation', price: '0'},{title: 'Haul-away', price: '0'}]},
+                                        ],
+                                        card: true,
+                                        point: true,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your basket.", remove: true},
+                                            {type:"error", text:"“OLW480B” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"All items in the basket must be eligible for Klarna & the total amount in the basket must be within {{min_amount}} - {{Max_amount}} for financing option to appear in checkout", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            // [End] 2023-05-30 : UPDATE -about product price
+                            if(option === "unit-Empty")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'right',
+                                        empty:false,
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:false,
+                                        coupon: false,
+                                        delivery: false,
+                                        deliveryInstall: true,
+                                        service: false,
+                                        card: true,
+                                        point: false,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        isBtnDisabled:true,
+                                    },
+                                ])
+                            if(option === "sup-Empty")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'sup',
+                                        empty:false,
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:false,
+                                        coupon: false,
+                                        delivery: false,
+                                        deliveryInstall: true,
+                                        service: false,
+                                        card: true,
+                                        point: false,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        isBtnDisabled:true,
+                                    },
+                                ])
+                            if(option === "Member-Empty" || option === "Guest-Empty")
+                                +cartPriceTotal([
+                                    {
+                                        empty:true,
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:false,
+                                        coupon: false,
+                                        delivery: false,
+                                        deliveryInstall: true,
+                                        service: false,
+                                        card: true,
+                                        point: false,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        isBtnDisabled:true,
+                                    },
+                                ])
+    //- if(option === "Guest" || option === "Guest-Empty" || zipcode === true)
+    if(option === "Guest" || option === "Guest-Empty")
+        include ../../components/CM0010/CM0010-inc.pug
+        +CM0010('')
+                //- .my-component.align-text-center.buy-club.buy-no-max.buy-no-max--m
+                //-     +myLinkBtnContent({title:"Join the LG membership club2", desc:"Enjoy all the benefits of FREE LG membership, from special discounts to exclusive services and offers.​", buttonFirst:"Sign In", buttonSecond:"Create account", buttonSecondType:"box"})
+                //-     +myClub([
+                //-         {ico:"coupon", title:"Welcome Coupon", desc:"Get 5% off your first purchase when you join", buttonName:"view more"},
+                //-         {ico:"price", title:"Exclusive Pricing", desc:"Receive an extra 2% membership discount", buttonName:"view more"},
+                //-         {ico:"delivery", title:"Free Delivery", desc:"Free delivery for all LG.com orders", buttonName:"view more"}
+                //-     ])
+    if(zipcode === true)
+        .c-wrapper.no-crop.CT0100.mobile-only
+            .component
+                .fluid-container
+                    .my-component
+                        .zipcode-area
+                            +myInputForm([
+                                {
+                                    type:"text",
+                                    label:"Consulta disponibilidad en tu zona",
+                                    id:"postcode",
+                                    required:false,
+                                    placeholder:"Ingresa tu Código Postal",
+                                    warning: ['Por favor ingrese un código postal válido.'],
+                                    correct: ['Producto disponible en tu zona.'],
+                                    button: 'Consult',
+                                },
+                            ])

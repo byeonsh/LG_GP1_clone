@@ -1,0 +1,142 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_cs-form.pug
+
+block meta 
+    - var componentId = "CS0105"
+    - var componentName = "Call Appointment_date"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    -
+        const stepList = [
+            {
+                'eyebrow': 'Your preferred date & time',
+                'stepNumber': 3
+            },
+        ]
+
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-label="" aria-controls=`${controlsId}`)
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+    
+    mixin contentsBody(stepNumber)
+        // block - text contents
+        .c-text-contents.c-accordion__body-text
+            case stepNumber
+                when 1
+                    .cs-form
+                        .cs-form__wrap
+                            .cmp-form
+                                +csForm_Select({id: 'select1', label: 'Reservation date', require: 'true', requireMsg: 'Reservation date is required.​', value_01: 'Select date', value_02: 'Select date-2', class:'c-responsavel-valid' })  
+                            .cmp-form
+                                +csForm_Select({id: 'select2', label: 'Time schedule', require: 'true', requireMsg: 'Time schedule is required.​', value_01: 'Select date', value_02: 'Select date-2', class:'c-responsavel-valid' ,disabled:"true"})  
+                    .c-button-wrap
+                        .button.c-cta
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton:"none"})(role="button" class="c-button__text")
+
+                when 2
+                    .c-text-box.font-w-normal-24.font-m-normal-16 Your request for a telephone consultation will be forwarded to a customer service employee for verification and processing of the request. An LG consultant will contact you as soon as possible. Below you can indicate your preferred date and time - we will do our best to contact you as soon as possible.
+
+                    .cs-form
+                        .cs-form__wrap
+                            .cmp-form
+                                +csForm_Select({id: 'select1', label: 'Reservation date', require: 'true', requireMsg: 'Reservation date is required.​', value_01: 'Select date', value_02: 'Select date-2', class:'c-responsavel-valid' })  
+                            .cmp-form
+                                +csForm_Select({id: 'select2', label: 'Time schedule', require: 'true', requireMsg: 'Time schedule is required.​', value_01: 'Select date', value_02: 'Select date-2', class:'c-responsavel-valid' ,disabled:"true"})  
+                    .c-button-wrap
+                        .button.c-cta
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton:"none"})(role="button" class="c-button__text")
+                when 3
+                    .cs-form
+                        .cs-form__wrap
+                            .cmp-form
+                                +csForm_Select({id: 'select1', label: 'Reservation date', require: 'true', requireMsg: 'Reservation date is required.​', value_01: 'Select date', value_02: 'Select date-2', class:'c-responsavel-valid' })  
+                            .cmp-form
+                                +csForm_Select({id: 'select2', label: 'Time schedule', require: 'true', requireMsg: 'Time schedule is required.​', value_01: 'Select date', value_02: 'Select date-2', class:'c-responsavel-valid' ,disabled:"true"})  
+                    .c-button-wrap
+                        .button.c-cta
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton:"none"})(role="button" class="c-button__text")
+                when 4
+                    .c-result__txtBox.font-m-normal-12.font-w-normal-16 My reservation date &amp; time : 
+                        br.c-hidden-pc
+                        | 11/26/2022 10:00 am ~ 11:00 am
+                    .button.c-cta
+                        +textButton({name: 'Edit', wSize: 'small', mSize: 'small', buttonStyle: 'default'})(role="button")
+
+    mixin pack(faq, stepNumber, controlsId)
+        .c-accordion__head
+            // block - text contents
+            // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+            .c-accordion__head-text.c-text-contents
+                span.c-accordion__initial.font-m-normal-16.font-w-normal-20(aria-hidden="true") 
+                    span.c-accordion__step 
+                    span.c-accordion__head-flag.font-m-normal-14.font-w-semibold-18 
+            +trigger(controlsId)
+        .c-accordion__body(id=`${controlsId}` class=`step3`)
+            +contentsBody(stepNumber)
+    // 20230316 full markup change
+    // Component Markup
+    .guide-text-option Call Appointment_Date (Common)
+                        br
+                        | Live remote service appointment (CA_EN, CA_FR)
+    .c-wrapper.CS0105.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0105__container
+                .c-accordion.js-accordion
+                    // If you need to expand all the accordions on the result page, add a class .c-accordion__box--expand
+                    // .c-accordion__box.js-accordion-handle-target.c-accordion__box--expand
+                    .c-accordion__box.js-accordion-handle-target.c-accordion__box--expand
+                        each faq, index in stepList
+                            - var controlsId = `faq-set-00`;
+                            +pack(faq, 1, controlsId)
+    // Component Markup
+    .guide-text-option Call Appointment_date (PL)
+    .c-wrapper.CS0105.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0105__container
+                .c-accordion.js-accordion
+                    .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+                        each faq, index in stepList
+                            - var controlsId = `faq-set-00`; 
+                            +pack(faq, 2, controlsId)
+    
+    //- // Component Markup
+    .guide-text-option Video Consultation_date (IN)
+    .c-wrapper.CS0105.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0105__container
+                .c-accordion.js-accordion
+                    .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+                        each faq, index in stepList
+                            - var controlsId = `faq-set-00`; 
+                            +pack(faq, 3, controlsId)
+        
+    .guide-text-option Result
+    .c-wrapper.CS0105.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0105__container
+                // Add class when displaying result - .type-accordion__result
+                .c-accordion.js-accordion.type-accordion__result
+                    // If you need to expand all the accordions on the result page, add a class .c-accordion__box--expand
+                    // .c-accordion__box.js-accordion-handle-target.c-accordion__box--expand
+                    .c-accordion__box.js-accordion-handle-target.c-accordion__box--expand
+                        each faq, index in stepList
+                            - var controlsId = `faq-set-00`; 
+                            +pack(faq, 4, controlsId)

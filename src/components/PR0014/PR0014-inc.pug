@@ -1,0 +1,359 @@
+include ../_common/_image.pug
+include ../_common/_headline.pug
+include ../_common/_roll-selector.pug
+include ../_common/_pagination.pug
+include ../_common/_filter.pug
+include ../_common/_product-list.pug
+include ../_common/_pagination.pug
+include ../_common/_toast.pug
+
+mixin PR0014 
+	mixin basket-product-item
+		button.c-package-deal-item__delete(type="button" aria-describedby='aria-connection')
+			span.sr-only Delete this item
+		// GA4
+		a.c-package-deal-item__link(href="#" data-pim-category1="" data-pim-category2="" data-pim-category3="" data-pim-category4="" data-pim-sku="" data-pim-model-name="" data-pim-model-year="" data-pim-flag="" data-pim-modeltype="" data-shop-stock-status="" data-shop-msrp="" data-shop-pbp-coupon="" data-shop-pbp-coupon-dc="" data-shop-price="")
+			.c-package-deal-item__information
+				.c-package-deal-item__image
+					.image.c-image
+						+printLazyImage('https://via.placeholder.com/64x64/999999/333333')
+				.c-package-deal-item__basic-information
+					.text.c-package-deal-item__model-display-name(id='aria-connection')
+						span.cmp-text(data-cmp-data-layer="") American Fridge Freezer 635L Water &amp; Ice Dispenser American Fridge Freezer 635L Water &amp; Ice Dispenser American Fridge Freezer 635L Water &amp; Ice Dispenser
+					.text.c-package-deal-item__price
+						span.cmp-text(data-cmp-data-layer="") £600.00
+
+	mixin package-deal-item(params)
+		- var mainCopy = "Select a product to receive a discount"
+		- var discount = "Get 15% OFF"
+		- var description = "Lorem ipsum dolor sit amet consectetur adipisicing."
+		- var buttonConfig = {name: 'Add a Product', wSize: 'medium', mSize: 'small', buttonStyle: 'right white', isButton: true}
+		- var options = {type : "", mainCopy, discount, description, afterProduct : null, ...params}
+
+		.c-package-deal-item(class={"c-package-deal-item--product" : options.type == "product"})&attributes(attributes)
+			case options.type
+				when "notice discount"
+					.c-package-deal-item__container
+						.text.c-package-deal-item__text.c-package-deal-item__text--emphasis
+							strong.cmp-text(data-cmp-data-layer="")= options.discount
+						.text.c-package-deal-item__text.c-package-deal-item__text--description
+							span.cmp-text(data-cmp-data-layer="")= options.description 
+						if options.afterProduct
+							+textButton(buttonConfig)
+
+				//- first item with type of "default image"
+				when "default image"
+					.c-package-deal-item__container(style="background-image:url(https://via.placeholder.com/320x160/646464/000?text='')")
+						+textButton({...buttonConfig, wSize: 'large'})
+
+				//- first item with type of "default text"
+				when "default text"
+					.c-package-deal-item__container
+						.text.c-package-deal-item__text.c-package-deal-item__text--main
+							.cmp-text(data-cmp-data-layer="")= options.mainCopy
+						+textButton(buttonConfig)
+
+				default 
+					.c-package-deal-item__container
+						+basket-product-item
+						
+	mixin package-basket(params)
+		- var options = {itemList : [{}, {}, {}, {}], ...params}
+		
+		//- Remove 'is-opened' class.
+		.c-package-deal-basket(id="PR0014_basket")&attributes(attributes)
+			.c-package-deal-basket__container
+				.c-package-deal-basket__top-edge
+					//- Changed aria-expanded="false" to default.
+					button.c-package-deal-basket__toggle-button.js-toggle-area-button(type="button" data-comp-data-layer="" aria-expanded="false" aria-controls="PR0014_basket")
+						span.sr-only Learn More
+
+				//- product container
+				.c-package-deal-basket__product-container
+					// use on web
+					.carousel.panelcontainer.c-package-deal-basket__carousel
+						// block : carousel
+						.cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+							.cmp-carousel__content.swiper-wrapper
+								each set in options.itemList
+									.cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+										+package-deal-item(set)
+						
+						.cmp-carousel__actions(class="c-package-deal-basket__actions") 
+							button.cmp-carousel__action.cmp-carousel__action--previous(type="button" class=`c-package-deal-basket__action c-package-deal-basket__action--prev js-carousel-prev` data-cmp-hook-carousel="previous")
+								span.cmp-carousel__action-text.sr-only Previous Slide
+							button.cmp-carousel__action.cmp-carousel__action--next(type="button" class=`c-package-deal-basket__action c-package-deal-basket__action--next js-carousel-next` data-cmp-hook-carousel="next") 
+								span.cmp-carousel__action-text.sr-only Next Slide
+								
+					// use on mobile
+					.c-package-deal-basket__list(role="list")
+						each set in options.itemList
+							+package-deal-item(set)(role="listitem")
+
+				//- indicator
+				.c-package-deal-basket__indicator
+					//- left/top
+					.c-package-deal-basket__indicator-area.c-package-deal-basket__indicator-area--primary
+						//- discount summary
+						.c-package-deal-basket__discount-summary(role='status' aria-live='polite')
+							.text.c-package-deal-basket__indicator-text(id="PR0014SelectedItemCount")
+								span.cmp-text(data-cmp-data-layer="") Item selected(2) 
+							.text.c-package-deal-basket__applied-discount
+								span.cmp-text(data-cmp-data-layer="") 15% off
+					//- right/bottom
+					.c-package-deal-basket__indicator-area
+						//- price
+						.c-price 
+							span.c-price__purchase £1,499.99
+							del.c-price-previous £2,199.98
+							span.c-price__discount 
+								span Save
+								span £699.99
+						//- button
+						.c-package-deal-basket__btns
+							+linkButton({href:"#popsEmailMyPackage", color:"white", type:"default", class:"w-medium m-small js-pop-open", name:"Send To Email", roleButton:"true"})
+							+defaultButton({name: 'Checkout', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+								span.c-button__text.cmp-button__text(aria-describedby="PR0014SelectedItemCount")
+									span Checkout
+									span.c-package-deal-basket__product-count (2)
+							
+	mixin pd0014List(count=12, banner=true, useFlagFeatureIcon = true)
+		.c-result-area
+				.c-result-area__controls
+					.c-result-area__result.productcollection__results-count
+						span.sr-only Filter:
+						strong.c-result-area__count 30 
+						span &nbsp;Results
+				
+				.c-result-area__product-list(id="resultTarget")
+					// block - product list
+					ul.c-product-list.productcollection__items
+						- all = count == 0 ? 6 : count;
+						- for(var x = 0; x < all; x++)
+							li.c-product-list__item.productcollection__item(data-cmp-data-layer="")
+								//- flag: [],
+								//- compare: true,
+								//- wishlist: true || false,
+								//- sku: '',
+								//- ufn: '',
+								//- grade: 'a',
+								//- review: true,
+								//- modelid: '',
+								//- type: 'color' || 'inch',
+								//- groups: [],
+								//- youreko: false,
+								//- signature: false,
+								//- thinq: false,
+								//- soldOut: false,
+								//- outOfStock: false,
+								//- discontinued: false,
+								//- promotion: "Black Friday Promotion",
+								//- limited: true,
+								//- vip: true,
+								//- installment: true,
+								//- membership: '£1,866.98',
+								//- retailer: false,
+								- var baseOptions = {imageUrl:'https://via.placeholder.com/350x350/999999/000000', packageDeal : false, flag: true, compare : false,wishlist : false,grade : "a",review : true,type:false,groups:null,signature : false,thinq : false,youreko : true,noprice : false,writeAReview : false,campaignArea : false,keyfeature : false, retailer : false,promotion: false,limited: false,membership: '£1,866.98',vip: false,installment: false,soldOut: false}
+								if (x == 0)
+									+productCard(  
+										{
+											...baseOptions,
+											outOfStock: true,
+											flag:['NEW'],
+											sku:'GSJV70PZTF', 
+											ufn:'LG Soundbar SQC1',
+										}
+									)
+								if (x == 1)
+									+productCard(  
+										{
+											...baseOptions,
+											outOfStock: false,
+											packageDealMsg : "pressed add",
+											sku:'65ART90E6QA', 
+											ufn:'Dispenser2',
+										}
+									)
+								if (x == 2)
+									+productCard(  
+										{
+											...baseOptions,
+											outOfStock: true,
+											sku:'65ART90E6QA', 
+											ufn:'Dispenser3',
+										}
+									)
+								if (x == 3)
+									+productCard(
+										{
+											...baseOptions,
+											outOfStock: true,
+											sku:'65ART90E6QA', 
+											ufn:'American Fridge Freezer 635L Water & Ice Dispenser4',
+										}
+									)
+								if (x == 4)
+									+productCard(
+										{
+											...baseOptions,
+											outOfStock: false,
+											sku:'65ART90E6QA', 
+											ufn:'American Fridge Freezer 635L Water & Ice Dispenser5',
+										}
+									)
+								if (x == 5)
+									+productCard(  
+										{
+											...baseOptions,
+											outOfStock: false,
+											sku:'65ART90E6QA', 
+											ufn:'American Fridge Freezer 635L Water & Ice Dispenser6',
+										}
+									)
+								if (x == 6)
+									+productCard(  
+										{
+											...baseOptions,
+											outOfStock: false,
+											sku:'65ART90E6QA', 
+											ufn:'American Fridge Freezer 635L Water & Ice Dispenser7',
+										}
+									)
+								if (x == 7)
+									+productCard(  
+										{
+											...baseOptions,
+											outOfStock: false,
+											sku:'65ART90E6QA', 
+											ufn:'American Fridge Freezer 635L Water & Ice Dispenser8',
+										}
+									)
+								if (x == 8)
+									+productCard(  
+										{
+											...baseOptions,
+											outOfStock: false,
+											sku:'65ART90E6QA', 
+											ufn:'American Fridge Freezer 635L Water & Ice Dispenser9',
+										}
+									)
+								if (x >= 9)
+									+productCard(
+										{
+											...baseOptions,
+											outOfStock: false,
+											sku:'65ART90E6QA', 
+											ufn:'American Fridge Freezer 635L Water & Ice Dispenser9',
+										}
+									)
+
+								//- .productcollection__item-images
+								//-     img.productcollection__item-image(src='' alt='')
+								//- .productcollection__item-title
+								//-     span Fusion Backpack
+								//- .price
+								//-     span $59.00
+							- var $banner1 = 'https://via.placeholder.com/800x800/999999/000000'; // wide
+							- var $banner2 = 'https://via.placeholder.com/768x1200/999999/000000'; // narrow
+							if(banner == "type-three")
+								if(x == 1)
+									li.c-product-list__banner.banner-narrow
+										// GA4
+										div(data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-floating-contents
+											.c-floating-contents__floor
+												.img(style=`background-image:url(${$banner2})`)
+												//- .img-wide(style=`background-image:url(${$banner1})`)
+												//- .img-narrow(style=`background-image:url(${$banner2})`) 
+											.c-floating-contents__floating.font-white
+												.c-text-contents
+													.title.c-text-contents__headline
+														p.cmp-text.font-w-light-36.font-m-light-28(data-cmp-data-layer="") How are washing machines energy efficient. Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+													.text.c-text-contents__bodycopy
+														p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+					.c-result-area__more 
+						//- +button({type:"box-outlined", color:"black", size:"medium", icon: true, name: "More"})
+						+pagination
+			
+							
+	// Component Markup
+	.c-wrapper.PR0014.width-wide.margin-top.margin-bottom
+		.component.no-filter
+			.cmp-container
+				// theme tab
+				include ../PR0010/PR0010-inc.pug
+				+PR0010
+
+				// title list
+				.c-select-title
+					.c-text-contents
+						.title.c-text-contents__headline
+							h1.cmp-title.font-w-light-56.font-m-light-28(data-cmp-data-layer="") Create your own Home Interior package
+						.text.c-text-contents__bodycopy 
+						p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") Select your products and get 15% off for any 2 products or 20% off for any 3 products
+						p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") Body text can be up to 200 characters.
+				
+				//selectshop tab
+				mixin printTab(div, num, selected)
+					if selected
+						li.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0", data-cmp-hook-tabs="tab", aria-selected="true")
+							if block
+								block
+					else 
+						li.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1", data-cmp-hook-tabs="tab", aria-selected="false")
+							if block
+								block
+
+				mixin printTabPanel(div, num, selected, filter)
+					if selected 
+						.cmp-tabs__tabpanel.has-filter.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="", class=`${filter ? 'has-filter c-productcollection__root' : ''}`)
+							if block
+								block
+					else 
+						.cmp-tabs__tabpanel.has-filter(id=`tabs-1-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-1-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="", class=`${filter ? 'has-filter c-productcollection__root' : ''}`)
+							if block
+								block
+
+				// selectshop list
+				.c-select-list.productlist
+					.tabs.panelcontainer.tabs-margin
+						.cmp-tabs(data-cmp-data-layer="", data-placeholder-text="false")
+							.cmp-tabs__inner
+								ul.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+									+printTab(1, 1, true) All
+									+printTab(1, 2, false) TV/Audio/Video
+									+printTab(1, 3, false) Appliances
+									+printTab(1, 4, false) Tab test
+									+printTab(1, 5, false) Tab test
+
+							.PD0014__tab__render  
+								+printTabPanel(1, 1, true)
+									+pd0014List(9, 'type-three', true)
+								+printTabPanel(1, 2, false, false)
+									+pd0014List(9, 'type-three', true)
+								+printTabPanel(1, 3, false)
+									+pd0014List(6, '', false)
+								+printTabPanel(1, 4, false)
+									.c-no-data-wrap
+										.c-no-data
+											strong.font-w-normal-16.font-m-normal-16 There is no available product.
+								+printTabPanel(1, 5, false)
+									.c-no-data-wrap
+										.c-no-data
+											strong.font-w-normal-16.font-m-normal-16 There is no available product.
+
+				// sticky container
+				//- +package-basket({itemList : [
+				//- 	{type : "default text"},
+				//- 	{type : "product"},
+				//- 	{afterProduct : true, type : "notice discount", discount : "Get 20% OFF", description : "When you buy 3 selected Home Appliances"},
+				//- 	{type : "notice discount", discount : "Get 30% OFF", description : "When you buy 4 selected Home Appliances"},
+				//- ]})
+
+			//- toastPopup
+			//- +toastPopup([
+			//- 	{   type:"success", 
+			//- 		remove: true, 
+			//- 		text: 'The selected package is included',
+			//- 	}
+			//- ])

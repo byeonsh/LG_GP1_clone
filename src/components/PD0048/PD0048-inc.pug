@@ -1,0 +1,100 @@
+include ../_common/_image.pug
+include ../_common/_button.pug
+include ../_common/_carousel.pug
+include ../_common/_title-area.pug
+
+mixin PD0048(option=false)
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${controlsId}`)
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+    mixin pack(off, controlsId)
+        // to dev - "c-accordion__box--turn-off" class is not render, when product's parts count less than 4.  
+        .c-accordion__box.js-accordion-handle-target(role="listitem", class=`${off ? ".c-accordion__box--turn-off" : ""}`)
+            // block - image        
+            .image.c-image
+                +printLazyImage("https://via.placeholder.com/165x165/999999/000000/?text=165")
+            .c-accordion__box-container 
+                .c-accordion__head
+                    // block - text contents
+                    .c-accordion__head-text.c-text-contents
+                        .text.c-text-contents__eyebrow
+                            .cmp-text.font-regular.font-w-normal-20.font-m-normal-16(data-cmp-data-layer="") Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
+                    +trigger(controlsId)
+                .c-accordion__body(id=`${controlsId}`)
+                    // block - text contents
+                    .c-accordion__body-text.c-text-contents
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-regular.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias temporibus, magnam aliquam voluptate quo esse ullam fugiat. 
+                    // block - cta
+                    .button.c-cta 
+                        +defaultButton({name: 'Primary Button', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: false})
+    mixin header 
+        +component-title-area({
+            alignment:"",
+            headline : {
+                text : 'In the box'
+            }
+        })(class="c-region-header--vacate-side")
+    mixin image-area 
+        .c-product-parts-package__image-area
+            // block - image
+            .image.c-image.c-product-parts-package__product-image
+                +printLazyImage("https://via.placeholder.com/450x450/999999/000000/")
+            // block - text contents
+            .c-text-contents.c-product-parts-package__user-friendly-name
+                .text.c-text-contents__bodycopy
+                    .cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") LG QNED86 86 inch 4K Smart QNED MiniLED TV
+    mixin box-area 
+        .c-product-parts-package__box-area
+            .c-accordion.js-accordion
+                .carousel.panelcontainer
+                    // block : carousel
+                    .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="" class= autoplay ? "autoplay" : "")
+                        .cmp-carousel__content.swiper-wrapper
+                            if block    
+                                block
+                        //- pagination
+                        // 23.02.14 modified markup - added ".c-carousel__handler--dial", ".c-carousel__handler--away-from-carousel"
+                        .c-carousel__handler.c-carousel__handler--dial.c-carousel__handler--away-from-carousel
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"prev"})
+                            +carouselPagination
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"next"})
+
+    mixin box-group(off, list)
+        .c-accordion__group(role="list")
+            each id in list 
+                - var controlsId = `pd0048-set-0${id}`; 
+                +pack(off, controlsId)  
+    mixin more
+        .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item" data-title="")
+            +box-group(false, [1,2,3])                           
+        .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item" data-title="")
+            +box-group(false, [4,5,6])                            
+        .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item" data-title="")
+            +box-group(false, [7])
+
+    if(option == 'LESS4')
+        .c-wrapper.PD0048.margin-top.margin-bottom.border-top
+            .component
+                .cmp-container
+                    +header
+                    // block : product-parts-package
+                    .c-product-parts-package 
+                        +image-area
+                        +box-area 
+                            .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item" data-title="")
+                                +box-group(true, [100,200])
+    else 
+        .c-wrapper.PD0048.margin-top.margin-bottom.border-top.bg-default
+            .component
+                .cmp-container
+                    +header
+                    // block : product-parts-package
+                    .c-product-parts-package
+                        +image-area
+                        +box-area 
+                            +more

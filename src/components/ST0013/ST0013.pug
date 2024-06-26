@@ -1,0 +1,249 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_video.pug
+include ../_common/_headline.pug
+include ../_common/_carousel.pug
+
+block meta 
+    - var componentId = "ST0013"
+    - var componentName = "Side Image"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'Text Placement',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'place-text-left', 'remove' : 'place-text-right'},
+                                    {'toggle' : false, 'add' : 'place-text-right', 'remove' : 'place-text-left'},
+                                ]
+                            },
+                        ],
+                        '.c-text-contents__disclaimer' : [
+                            {
+                                'name' : 'Text Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-text-left', 'remove' : 'align-text-center, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-center', 'remove' : 'align-text-left, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-right', 'remove' : 'align-text-left, align-text-center'},
+                                ]
+                            },
+                        ],
+                        '.cmp-container > .c-text-contents' : [
+                            {
+                                'name' : 'Text Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-text-left', 'remove' : 'align-text-center, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-center', 'remove' : 'align-text-left, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-right', 'remove' : 'align-text-left, align-text-center'},
+                                ]
+                            },
+                        ],
+                        '.c-text-contents__bodycopy, .c-text-contents__disclaimer' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            }
+                        ],
+                    };
+
+    // Component Markup
+
+    mixin text-contents(params)
+        - var option={eyebrow:false,headline:'',bodycopy:'', ...params}
+            // block : text-contents   
+            .c-text-contents(class=option.bodycopy)
+                if option.eyebrow
+                    .text.c-text-contents__eyebrow.font-w-normal-16.font-m-normal-14 
+                        .cmp-text(data-cmp-data-layer="") 
+                            p Lorem ipsum
+                .title.c-text-contents__headline
+                    +headline(option.headline)
+                .text.c-text-contents__bodycopy 
+                    .cmp-text(data-cmp-data-layer="") 
+                        p Body text can be up to 350 characters. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla
+                // block :cta 
+                .button.c-cta
+                    +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                    +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+                .button.c-cta
+                    +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                    +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+
+    mixin printLazyImage2(img, alt="picture")
+        //- 상위에 .image 클래스를 추가해야합니다. (주로 .c-image)
+        .cmp-image.fit-content(data-cmp-data-layer='')
+            img.cmp-image__image.c-image__img(src=img, alt=alt, loading="lazy")&attributes(attributes) 
+    mixin image
+        // block : image
+        .c-image
+            +printLazyImage('https://via.placeholder.com/768x512/999999/333333')
+            if block
+                block
+    mixin image2
+        // block : image
+        .c-image
+            +printLazyImage2('../../assets/image/qr-cn-uwechat.svg')
+            if block
+                block
+
+    mixin txt-disclaimer
+        // block : text contents
+        .c-text-contents.font-w-normal-16.font-m-normal-12
+            .text.c-text-contents__disclaimer
+                .cmp-text(data-cmp-data-layer="") 
+                    p Disclaimer text can be up to 100 characters. Lorem ipsum dolor sit it amet, consectetuer adipiscing.
+
+    mixin video-contents(params)
+        - var option={disclaimer:false, text:false, ...params}
+            // block : media contents
+            .c-media-contents
+                // Video case
+                +image
+                    +floating-video("brightcove")
+                        if(option.text)
+                            each ob, i in option.text
+                                .text.c-media__titlecopy
+                                    .cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="") 
+                                        p= ob
+                                
+                if option.disclaimer
+                    +txt-disclaimer
+                        if block
+                            block
+    mixin video-contents2(params)
+        - var option={disclaimer:false, text:false, ...params}
+            // block : media contents
+            .c-media-contents
+                // Video case
+                +image2
+                    +floating-video("brightcove")
+                        if(option.text)
+                            each ob, i in option.text
+                                .text.c-media__titlecopy
+                                    .cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="") 
+                                        p= ob
+                                
+                if option.disclaimer
+                    +txt-disclaimer
+                        if block
+                            block
+
+    mixin ani-contents(params)
+        - var option={disclaimer:false, ...params}
+            // block : media contents
+            .c-media-contents
+                // Animation case
+                +image
+                    +bg-video
+                if option.disclaimer
+                    +txt-disclaimer
+                        if block
+                            block
+    mixin img-contents(params)
+        - var option={disclaimer:false, ...params}
+            // block : media contents
+            // Option : target="_blank"
+            // GA4
+            a(href="#" class="c-media-contents" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                // Image case
+                +image
+                if option.disclaimer
+                    +txt-disclaimer
+                        if block
+                            block
+    mixin img-contents2(params)
+        - var option={disclaimer:false, ...params}
+            // block : media contents
+            // Option : target="_blank"
+            // GA4
+            a(href="#" class="c-media-contents" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                // Image case
+                +image2
+                if option.disclaimer
+                    +txt-disclaimer
+                        if block
+                            block
+
+    // Type1. Side Image
+    .guide-text-type TYPE1. Side Image (Left/Right – Image or Video or Animation) + Side Text + CTA
+    .guide-text-option Option. Small Image
+    .c-wrapper.ST0013.margin-top.margin-bottom.place-text-left.bg-default
+        // Small Image
+        .component.small.type-side-image
+            .cmp-container
+                +text-contents({eyebrow:true, headline:'font-w-light-56 font-m-light-28', bodycopy:'font-w-normal-24 font-m-normal-16'})
+                +img-contents2
+    
+    .guide-text-option Option. Standard Image
+    .c-wrapper.ST0013.margin-top.margin-bottom.place-text-left.bg-default
+        // Standard Image
+        .component.standard.type-side-image
+            .cmp-container
+                +text-contents({eyebrow:true, headline:'font-w-light-56 font-m-light-28', bodycopy:'font-w-normal-24 font-m-normal-16'})
+                +ani-contents({disclaimer:true})
+
+    .guide-text-option Option. Large Image
+    .c-wrapper.ST0013.margin-top.margin-bottom.place-text-left.bg-default
+        // Large Image
+        .component.large.type-side-image
+            .cmp-container
+                +text-contents({eyebrow:true, headline:'font-w-light-56 font-m-light-28', bodycopy:'font-w-normal-24 font-m-normal-16'})
+                +video-contents({disclaimer:true})
+
+    // Type2. Side Image 2
+    .guide-text-type TYPE2. Side Image 2 + Side Text+ CTA
+    .c-wrapper.ST0013.margin-top.margin-bottom.place-text-left.bg-default
+        .component.type-side-image2
+            .cmp-container
+                +text-contents({headline:'font-w-light-36 font-m-light-28', bodycopy:'font-w-normal-16 font-m-normal-16'})
+                // block : list
+                ul.c-list
+                    li.c-list__item
+                        +video-contents({text:['Lorem ipsum dolor sit amet, consectetur adipiscing elit u']})
+                    li.c-list__item
+                        +video-contents2({text:['Lorem ipsum dolor sit amet, consectetur adipiscing elit u']})
+
+    

@@ -1,0 +1,108 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_forms.pug
+include ../_common/_pop-msg.pug
+include ../_common/_toast.pug
+
+block meta 
+    - var componentId = "ETC000A"
+    - var componentName = "DE Popup"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+    link(rel="stylesheet", href="../PD0017/PD0017.css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+//- print layer popup 
+mixin printLayerPopup(popId, params)
+    case popId
+
+        when 'popSelectedCorporation'
+            +pop-msg-standard({id : `popSelectedCorporation`, headline:"Please select the corporation to report", headerBorder: false})
+                .c-pop-msg__contents.c-pop-msg__contents--selectedCorporation
+                    .button.c-pop-msg__button-wrap
+                        +defaultButton({name: 'LGEDG', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})
+                        +defaultButton({name: 'LGEVG', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})
+
+                    .c-pop-msg__contents-text
+                        ul.font-w-normal-16.font-m-normal-14
+                            li - LGEDG (LG Electronics Deutschland GmbH)
+                            li - LGEVG (LG ElectronicsVehicle components Europe GmbH)
+
+        when 'popReportNow'
+            +pop-msg-standard({id : `popReportNow`, headline:"Whistle blower policy", headerBorder: false, classes: "PD0017__modal-container"})
+                .c-pop-msg__contents
+                    // block - text contents
+                    .c-text-contents
+                        .text.c-text-contents__subcopy
+                            strong.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="")
+                                | INTRODUCTION
+                        //- .text.c-text-contents__info
+                        //-     .cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+                        //-         span Program : Dual Controller
+                        //-         span Version : 2.72
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")
+                                p Law n° 2016-1691 of December 9, 2016 relating to transparency, the fight against corruption and the modernization of economic life (known as the "Sapin II Law"), published in the JORF n° 0287 of December 10, 2016, introduces in its Article 8-III a system for the collection of Whistleblowers' reports within, in particular, legal persons under private law. 
+                                | Law n° 2022-401 of March 21, 2022 relating to the improvement of the protection of Whistleblowers, published in the JORF n°0068 of March 22, 2022, makes changes to the Sapin II Law, in particular with regard
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: 'Close', 
+                        wSize: 'medium', 
+                        mSize: 'small', 
+                        buttonStyle: 'highlight', 
+                        isButton: true
+                    })(class="js-pop-close")
+        
+        when 'popCheckMyReport'
+            +pop-msg-standard({id : `popCheckMyReport`, headline:"Information", headerBorder: false, classes: "PD0017__modal-container"})
+                .c-pop-msg__contents
+                    // block - text contents
+                    .c-text-contents
+                        .text.c-text-contents__subcopy
+                            strong.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="")
+                                | We inform you that the investigation may not be carried out if the reported information falls into any of the following cases.
+                        //- .text.c-text-contents__info
+                        //-     .cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+                        //-         span Program : Dual Controller
+                        //-         span Version : 2.72
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")
+                                p 1. In the case of not describing specific acts of corruption (subject/method, etc.)
+                                    br
+                                    | 2. In case of slander or defamation of the target by false facts or unilateral allegations.
+                                    br
+                                    | 3. If there is a dedicated department to deal with customer complaints (rudeness/late handling), etc.?
+                                    br
+                                    | 4. When LG requests a function that cannot be legally assumed (non-payment arbitration between partners, etc.)
+                                    br
+                                    | 5. In the event of a dispute between LG Electronics Inc.
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: 'Close', 
+                        wSize: 'medium', 
+                        mSize: 'small', 
+                        buttonStyle: 'highlight', 
+                        isButton: true
+                    })(class="js-pop-close")
+
+block content
+    .button.c-cta
+        .guide-text-option Checkout Popup : ETC000A_0 DE
+        +defaultButton({name: 'File a complaint', wSize: 'medium', mSize: 'small', buttonStyle: 'box js-pop-open', isButton: false})(href="popSelectedCorporation" role="button")
+        +defaultButton({name: 'Whistle blower policy', wSize: 'medium', mSize: 'small', buttonStyle: 'box js-pop-open', isButton: false})(href="#popReportNow" role="button")
+        +defaultButton({name: 'Information', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight js-pop-open', isButton: false})(href="#popCheckMyReport" role="button")
+
+block modal 
+    //- Stock Alert
+    +printLayerPopup('popSelectedCorporation')
+    +printLayerPopup('popReportNow')
+    +printLayerPopup('popCheckMyReport')

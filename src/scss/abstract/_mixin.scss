@@ -1,0 +1,307 @@
+@use 'sass:list';
+@use 'variable' as *;
+
+// In this file, only add variables or mixins to be used globally.
+
+// # to-rem
+@function to-rem($size) {
+  $root-size: 16px;
+  @if string == type-of($size) {
+    @return $size;
+  } @else if 0 == $size {
+    @return 0;
+  } @else {
+    @return calc($size / $root-size * 1rem);
+  }
+}
+// =- description -=
+// $size : only allow "px" unit. If the format cannot be calculated, the value is returned as it is.
+// this function just do for unit convert. for declaration at each file, use "rem" function.
+
+// # rem
+@function rem($value) {
+  // @debug type-of($value);
+  @if 0 == str-index(#{$value}, 'px') {
+    @warn "invalid value. use 'px'";
+  } @else {
+    @if list == type-of($value) {
+      $rem: to-rem(list.nth($value, 1));
+      $output: $rem;
+      @for $i from 2 through length($value) {
+        $rem: to-rem(list.nth($value, $i));
+        $output: list.append($output, $rem);
+        // @debug $output;
+      }
+      @return $output;
+    } @else {
+      @return to-rem($value);
+    }
+  }
+}
+// =- description -=
+// $value : allow number or list.
+// ex) 18px or 18px 20px or (18px 20px)
+
+// # screen
+// =- description -=
+// $viewport : value type takes as a token. "tablet", "mobile", "desktop", "landscape", "portrait", "custom"
+// $size : whatever. if number. just only one exception what to allow list when viewport is custom type.
+// $direction : it's means resize direction. two way... min or max.
+// these mixin can be nested.
+// ex)
+// @include screen(mobile) {
+//     // ...
+//     @include screen(landscape){
+//         @include screen(custom, 414px){
+//             // ...
+//         }
+//     }
+// }
+@mixin screen($viewtype, $size: $minimum, $direction: min) {
+  // check value
+  @if type-of($viewtype) != string {
+    @warn "#{$viewtype} is not string. 1st parameter's type is should be string. Check parameter";
+  }
+  @if $viewtype == custom {
+    @each $val in $size {
+      $to-string: #{$val};
+      @if null == str-index($to-string, 'rem') {
+        @warn "#{$size}'s unit is not 'rem'. 2nd parameter's unit type is should be 'rem'. Check parameter";
+      }
+    }
+  }
+  @if type-of($direction) != string {
+    @warn "#{$direction} is not string. 3rd parameter's type is should be string. Check parameter";
+  }
+  @if $direction != min and $direction != max {
+    @warn "Not allowed token! 3rd parameter allow 'min' or 'max'. | parameter : #{$direction} ";
+  }
+
+  // device viewport
+  @if $viewtype == custom {
+    @if 1 < length($size) {
+      $min: list.nth($size, 1);
+      $max: list.nth($size, 2);
+      @media (min-width: $min) and (max-width: $max) {
+        @content;
+      }
+    } @else {
+      @media (#{$direction}-width: $size) {
+        @content;
+      }
+    }
+  } @else if $viewtype == phone {
+    // ~ 620
+    @media (max-width: rem($phone)) {
+      @content;
+    }
+  } @else if $viewtype == mobile {
+    // ~ 768
+    @media (max-width: rem($mobile)) {
+      @content;
+    }
+  } @else if $viewtype == tablet {
+    // 769 ~ 1279
+    @media (min-width: rem($mobile + 1)) and (max-width: rem($tablet)) {
+      @content;
+    }
+  } @else if $viewtype == desktop {
+    // 1280 ~
+    @media (min-width: rem($tablet + 1)) {
+      @content;
+    }
+  } @else if $viewtype == web {
+    // 769 ~
+    @media (min-width: rem($mobile + 1)) {
+      @content;
+    }
+  }
+
+  // orientation
+  @else if $viewtype == portrait {
+    @media (orientation: portrait) {
+      @content;
+    }
+  } @else if $viewtype == landscape {
+    @media (orientation: landscape) {
+      @content;
+    }
+  }
+}
+
+// # flex-context
+@mixin flex-context($direction: row) {
+  flex-direction: $direction;
+  // [dir='rtl'] & {
+  //     @if $direction == 'row-reverse' {
+  //         flex-direction: row;
+  //     } @else {
+  //         flex-direction: #{$direction}-reverse;
+  //     }
+  // }
+}
+// =- description -=
+// $direction : it's means flex container's direction. but be assumed case of main axis is x.
+// and also assume "rtl" case.
+
+// # reset-list-style
+@mixin reset-list-style {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  li {
+    margin: 0;
+    list-style: none;
+  }
+}
+// =- description -=
+// reset user agent style of "ul", "ol", "li"
+
+// # form-reset
+@mixin form-reset($size) {
+  $width: $size;
+  $height: $size;
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: rem($width);
+  height: rem($height);
+  opacity: 0;
+}
+// =- description -=
+// reset and declare basic appearance of the input.
+
+// # ellipsis
+@mixin ellipsis($line: 1, $line-height: null) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  @if 1 == $line {
+    white-space: nowrap;
+  }
+  @if 1 < $line {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $line;
+    // max-height: $line-height * $line * 1em;
+  }
+}
+// =- description -=
+// $line : maximum number of lines text to display.
+// $line-height : if number > 1, you provide element's IFC value;line-height. it use for calculate height automatically.
+
+// ---- band code
+// @function to-vw($size) {
+//     @if string == type-of($size) {
+//         @return $size;
+//     } @else if 0 == $size {
+//         @return 0;
+//     } @else {
+//         @return #{calc($size * 100 / $design-grid-full)}vw;
+//     }
+// }
+
+// @function vw($value) {
+//     @if list == type-of($value) {
+//         $rem: to-vw(list.nth($value, 1));
+//         $output: $rem;
+//         @for $i from 2 through length($value) {
+//             $rem: to-vw(list.nth($value, $i));
+//             $output: list.append($output, $rem);
+//             // @debug $output;
+//         }
+//         @return $output;
+//     } @else {
+//         @return to-vw($value);
+//     }
+// }
+
+// ----------------------  LGness
+// # lgness-margin
+@mixin lgness-margin($type, $view: all) {
+  @if $type == 'if-headline' {
+    // web only
+    // In the case of a component with a Headline,
+    // a margin of 16 pixels is added to the bottom of the component.
+    @include screen(web) {
+      &.margin-bottom:after {
+        content: '';
+        display: block;
+        width: 100%;
+        height: rem($height64px - $height48px);
+      }
+    }
+  } @else if $type == 'if-headline-inside' {
+    // web only
+    // Used when there are several areas with headlines in one component
+    // and additional margins are needed.
+    @include screen(web) {
+      &:after {
+        content: '';
+        display: block;
+        width: 100%;
+        height: rem($height64px - $height48px);
+      }
+    }
+  }
+}
+
+// # lgness-radius
+@mixin lgness-radius($type, $view: all) {
+  $radius-w: rem($radius28);
+  $radius-m: rem($radius20);
+  // A type has been added for the possibility of an exception case,
+  // currently only default is used
+  @if $type == 'default' {
+    $radius-w: rem($radius28);
+    $radius-m: rem($radius20);
+  } @else if $type == 'inner' {
+    $radius-w: rem($radius20);
+    $radius-m: rem($radius16);
+  } @else if $type == 'inner/medium' {
+    $radius-w: rem($radius16);
+    $radius-m: rem($radius12);
+  }
+  @if $view == all {
+    border-radius: $radius-m;
+    @include screen(web) {
+      border-radius: $radius-w;
+    }
+  } @else if $view == mobile {
+    border-radius: $radius-m;
+  } @else if $view == web {
+    border-radius: $radius-w;
+  }
+}
+
+// # lgness-component-title-margin
+@mixin lgness-component-title-margin($margin-direction: 'top') {
+  $margin-m: rem($margin12px);
+  $margin-w: rem($margin20px);
+  @if $margin-direction == 'bottom' {
+    margin-bottom: $margin-m;
+    @include screen(web) {
+      margin-bottom: $margin-w;
+    }
+  } @else {
+    margin-top: $margin-m;
+    @include screen(web) {
+      margin-top: $margin-w;
+    }
+  }
+}
+
+@mixin lgness-image-crop($crop: 'y') {
+  overflow: hidden;
+  > * {
+    position: relative;
+    @if $crop == 'y' {
+      top: 50%;
+      transform: translateY(-50%);
+    } @else {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+}

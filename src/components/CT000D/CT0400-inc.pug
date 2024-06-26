@@ -1,0 +1,531 @@
+include ../_common/_image.pug
+
+mixin checkoutThank(params)
+	- let {number, email, title, link, numberDes, emailDes, addDesTxt, addDesStrong, addDes, basicDesTxt, basicDes } = {...params}
+	.c-checkout-thank
+		.c-text-contents
+			.title.c-text-contents__headline
+				+headline("font-w-normal-36 font-m-normal-24", "h3", `${title ? title : 'Thank you for your order'}`)
+			.text.c-text-contents__bodycopy
+				p.cmp-text.font-w-normal-24.font-m-normal-16= `${numberDes ? numberDes : 'Your order number is '}` 
+					span.cmp-text.font-w-semibold-24.font-m-semibold-16= `${number}`+ '.'
+				if basicDesTxt
+					p.cmp-text.font-w-normal-24.font-m-normal-16= `${basicDes}`
+				p.cmp-text.font-w-normal-24.font-m-normal-16= `${emailDes ? emailDes : 'You will receive a confirmation email at '}`
+					span.font-semibold= email
+				if addDesTxt
+					p.cmp-text.font-w-normal-24.font-m-normal-16
+						span.font-semibold= `${addDesStrong}`
+						span= `${addDes}`
+				if link
+					p.cmp-text.font-w-normal-24.font-m-normal-16 Para concluir seu pagamento, basta seguir as instrucôes clicando neste
+						+linkButton({name: 'link', type:"text",color:"red", size:"medium", underline:true})
+				//- p.cmp-text.font-w-normal-24.font-m-normal-16 Para concluir seu pagamento, basta seguir as instrucôes clicando neste link
+				//-     +linkButton({name: 'link', type:"text",color:"red", size:"medium", underline:true})
+
+mixin checkoutProcess(params)
+	- const data = {...params}; 
+	.c-checkout-process
+		p.c-checkout-process__title= data.title
+
+		ol.c-checkout-process__bridge
+			each set in data.process
+				li.c-checkout-process__item
+					span.c-checkout-process__item-number= set.num
+					.c-checkout-process__item-text= set.text
+
+		.c-checkout-process__msg
+			each msg in data.msgs
+				p= msg.text
+			ul
+				each item in data.lists
+					li= item.text
+			each examine in data.examines 
+				p= examine.text
+
+mixin checkoutThankLblList(params)
+	- const data = {...params}; 
+	ul.checkout-thank-info__lbllist
+		each item in data
+			li
+				span.lbl= item.label
+				span.txt !{item.text}
+
+mixin exclusiveCoupon
+	dl.coupon-info
+		dt Next Purchase Coupon 2024 (20%)
+		dd.coupon-title 
+			| HA promotion- 'Buy any 3 or more LG home
+			| appliances, get 15% off'
+		dd.coupon-code 4S3EMQ4V3MGF
+		dd 03/01/2024 ~ 04/30/2024
+
+mixin CT0400(option=false)
+	.c-wrapper.CT0400
+		.component
+			.fluid-container
+				.my-component
+					if(option === "default")
+						+checkoutThank({
+							number: "76000067621",
+							email: "customer01@gmail.com."
+						})
+
+					if(option === "se")
+						.my-component-coupon
+							p.cmp-text.font-w-normal-24.font-m-normal-16 Here is an exclusive coupon to save more on your next order!
+							.checkout-thank-coupon
+								.checkout-coupon-txt
+									+exclusiveCoupon
+
+					if(option === "de")
+						+checkoutThank({
+							number: "76000067621",
+							email: "customer01@gmail.com."
+						})
+						p.checkout-thank-info.cmp-text.font-w-normal-20.font-m-normal-16
+							| Bitte beachten Sie, dass wir eine Zahlungsprüfung vornehmen werden, welche vereinzelt bis zu 48 Stunden andauern kann.
+							|
+							br
+							| Wir werden Ihere Bestellung selbsverständlich mit großer Sorgfalt bearbeiten.
+					
+					if(option === "jp")
+						+checkoutThank({
+							number: "76000067621",
+							email: "customer01@gmail.com."
+						})
+						p.checkout-thank-info.cmp-text.font-w-normal-20.font-m-normal-16.checkout-thank-info--mo-border
+							| お申込みは注文完了後、「分割クレジット申込手続き」について、弊社が提携する株式会社ジャックスからご案内のメールが届きます。メールのご案内に沿って手続きをおこなってください。株式会社ジャックスにおいて、クレジットのご利用の審査承認が確認でき次第、正式なご注文を確定いたします。
+						//- [Start] LGCOMJP-583
+						.checkout-thank-info.bank-information
+							p 72時間以内に以下の口座にお振込をお願いいたします。:
+							ul.information-list
+								li
+									dt 口座名義人
+									dd {{"name",}}
+								li
+									dt 口座番号
+									dd {{"TEST23376788",}}
+								li
+									dt 口座種別
+									dd {{"futsu",}}
+								li
+									dt 金融機関コード
+									dd {{"1234",}}
+								li
+									dt 金融機関
+									dd {{"いろは銀行",}}
+								li
+									dt 支店番号
+									dd {{"001",}}
+								li
+									dt 支店名
+									dd {{"中央支店"}}
+								li
+									dt 注文番号
+									dd {{order number}}
+							hr.divide-line
+							p お振込可能期間は3日です。期日までにお振込いただけない場合は、ご注文はキャンセルさせていただきます。ご利用いただいた割引や特典もキャンセルになりますのであらかじめご了承ください。
+								|
+								br
+								| ※お客様の口座に残高がある場合は、追加のご入金は不要です。十分に残高があるかご確認ください。
+						//- [End] LGCOMJP-583
+					if(option === "pt")
+						+checkoutThank({
+							number: "76000067621",
+							email: "customer01@gmail.com."
+						})
+						.checkout-thank-info
+							.checkout-thank-info__item
+								.checkout-thank-info__area 
+									.c-image
+										+printLazyImage('../../assets/icon/icon-bank-multibanco-72-72.svg', 'multibanco')
+									.checkout-thank-info__title 
+										p Pagamento por Multibanco ou HomeBanking
+										ul.checkout-thank-info__title--list 
+											li Entidade : 21964 
+											li Referência : 101301777
+											li Valor : €2,099.98
+							.checkout-thank-info__line
+							.checkout-thank-info__item
+								p.checkout-thank-info__text O recibo facultado pelo terminal de multibanco serve como prova de pagamento. Por favor, guarde-o.
+								p.checkout-thank-info__text Limite Pagamento: 2023-06-11
+
+					if(option === "es")
+						+checkoutThank({
+							number: "76000067621",
+							email: "customer01@gmail.com."
+						})
+						.checkout-thank-info
+							.checkout-thank-info__item
+								.checkout-thank-info__divide
+									p.checkout-thank-info__text Su pedido en Tienda LG ONLINE se ha completado. Por favor, realícenos una transferencia bancaria:
+									+checkoutThankLblList([
+										{
+											label: "Nombre del titular de la cuenta",
+											text: "Search Engine Business SL",
+										},
+										{
+											label: "Por favor, incluya estos detalles",
+											text: "IBAN: ES8614740000120015826428<br>BIC/CODIGO SWIFT: CITIESMX",
+										},
+										{
+											label: "Nombre del banco",
+											text: "Citi Bank",
+										},
+									])
+								.checkout-thank-info__divide
+									p.checkout-thank-info__text
+										| Por favor, incluya el número de referencia de su pedido en los detalles de la transferencia bancaria.
+										br
+										| También le hemos enviado esta información por correo electrónico.
+										br
+										| Su pedido será enviado tan pronto como recibamos su pago.
+										br
+										| Si tiene preguntas, comentarios o problemas, póngase en contacto con nuestro 
+										+linkButton({name: 'experimentado equipo de atención al cliente', type:"text", color:"black", size:"medium", underline:true})
+										| .
+
+					if(option === "fr")
+						+checkoutThank({
+							number: "76000067621",
+							email: "customer01@gmail.com.",
+							title: "Vous y êtes presque !",
+							addDesTxt: true,
+							numberDes: "Votre numéro de commande est ",
+							emailDes: "Vous allez recevoir un email de confirmation à l’adresse ",
+							addDesStrong: "Vous pouvez dès maintenant procéder au virement bancaire instantané ",
+							addDes: "en suivant les coordonnées bancaires indiquées ci-dessous :",
+						})
+						.checkout-thank-info
+							.checkout-thank-info__item
+								p.checkout-thank-info__text Coordonnées Bancaires
+								+checkoutThankLblList([
+									{
+										label: "Banque",
+										text: "SOCIETE GENERALE",
+									},
+									{
+										label: "Domiciliation",
+										text: "DOMICILIATION : VILLEPINTE ROISSY ENT (04397)",
+									},
+									{
+										label: "Titulaire du compte",
+										text: "LG Electronics France",
+									},
+								])
+								.checkout-thank-info__line
+								p.checkout-thank-info__text Référence bancaire
+								ul.checkout-thank-info__title--list.info
+									li Code banque : 30003
+									li Code guichet : 03875
+									li N° compte : 00020624730
+									li Clé RIB : 97
+								.checkout-thank-info__line
+								p.checkout-thank-info__text.info
+									| IBAN: FR76 3000 3038 7500 0206 2473 097
+									br
+									| BIC-ADRESSE SWIFT: SOGEFRPP
+
+					if(option === "bankTransfer")
+						+checkoutThank({
+							number: "76000067621",
+							email: "customer01@gmail.com."
+						})
+						.checkout-thank-info
+							.checkout-thank-info__item
+								p.checkout-thank-info__text Por forma a concluir o seu pagamento por favor faça uma transferência bancária para o 
+									span.font-semibold IBAN PT50016900010003302101126 
+									| nas próximas 48h
+								p.checkout-thank-info__text De seguida, envie o comprovativo da transferência para o email 
+									+linkButton({name: 'lgpt@eanmatic.com', type:"text", color:"black", size:"medium", underline:true}) 
+									|  com a indicação do seu número de encomenda.
+								p.checkout-thank-info__text Tenha em conta que as encomendas por transferência bancária ficarão ativas no nosso sistema durante um período de tempo limitado. Após isso, caso não tenhamos recebido a transferência bancária, o pedido será cancelado e qualquer desconto ou promoção aplicado na compra será perdido.
+
+					if(option === "process")
+						+checkoutThank({
+							number: "76000067621",
+							email: "customer01@gmail.com.",
+						})
+
+						+checkoutProcess(
+							{
+								process: [
+									{
+										num : "1",
+										text: "Pagamento em análise"
+									},
+									{
+										num : "2",
+										text: "Preparando o envio"
+									},
+									{
+										num : "3",
+										text: "Em rota de entrega"
+									},
+									{
+										num : "4",
+										text: "Entrega concluída"
+									}
+								],
+								msgs: [
+									{
+										text: "Consulte o passo a passo para a entrega do seu pedido."
+									},
+									{
+										text: "Nós estamos cuidando da próxima etapa."
+									}
+								],
+								lists: [
+									{
+										text: "Pagamento em análise: pode durar até 02 dias úteis para que a análise seja concluída. Você poderá receber uma ligação para confirmar o pedido, é importante que este contato seja realizado."
+									},
+									{
+										text: "Preparando o envio: quando o pagamento for aprovado, nós iniciaremos o processo de entrega."
+									},
+									{
+										text: "Falha no pagamento: caso o pagamento não seja aprovado, o pedido será automaticamente cancelado."
+									}
+								],
+								examines: []
+							}
+						)
+
+					if(option === "copy")
+						.c-checkout-info-wrap
+							p.font-w-normal-24.font-m-normal-16 Imprima aqui o seu boleto ou copie o número ao lado:
+							.c-copy-wrap
+								//- +formTextarea("text", "", "comments", false, "23793.309238 60600.359644 20006.333304 3 93930000470887")
+								.c-copy-wrap__text 23793.309238 60600.359644 20006.333304 3 93930000470887
+								.button.c-cta.button-full
+									.copy-button
+										+defaultButton({name:'COPIAR', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})
+									+defaultButton({name:'IMPRIMIR BOLETO', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+					if(option === "qr")
+						.c-checkout-info-wrap
+							p.font-w-normal-24.font-m-normal-16 Escaneie o codigo QR, confira os dados e realize o pagamento pelo app do seu banco.
+							.c-product-qrcode
+								.c-product-qrcode__item
+									+printLazyImage("https://via.placeholder.com/200x200/ddd/fff/?text=QR")
+							.button.c-cta
+								+defaultButton({name:'COPIAR CODIGO', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+					if(option === "pe")
+						+checkoutThank({
+							number: "76000067621",
+							email: "customer01@gmail.com."
+						})
+
+						+checkoutProcess(
+							{
+								title: "Para confirmar la reserva de su pedido, debe realizar el pago con el código brindado y siguiendo las instrucciones compartidas líneas abajo.",
+								process: [
+									{
+										num : "1",
+										text: "Pago en revisión"
+									},
+									{
+										num : "2",
+										text: "Pedido Confirmado"
+									},
+									{
+										num : "3",
+										text: "En tránsito"
+									},
+									{
+										num : "4",
+										text: "Entrega Completada"
+									}
+								],
+								msgs: [
+									{
+										text: "Su pedido pasará por los siguientes cambios de estado. Le estaremos notificando en cada una de las etapas."
+									}
+								],
+								lists: [
+									{
+										text: "Pedido Confirmado: Se confirmara el pedido una vez se haya completado el procesamiento del pago."
+									},
+									{
+										text: "En tránsito: El pedido esta en camino para ser entregado. Previamente realizaremos una llamada de coordinación y la persona responsable de la recepción deberá identificarse en la dirección de entrega."
+									}
+								],
+								examines: [
+									{
+										text: "Pago en revisión: La revisión del pago podría demorar entre 1 ~ 2 días."
+									},
+									{
+										text: "Pago Rechazado: En caso se rechace el pago por parte de la entidad emisora de la tarjeta de crédito o banco."
+									}
+								],
+							}
+						)
+
+					if(option === "pe-copy")
+						.c-checkout-info-wrap
+							p.font-w-normal-24.font-m-normal-16 Código de Pago (CIP)
+							.c-copy-wrap
+								.c-copy-wrap__text 182667677
+								.button.c-cta.button-full
+									.copy-button
+										+defaultButton({name:'COPIAR', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})
+									+defaultButton({name:'GUÍA DE PAGO &', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+					if(option === "IN")
+						+checkoutThank({
+							title: "Your payment is being processed!",
+							number: "76000067621",
+							basicDesTxt: true,
+							basicDes: "Thank you for your payment, currently it is being verified.",
+							emailDes: "Once your payment is approved, you will receive order confirmation email to ",
+							email: "customer01@gmail.com.",
+						})
+
+					if(option === "ID")
+						+checkoutThank({
+							title: "Your payment is being processed!",
+							number: "76000067621",
+							basicDesTxt: true,
+							basicDes: "Thank you for your payment, currently it is being verified.",
+							emailDes: "Once your payment is approved, you will receive order confirmation email to ",
+							email: "customer01@gmail.com.",
+						})
+					
+					if(option === "PA")
+						+checkoutThank({
+							title: "Thank you for your order",
+							number: "76000067621",
+							basicDesTxt: true,
+							basicDes: "Thank you for your payment, currently it is being verified.",
+							emailDes: "Once your payment is approved, you will receive order confirmation email to ",
+							email: "customer01@gmail.com.",
+						})
+					
+					if(option === "PA-bankTransfer")
+						+checkoutThank({
+							number: "76000067621",
+							email: "customer01@gmail.com."
+						})
+						.checkout-thank-info
+							.checkout-thank-info__item
+								.checkout-thank-info__divide
+									p.checkout-thank-info__text Por favor, realice su transferencia bancaria en un plazo máximo de 48 horas al siguiente número cuenta: 
+										span.font-semibold 03-95-01-136372-9 (Banco General de Panamá)
+									p.checkout-thank-info__text Descripción: Número de pedido: 
+										span.font-semibold 109000035386
+								.checkout-thank-info__divide
+									p.checkout-thank-info__text
+										span.font-semibold NOTA:
+										br
+										| Debe enviar el recibo a la siguiente dirección de correo electrónico 
+										+linkButton({name: 'lgpanama@eanmatic.com', type:"text", color:"black", size:"medium", underline:true})
+										|  Al enviar el recibo, indique el número de pedido indicado en la descripción.
+									p.checkout-thank-info__text Tenga en cuenta que los pedidos de transferencia bancaria estarán activos en nuestro sistema 
+										span.font-semibold 5 días
+										| . Pasado ese plazo, si no hemos recibido la transferencia bancaria, el pedido será cancelado y se perderá cualquier descuento o promoción aplicada a la compra.
+
+					if(option === "MX-bankTransfer")
+						+checkoutThank({
+							number: "76000067621",
+							email: "customer01@gmail.com."
+						})
+						.checkout-thank-info
+							.checkout-thank-info__item
+								.checkout-thank-info__divide
+									p.checkout-thank-info__text Por favor, realice su transferencia bancaria en un plazo máximo de 24 horas sl siguiente número de cuenta (CLAVE):
+									p.checkout-thank-info__text
+										span.font-semibold 760000067621 
+										| de citibanamex a nombre de SEARCH ENGINE BUSINESS SEB S DE RL DE CV
+									p.checkout-thank-info__text Número do pedido : 
+										span.font-semibold 002010222222222225
+								.checkout-thank-info__divide
+									p.checkout-thank-info__text
+										span.font-semibold NOTA:
+										br
+										| Debe enviar el recibo a la siguiente dirección de correo electrónico 
+										+linkButton({name: 'lgmx@eanmatic.com', type:"text", color:"black", size:"medium", underline:true})
+										|  para vaildar el pago.
+									p.checkout-thank-info__text Al enviar el recibo, indique el número de pedido anterior.
+									p.checkout-thank-info__text Tenga en cuenta que los pedidos que serán pagados a través de transferencia bancaria estarán activos en nuestro sistema 
+										span.font-semibold 3 días
+										| . Pasodo ese plazo de tiempo, si no hemos recibido la transgerencia bancaria, el pendido será cancelado y se perderá cualquier descuentoo promción aplicada a la compra.
+
+					if(option === "PL")
+						+checkoutThank({
+							number: "76000067621",
+							email: "customer01@gmail.com."
+						})
+						.checkout-thank-info
+							.checkout-thank-info__item
+								p.checkout-thank-info__text Dziękujemy za Twoje zamówienie , proszę KONTYNUUJ SKŁADANIE wniosku ratalnego na stronie BNP Paribas ( klikając przycisk ponizej ) . Ostateczną decyzję BNP Paribas prześle oddzielnym e-mail.
+								p.checkout-thank-info__text Jeśli nie ukończyłeś/-aś jeszcze składania wniosku ratalnego w serwisie BNP Paribas , możesz ponownie złożyc wniosek na stronie
+									+linkButton({name: 'Szczegóły Zamówienia', type:"text", color:"red", size:"medium", underline:true})
+									| .
+								p.checkout-thank-info__text W przypadku NIE otrzymania ostatecznej akceptacji od BNP Paribas w ciągu najbliższych 6 dni , Twoje zamówienie zostanie anulowane i nie będziesz mógł ponownie złożyć wniosku ratalnego.
+								.button.c-cta
+									+defaultButton({name:'Złóż wniosek o raty BNP Paribas', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+					if(option === "CZ")
+						+checkoutThank({
+							number: "76000067621",
+							email: "customer01@gmail.com."
+						})
+						.c-checkout-info-wrap
+							p.font-w-semibold-20.font-m-semibold-16 Platební údaje
+							+checkoutThankLblList([
+								{
+									label: "Číslo účtu:",
+									text: "2536210208/2600 Citibank",
+								},
+								{
+									label: "Variabilní symbol:",
+									text: "6 posledních číslic objednávky",
+								},
+								{
+									label: "Částka:",
+									text: "1 209 Kč",
+								},
+							])
+							p.font-w-normal-20.font-m-normal-16 Proveďte platbu nejpozději do 48 hodin.
+							.c-product-qrcode
+								.c-product-qrcode__item
+									+printLazyImage("https://via.placeholder.com/200x200/ddd/fff/?text=QR")
+								p.c-product-qrcode__text.font-w-normal-20.font-m-normal-16 QR Platba
+							p.font-w-normal-16.font-m-normal-16 Objednávka placená přes bankovní účet je v systému držena  5 dní­. Poté, v případě neobdržení platby, bude zrušena a veškeré slevy či výhody plynoucí z objednávky budou ztraceny.
+
+					if(option === "VN")
+						+checkoutThank({
+							number: "76000067621",
+							email: "customer01@gmail.com.",
+						})
+						.c-checkout-info-wrap
+							.c-checkout-info-wrap__desc
+								.c-text-contents.c-checkout-info-wrap__desc__deposit
+									.c-text-contents__bodycopy.text
+										.font-w-normal-24.font-m-normal-16 Đề hoản thảnh đon hảng, vui lòng chuyền khoản đề thanh toán, số tiền:
+								.c-text-contents.c-checkout-info-wrap__desc__deposit-priod
+									.c-text-contents__bodycopy.text
+										.font-w-normal-16.font-m-normal-14.font-red 28.690.012 Hạn thanh toán: 24/06/2023 23:04:54
+							.c-checkout-info-wrap__item
+								.c-text-contents
+									.c-text-contents__bodycopy.text
+										.font-w-normal-16.font-m-normal-14 Tện nhãn hảng
+									.c-text-contents__bodycopy.c-text-wrap
+										.c-text-wrap__text.cmp-text.font-w-normal-16.font-m-normal-16 WOORIBANK
+							.c-checkout-info-wrap__item
+								.c-text-contents
+									.c-text-contents__bodycopy.text
+										.font-w-normal-16.font-m-normal-14 Số tải khoãn
+									.c-copy-wrap
+										//- +formTextarea("text", "", "comments", false, "9020000227545")
+										.c-copy-wrap__text 9020000227545
+										.button.c-cta.button-full
+											.copy-button
+												+defaultButton({name:'Copy', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})
+							.c-checkout-info-wrap__item
+								.c-text-contents
+									.c-text-contents__bodycopy.text
+										.font-w-normal-16.font-m-normal-14 Tện tải khoãn
+									.c-text-contents__bodycopy.c-text-wrap
+										.c-text-wrap__text.cmp-text.font-w-normal-16.font-m-normal-16 LG ELETRONICS VIETNAM

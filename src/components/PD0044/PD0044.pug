@@ -1,0 +1,140 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_pop-msg.pug
+
+block meta 
+    - var componentId = "PD0044"
+    - var componentName = "Toast Popup"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-pop-toast__image' : [
+                            {
+                                'name' : 'image style',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'inside'},
+                                ]
+                            }
+                        ],
+                        '.c-pop-toast' : [
+                            {
+                                'name' : 'script hidden remove',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'hidden'},
+                                ]
+                            }
+                        ],
+                        '#toastCoupon' : [
+                            {
+                                'name' : 'Show/Hide',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'active'},
+                                ]
+                            }
+                        ],
+                        '#secretCoupon' : [
+                            {
+                                'name' : 'Show/Hide',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'active'},
+                                ]
+                            }
+                        ],
+                    };
+
+    // Component Markup
+
+    mixin image(sizeM, sizeD, isCover = false)
+        // block : image
+        .image.c-image(class=isCover ? 'cover-image' : 'inside-image')
+            +printLazyPicture(`../../mocks/PD0044/coupon-${sizeM}.png`, `../../mocks/PD0044/coupon-${sizeD}.png`)
+            if block
+                block
+
+    // test
+    div(style='height:1500px')
+
+
+block modal
+    .c-wrapper.PD0044.bg-default
+        .component
+            .cmp-container
+                //- Default Popup
+                .c-pop-toast(id='toastCoupon' role='alert' aria-live='assertive' data-autohide='true' data-delay='1' data-duration='40')
+                    .c-pop-toast__container
+                        .c-pop-toast__image.inside
+                            +image('210-58','350-90')
+                            +image('210-120','350-130',true)
+                        .c-text-contents
+                            .title.c-text-contents__headline
+                                .cmp-title.font-w-normal-24.font-m-normal-20(data-cmp-data-layer="")
+                                    strong Give to 
+                                        span ‘Welcome 10%’ 
+                                        | Discount Coupon
+                            .text.c-text-contents__bodycopy
+                                .cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+                                    p Sign up and get the following benefits
+                            .button.c-cta
+                                +defaultButton({name: 'Continue to Sign in', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+                            .text.c-pop-toast__count
+                                .cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")
+                                    p It closes automatically after 
+                                        strong.js-toast-count
+                                        |  seconds.
+                        //- close button
+                        .button.c-pop-toast__close.c-pop-toast__close--on-top
+                            button.cmp-button.c-pop-toast__close-button.js-toast-close(type='button', aria-controls='toastCoupon' data-cmp-data-layer="")
+                                span.cmp-button__text.sr-only close
+                
+                //- Secret Popup
+                .c-pop-toast(id='secretCoupon' role='alert' aria-live='assertive' data-autohide='true' data-delay='1' data-duration='40')
+                    .c-pop-toast__container
+                        .c-pop-toast__image
+                            +image('210-58','350-90')
+                            +image('210-120','350-130',true)
+                        .c-text-contents
+                            .title.c-text-contents__headline
+                                .cmp-title.font-w-normal-24.font-m-normal-20(data-cmp-data-layer="")
+                                    strong Exclusive coupon for you!
+                            .text.c-text-contents__bodycopy
+                                .cmp-text.radio-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+                                    p 10% Off Coupon Code : 
+                                        span BF_Secret_xyz1
+                                .text.font-w-normal-12.font-m-normal-12 Your secret coupon is available for only today.
+                                    +textButton({name: 'Terms & Condition', underline:true, buttonStyle: 'default', isButton: false, buttonStyle:"js-pop-open pop-btn"})(href="#popSecretCoupon")
+                            .button.c-cta
+                                +defaultButton({name: 'Get it now', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+
+                        //- close button
+                        .button.c-pop-toast__close.c-pop-toast__close--on-top
+                            button.cmp-button.c-pop-toast__close-button.js-toast-close(type='button', aria-controls='secretCoupon' data-cmp-data-layer="")
+                                span.cmp-button__text.sr-only close
+    
+    +printLayerPopup('popSecretCoupon')
+                
+                
+

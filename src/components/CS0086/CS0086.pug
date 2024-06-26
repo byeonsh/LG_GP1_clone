@@ -1,0 +1,214 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_cs-form.pug
+
+block meta
+    - var componentId = "CS0086"
+    - var componentName = "Step_Installation Requirement"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+
+    mixin formCheckbox(params)
+        - var option={type: 1, label: '', linkLabel: '', name:'', val: '', id: '', count: false, disabled: false, link: true, ...params}
+        .c-checkbox-item
+            label.checkbox(for=`${option.id}`)
+                if(option.disabled)
+                    input(type="checkbox", name=`${option.name}`, value=`${option.val}`, id=`${option.id}`, aria-label="", disabled="disabled")&attributes(attributes)
+                else
+                    input(type="checkbox", name=`${option.name}`, value=`${option.val}`, id=`${option.id}`, aria-label="")&attributes(attributes)
+
+                if(option.label)
+                    case option.type
+                        when 1
+                            span.label.font-m-normal-12.font-w-normal-20 #{option.label} #[em.require *]#[span.sr-only Required Field]
+                                if(option.linkLabel)
+                                    a(href="daum.net").link.font-m-normal-12.font-w-normal-20= option.linkLabel
+                                //- a(href="daum.net").link.font-m-normal-12.font-w-normal-20= option.linkLabel
+                                //- span.font-m-normal-12.font-w-normal-20= option.label2
+                                //- a(href="daum.net").link.font-m-normal-12.font-w-normal-20= option.linkLabel2
+                                -if(option.count >= 0 & option.count != false) // for filter
+                                    sup.count= option.count
+                        when 2
+                            span.label.font-m-normal-12.font-w-normal-20= option.label
+                                -if(option.count >= 0 & option.count != false) // for filter
+                                    sup.count= option.count
+                else
+                    if block
+                        span.label
+                            block
+
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${controlsId}` aria-label="")
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+
+    -
+        const formInfo = [
+            {
+                'type': 1,
+                'label': 'Yes, product was delivered to my place',
+                'name': 'name',
+                'val': 'val5',
+                'id': 'checkId5',
+                'count': false,
+                'disabled': false,
+                'link': true,
+                'modalPopup': false,
+            },
+            {
+                'type': 1,
+                'label': 'Yes, installation location is ready',
+                'name': 'name',
+                'val': 'val5',
+                'id': 'checkId6',
+                'count': false,
+                'disabled': false,
+                'link': true,
+                'modalPopup': true,
+                'popupMsg': 'Click here to know installation requirements',
+            },
+            {
+                'type': 1,
+                'label': 'I agree service charges ',
+                'name': 'name',
+                'val': 'val5',
+                'id': 'checkId7',
+                'count': false,
+                'disabled': false,
+                'link': true,
+                'modalPopup': true,
+                'popupMsg': 'Click here to know charge details',
+            },
+        ]
+
+    mixin textArea
+        section 
+            .cs-form
+                .cs-form__wrap                                  
+                    .cmp-form
+                        +csForm_Textarea({id: 'message', label: 'Please let us know if you have any comment', placeholder:"Please explain your issue or question", require: 'true', requireMsg: 'Description is required.', maxLength: "1000" , class:"c-subject-rquired-valid"})
+
+    mixin inputContents(country)
+        case country
+            when 'EG_en'
+                section  
+                    .c-info-box
+                        span.font-m-normal-20.font-w-normal-24 Requirement check list
+                    .cs-form
+                        - for(let i = 0; i < formInfo.length; i++)
+                            .cs-form__chk
+                                +formCheckbox({type: formInfo[i].type, label: formInfo[i].label, name: formInfo[i].name, val: formInfo[i].val, id: formInfo[i].id, count: formInfo[i].count, disabled: formInfo[i].disabled, link: formInfo[i].link})
+                                if formInfo[i].modalPopup
+                                    a(tabindex="0" class="c-modal-open link font-m-normal-12 font-w-normal-20" aria-label="" aria-controls="CS0026" role="dialog" data-link-name)= formInfo[i].popupMsg
+                                    if i == 1
+                                        // click link - opens CS0026 (Installation requirements - EG_EN) popup
+                                if i > 0
+                                    .c-warning(class= "c-privacyPolicy-checked0" + (i + 1)) Agreement is not checked.
+                                else
+                                    .c-warning.c-privacyPolicy-checked Agreement is not checked.
+                                
+                +textArea
+            default 
+                +textArea
+
+    mixin contentsBody(stepNumber, country)
+        // block - text contents
+        .c-text-contents.c-accordion__body-text
+            case stepNumber
+                when 2
+                    section                       
+                        .c-info-box-text.font-m-normal-12.font-w-normal-16 
+                            | Authorized technical assistance may charge for the installation service according to the policy of each product and model. Check the installation policy to find out if your model is covered by the free or paid installation service.
+                            br
+                            | This installation request will be valid only after confirmation by the authorized technical assistance and payment of the installation fee.
+                    
+                    +inputContents(country)
+
+                    .c-button-wrap
+                        .button.c-cta
+                            //+defaultButton({name: 'Reset', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})(aria-label="")
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-next" aria-label="")
+
+    mixin pack(faq, stepNumber, controlsId, country)
+        .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+            .c-accordion__head
+                // block - text contents
+                // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+                //- .c-accordion__head-text.c-text-contents.c-step-active
+                .c-accordion__head-text.c-text-contents
+                    span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true")
+                        span.c-accordion__step
+                        span.c-accordion__head-flag.font-m-normal-16.font-w-semibold-20
+                +trigger(controlsId)
+            // This area is accordion content. Please include only this area during development.
+            .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+                +contentsBody(stepNumber, country)
+
+    -
+        const stepList = [
+            {
+                'eyebrow': 'Contact Information',
+                'stepNumber': 2
+            },
+        ]
+
+
+    .guide-text-type Step_Installation request - EG_EN
+
+    // Component Markup
+    .c-wrapper.CS0086.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0086__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +pack(faq, faq.stepNumber, controlsId, 'EG_en')
+
+
+    .guide-text-type Step_Installation request - BR, CL, CAC_EN
+
+    // Component Markup
+    .c-wrapper.CS0086.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0086__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +pack(faq, faq.stepNumber, controlsId, 'BR')
+                                        
+block modal 
+    // Component Markup
+    .c-wrapper.CS0086.type-text
+        .component.cs-component
+            .CS0086__container
+                // CS0026 Component
+                .c-modal.c-modal__tab-type#CS0026
+                    .c-modal__dimmed
+                    .c-modal__box
+                        .c-modal-head__wrap
+                            .c-modal__head 
+                                .c-modal__title.font-m-light-24.font-w-light-36 Installation requirements
+                            button(type="button" aria-label="").c-modal__closebtn close btn                     
+                        .c-modal__content 
+                            .c-modal__content-text 
+                                | Dear customer, For wall mount installation please make sure the wall mount is available with you
+                                
+                                
+                            .button.c-cta
+                                +defaultButton({name: 'Agree', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+    

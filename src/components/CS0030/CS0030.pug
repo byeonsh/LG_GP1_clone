@@ -1,0 +1,108 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_pagination.pug
+
+block meta 
+    - var componentId = "CS0030"
+    - var componentName = "Annoucement"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+
+    mixin listLinkResetArticle(text)
+        li.c-list-link__item
+            a(href="#" data-link-name data-link-destination data-link-menu data-link-page-type) 
+                if text.Mustread
+                    .c-list-link__eyebrow.font-m-normal-12.font-w-normal-20
+                        span.font-m-semibold-12.font-w-semibold-20.c-list-pin 
+                            = text.Mustread
+                        = text.eyebrow
+                else
+                    .c-list-link__eyebrow.font-m-normal-12.font-w-normal-20= text.eyebrow
+                .c-list-link__headline.font-m-normal-16.font-w-normal-24= text.headline
+
+    mixin listLinkArticles(list)
+        .c-list-link.swiper-wrapper(role="list")
+            each set, index in list
+                - var primaryItem = set.primary 
+                .c-list__item.cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item" role="listitem" tabindex="0")
+                    +listLinkArticleCard(set)
+    
+    mixin listLinkArticleCard({eyebrow, headline, Mustread})
+        +listLinkResetArticle({eyebrow, headline, Mustread})
+    
+    mixin handler
+        .c-carousel__handler
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"prev"})(aria-label="")
+            +carouselPagination
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"next"})(aria-label="")
+
+    .guide-text-type Annoucement
+    // Component Markup
+    .c-wrapper.CS0030.type-text
+        .component.c-search-topics
+            .CS0030__container
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline
+                            +headline('font-w-light-56 font-m-light-28',h2,'Announcements')
+                .searchbar
+                    #searchbar.searchBar__root(data-cmp-data-layer='' role= 'search')
+                        .searchBar__searchInner
+                            form.searchBar__form(autocomplete='off' _lpchecked='1' action='')
+                                span.fieldIcons__root
+                                    span.fieldIcons__input
+                                        input#textInput__input.textInput__input.field__input.font-m-normal-16.font-w-normal-20(type="text" name='search_query' value='' role='searchbox' aria-label="Search" placeholder='Please type model number')
+                                        button(type="button").c-button-delete delete button
+                                    button(type="button" title="search").fieldIcons__before.c-hidden-mo
+                                        span.icon__root
+                                            span.sr-only Search
+                                p.message__root
+                                .searchBar__SearchAutocompleteWrapper
+                    .c-warning.c-field-required This field is required.
+
+    .c-wrapper.CS0030.type-text
+        .component
+            .CS0030__container
+                .c-result-box
+                    .c-result-area__result.productcollection__results-count.font-m-normal-14.font-w-normal-16
+                        strong.c-result-area__count 2 
+                        span matching result for ‘Cooling’
+                        a(href="#").c-button-delete
+                    .panelcontainer
+                        // 20230323 block - carousel deleted / pagination added
+                        div(data-cmp-data-layer="")
+                            +listLinkArticles([
+                                {eyebrow: '11/07/2022', headline : 'How to change your LG refrigerator water filter?' , Mustread : 'Must read'},
+                                {eyebrow: '11/07/2022', headline : 'Ice has bad taste resolving bad tasting ice or water'},
+                                {eyebrow: '11/07/2022', headline : 'How to use LG Side-by-Side refrigerator ice and water dispenser?How to use LG Side-by-Side refrigerator ice and water dispenser?How to use LG Side-by-Side refrigerator ice and water dispenser?How to use LG Side-by-Side refrigerator ice and water dispenser?How to use LG Side-by-Side refrigerator ice and water dispenser?e and water dispenser?How to use LG Side-by-Side refrigerator ice and water dispenser?e and water dispenser?How to use LG Side-by-Side refrigerator ice and water dispenser?e and water dispenser?How to use LG Side-by-Side refrigerator ice and water dispenser?'},
+                               
+                            ])
+                        //- +handler
+                        +pagination
+                    // no result
+                    .c-result-area__result.productcollection__results-count.font-m-normal-14.font-w-normal-16
+                        strong.c-result-area__count 2 
+                        span matching result for ‘Cooling’
+                        a(href="#").c-button-delete
+                    .c-no-result 
+                        .c-no-result__wrap
+                            span.c-no-result__icon 
+                            p.font-m-normal-16.font-w-normal-20 There are no matches, please try again.

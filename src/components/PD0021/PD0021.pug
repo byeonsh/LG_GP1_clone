@@ -1,0 +1,99 @@
+extends ../_common/_layout.pug
+include ../_common/_carousel.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_headline.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "PD0021"
+    - var componentName = "Recently Viewed"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],                        
+                    };
+
+    mixin viewedItem 
+        .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+            // GA4
+            .c-list__item(data-pim-category1="" data-pim-category2="" data-pim-category3="" data-pim-category4="" data-pim-sku="" data-pim-model-name="" data-pim-model-year="" data-pim-flag="" data-pim-modeltype="" data-shop-stock-status="" data-shop-msrp="" data-shop-price="")
+                // GA4
+                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                    .image.c-image.c-list__item--top
+                        +printLazyImage('https://via.placeholder.com/350x350/999999/333333')
+                        //    +printLazyImage('https://via.placeholder.com/350x350/f7f8f9/000')
+                    .c-list__item--bottom
+                        .c-text-contents
+                            .text.c-text-contents__headline.font-w-normal-24.font-m-normal-16
+                                .cmp-text(data-cmp-data-layer="") 
+                                        | American Fridge Freezer 
+                                        br
+                                        | Water &amp; Ice Dispenser 
+                                        
+    mixin handler
+        .c-carousel__handler
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"prev"})
+            +carouselPagination
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"next"})
+
+    // Component Markup
+    .c-wrapper.PD0021.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +component-title-area({
+                    alignment:"",
+                    headline : {
+                        text : "Recently Viewed",
+                    }
+                })(class="c-region-header--vacate-side")
+                
+                //- .c-text-contents
+                //-     .c-text-contents__headline 
+                //-         // font size is user option. sample just one of them.
+                //-         +headline('font-w-light-56 font-m-light-28 c-header', pass, componentName)
+                .c-list
+                    .carousel.panelcontainer
+                        // block - carousel
+                        .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                            .cmp-carousel__content.swiper-wrapper
+                                - for (var x = 0; x < 10; x++)
+                                    +viewedItem
+
+                            +handler

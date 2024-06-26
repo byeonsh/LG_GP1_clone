@@ -1,0 +1,100 @@
+extends ../_common/_layout.pug
+include ../_common/_image.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_carousel.pug
+include ../_common/_video.pug
+
+block meta 
+    - var componentId = "ST0050"
+    - var componentName = "Attached Multimedia"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+    
+    mixin block-image-contents(useVideo)
+        .c-multimedia-contents
+            .c-multimedia-contents--image(style="background-image:url('https://via.placeholder.com/340x216/999999/333333')")
+            // 2023-01-27 : Add role to download link for tagging
+            a.c-multimedia-contents--cover(href="#", role="button")
+            if useVideo
+                // Display only when video is registered
+                // block : media 
+                p.c-multimedia-contents--badge-video Video
+
+    mixin multimedia-contents
+        - var useVideo = [true, false, false, true, false, false]
+        each flag, idx in useVideo
+            .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                .c-hero-side
+                    +block-image-contents(flag)
+
+    mixin multimedia-download
+        .c-attached-file__download
+            p.font-w-normal-16.font-m-normal-14.c-attached-file__title Download :
+            // 2023-01-27 : Add role to download link for tagging
+            a.c-attached-file__item.total(href="#", target="_blank", role="button")
+                span.font-w-normal-14.font-m-normal-14 9
+            span.c-divider
+            // 2023-01-27 : Add role to download link for tagging
+            a.c-attached-file__item.zip(href="#", target="_blank", role="button")
+                span.font-w-normal-14.font-m-normal-14 ZIP
+
+    // Component Markup
+    .c-wrapper.ST0050.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                .c-text-contents.c-attached-file
+                    .c-attached-file__container
+                        .font-w-normal-16.font-m-normal-16
+                            |  9 Images
+                        +multimedia-download
+                .cmp-container
+                    .carousel.panelcontainer
+                        .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                            .cmp-carousel__content.swiper-wrapper
+                                +multimedia-contents
+                            .c-carousel__handler
+                                .cmp-carousel__actions
+                                    +carouselBtn({type:"pagination", direction:"prev"})
+                                +carouselPagination({isUnder:true})
+                                .cmp-carousel__actions
+                                    +carouselBtn({type:"pagination", direction:"next"})

@@ -1,0 +1,157 @@
+@use '../abstract/' as *;
+
+@mixin error-page {
+  .c-error-area {
+    position: relative;
+    @include inset-padding-hz;
+    @include container($design-grid-full, true);
+
+    .c-error {
+      $error: '.c-error';
+      $text: '.c-text-contents';
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      // gap: rem($margin20px);
+      padding: rem($padding120px 0);
+      @include screen(web) {
+        padding: rem($padding180px 0);
+      }
+
+      &__img {
+        display: inline-flex;
+        &::before {
+          content: '';
+          display: block;
+          background : {
+            position: 100% center;
+            size: 100%;
+            repeat: no-repeat;
+          }
+        }
+      }
+
+      // modify : type 404/500 image
+      $icon: '.c-error__img:before';
+      &--404 {
+        #{$icon} {
+          background-image: url($icon-error-404-90-90);
+          width: rem($width56px);
+          height: rem($height56px);
+          @include screen(web) {
+            width: rem($width90px);
+            height: rem($height90px);
+          }
+          .c-wrapper.bg-darkgray & ,.c-wrapper.bg-black & {
+            background-image: url($icon-error-white-404-90-90);
+            transform: scale(1.6);
+          }
+        }
+      }
+      &--500 {
+        padding: rem($padding140px 0);
+        @include screen(web) {
+          padding: rem($padding300px 0);
+        }
+        #{$icon} {
+          background-image: url($icon-error-500-90-90);
+          width: rem($width56px);
+          height: rem($height56px);
+          @include screen(web) {
+            width: rem($width90px);
+            height: rem($height90px);
+          }
+        }
+        #{$text}__info {
+          strong {
+            font-weight: $font-semibold;
+          }
+        }
+        @at-root #{$error} {
+          #{$text} + #{$text} {
+            margin-top: rem($margin20px);
+            @include screen(web) {
+              margin-top: rem($margin30px);
+            }
+          }
+        }
+      }
+      &--systemcheck {
+        padding: rem($padding120px 0);
+        @include screen(web) {
+          padding: rem($padding180px 0);
+        }
+        #{$icon} {
+          background-image: url($icon-systemcheck-90-90);
+          width: rem($width56px);
+          height: rem($height56px);
+          @include screen(web) {
+            width: rem($width90px);
+            height: rem($height90px);
+          }
+        }
+      }
+
+      .c-text-contents {
+        display: flex;
+        flex-direction: column;
+        // gap: rem($margin8px);
+        width: 100%;
+        @include screen(web) {
+          // max-width: rem($maximum);
+          // gap: rem($margin12px);
+        }
+        @at-root #{$error} {
+          #{$error}__img {
+            & + #{$text} {
+              margin-top: rem($margin24px);
+            }
+          }
+          #{$text}__headline + #{$text}__bodycopy {
+            margin-top: rem($margin8px);
+          }
+        }
+        .font-red {
+          color: $active-red;
+        }
+        &__info {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          gap: rem($margin4px);
+          padding-top: rem($padding20px);
+          @include screen(web) {
+            padding-top: rem($padding30px);
+          }
+          &::before {
+            content: '';
+            width: 100%;
+            height: rem($border1);
+            background: $ivory6;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            @include screen(web) {
+              width: rem($width640px);
+            }
+          }
+        }
+      }
+      * + .c-cta {
+        margin-top: rem($margin12px);
+
+        /*!rtl:begin*/
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+
+        /*!rtl:end*/
+        @include screen(web) {
+          margin-top: rem($margin24px);
+        }
+      }
+    }
+  }
+}

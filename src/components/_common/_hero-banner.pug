@@ -1,0 +1,429 @@
+include ./_button.pug
+include ./_image.pug
+include ./_countdown.pug
+include ./_carousel.pug
+include ./_video.pug
+include ./_headline.pug
+include ./_img-banner-text.pug
+
+//-
+	hero type 
+	ST0001
+		- default
+		- pdp
+		- thin
+		- promotion
+		- bg image
+		- image
+		- blog
+		- icon block
+		- blog icon block
+	PD0046
+		- product
+
+
+mixin hero-image(width, heroType, imgOfText, bgImage)
+	- var wide = "1920";
+	- var narrow = "1600";
+	- var content = "1440";
+
+	// block : image
+	case width 
+		when "wide"
+			- var webImgHeight = heroType == "thin" ? "500" : heroType == "thin countdown" ? "720" : "650"
+			- var mobileImgHeight = heroType == "blog" ? "840" : "1200" 
+
+			.image.c-image.c-hero-banner__image
+				if (imgOfText)
+					+printLazyPicture(
+						`https://via.placeholder.com/768x${mobileImgHeight}/222/333`, 
+						`https://via.placeholder.com/${wide}x${webImgHeight}/222/333`
+					)(aria-hidden='true')
+					+imgOfText
+				else
+					+printLazyPicture(
+						`https://via.placeholder.com/768x${mobileImgHeight}/222/333`, 
+						`https://via.placeholder.com/${wide}x${webImgHeight}/222/333`
+					)
+				if block
+					block
+		when "content"
+			- var webImgHeight = heroType == "thin" ? "450" : heroType == "advance" ? "1098" : heroType == "slim" ? "256" : "600"
+			- var mobileImgHeight = (heroType == "blog" || heroType == "product") ? "840" : heroType == "advance" ? "1189" : heroType == "slim" ? "160" : "1200" 
+
+			.image.c-image.c-hero-banner__image
+				if (imgOfText)
+					+printLazyPicture(
+						`https://via.placeholder.com/768x${mobileImgHeight}/222/333`, 
+						`https://via.placeholder.com/${content}x${webImgHeight}/222/333`
+					)(aria-hidden='true')
+					+imgOfText
+				else if (bgImage)
+					+printLazyImage(class="c-image__img-bgImage" aria-hidden='true' alt="")
+				else
+					+printLazyPicture(
+						`https://via.placeholder.com/768x${mobileImgHeight}/222/333`, 
+						`https://via.placeholder.com/${content}x${webImgHeight}/222/333`
+					)
+				if block
+					block
+		when "narrow"
+			- var webImgHeight =  heroType == "image" ? "500" : heroType == "thin" ? "600" : heroType == "thin countdown" ? "720" : heroType == "promotion" || heroType == "blog" ? "700" : "800" 
+			- var mobileImgHeight = heroType == "blog" ? "840" : "1200" 
+
+			.image.c-image.c-hero-banner__image
+				if (imgOfText)
+					+printLazyPicture(
+						`https://via.placeholder.com/768x${mobileImgHeight}/222/333`, 
+						`https://via.placeholder.com/${narrow}x${webImgHeight}/222/333`
+					)(aria-hidden='true')
+					+imgOfText
+				else
+					+printLazyPicture(
+						`https://via.placeholder.com/768x${mobileImgHeight}/222/333`, 
+						`https://via.placeholder.com/${narrow}x${webImgHeight}/222/333`
+					)
+				if block
+					block
+		when "spec"
+			.image.c-image.c-hero-banner__image
+				if (imgOfText)
+					.cmp-image(data-cmp-data-layer='')
+						picture
+							source(media="(max-width: 1024px)", srcset="https://via.placeholder.com/768x1200/222/333")
+							source(media="(min-width: 1025px)", srcset="https://via.placeholder.com/1600x1400/222/333")
+							img.cmp-image__image.c-image__img(src="https://via.placeholder.com/768x1200/222/333", alt="", loading="lazy", aria-hidden='true')
+					+imgOfText
+				else
+					.cmp-image(data-cmp-data-layer='')
+						picture
+							source(media="(max-width: 1024px)", srcset="https://via.placeholder.com/768x1200/222/333")
+							source(media="(min-width: 1025px)", srcset="https://via.placeholder.com/1600x1400/222/333")
+							img.cmp-image__image.c-image__img(src="https://via.placeholder.com/768x1200/222/333", alt="", loading="lazy")
+				if block
+					block
+		when "hot-news"
+			.image.c-image.c-hero-banner__image
+				if (imgOfText)
+					+printLazyPicture(
+						`https://via.placeholder.com/620x960/222/333`, 
+						`https://via.placeholder.com/708x540/222/333`
+					)(aria-hidden='true')
+					+imgOfText
+				else
+					+printLazyPicture(
+						`https://via.placeholder.com/620x960/222/333`, 
+						`https://via.placeholder.com/708x540/222/333`
+					)
+				if block
+					block
+		default 
+			|
+
+mixin hero-promotion-date
+	- var dateStyle = "font-w-normal-24 font-m-normal-16"	
+	
+	// to dev - data value sample is same as the "countdown" module.
+	// insert it as a string that can use in "Date" object.
+	.text.c-text-contents__date.js-date-range(data-start-date="Tue August 16 17:30:00 UTC 2024", data-end-date="Mon December 15 23:59:59 UTC 3000")&attributes(attributes)
+		.cmp-text(data-cmp-data-layer="" class=dateStyle)
+
+mixin hero-promotion-date-fullNum
+	- var dateStyle = "font-w-normal-24 font-m-normal-16"	
+	
+	// to dev - data value sample is same as the "countdown" module.
+	// insert it as a string that can use in "Date" object.
+	.text.c-text-contents__date.js-date-range(data-start-date="16 03 2022 17:30:00", data-end-date="15 05 3000 23:59:59")&attributes(attributes)
+		.cmp-text(data-cmp-data-layer="" class=dateStyle) 
+			| 08/10/2024 15:00 ~ 08/10/2024 20:00
+
+mixin hero-product-nugget
+	- var nuggetEyebrowStyle = "font-w-normal-16 font-m-normal-16"
+	- var bodyStyle = "font-w-normal-16 font-m-normal-16"
+
+	ul.c-product-nugget
+		- for (var i=0; i<3; i++)
+			li.c-product-nugget__item
+				.text.c-product-nugget__eyebrow
+					.cmp-text(class=nuggetEyebrowStyle data-cmp-data-layer="") Lorem ipsum dolor, sit amet consec.
+				.text.c-product-nugget__bodycopy
+					.cmp-text(class=bodyStyle data-cmp-data-layer="") Lorem ipsum dolor, sit amet consec.
+
+mixin hero-counter-time(text)
+	- var bodyStyle = "font-w-normal-36 font-m-normal-20"
+	
+	if text
+		.text.c-text-contents__bodycopy.c-text-contents__bodycopy--timer
+			p.cmp-text(data-cmp-data-layer="" class=bodyStyle)= !text ? '' == text ? text : "Lorem ipsum dolor sit amet consectetur, adipisicing elit. A, voluptatibus!" : text	
+
+mixin hero-bodycopy(text)
+	- var bodyStyle = "font-w-normal-16 font-m-normal-16"
+
+	if text
+		.text.c-text-contents__bodycopy
+			p.cmp-text(data-cmp-data-layer="" class=bodyStyle)= !text ? '' == text ? text : "Lorem ipsum dolor sit amet consectetur, adipisicing elit. A, voluptatibus!" : text
+
+mixin hero-text-contents({useVideo, useEyebrow, heroType, dateType, headline, headlineSize, bodycopy, cta, ctaSecond, nugget, innerBadge, advance=false, rangeTimeCopy, ctaLink})
+	- var eyebrowStyle = "font-w-normal-20 font-m-normal-14"
+	- var headlineStyle = (advance) ? "font-w-light-36 font-m-light-24" :  "font-w-light-56 font-m-light-28"
+	- var dateStyle = "font-w-normal-24 font-m-normal-16"
+	// block : text-contents
+	- var contentsWidth = "width-narrow"
+	.c-text-contents(class=`${contentsWidth}`)
+		if innerBadge
+			+hero-badge-contents(innerBadge)
+			
+		if useEyebrow
+			.text.c-text-contents__eyebrow(class=eyebrowStyle)
+				.cmp-text(data-cmp-data-layer="") 
+					p Lorem ipsum
+
+		.title.c-text-contents__headline
+			- var pass = false
+			+headline((headlineSize || headlineStyle), 'div', (headline || "Lorem ipsum dolor sit.") )
+		
+		//- date : range or countdown or none
+		case dateType
+			when "countdown"
+				+hero-bodycopy(bodycopy)
+				+dateCountDown
+				//- if heroType == "promotion"
+				//- 	+dateCountDown-promotion
+				//- else
+			when "range"
+				+hero-promotion-date
+				+hero-bodycopy(bodycopy)
+			when "rangeTime"
+				//- [Start] 2024-04-16 REMOVE - remove date 
+				//- +hero-promotion-date-fullNum
+				//- [End] 2024-04-16 REMOVE - remove date
+				+hero-bodycopy(bodycopy)
+				+hero-counter-time(rangeTimeCopy)
+			when "at time"
+				.text.c-text-contents__date
+					.cmp-text(data-cmp-data-layer="" class=dateStyle)
+						| 10/15/2018
+				+hero-bodycopy(bodycopy)
+			when "support"
+				+hero-bodycopy(bodycopy)
+				.text.c-text-contents__description
+					.cmp-text.font-w-normal-14i.font-m-semibold-14i(data-cmp-data-layer="") 
+						img(src="../../assets/icon/icon-questions-circle-white.svg")
+						| Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+			when "bigCountDown"
+				+hero-bodycopy(bodycopy)
+				+dateCountDown("bigCountDownType")
+			default 
+				+hero-bodycopy(bodycopy)
+
+		//- cta : box or text 
+		if (cta && !ctaSecond && (heroType != "promotion" || heroType != "bg image")) 
+			+hero-cta(cta, ctaLink)
+
+		//- video button
+		if useVideo
+			// video play
+			- var videoAttr = useVideo ? "dynamic" : "none";
+			// 22.10.21 - change html watch button
+			.button.c-media(data-media=`${videoAttr}`)
+				+video-action-button("brightcove")(class="black w-size24 m-size24" aria-label="")
+					span.cmp-button__text.c-action-button-text Watch the Full Movie
+
+		if (ctaSecond && cta && (heroType != "promotion" || heroType != "bg image"))
+			+hero-cta(cta)
+			+hero-cta(ctaSecond)
+
+		//- nugget : boolean
+		if nugget
+			+hero-product-nugget
+
+mixin hero-badge-contents(badge)
+	p.c-hero-badge.c-hero-badge--white
+		- var count = badge.length
+		- for (var x = 0; x < count; x++)
+			span.font-w-normal-16.font-m-normal-16= badge[x]
+
+mixin hero-cta(type = "box", ctaLink, params)
+	- var option = {ctaLink, ...params}
+	- var linkPop = option.ctaLink ? option.ctaLink : "#"
+	case type
+		when "text"
+			// block : cta
+			.button.c-cta
+				+textButton({name: 'Button Text', wSize: 'medium', mSize: 'medium', buttonStyle: 'default transparent', isButton: false})
+				+textButton({name: 'Button Text', wSize: 'medium', mSize: 'medium', buttonStyle: 'default transparent', isButton: false})
+		when "box"
+			// block : cta
+			.button.c-cta
+				// 23.02.14 - changed markup
+				+defaultButton({name: 'Learn More', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+				+defaultButton({name: 'Buy Now', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+		when "single"
+			// block : cta
+			.button.c-cta
+				+defaultButton({name: 'Button text', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+		when "popup"
+			// block : cta			
+			- var attributes = {class: "js-pop-open", href: `${linkPop}`, role: "button", title: "Opens in a new layerpopup"}
+			.button.c-cta
+				+circleButton({name: 'Button text', wSize: 'large', mSize: 'small', buttonStyle: 'white arrow', isButton: false})&attributes(attributes)
+		default 
+			|
+
+mixin hero-carousel(itemOption)
+	//- itemOption = [ { width, heroType,  dateType, useEyebrow, cta, textAlign, caseSelect }, ... ] 
+	.carousel.panelcontainer
+		// block : carousel
+		.cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")&attributes(attributes)
+			.cmp-carousel__content.swiper-wrapper
+				- for (var i=0; i < itemOption.length; i++)
+					- var config = itemOption[i]
+					.cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item" data-title="InstaView™1")
+						+hero-banner-case-select(config)
+			+hero-controls
+
+mixin hero-banner-case-select(config)
+	case config.caseSelect
+		when "video"
+			+hero-banner-case-video(config)
+		when "animation"
+			+hero-banner-case-animation(config)
+		default
+			+hero-banner-case-image(config)
+
+mixin hero-banner-case-spec({width, heroType, dateType, useVideo, useEyebrow, cta, textAlign, headline, headlineSize, bodycopy})
+	// block : hero-banner
+	- var textAlignClass = `c-hero-banner--main-pos-${textAlign}`
+	.c-hero-banner.c-hero-banner--sub-pos-left.c-hero-banner--sub-pos-top.font-white(class=`${textAlignClass}`)&attributes(attributes)
+		// block : floating-contents
+		.c-floating-contents
+			.c-floating-contents__floor
+				+hero-image(width, heroType)
+			.c-floating-contents__floating
+				.c-hero-banner__contents
+					.c-floating-contents__main-contents
+						- var config = {heroType, dateType, useVideo, useEyebrow, cta, headline, headlineSize, bodycopy}
+						+hero-text-contents(config)
+					.c-floating-contents__sub-contents
+						+hero-image(width, heroType)
+						if block 
+							block
+
+mixin hero-banner-case-image({width, heroType, dateType, useEyebrow, cta, textAlign, headline, headlineSize, bodycopy, fontColor, imgOfText, bgImage, gradientImg, hasIcon, iconType, ctaLink, rangeTimeCopy})
+	// block : hero-banner
+	- var textAlignClass = `c-hero-banner--main-pos-${textAlign}`
+	- var fontClass = fontColor || 'font-white';
+	- var hasIcon = hasIcon ? "has-icon" : null
+	- var gradientImg = gradientImg ? "c-hero-banner__bgImage gradient-typeA" : null
+	.c-hero-banner.c-hero-banner--main-pos-top(class=`${textAlignClass} ${fontClass} ${gradientImg}`)&attributes(attributes)
+		// block : floating-contents
+		.c-floating-contents
+			.c-floating-contents__floor
+				+hero-image(width, heroType, imgOfText, bgImage)
+			.c-floating-contents__floating
+				.c-hero-banner__contents(class=`${hasIcon}`)
+					.c-floating-contents__main-contents
+						- var config = {useVideo : false, useEyebrow, heroType, dateType, cta, nugget : heroType == "pdp", headline, headlineSize, bodycopy, rangeTimeCopy, ctaLink }
+						+hero-text-contents(config)
+					if hasIcon
+						+hero-icon(iconType)
+
+mixin hero-banner-case-video({width, heroType, dateType, useEyebrow, cta, textAlign, headline, headlineSize, bodycopy, fontColor, rangeTimeCopy})
+	// block : hero-banner
+	- var textAlignClass = `c-hero-banner--main-pos-${textAlign}`
+	- var fontClass = fontColor || 'font-white';
+	.c-hero-banner.c-hero-banner--main-pos-top(class=`${textAlignClass} ${fontClass}`)&attributes(attributes)
+		// block : floating-contents
+		.c-floating-contents
+			.c-floating-contents__floor
+				+hero-image(width, heroType)
+			.c-floating-contents__floating
+				.c-hero-banner__contents
+					.c-floating-contents__main-contents
+						- var config = {useVideo : true, useEyebrow, heroType, dateType, cta, headline, headlineSize, bodycopy, rangeTimeCopy}
+						+hero-text-contents(config)
+
+mixin hero-banner-case-animation({width, heroType, dateType, useEyebrow, cta, textAlign, headline, headlineSize, bodycopy, useMobileSource, useMute, rangeTimeCopy})
+	// block : hero-banner
+	- var textAlignClass = `c-hero-banner--main-pos-${textAlign}`
+	// 22.10.21
+	// to dev - ".c-hero-banner--use-animation" class is necessary. when animation option is check.
+	.c-hero-banner.c-hero-banner--use-animation.c-hero-banner--main-pos-top.font-white(class=`${textAlignClass}`)&attributes(attributes)
+		// block : floating-contents
+		.c-floating-contents
+			.c-floating-contents__floor
+				+hero-image(width, heroType)
+				// animation video
+				// to dev - if animation > mobileUse Flag is "N", remove class ".use-mobile". 
+				.c-hero-banner__animation.use-mobile
+					+bg-video({useMobileSource, useMute})
+			.c-floating-contents__floating
+				.c-hero-banner__contents
+					.c-floating-contents__main-contents.pos-top.pos-left
+						- var config = {useVideo : false, useEyebrow, heroType, dateType, cta, headline, headlineSize, bodycopy, rangeTimeCopy}
+						+hero-text-contents(config)
+
+mixin hero-banner-case-advance({useVideo, bgAnimation, imageSize, dateType, useEyebrow, cta, ctaSecond, textAlign, headline, headlineSize, bodycopy, badge, hasIcon})
+	// block : hero-banner
+	- var textAlignClass = `c-hero-banner--main-pos-${textAlign}`
+	- var bgAnimation = bgAnimation ? 'c-hero-banner--use-animation' : ''
+	- var fontClass = fontColor || 'font-white';
+	- var hasIcon = hasIcon ? "has-icon" : null
+	.c-hero-banner.c-hero-banner--main-pos-top(class=`${textAlignClass} ${fontClass} ${bgAnimation}`)&attributes(attributes)
+		// block : floating-contents
+		.c-floating-contents
+			.c-floating-contents__floor
+				// 2023-01-27 modified image area inline background style
+				.c-hero-banner__bg-image(style=`background-image:url(https://via.placeholder.com/${imageSize}/222/333)`)
+				if bgAnimation
+					// animation video
+					// to dev - if animation > mobileUse Flag is "N", remove class ".use-mobile". 
+					.c-hero-banner__animation.use-mobile
+						+bg-video 
+			.c-floating-contents__floating
+				.c-hero-banner__contents(class=`${hasIcon}`)
+					//- {[options.handlerStyle] : options.handlerStyle != null})
+					.c-floating-contents__main-contents
+						if (badge)
+							- var config = {useVideo : useVideo, useEyebrow : useEyebrow, heroType : heroType, dateType : dateType, cta : cta, ctaSecond : ctaSecond, headline : headline, headlineSize : headlineSize, bodycopy : bodycopy, innerBadge: badge, advance: true}
+							+hero-text-contents(config)
+						else 
+							- var config = {useVideo : useVideo, useEyebrow : useEyebrow, heroType : heroType, dateType : dateType, cta : cta, ctaSecond : ctaSecond, headline : headline, headlineSize : headlineSize, bodycopy : bodycopy, advance: true}
+							+hero-text-contents(config)
+					if hasIcon
+						+hero-icon
+
+mixin hero-controls
+	// 22.11.04 - changed block classname to ".c-carousel-controls" and subtree markup 
+	.c-carousel-controls
+		// pagination
+		// each bullet be rendered by 3rd party;swiper. 
+		.c-carousel-controls__pagination(class="cmp-carousel__indicators" data-cmp-hook-carousel="indicators")
+		
+		// action buttons
+		.c-carousel-controls__handler(class="cmp-carousel__actions")
+			// arrow
+			button.c-carousel-controls__action.c-carousel-controls__action--prev.js-carousel-prev(type="button" class="cmp-carousel__action cmp-carousel__action--previous" data-cmp-hook-carousel="previous")
+				span.cmp-carousel__action-text.sr-only Previous Slide
+			button.c-carousel-controls__action.c-carousel-controls__action--next.js-carousel-next(type="button" class="cmp-carousel__action cmp-carousel__action--next" data-cmp-hook-carousel="next") 
+				span.cmp-carousel__action-text.sr-only Next Slide
+			
+			// autoplay
+			button.c-carousel-controls__action.c-carousel-controls__action--pause.js-carousel-pause(type="button" class="cmp-carousel__action cmp-carousel__action--pause" data-cmp-hook-carousel="pause")
+				span.cmp-carousel__action-text.sr-only Pause carousel
+			button.c-carousel-controls__action.c-carousel-controls__action--play.js-carousel-play(type="button" class="cmp-carousel__action cmp-carousel__action--play" data-cmp-hook-carousel="play" disabled)
+				span.cmp-carousel__action-text.sr-only Play carousel
+
+mixin hero-icon(iconType)
+	- var icoBig = iconType == 'bigIcon' ? "c-icon-side__big" : ""
+	- var webSize = iconType == 'bigIcon' ? "160" : "64"
+	- var mobileSize = iconType == 'bigIcon' ? "60" : "36"
+
+	// block : image
+	.c-icon.c-icon-side(class=`${icoBig}`)
+		+printLazyPicture(
+			`https://via.placeholder.com/${mobileSize}x${mobileSize}/cccccc/333333`,
+			`https://via.placeholder.com/${webSize}x${webSize}/cccccc/333333`
+		)(aria-hidden="true")
+		if block
+			block

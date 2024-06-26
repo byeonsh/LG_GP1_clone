@@ -1,0 +1,601 @@
+mixin PD0003(option=false)
+    script.
+        // for print test
+        const process = {
+            env: {
+                NODE_ENV: 'local'
+            }
+        };
+    include ./_summary-information.pug
+    include ./_summary-price.pug
+    .c-wrapper.PD0003.no-crop.bg-default
+        .component
+            // block - summary area
+            .cmp-container.c-summary-area
+                +textButton({name: 'Learn More', wSize: 'small', mSize: 'small', buttonStyle: 'default back', isButton: false})(href="/template/PDP.html" class="c-summary-area__learn-more" data-link-name="learn_more" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer)
+                //- +linkButton({type:'text', name:'Learn More', icon:true, href:"/template/PDP.html", class:'c-summary-area__learn-more'})
+                //- display product image
+                .c-summary-area__primary 
+                    .c-summary-area__primary-sticky
+                        +gallery({
+                            isPopup: false,
+                            galleryFeatures : ["image", "video", "360", "3d", "ar", "vr"],
+                            galleryList : [
+                                {color: '000/888'},
+                                {color: '111/999'},
+                                {color: '222/aaa'},
+                                {color: '333/bbb'},
+                                {color: '444/ccc'},
+                                {color: '555/ddd'},
+                                {color: '666/eee'},
+                                {color: '777/fff'},
+                            ]
+                        })
+                        +product-summary-pto
+                //- indicate product information 
+                // GA4 
+                .c-summary-area__secondary(data-pim-category1="" data-pim-category2="" data-pim-category3="" data-pim-category4="" data-pim-sku="" data-pim-model-name="" data-pim-model-year="" data-pim-flag="" data-pim-modeltype="" data-shop-stock-status="" data-shop-msrp="" data-shop-pbp-coupon="" data-shop-pbp-coupon-dc="" data-shop-price="")
+                    //- product information
+                    +product-basic-information
+
+                    // block - product sub information
+                    .c-product-extra-information
+                        // block - accordion
+                        .c-accordion.js-accordion
+                            // RO - 3 or more lines 
+                            +product-information-box({title : "Key Features", controlsId : "PD0003Keyfeature1"})
+                                +key-feature('moreLines')
+                            // RO - 3 or fewer lines 
+                            +product-information-box({title : "Key Features", controlsId : "PD0003Keyfeature2"})
+                                +key-feature('fewerLines')
+                            //- +product-information-box({title : "Award", controlsId : "PD0003AwardInformation"})
+                            //-     +award-information
+                            //-+product-information-box({title : "Compatible Product", controlsId : "PD0003CompatibleProductList"})
+                            //-    +compatible-product(6)
+                            //-+product-information-box({title : "Compatible Product", controlsId : "PD0003CompatibleProductSearch"})
+                            //-    +compatible-product(7)
+                            // RO ver
+                            +product-information-box({title : "Compatible Product", controlsId : "PD0003CompatibleProductList"})    
+                                +compatible-product(ro)
+                    
+                    //- product sibling option
+                    .c-product-summary-siblings
+                        // block - accordion
+                        .c-accordion.js-accordion
+                            //- screen size
+                            +product-sibling-option-box({title : "Screen Size", controlsId : "PD0003SiblingOptions01", columnCount : 4})
+                                ul.c-sibling-option-box__option-group
+                                    //- +product-sibling-case("size")
+                                    +product-sibling-option-prd({ optionType: "size", inputName: 'size', optionName: '43"', price: '£1549.98', priceToggle: false, checked:true})
+                                    +product-sibling-option-prd({ optionType: "size", inputName: 'size', optionName: '50"', price: '£649.98', priceToggle: false})
+                                    +product-sibling-option-prd({ optionType: "size", inputName: 'size', optionName: '55"', price: '£799.98', priceToggle: false, disabled: true})
+                                    +product-sibling-option-prd({ optionType: "size", inputName: 'size', optionName: '65"', price: '£999.98', priceToggle: false})
+                                    +product-sibling-option-prd({ optionType: "size", inputName: 'size', optionName: '70"', price: '£1,199.98', priceToggle: false})
+                                    +product-sibling-option-prd({ optionType: "size", inputName: 'size', optionName: '75"', price: '£1,499.98', priceToggle: false})
+                                    +product-sibling-option-prd({ optionType: "size", inputName: 'size', optionName: '86"', price: '£2,299.98', priceToggle: false})
+
+                        // block - accordion
+                        //- .c-accordion.js-accordion
+                        //-     //- screen size
+                        //-     +product-sibling-option-box({title : "Color=Finish(Door)", controlsId : "PD0003SiblingOptions02", columnCount : 3})
+                        //-         .c-sibling-option-box__option-group
+                        //-             //- +product-sibling-case("size")
+                        //-             +product-sibling-option({ optionType: "color", inputName: 'color', optionName: 'Shiny steel', optionColor: 'HA_Black-Stainless-Steel', price: '', checked:true})
+                        //-             +product-sibling-option({ optionType: "color", inputName: 'color', optionName: 'Stainless steel', optionColor: 'HA_Styler_Mirror', price: ''})
+                        //-             +product-sibling-option({ optionType: "color", inputName: 'color', optionName: 'Platinum silver', optionColor: 'HE_RP4_Blue_Green', price: ''})
+
+                        //- delivery pincode
+                        +product-delivery-pincode
+
+                        // LGCOMMON-4762 start
+                        .c-accordion.js-accordion
+                            +product-sibling-option-box({title : "Protect with LG Premium Care", controlsId : "PD0003SiblingOptionsB01", columnCount : 1, useTooltip : true})
+                                .c-sibling-option-box__option-group.type-toggle
+                                    // warranty
+                                    .c-addon-product-box.c-accordion__box.c-addon-product-box--option-choosing
+                                        +product-addon-selection-toggle('warranty')
+                        .c-accordion.js-accordion
+                            +product-sibling-option-box({title : "Buy More, Save More", controlsId : "PD0003SiblingOptionsB02", columnCount : 1, useTooltip : true})
+                                .c-sibling-option-box__option-group.type-toggle
+                                    // bundle (step1 sample)
+                                    .c-addon-product-box.c-accordion__box.c-addon-product-box--option-choosing
+                                        +product-addon-selection-toggle('bundleBtype')
+                        .c-accordion.js-accordion
+                            +product-sibling-option-box({title : "Perfect pairing for your TV&Soundbars", controlsId : "PD0003SiblingOptionsB03", columnCount : 1, useTooltip : true})
+                                .c-sibling-option-box__option-group.type-toggle
+                                    // accessory
+                                    .c-addon-product-box.c-accordion__box.c-addon-product-box--option-choosing
+                                        +product-addon-selection-toggle('accessoryBtype')
+                        // LGCOMMON-4762 end
+
+                        // block - Promotion
+                        .c-accordion.js-accordion
+                            +product-sibling-option-box({title :"Promotions", controlsId : "PD0003SiblingOptions05", columnCount : 1})    
+                                .c-sibling-option-box__option-group
+                                    div.c-sibling-option__detail
+                                        .c-sibling-option__primary-detail.promotions
+                                            +product-promotion-information
+
+                        //- // block - Buy more save more
+                        //- .c-accordion.js-accordion
+                        //-     +product-sibling-option-box({title : "Buy More, Save More", controlsId : "PD0003SiblingOptions06", columnCount : 1, useTooltip : true})
+                        //-         // step 1: c-sibling-option-box__option-group
+                        //-         // step 2: c-sibling-option-box__option-group c-addon-product-box--option-choosing
+                        //-         // step 3: c-sibling-option-box__option-group c-addon-product-box--option-selected
+                        //-         .c-sibling-option-box__option-group
+                        //-             // bundle (step1 sample)
+                        //-             .c-addon-product-box.c-accordion__box
+                        //-                 // before selection
+                        //-                 +product-addon-before('bundle')
+                        //-                 // choosing
+                        //-                 +product-addon-selection('bundle')
+                        //-                 // selection done
+                        //-                 +product-addon-after('bundle')
+
+                        //-             // accessory
+                        //-             .c-addon-product-box.c-accordion__box
+                        //-                 // before selection
+                        //-                 +product-addon-before('accessory')
+                        //-                 // choosing
+                        //-                 +product-addon-selection('accessory')
+                        //-                 // selection done
+                        //-                 +product-addon-after('accessory')
+
+                        //-             // warranty
+                        //-             .c-addon-product-box.c-accordion__box
+                        //-                 // before selection
+                        //-                 +product-addon-before('warranty')
+                        //-                 // choosing
+                        //-                 +product-addon-selection('warranty')
+                        //-                 // selection done
+                        //-                 +product-addon-after('warranty')
+
+                        //- // RO Btype : block - Buy more save more
+                        //- .c-accordion.js-accordion
+                        //-     +product-sibling-option-box({title : "Buy More, Save More", controlsId : "PD0003SiblingOptions06", columnCount : 1, useTooltip : true})
+                        //-         // step 1: c-sibling-option-box__option-group
+                        //-         // step 2: c-sibling-option-box__option-group c-addon-product-box--option-choosing
+                        //-         // step 3: c-sibling-option-box__option-group c-addon-product-box--option-selected
+                        //-         .c-sibling-option-box__option-group
+                        //-             // bundle (step1 sample)
+                        //-             .c-addon-product-box.c-accordion__box
+                        //-                 // before selection
+                        //-                 +product-addon-before('bundleBtype')
+                        //-                 // choosing
+                        //-                 +product-addon-selection('bundleBtype')
+                        //-                 // selection done
+                        //-                 +product-addon-after('bundleBtype')
+
+                        //-             // accessory
+                        //-             .c-addon-product-box.c-accordion__box
+                        //-                 // before selection
+                        //-                 +product-addon-before('accessoryBtype')
+                        //-                 // choosing
+                        //-                 +product-addon-selection('accessoryBtype')
+                        //-                 // selection done
+                        //-                 +product-addon-after('accessoryBtype')
+
+                        //-             // warranty
+                        //-             .c-addon-product-box.c-accordion__box
+                        //-                 // before selection
+                        //-                 +product-addon-before('warranty')
+                        //-                 // choosing
+                        //-                 +product-addon-selection('warranty')
+                        //-                 // selection done
+                        //-                 +product-addon-after('warranty')
+
+                        // block - accordion
+                        .c-accordion.js-accordion
+                            // delivery + installation
+                            +product-sibling-option-box({title :"Delivery + Installation", controlsId : "PD0003SiblingOptions03", columnCount : 1, useTooltip : true})
+                                .c-sibling-option-box__option-moreGroup(role="radiogroup")
+                                    +product-sibling-option-wa({ optionType : "delivery", inputName: 'delivery', optionName: 'Delivery Only', useTooltip: true , checked: true})
+                                        .c-sibling-option__secondary-detail 
+                                            +date-input("deliveryOnly")
+                                    +product-sibling-option-wa({ optionType : "delivery", inputName: 'delivery', optionName: 'Delivery Only & Installation', useTooltip: true })
+                                        .c-sibling-option__secondary-detail 
+                                            +date-input("addInstallation")
+                                    +product-sibling-option-wa({ optionType : "delivery", inputName: 'delivery', optionName: 'Delivery & Installation(Wallmount)'})
+                                        .c-sibling-option__secondary-detail 
+                                            +date-input("addWallmount")
+
+                            //- // delivery + pickup
+                            //- +product-sibling-option-box({title :"Delivery + pickup", controlsId : "PD0003SiblingOptions05", columnCount : 1, useTooltip : true})
+                            //-     .c-sibling-option-box__option-group
+                            //-         +product-sibling-option({ optionType : "delivery", inputName: 'delivery', optionName: 'Regular delivery', useTooltip: true, price: '+£20.00'})
+                            //-             .c-sibling-option__secondary-detail 
+                            //-                 +zip-input("regularDelivery")
+                            //-         +product-sibling-option({ optionType : "delivery", inputName: 'delivery', optionName: 'Find a relay point', useTooltip: true, price: '+£25.00'})
+                            //-             .c-sibling-option__secondary-detail 
+                            //-                 +zip-input("findRelayPoint")
+
+                        // block - accordion
+                        .c-accordion.js-accordion
+                            // Service charge
+                            +product-sibling-option-box({title :"Service charge", controlsId : "PD0003SiblingOptions04", columnCount : 1, useTooltip : true})
+                                .c-sibling-option-box__option-moreGroup(role="radiogroup")
+                                    +product-sibling-option-wa({ inputName: 'service', optionName: 'No Need', price : "0", useTooltip: true })
+                                    +product-sibling-option-wa({ inputName: 'service', optionName: 'Haul-away', useTooltip: true })
+
+                        // RO : B type - Delivery method
+                        .c-accordion.js-accordion
+                            +product-sibling-option-box({title :"Delivery method", controlsId : "PD0003SiblingOptions07", columnCount : 1, useTooltip : true})
+                                .c-sibling-option-box__option-moreGroup(role="radiogroup")
+                                    +product-sibling-option-wa({ inputName: 'delivery method', optionName: 'Option 1', price : "£N,NNN.NN", useTooltip: true })
+                                    +product-sibling-option-wa({ inputName: 'delivery method', optionName: 'Option 2', price : "Free", useTooltip: false })
+                                    +product-sibling-option-wa({ inputName: 'delivery method', optionName: 'B2E Pick up', price : "£NN.NN", useTooltip: false })
+                                    //- +address-select("Select pickup address")
+
+                        // RO : B type - Additional services
+                        .c-accordion.js-accordion
+                            +product-sibling-option-box({title :"Additional services", controlsId : "PD0003SiblingOptions08", columnCount : 1, useTooltip : true})
+                                .c-sibling-option-box__option-moreGroup(role="radiogroup")
+                                    .c-sibling-option-box__option-title Installation
+                                    +product-sibling-option-wa({ inputName: 'installation', optionName: 'Option 1', price : "£N,NNN.NN", useTooltip: true })
+                                    +product-sibling-option-wa({ inputName: 'installation', optionName: 'Option 2', price : "£N,NNN.NN", useTooltip: false })
+                                .c-sibling-option-box__option-moreGroup(role="radiogroup")
+                                    .c-sibling-option-box__option-title Haulaway
+                                    +product-sibling-option-wa({ inputName: 'disposalExistingProduct', optionName: 'Option 1', price : "£N,NNN.NN", useTooltip: true })
+                                    +product-sibling-option-wa({ inputName: 'disposalExistingProduct', optionName: 'Option 2', price : "£N,NNN.NN", useTooltip: true })
+                                    +product-sibling-option-wa({ inputName: 'disposalExistingProduct', optionName: 'Option 3', price : "£N,NNN.NN", useTooltip: true })
+                            
+                        // RO : B type - Delivery time
+                        .c-accordion.js-accordion
+                            .c-sibling-option-box
+                                .c-sibling-option.c-product-dilivery-time
+                                    //calendar type
+                                    .c-product-dilivery-time__wrap
+                                        .c-sibling-option-box__head
+                                            .c-text-contents
+                                                .text.c-text-contents__headline
+                                                    .cmp-text.font-w-normal-24.font-m-normal-16 Delivery time
+                                        .c-sibling-option-box__contents
+                                            .c-sibling-option__secondary-detail 
+                                                +date-input("Deliverytime")
+                                                .c-product-dilivery-time__disclaimer
+                                                    p.c-text.font-w-normal-14.font-m-normal-12 Disclaimer for delivery time
+                                    //message type
+                                    .c-product-dilivery-time__wrap
+                                        .c-sibling-option-box__head
+                                            .c-text-contents
+                                                .text.c-text-contents__headline
+                                                    .cmp-text.font-w-normal-24.font-m-normal-16 Delivery time
+                                        .c-sibling-option-box__contents
+                                            .c-sibling-option__secondary-detail 
+                                                .c-product-dilivery-time__text.font-w-normal-20.font-m-normal-14 
+                                                    p Delivery within 3-5 days
+                                                .c-product-dilivery-time__disclaimer
+                                                    p.c-text.font-w-normal-14.font-m-normal-12 Disclaimer for delivery time
+
+                            //- - var useNotice = true
+                            //- +product-sibling-option-box({title : "Processor", controlsId : "PD0003SiblingOptions01", useNotice, columnCount : 3})
+                                +product-sibling-case("processor")
+                            //- +product-sibling-option-box({title : "RAM memory(GB)", controlsId : "PD0003SiblingOptions02"})
+                            //-     +product-sibling-case("ram")
+                            //- +product-sibling-option-box({title : "Storage", controlsId : "PD0003SiblingOptions03", columnCount : 4})
+                            //-     +product-sibling-case("storage")
+                            //- // to dev - "color" option input's name attribute is must include "color" string. 
+                            //- // this attribute be used selector with css.
+                            //- // i.e) input[name*='color'] ~ *
+                            //- +product-sibling-option-box({title : "Color", controlsId : "PD0003SiblingOptions05", useTooltip : false, })
+                            //-     +product-sibling-case("color")
+                            //- +product-sibling-option-box({title : "Lorem", controlsId : "PD0003SiblingOptions04",})
+                            //-     +product-sibling-case("lorem")
+                            //- +product-sibling-option-box({title : "Add LG Premium Care", controlsId : "PD0003SiblingOptions07", useTooltip : false, columnCount : 1})
+                            //-     +product-sibling-case("care")
+                            //-     // 23.01.02
+                            //-     .c-sibling-option-box__information-group
+                            //-         // block - text contents
+                            //-         .c-text-contents
+                            //-             .text.c-text-contents__bodycopy
+                            //-                 .cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") 
+                            //-                     | The LG Premium Care plan will require acceptance of the relevant
+                            //-         // block - link 
+                            //-         a.c-link.c-link--standard.c-link--external.size-12(href="#" target="_blank") Terms and conditions
+                            //-     // --- 23.01.02
+                            //- +product-sibling-option-box({title : "Services", controlsId : "PD0003SiblingOptions08", useTooltip : true, columnCount : 1})
+                            //-     +product-sibling-case("services")
+
+                            //- warranty
+                            //- +product-sibling-option-box({title : "Warranty", controlsId : "PD0003SiblingOptions09", useTooltip : true, columnCount : 1})
+                            //-     +product-sibling-case("warranty")
+
+                            //- collection
+                            //- +product-sibling-option-box({title :"Collection", controlsId : "PD0003SiblingOptions09", columnCount : 1, useTooltip : true})
+                            //-     .c-sibling-option-box__option-group
+                            //-         +product-sibling-option({ inputName: 'collection', optionName: 'Collection and disposal', useTooltip: true })
+                            //-         +product-sibling-option({ inputName: 'collection', optionName: 'No Need', price : "0", useTooltip: true })
+
+                            //- create bundle
+                            //- +product-sibling-option-box({title : "Create your bundles", controlsId : "PD0003SiblingOptions08", useTooltip : true, columnCount : 1})
+                            //-     .c-sibling-option-box__option-group
+                            //-         .c-bundle-product-box.c-accordion__box.js-accordion-handle-target(data-expand="independent") 
+                            //-             //- accordion head
+                            //-             .c-accordion__head.c-bundle-product-box__information-container
+                            //-                 .c-bundle-product-box__product-information
+                            //-                     //- product image 80x80
+                            //-                     // block - image
+                            //-                     .image.c-image
+                            //-                         +printLazyImage('https://via.placeholder.com/80x80/999999/333333')
+                            //-                     //- product name... markup from "product-list.pug" > mixin "product_name"  
+                            //-                     // block - text contents
+                            //-                     .c-text-contents 
+                            //-                         .text.c-text-contents__eyebrow.sku
+                            //-                             .cmp-text.font-w-bold-12i.font-m-bold-12i(data-cmp-data-layer="")
+                            //-                                 p S40Q
+                            //-                         .text.c-text-contents__headline
+                            //-                             .cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") 
+                            //-                                 p LG Sound Bar S40Q
+                            //-                         //- price
+                            //-                         .c-bundle-product-box__product-price.display-mobile 
+                            //-                             .text
+                            //-                                 span.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") $2,470.67
+                            //-                         //- pdp link
+                            //-                         // block - cta
+                            //-                         .button.c-cta 
+                            //-                             +linkButton({type:"text", icon : true, color :"black", name : "Learn more"})      
+                            //-                     //- price
+                            //-                     .c-bundle-product-box__product-price
+                            //-                         .text
+                            //-                             span.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") $2,470.67
+                            //-                 //- button
+                            //-                 .button
+                            //-                     button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls="bundle1")
+                            //-                         span.c-accordion__button-text.expand.sr-only Expand
+                            //-                         span.c-accordion__button-text.collapse.sr-only Collapse
+                                            
+                            //-             //- accordion body
+                            //-             .c-accordion__body(id="bundle1")
+                            //-                 .c-bundle-product-box__product-option
+                            //-                     //- check stock available
+                            //-                     +product-delivery-pincode 
+                            //-                     //- sibling option
+                            //-                     .c-sibling-option-box
+                            //-                         .c-sibling-option-box__head
+                            //-                             //- option title
+                            //-                             // block - text contents
+                            //-                             .c-text-contents
+                            //-                                 .text.c-text-contents__headline
+                            //-                                     .cmp-text.font-w-semibold-20.font-m-semibold-18(data-cmp-data-layer="") Delivery
+                            //-                             //- tooltip
+                            //-                             +exclamBorderTooltip
+                            //-                         .c-sibling-option-box__contents
+                            //-                             .c-sibling-option-box__option-group
+                            //-                                 +product-sibling-option({ optionType : "delivery", inputName: 'delivery-bundle1', optionName: 'Panther - Delivery Only', useTooltip: true })
+                            //-                                     .c-sibling-option__secondary-detail 
+                            //-                                         +date-input("regularDelivery")
+                            //-                                 +product-sibling-option({ optionType : "delivery", inputName: 'delivery-bundle1', optionName: 'Panther - Delivery Only & Installation', useTooltip: true })
+                            //-                                     .c-sibling-option__secondary-detail 
+                            //-                                         +date-input("addInstallation")
+                            //-                                 +product-sibling-option({ optionType : "delivery", inputName: 'delivery-bundle1', optionName: 'Delivery & Installation & Wallmount' })
+                            //-                                     .c-sibling-option__secondary-detail 
+                            //-                                         +date-input("addWallmount")
+                            //-                     .c-sibling-option-box
+                            //-                         .c-sibling-option-box__head
+                            //-                             //- option title
+                            //-                             // block - text contents
+                            //-                             .c-text-contents
+                            //-                                 .text.c-text-contents__headline
+                            //-                                     .cmp-text.font-w-semibold-20.font-m-semibold-18(data-cmp-data-layer="") Collection
+                            //-                             //- tooltip
+                            //-                             +exclamBorderTooltip
+                            //-                         .c-sibling-option-box__contents
+                            //-                             .c-sibling-option-box__option-group
+                            //-                                 +product-sibling-option({ inputName: 'collection-bundle1', optionName: 'Collection and disposal', useTooltip: true })
+                            //-                                 +product-sibling-option({ inputName: 'collection-bundle1', optionName: 'No Need', price : "0", useTooltip: true })
+                            //-                 .button.c-bundle-product-box__actions
+                            //-                     +linkButton({type: "box", color: "red", name : "Add"})
+                                    
+                            //-         .c-bundle-product-box.c-bundle-product-box--option-selected.c-accordion__box.js-accordion-handle-target(data-expand="independent") 
+                            //-             //- accordion head
+                            //-             .c-accordion__head.c-bundle-product-box__information-container
+                            //-                 .c-bundle-product-box__product-information
+                            //-                     //- product image 80x80
+                            //-                     // block - image
+                            //-                     .image.c-image
+                            //-                         +printLazyImage('https://via.placeholder.com/80x80/999999/333333')
+                            //-                     //- product name... markup from "product-list.pug" > mixin "product_name"  
+                            //-                     // block - text contents
+                            //-                     .c-text-contents 
+                            //-                         .text.c-text-contents__eyebrow.sku
+                            //-                             .cmp-text.font-w-bold-12i.font-m-bold-12i(data-cmp-data-layer="")
+                            //-                                 p SQ-G2ST55
+                            //-                         .text.c-text-contents__headline
+                            //-                             .cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") 
+                            //-                                 p OLED G2 STAND FOR 55 G2
+                            //-                         //- price
+                            //-                         .c-bundle-product-box__product-price.display-mobile 
+                            //-                             .text
+                            //-                                 span.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") $2,470.67
+                            //-                         //- pdp link
+                            //-                         // block - cta
+                            //-                         .button.c-cta 
+                            //-                             +linkButton({type:"text", icon : true, color :"black", name : "Learn more"})
+                            //-                         //- selected options summary
+                            //-                         .text.c-bundle-product-box__option-summary
+                            //-                             span.cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")
+                            //-                                 | - Panther : Delivery & Installation 2023-06-25
+                            //-                     //- price
+                            //-                     .c-bundle-product-box__product-price
+                            //-                         .text
+                            //-                             span.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") $2,470.67
+                            //-                 //- button
+                            //-                 .button
+                            //-                     button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls="bundle1")
+                            //-                         span.c-accordion__button-text.expand.sr-only Expand
+                            //-                         span.c-accordion__button-text.collapse.sr-only Collapse
+                            //-                 //- selected options summary
+                            //-                 .text.c-bundle-product-box__option-summary.display-mobile
+                            //-                     span.cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")
+                            //-                         | - Panther : Delivery & Installation 2023-06-25
+                            //-             //- accordion body
+                            //-             .c-accordion__body(id="bundle1")
+                            //-                 .c-bundle-product-box__product-option
+                            //-                     //- check stock available
+                            //-                     +product-delivery-pincode 
+                            //-                     //- sibling option
+                            //-                     .c-sibling-option-box
+                            //-                         .c-sibling-option-box__head
+                            //-                             //- option title
+                            //-                             // block - text contents
+                            //-                             .c-text-contents
+                            //-                                 .text.c-text-contents__headline
+                            //-                                     .cmp-text.font-w-semibold-20.font-m-semibold-18(data-cmp-data-layer="") Delivery
+                            //-                             //- tooltip
+                            //-                             +exclamBorderTooltip
+                            //-                         .c-sibling-option-box__contents
+                            //-                             .c-sibling-option-box__option-group
+                            //-                                 +product-sibling-option({ optionType : "delivery", inputName: 'delivery-bundle1', optionName: 'Panther - Delivery Only', useTooltip: true })
+                            //-                                     .c-sibling-option__secondary-detail 
+                            //-                                         +date-input("regularDelivery")
+                            //-                                 +product-sibling-option({ optionType : "delivery", inputName: 'delivery-bundle1', optionName: 'Panther - Delivery Only & Installation', useTooltip: true })
+                            //-                                     .c-sibling-option__secondary-detail 
+                            //-                                         +date-input("addInstallation")
+                            //-                                 +product-sibling-option({ optionType : "delivery", inputName: 'delivery-bundle1', optionName: 'Delivery & Installation & Wallmount' })
+                            //-                                     .c-sibling-option__secondary-detail 
+                            //-                                         +date-input("addWallmount")
+                            //-                     .c-sibling-option-box
+                            //-                         .c-sibling-option-box__head
+                            //-                             //- option title
+                            //-                             // block - text contents
+                            //-                             .c-text-contents
+                            //-                                 .text.c-text-contents__headline
+                            //-                                     .cmp-text.font-w-semibold-20.font-m-semibold-18(data-cmp-data-layer="") Collection
+                            //-                             //- tooltip
+                            //-                             +exclamBorderTooltip
+                            //-                         .c-sibling-option-box__contents
+                            //-                             .c-sibling-option-box__option-group
+                            //-                                 +product-sibling-option({ inputName: 'collection-bundle1', optionName: 'Collection and disposal', useTooltip: true })
+                            //-                                 +product-sibling-option({ inputName: 'collection-bundle1', optionName: 'No Need', price : "0", useTooltip: true })
+                            //-                 // block - cta
+                            //-                 .button.c-bundle-product-box__actions
+                            //-                     +linkButton({name : "Delete"})
+                            //-                     +linkButton({type: "box", color: "red", name : "Edit"})
+
+                    //- delivery information
+                    +product-delivery-information
+                    //- klarana Installment
+                    //- +product-installment
+
+                    //- //- create your bundle 
+                    //- +product-summary-bundle-carousel
+
+                    //- price
+                    //-+product-price-sticky
+                    .c-product-price-sticky.bottom.ready.sticky.can-sticky
+                        // block : product price information
+                        .c-product-price-information.close
+                            .c-product-price-information__inner
+                                .button.c-product-price-information__btn-toggle
+                                    button.cmp-button(aria-controls="productPriceDetailInformation" aria-expanded="false" data-cmp-data-layer="")
+                                        span.cmp-button__text.sr-only open/close
+                                // block : price box
+                                //-+total-price
+                                .c-product-total-price
+                                    .c-product-total-price__box
+                                        .text.c-product-total-price__text
+                                            .cmp-text.font-w-normal-32.font-m-normal-20(data-cmp-data-layer="")
+                                                p Total
+                                        .text.c-product-total-price__num
+                                            div.c-product-total-price__price
+                                                span.cmp-text.font-w-normal-32.font-m-normal-20(data-cmp-data-layer="")
+                                                    strong ₹NNNNNN
+                                            //- .button.c-product-total-price__payment
+                                            //-     a.js-pop-open.cmp-button.c-product-total-price__link.c-price__installment(href="#" role="button" data-cmp-data-layer="")
+                                            //-         span.cmp-button__text 
+                                .text.c-price-box.font-w-normal-16.font-m-normal-16(id="productPriceDetailInformation")
+                                    //- .c-price-box__item.c-price-box__item--promotion
+                                    //- 	.cmp-text(data-cmp-data-layer="")
+                                    //- 		p Black Friday Promotion
+                                    .c-price-box__item
+                                        .c-price-info
+                                            .c-price-info__wrapper 
+                                                .c-price-info__title 
+                                                    strong.c-price-info__title--main MRP (Inclusive of all taxes)
+                                                .c-price-info__price
+                                                    strong ₹NNNNNN
+                                        
+                                        .c-price-info
+                                            .c-price-info__wrapper
+                                                .c-price-info__title.font-red
+                                                    strong.c-price-info__title--main.font-red Promotional Discount
+                                                .c-price-info__price.font-red
+                                                    strong.font-red -₹NNN.NN
+
+                                        .c-price-info
+                                            .c-price-info__wrapper
+                                                .c-price-info__title.font-red
+                                                    strong.c-price-info__title--main.font-red Discount amount
+                                                .c-price-info__price.font-red
+                                                    strong.font-red -₹NNN.NN
+
+                                        .c-price-info
+                                            .c-price-info__wrapper
+                                                .c-price-info__title
+                                                    strong.c-price-info__title--main Tax
+                                                .c-price-info__price
+                                                    strong ₹NNNNN
+                                            .c-price-info__wrapper
+                                                .c-price-info__title
+                                                    span VAT (NN%)
+                                                .c-price-info__price
+                                                    .c-price-info__price--wrapper
+                                                        span ₹NNNNN
+
+                                        .c-price-info
+                                            .c-price-info__wrapper
+                                                .c-price-info__title
+                                                    strong.c-price-info__title--main Delivery
+                                                .c-price-info__price
+                                                    strong ₹NNNN
+                                            .c-price-info__wrapper
+                                                .c-price-info__title
+                                                    span olw480b
+                                                .c-price-info__price
+                                                    .c-price-info__price--wrapper
+                                                        span ₹NNNN
+                                            .c-price-info__wrapper
+                                                .c-price-info__title
+                                                    span tone-ufp8+olw480b
+                                                .c-price-info__price
+                                                    .c-price-info__price--wrapper
+                                                        span ₹NNNN
+
+                                        .c-price-info
+                                            .c-price-info__wrapper
+                                                .c-price-info__title
+                                                    strong.c-price-info__title--main Service charge
+                                                .c-price-info__price
+                                                    strong ₹NNNN
+                                            .c-price-info__wrapper
+                                                .c-price-info__title
+                                                    span Haul-away
+                                                .c-price-info__price
+                                                    .c-price-info__price--wrapper
+                                                        span ₹NNNN
+
+                                +quantity
+                                //- +total-price
+                            //- .c-product-price-information__retailer.text
+                            //- 	span.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") 
+                            //- 		span See Retailer for Pricing
+
+                        //- // block - cta
+                        +product-pay-cta('in')
+                        //- +product-card-info
+                        .c-product-card-info.text
+                            .cmp-text.c-product-card-info__text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")
+                                p You can pay with
+                            //- .c-product-card-info__image
+                            //-     span.image.c-image
+                            //-         +printLazyImage('../../mocks/PD0003/icon-visa-44-20.png', 'visa')
+
+                    //- info etc
+                    +product-info-etc
+
+                    //- recommended promotion banner
+                    - var bannerType = "overlay-bottom"
+                    - var useMoreDialog = true
+                    +product-summary-promotion-banner("overlay-bottom", useMoreDialog)
+                    //- +product-summary-promotion-banner("overlay-side")
+                    //- +product-summary-promotion-banner("") 

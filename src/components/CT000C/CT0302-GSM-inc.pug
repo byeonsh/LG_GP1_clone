@@ -1,0 +1,285 @@
+include ../_common/_cart-price-total.pug
+include ./CT0302-inc.pug
+
+mixin CT0302(option=false, country=false)
+    .CT0302
+        if(option === "member")
+            case country
+                when 'shippingBillingType1'
+                    .buy-checkout__item.buy-checkout__item--delivery
+                        +checkoutStep({
+                            title:"Delivery",
+                            current:"2",
+                            total:"3",
+                            type: "active"
+                        })
+                        .c-checkout-step02
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag: ["Shipping"],
+                                        title:"Robert Surrency",
+                                        address:"150 Boteler Street, Ottawa, Ontario, Canada K1N 5A6",
+                                        num:"123-4567-8910",
+                                        type: "",
+                                    },
+                                ])
+                        .c-checkout-step02.c-checkout-step02--warn
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag: ["Shipping"],
+                                        title:"Robert Surrency",
+                                        address:"150 Boteler Street, Ottawa, Ontario, Canada K1N 5A6",
+                                        num:"123-4567-8910",
+                                        type: "",
+                                    },
+                                ])
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'The items(s) are not available for shipping in your area. Please change address options',
+                                remove: true,
+                            },
+                        ])
+                
+                when 'selectDateType-accordion-wrap-global'
+                    // type accordion-wrap : global shipping module
+                    .buy-checkout__item.buy-checkout__item--delivery.buy-checkout__item--delivery-mix
+                        details(open).buy-delivery-box__accordion-mix
+                            summary.c-accordion-mix__head
+                                .c-accordion-mix__head-text
+                                    +deliveryBoxProduct([
+                                        {
+                                            title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                            qty: 1,
+                                        },
+                                    ])
+                            .c-accordion-mix__body
+                                +deliveryBoxSubTitle({
+                                    boxTitle : 'Delivery Method',
+                                    tooltip: '111111',
+                                })
+                                +accCheckDeliveryBox(false, 'unavailable', true, [
+                                    {
+                                        type: 'Regular delivery',
+                                        id: 'delivery132',
+                                        tooltipMsg: '1111',
+                                        price:'25.00',
+                                        unitPos: 'left',
+                                        unitName: '$',
+                                        nameId: 'delivery132',
+                                        checked: false,
+                                        infoDesc: false,
+                                    }
+                                ])
+                                
+                                +deliveryBoxSubTitle({
+                                    boxTitle : 'Additional Services',
+                                    tooltip: false,
+                                })
+                                +deliveryAccodionRadio('Installation', false, [
+                                    {
+                                        type: 'Basic Installation',
+                                        tooltipMsg: '11111111111',
+                                        id: 'delivery86-error',
+                                        price:'Free',
+                                        useUnitPos: false,
+                                        unitPos: false,
+                                        unitName: false,
+                                    },
+                                    {
+                                        type: 'TV Wallmount',
+                                        tooltipMsg: '11111111111',
+                                        id: 'delivery87-error',
+                                        price:'25.00',
+                                        unitPos: 'left',
+                                        unitName: '$',
+                                    },
+                                ])
+                                //- +deliveryAccodionRadio('Haulaway', false, [
+                                //-     {
+                                //-         type: 'Haulaway',
+                                //-         tooltipMsg: '11111111111',
+                                //-         id: 'delivery88-error',
+                                //-         price:'25.00',
+                                //-         unitPos: 'left',
+                                //-         unitName: '$',
+                                //-     },
+                                //- ])
+                                +deliveryAccodionCheck('Haulaway', false, [
+                                    {
+                                        type: 'Haulaway',
+                                        id: 'delivery134',
+                                        tooltipMsg: '1111',
+                                        price:'25.00',
+                                        unitPos: 'left',
+                                        unitName: '$',
+                                        nameId: 'delivery134',
+                                        checked: false,
+                                        infoDesc: false,
+                                        select:false,
+                                    }
+                                ])
+                                +deliveryBoxNoneAcc(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], false, false, [
+                                    {
+                                        selectDateAreaTitle : 'Delivery Time',
+                                        selectDateCancel : false,
+                                        type: 'Thu, Oct 18  All day',
+                                        id: 'delivery76-error',
+                                        price:'',
+                                        validInfo: ['Delivery in most locations in Canada except P.O. boxes and remote locations.']
+                                    },
+                                ])
+                                +deliveryBoxNoneAcc(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], 'edit', true, [
+                                    {
+                                        selectDateAreaTitle : 'Delivery Time',
+                                        selectDateCancel : false,
+                                        type: 'Select Date',
+                                        select: 'Tue, Oct 18',
+                                        id: 'delivery77',
+                                        price:'',
+                                        validInfo: ['Delivery in most locations in Canada except P.O. boxes and remote locations.']
+                                    },
+                                ])
+                        .button.buy-order-info-coupon__button 
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                
+                default 
+                    .buy-checkout__item.buy-checkout__item--delivery
+
+            +CT0302("complete",'hide')
+
+        if(option === "guest")
+            .buy-checkout__item.buy-checkout__item--delivery
+                +checkoutStep({
+                    title:"Delivery",
+                    current:"2",
+                    total:"3",
+                    type: "active"
+                })
+                .c-checkout-step02.c-checkout-step02-form
+                    //- // [Start] 2023-06-02 : UPDATE- change messages
+                    p.c-checkout-step01-prevention Delivery in most locations in Canada except P.O. boxes and remote locations.
+                    //- // [End] 2023-06-02 : UPDATE- change messages
+                    p.c-checkout-step02-form__title.font-w-normal-24.font-m-normal-20 Shipping
+                    // [Start] 2023-06-12 : ADD - number-text
+                    +myInputForm([
+                        {
+                            type:"text",
+                            label:"First Name",
+                            id:"firstName",
+                            required:false,
+                            placeholder:"Robert",
+                        },
+                        {
+                            type:"text",
+                            label:"Last Name",
+                            id:"lastName",
+                            required:false,
+                            placeholder:"Surrency",
+                        },
+                        {
+                            type:"tel",
+                            label:"Mobile Number",
+                            id:"mobileNumber",
+                            tooltipMsg:false,
+                            required:false,
+                            placeholder:"12345678910",
+                            numberText: 'Your mobile number might be used to send tracking number.'
+                        },
+                        {
+                            type:"text",
+                            label:"Country",
+                            id:"Country",
+                            required:false,
+                            placeholder:"Canada",
+                            readonly: true,
+                        },
+                        {
+                            type:"text",
+                            label:"Postcode",
+                            id:"postcode",
+                            required:false,
+                            placeholder:"Enter ZIP code",
+                            button: 'Find Address',
+                        },
+                        {
+                            type:"text",
+                            label:"Street Address",
+                            id:"streetAddress",
+                            required:false,
+                            placeholder:"Street Address",
+                            readonly: true,
+                        },
+                        {
+                            type:"text",
+                            label:"Extended Address",
+                            id:"ExtendedAddress",
+                            required:false,
+                            placeholder:"",
+                            readonly: true,
+                        },
+                        {
+                            type:"text",
+                            label:"City",
+                            id:"City",
+                            required:false,
+                            placeholder:"City",
+                            readonly: true,
+                        },
+                        {
+                            type:"text",
+                            label:"Province",
+                            id:"Province",
+                            required:false,
+                            placeholder:"",
+                            readonly: true,
+                            check: ["Same for billing address"]
+                        },
+                    ])
+
+                .button.buy-order-info-coupon__button
+                    +defaultButton({name: "Save Address", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="save")
+
+                // form bottom content area
+        
+        if(option === "before")
+            .buy-checkout__item.before
+                +checkoutStep({
+                    title:"Delivery",
+                    current:"2",
+                    total:"3",
+                    type: "checkoutStep"
+                })
+
+        if(option === "complete")
+            .buy-checkout__item.buy-checkout__item--delivery.buy-checkout__item--complete(style=`${country=='hide'?'display:none':''}`)
+                +checkoutStep({
+                    title:"Delivery",
+                    current:"2",
+                    total:"3",
+                    type: "checked",
+                })
+                .c-checkout-step02
+                    .buy-address-box.buy-address-box--complete
+                        +addressBox(false, false, [
+                            {
+                                flag: ["Shipping"],
+                                title:"Robert Surrency",
+                                address:"20 Farringdon Street, London, EC4A 4AB, United Kingdom",
+                                num:"123-4567-8910",
+                                type: "",
+                            },
+                        ])
+                .c-checkout-orderd.c-checkout-orderd--confirm
+                    .c-checkout-orderd__item.c-checkout-orderd__item--delivery
+                        +checkoutOrderDeliveryProduct("Delivery & Installation", "Thu, Oct 18  07:00~19:00", [
+                            {
+                                title: "LG OLED evo Gallery Edition G2 55'' 4K Smart TV",
+                                qty: "1",
+                                price: "1,861.97",
+                                unitPos: "left",
+                                unitName: "$"
+                            },
+                        ])

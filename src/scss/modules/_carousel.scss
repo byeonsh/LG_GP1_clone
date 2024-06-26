@@ -1,0 +1,348 @@
+/* stylelint-disable no-descending-specificity */
+@use '../abstract/' as *;
+
+@mixin carousel {
+  .c-carousel {
+    $block: '.c-carousel';
+
+    // indicator
+    &__indicator {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      left: 0;
+      right: 0;
+      bottom: rem($margin28px);
+      z-index: $z-index2;
+      @include screen(web) {
+        bottom: rem($margin40px);
+      }
+      @at-root .c-carousel__handler & {
+        position: relative;
+        left: auto;
+        bottom: auto;
+        transform: none;
+        justify-content: center;
+      }
+    }
+
+    // pagination
+    &__pagination {
+      display: inline-flex;
+      gap: rem($padding8px);
+      @include screen(web) {
+        gap: rem($padding12px);
+      }
+      &.swiper-pagination-fraction {
+        gap: rem($margin5px);
+        color: $gray3;
+        font-size: rem(14px);
+        line-height: rem(16px);
+        @include screen(web) {
+          font-size: rem(16px);
+          line-height: rem(20px);
+        }
+        .bg-lightgray &,
+        .bg-white & {
+          color: $gray3;
+        }
+        .bg-darkgray &,
+        .bg-black & {
+          color: $white;
+        }
+      }
+    }
+
+    // auto play action button
+    &__action {
+      width: rem($width12px);
+      height: rem($height12px);
+      margin-left: rem($margin10px);
+      cursor: pointer;
+      @include screen(web) {
+        height: rem($height14px);
+        margin-left: rem($margin16px);
+      }
+      &--pause {
+        background: url($icon-pause-gray) no-repeat;
+      }
+      &--play {
+        // background: url($icon-pause-gray) no-repeat;
+        position: relative;
+        &::after {
+          content: '';
+          display: block;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          border: {
+            color: transparent transparent transparent $grayd9;
+            style: solid;
+            width: rem($border8) rem($border12);
+          }
+          transform: translate(calc(-50% + rem($margin7px)), -50%);
+        }
+      }
+      &[aria-hidden='true'] {
+        display: none;
+      }
+    }
+
+    // group action and indicator
+    &__handler {
+      display: none;
+      justify-content: center;
+      gap: rem($margin16px);
+      margin-top: rem($margin24px);
+      @include screen(web) {
+        gap: rem($margin30px);
+        margin-top: rem($margin32px);
+      }
+      @at-root .c-carousel.swiper-initialized {
+        .c-carousel__handler,
+        & ~ .c-carousel__handler {
+          display: flex;
+        }
+      }
+    }
+    &__button {
+      $pagination-type: '&[class*="--pagination"]';
+      $msg-banner-type: '&[class*="--msg-banner"]';
+      cursor: pointer;
+      &:disabled {
+        cursor: default;
+        // &:after {
+        //     opacity: 0.3;
+        // }
+      }
+
+      $arrow: '&:after';
+      #{$arrow} {
+        content: '';
+        display: block;
+        margin: 0 auto;
+        width: rem($icon7px);
+        height: rem($icon12px);
+        transform: translateX($border1) #{'/*!rtl:rotate(#{$degree180})*/'};
+        background : {
+          position: center center;
+          size: auto;
+          repeat: no-repeat;
+        }
+        @include screen(web) {
+          width: rem($icon10px);
+          height: rem($icon16px);
+        }
+      }
+      #{$pagination-type} {
+        position: relative;
+        padding: 0;
+        width: rem($width32px);
+        height: rem($height32px);
+        border: none;
+        background: none;
+        // border: rem($border1) solid $mid-gray2;
+        // border-radius: $radius-full;
+        // background-color: rgba($white, 0.3);
+        outline-offset: rem(-2px);
+        @include screen(web) {
+          width: rem($width36px);
+          height: rem($height36px);
+        }
+        #{$arrow} {
+          @include screen(mobile) {
+            background-image: url($icon-arrow-black-right-12-7);
+          }
+          @include screen(web) {
+            background-image: url($icon-arrow-black-right-10-16);
+          }
+          .bg-darkgray &,
+          .bg-black & {
+            @include screen(mobile) {
+              background-image: url($icon-arrow-white-right-12-7);
+            }
+            @include screen(web) {
+              background-image: url($icon-arrow-white-right-10-16);
+            }
+          }
+        }
+        &:disabled {
+          // border-color: $mid-gray1;
+          #{$arrow} {
+            @include screen(mobile) {
+              background-image: url($icon-arrow-graycb-right-12-7);
+            }
+            @include screen(web) {
+              background-image: url($icon-arrow-graycb-right-10-16);
+            }
+          }
+        }
+      }
+      #{$msg-banner-type} {
+        border: 0;
+        background-color: transparent;
+        width: rem($width32px);
+        height: rem($height32px);
+        color: inherit;
+        @include screen(web) {
+          width: rem($width36px);
+          height: rem($height36px);
+        }
+        #{$arrow} {
+          background-image: url($icon-arrow-white-right-7-12);
+        }
+      }
+
+      // direction
+      $prev: '&[class*="--prev"]';
+      $next: '&[class*="--next"]';
+      #{$prev} {
+        &:after {
+          transform: rotate($degree180) translateX($border1) #{'/*!rtl:none*/'}; /*! RTL last keep colon */
+        }
+      }
+    }
+
+    // modifier
+    // usage - ST0006
+    &--category {
+      .swiper-wrapper {
+        display: flex;
+        margin-left: auto;
+        margin-right: auto;
+        @include screen(web) {
+          justify-content: center;
+        }
+      }
+      .swiper-slide {
+        display: flex;
+        width: auto;
+        height: auto !important;
+        padding: rem($padding20px $padding30px);
+        background-color: $white;
+        @include lgness-radius('default');
+        @include screen(web) {
+          max-width: rem($max-width342px + ($padding12px * 2));
+          padding: rem($padding32px);
+          flex: 1;
+        }
+      }
+      &.swiper-initialized {
+        .swiper-wrapper {
+          justify-content: flex-start;
+        }
+        .swiper-slide {
+          max-width: 100%;
+          @include screen(web) {
+            flex: none;
+          }
+        }
+      }
+    }
+
+    // handler variation
+    .c-carousel__handler {
+      .c-region-header + .carousel &,
+      .title + .tabs .carousel &,
+      .c-region-header + .c-article-list .carousel &,
+      .c-region-header + .c-product-list .carousel &,
+      .c-region-header + .c-list .carousel &,
+      .c-wrapper:not(.PD0046) .c-region-header + .tabs .carousel &,
+      .c-region-header + .c-stock-list .carousel &,
+      .c-region-header + .c-category-select-list .carousel &,
+      &--dial {
+        column-gap: rem($margin4px);
+        @include screen(web) {
+          column-gap: rem($margin8px);
+        }
+        #{$block}__button {
+          $size: rem($width64px);
+          $size-m: rem($width36px);
+
+          width: $size-m;
+          height: $size-m;
+          border: rem($border1) solid $mid-gray2;
+          border-radius: 50%;
+          background-color: rgba($white, 0.3);
+          @include screen(web) {
+            width: $size;
+            height: $size;
+          }
+          .bg-black &,
+          .bg-darkgray & {
+            background-color: rgba($white, 0.05);
+            border-color: $white;
+          }
+
+          $arrow: '&:after';
+
+          #{$arrow} {
+            width: rem(9px);
+            height: rem(16px);
+            background-image: url($icon-arrow-black-right-13-22);
+            .bg-darkgray &,
+            .bg-black & {
+              background-image: url($icon-arrow-white-right-13-22);
+            }
+            @include screen(web) {
+              width: rem(13px);
+              height: rem(22px);
+            }
+          }
+          &:disabled {
+            border-color: $mid-gray1;
+            #{$arrow} {
+              background-image: url($icon-arrow-graycb-right-13-22);
+            }
+            .bg-darkgray &,
+            .bg-black & {
+              border-color: $mid-gray3;
+              #{$arrow} {
+                background-image: url($icon-arrow-gray4a-right-13-22);
+              }
+            }
+          }
+        }
+        #{$block}__pagination {
+          font-size: rem(24px);
+          line-height: rem(28px);
+          font-weight: $font-regular;
+        }
+      }
+      .c-region-header + .carousel &,
+      .title + .tabs .carousel &,
+      .c-region-header + .c-article-list .carousel &,
+      .c-region-header + .c-product-list .carousel &,
+      .c-region-header + .c-list .carousel &,
+      .c-wrapper:not(.PD0046) .c-region-header + .tabs .carousel &,
+      .c-region-header + .c-stock-list .carousel &,
+      .c-region-header + .c-category-select-list .carousel &,
+      &--away-from-carousel {
+        position: absolute;
+        top: 0;
+        right: rem($block-margin-m);
+        margin-top: 0;
+        // margin-top: rem($margin10px);
+        @include screen(web) {
+          right: rem($block-margin-w);
+        }
+        #{$block}__indicator {
+          order: -1;
+          margin-right: rem($margin8px);
+          @include screen(mobile) {
+            display: none;
+          }
+        }
+        #{$block}__pagination {
+          gap: rem($margin4px);
+          color: $mid-gray2;
+          .bg-darkgray &,
+          .bg-black & {
+            color: $white;
+          }
+        }
+      }
+    }
+  }
+}

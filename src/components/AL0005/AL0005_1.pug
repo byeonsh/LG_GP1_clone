@@ -1,0 +1,130 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_forms.pug
+include ../_common/_resource.pug
+
+
+block meta 
+    - var componentId = "AL0005"
+    - var componentName = "About LG"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+//- block scripts
+//-     script(src=componentId+".js" type="module")
+
+block content
+    .c-wrapper.margin-top.margin-bottom(class=componentId)
+        .component
+            .button.c-cta
+                +defaultButton({name: 'find model', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight'})(href="#AL0005", class="js-pop-open")
+
+mixin pop-msg-header(params)
+    - var option = {headerBorder : true, ...params}
+    - var dialogHeadline = option.headline || "Dialog Headline"
+    - var dialogDescription = option.headerDescription || "Dialog Description"
+    - var headerBorder = option.headerBorder ? '' : 'c-pop-msg__header--no-border'
+    - var headerMargin = option.headerMargin ? `c-pop-msg__header--margin-${option.headerMargin}` : ''
+
+    .c-pop-msg__header(class=`${headerBorder} ${headerMargin}`)&attributes(attributes)
+        // block - text contents
+        .c-text-contents
+            .title.c-text-contents__headline(id=`${dialogLabelId}`)
+                // 22.11.11 - moved font classname here 
+                h2.cmp-title.font-w-light-36.font-m-light-24(data-cmp-data-layer="")= dialogHeadline
+
+mixin pop-msg-layout(params)
+    - var option={id:`popMsg${new Date().getTime()}`, ...params}
+    - var dialogId = option.id
+    - var dialogLabelId = `${option.id}`
+    - var dialogSize = option.size || "medium"
+    - var useHeadline = option.headline != null && 0 < option.headline.length
+
+    // block - pop-msg ( dialog )
+    .c-pop-msg(class=`${dialogSize}` id=`${dialogId}` role="dialog" aria-modal="true" aria-labelledby=`${dialogLabelId}`)
+        .c-pop-msg__container
+            if useHeadline
+                //- header
+                +pop-msg-header(params)
+            //- contents
+            if block
+                block
+            //- close button
+            .button.c-pop-msg__close.c-pop-msg__close--on-top
+                button.cmp-button.c-pop-msg__close-button.js-pop-close(type="button", aria-controls=`${dialogId}` data-cmp-data-layer="")
+                    span.cmp-button__text.sr-only close
+        .c-pop-msg__dimmed
+
+mixin pop-msg-standard(params)
+    +pop-msg-layout(params)
+        block  
+
+mixin pop-msg-agree-list(param)
+    each data, index in param 
+        li.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+            span= (index+1)+". "
+            != data.copy
+
+block modal
+    .AL0005
+        //- Find Model
+        +pop-msg-standard({id : `AL0005`, size: "full", headline:"ご応募に関する同意"})
+            .c-pop-msg__contents--careerPopup.c-pop-msg__contents--box.c-text-contents
+                .c-pop-msg-contents-wrap
+                    .title.c-text-contents__title
+                        p.cmp-title.font-w-normal-16.font-m-normal-16.c-pop-msg-headline-description(data-cmp-data-layer="") 応募を行うためには本規約にご同意いただく必要がありますので、ご了承ください。
+                    .text.c-text-contents__bodycopy
+                        .cmp-text
+                            div.c-pop-msg-explain-box
+                                p.c-pop-msg-explain-doc.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") LGエレクトロニクス・ジャパン株式会社が提供する採用情報に関するサイトならびに採用へのお申込み（以下、エントリー）につきましては、以下の利用規約をご確認頂き、すべての本利用規約にご同意された上でお申込が可能となります。
+                                | 第1条 利用者について 本サイトからのより弊社に対し、経験者採用の応募を申込、登録された方をいいます。登録にあたり、本利用規約をすべて確認しその内容すべてを承諾したものとみなします。
+                                | 第2条 利用者の情報について 利用者がLGエレクトロニクス・ジャパンに対して、利用者の氏名、年齢、住所、連絡先、学歴、経験内容等を提供するすべての情報をいいます。その利用者の情報は、利用者の責任においてその内容及び個人情報にすべての責任を負うものとします。また利用者の情報に追加、修正、変更、削除等が必要な場合にはすみやかに下記へ連絡するものとします。
+                                | LGエレクトロニクス・ジャパン株式会社 TEL:03-5299-4600 E-Mail:recruit.jp@lge.com
+                                | 第4条 禁止行為
+                                | 本エントリーサイトの使用について以下のいかなる行為も禁止します。
+                                | 匿名または偽名等、虚偽の利用者の情報を登録すること。 法令及び公序良俗に反し、また反する恐れのある行為。 他者、第三者の個人情報及びその他権利を侵害する行為。 他者、第三者及び弊社に不利益を与える行為。 ウィルス、ワーム等、その他のソフトウェアによりシステムの不具合が発生する、また発生する恐れのある行為。 本エントリーサイトの利用による営業活動、営利を目的とする情報を提供する行為。 その他当サイトの運営を妨げる行為。
+
+                                //- .button 
+                                //-     +button({type:"text", color:"black", size:"medium", icon: true, name: "View More"})
+                            div.c-pop-msg-explain-list
+                                p.c-pop-msg-explain-list-title 注意事項 (応募方法)
+                                ul.c-pop-msg-explain-list-box.text.c-text-contents__bodycopy
+                                    +pop-msg-agree-list([
+                                        {
+                                            copy:'ご応募の際には、以下の「同意する」をチェックし、brキャリアシートをご用意の上、 エントリーしてください。'
+                                        },
+                                        {
+                                            copy:'メールの本文に氏名、ご連絡可能なEメールアドレス、電話番号、希望職種、及びEntry Codeを明確に記入し、キャリアシートを添付してご応募ください。'
+                                        },
+                                        {
+                                            copy:'ご自身で作成したキャリアシートをお持ちの方は、 そちらをメールにご添付してエントリーしてください。'
+                                        },
+                                        {
+                                            copy:'キャリアシートのフォーマットがない場合は、 以下のリンクよりフォーマットをダウンロードし、ご利用ください。'
+                                        },
+                                        {
+                                            copy:'以下のエントリーボタンより、メールフォームが起動しない場合は、<a class="link--semibold" href="mailto:recruit.jp@lge.com" role="button">recruit.jp@lge.com</a> 宛てに 件名を 【採用お申込み】とし、上記2番の必要事項をご記入の上、ご応募ください。'
+                                        }
+                                    ])
+                            div.c-pop-msg-check-box
+                                +formCheckbox("同意する(同意するにチェックがついていないと下のボタンはクリックできません。)", "name", "val1", "checkId1", count="false", false)
+                            
+                            div.c-pop-msg-attachments-type2
+                                .c-resources__label Attachments
+                                .c-resources__area
+                                    span キャリアシートをダウンロード
+                                    a.download Download
+                                //- .c-resources__title キャリアシートをダウンロード
+                                //- .button.c-cta
+                                //-     +defaultButton({name: 'Download', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})
+
+                        
+            .button.c-pop-msg__button-wrap
+                +defaultButton({name: 'エントリー(Eメールで送信)', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})

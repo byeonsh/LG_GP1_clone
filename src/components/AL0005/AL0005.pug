@@ -1,0 +1,158 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_headline.pug
+include ../_common/_sns-list.pug
+include ../_common/_resource.pug
+
+block meta 
+    - var componentId = "AL0005"
+    - var AL0015 = "AL0015"
+    - var componentName = "About LG"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+    link(rel="stylesheet", href=`../${AL0015}/${AL0015}`+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+
+block content
+    mixin image(size1, size2)
+        // block : image
+        .image.c-image
+            +printLazyPicture(`https://via.placeholder.com/${size1}/999999/333333`, `https://via.placeholder.com/${size2}/999999/333333`)
+            if block
+                block
+    .c-wrapper.margin-top.margin-bottom(class=componentId)
+        .component
+            mixin findJobLists (param)
+                each data in param 
+                    .cmp-find-job-detail-info.c-text-contents
+                        .cmp-find-job-info-box.cmp-find-job-info-buttonBox
+                            .c-sns-share
+                                .c-tooltip.c-downloadList
+                                    .button.c-cta
+                                        +iconButton({type:"button", color:"black",class:"download", otherClass:"c-tooltip__button", name:"Download", ariaControls:"download", expanded:"false"})
+                                        //- +iconButton({type:"button",color:"black",class:"share",otherClass:"c-tooltip__button", name:"Share", ariaControls:"snsShare", expanded:"false"})
+                                    .c-tooltip__container.top-right(id="download")
+                                        .c-tooltip__contents
+                                            ul.downloadList.c-resources__item
+                                                li
+                                                    a(href="/" role="download") 
+                                                        .downloadList__item
+                                                            .c-resources__item--extension.c-resources__item--extension-txt
+                                                                span.sr-only extension : txt
+                                                            .c-text Download Title.txt
+                                                        .c-resources__item--download-button.c-resources__item--download-button--icon
+                                                            .c-icon-button.c-icon-button--download
+                                                li
+                                                    a(href="/" role="download") 
+                                                        .downloadList__item
+                                                            .c-resources__item--extension.c-resources__item--extension-pdf
+                                                                span.sr-only extension : pdf
+                                                            .c-text Download Title.pdf
+                                                        .c-resources__item--download-button.c-resources__item--download-button--icon
+                                                            .c-icon-button.c-icon-button--download
+                                                li
+                                                    a(href="/" role="download") 
+                                                        .downloadList__item
+                                                            .c-resources__item--extension.c-resources__item--extension-dwg
+                                                                span.sr-only extension : dwg
+                                                            .c-text Download Title.dwg
+                                                        .c-resources__item--download-button.c-resources__item--download-button--icon
+                                                            .c-icon-button.c-icon-button--download
+                                                li
+                                                    a(href="/" role="download") 
+                                                        .downloadList__item
+                                                            .c-resources__item--extension.c-resources__item--extension-zip
+                                                                span.sr-only extension : zip
+                                                            .c-text Download Title.zip
+                                                        .c-resources__item--download-button.c-resources__item--download-button--icon
+                                                            .c-icon-button.c-icon-button--download
+                                                li  
+                                                    a(href="/" role="download") 
+                                                        .downloadList__item
+                                                            .c-resources__item--extension.c-resources__item--extension-txt
+                                                                span.sr-only extension : txt
+                                                            .c-text Download Title.txt
+                                                        .c-resources__item--download-button.c-resources__item--download-button--icon
+                                                            .c-icon-button.c-icon-button--download
+                                //- block : tooltip
+                                .c-tooltip
+                                    .button.c-cta
+                                        +iconButton({type:"button",color:"black",class:"share",otherClass:"c-tooltip__button", name:"Share", ariaControls:"snsShare", expanded:"false"})
+                                    .c-tooltip__container.top-right(id="snsShare")
+                                        // 2022-11-04
+                                        .c-tooltip__contents
+                                            // sns list
+                                            +snsList
+                        .cmp-find-job-item.title.c-text-contents__headline
+                            h2.cmp-title.font-w-light-56.font-m-light-28.cmp-find-job-title(data-cmp-data-layer="")= data.detailTitle
+                            .code.c-text-contents__code
+                                p.cmp-code.font-w-normal-16.font-m-normal-12.cmp-find-job-entryCode(data-cmp-data-layer="") [Entry Code : 
+                                    span= data.entryCode
+                                    |] 
+                            if data.categoryTitle
+                                .text.c-text-contents__subcopy
+                                    p.cmp-text.font-w-normal-16.font-m-normal-16.cmp-find-job-text(data-cmp-data-layer="")= data.categoryTitle
+                                        span= data.categoryText
+                            .cmp-find-job-info
+                                .cmp-find-job-info-box.text.c-text-contents__subcopy
+                                    if data.detailText
+                                        .cmp-text.font-w-normal-16.font-m-normal-12.cmp-find-job-writer(data-cmp-data-layer="")= data.detailWriter
+                                    .cmp-text.font-w-normal-16.font-m-normal-12.cmp-find-job-term(data-cmp-data-layer="")= data.detailTerm
+                        .date.c-text-contents__date
+                            .cmp-date.font-w-normal-16.font-m-normal-12.cmp-find-job-posted(data-cmp-data-layer="") Date posted: 
+                                span.cmp-find-job-post= data.postedDetail
+                        .cmp-find-job-buttons
+                            //- .button.c-cta
+                            //-     +defaultButton({name: 'この求人にエントリーする', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+                            .button.c-cta
+                                +defaultButton({name: 'Apply', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+                    .copy-title.c-text-contents__bodycopy.cmp-find-job-detail-content
+                        h6.cmp-copy-title.font-w-normal-32.font-m-normal-20.title(data-cmp-data-layer="")= data.bodyTitle
+                        p.cmp-copy.font-w-normal-24.font-m-normal-16.text(data-cmp-data-layer="")= data.bodyCopy
+
+            .cmp-container
+                .cmp-find-job-detail
+                    +findJobLists([
+                        {
+                            detailTitle :"HE - National Account Manager",
+                            categoryTitle :"R&D",
+                            categoryText :"CDI",
+                            entryCode :"191216-01",
+                            detailText :"CDI",
+                            detailWriter :"Weybridge, Surrey",
+                            detailTerm : "DD/MM/YYYY ~ DD/MM/YYYY",
+                            postedDetail :"DD/MM/YYYY",
+                            bodyTitle:"Life's Good at LG",
+                            bodyCopy:`At LG, we deliver products and services that make lives better, easier and happier though increased functionality and fun. Put simply, we offer the latest innovations to make “Life Good” - from home appliances, consumer electronics and mobile communications to business innovations in digital signage, air conditioning, solar and LED lighting. As a global leader, we strive for greatness in product leadership, market leadership and people leadership to realize our growth strategies.`,
+                        }
+                    ])
+            .cmp-container
+                .c-pagination.c-control-link
+                    ul
+                        li 
+                            span.to.to-prev Previous
+                            .to-contents
+                                .prev-contents
+                                    a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Credit Controller
+                                    span.to-date 31/03/2022
+                        li 
+                            span.to.to-next Next
+                            .to-contents
+                                .next-contents
+                                    a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") General Affairs - Assistant Manager
+                                    span.to-date 31/03/2022
+                .cmp-find-job-detail-buttons
+                    .button.c-cta
+                        +defaultButton({name: 'Back to List', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})
+
+    //- include ../AL0015/AL0015.pug

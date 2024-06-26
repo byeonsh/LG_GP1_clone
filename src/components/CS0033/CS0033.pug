@@ -1,0 +1,434 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_video.pug
+include ../_common/_hero-banner.pug
+include ../_common/_spec-info.pug
+
+block meta 
+    - var componentId = "CS0033"
+    - var componentName = "Block Icon"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    include ../CS0000/CS-inc.pug
+
+    //- // An area for testing options when coding. 
+    //- // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Top margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'Bottom margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'BG Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'bg-white', 'remove' : 'bg-warmgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-warmgray', 'remove' : 'bg-white, bg-darkgray, bg-black'},
+                                    //- {'toggle' : false, 'add' : 'bg-darkgray', 'remove' : 'bg-white, bg-lightgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-black', 'remove' : 'bg-white, bg-warmgray, bg-darkgray'},
+                                ]
+                            },
+                            {
+                                'name' : 'Width',
+                                'buttons' : [ 
+                                    {'toggle' : false, 'add' : 'width-wide', 'remove' : 'width-narrow, width-content'},
+                                    {'toggle' : false, 'add' : 'width-narrow', 'remove' : 'width-wide, width-content'},
+                                    {'toggle' : false, 'add' : 'width-content', 'remove' : 'width-wide, width-narrow'},
+                                ]
+                            },
+                            {
+                                'name' : 'contents border',
+                                'buttons' : [ 
+                                    {'toggle' : false, 'add' : 'border-top', 'remove' : 'border-bottom'},
+                                    {'toggle' : false, 'add' : 'border-bottom', 'remove' : 'border-top'},
+                                ]
+                            },
+                        ],
+                        '.type-text, .type-disclaimer' : [
+                            {
+                                'name' : 'Text Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-text-left', 'remove' : 'align-text-center, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-center', 'remove' : 'align-text-left, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-right', 'remove' : 'align-text-left, align-text-center'},
+                                ]
+                            }
+                        ],                        
+                        '.c-text-contents__bodycopy, .c-text-contents__disclaimer' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            }
+                        ],
+                        '.c-text-contents__bodycopy, .c-text-contents__disclaimer' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            }
+                        ],
+                        // type : box-color
+                        '.c-featured__wrap' : [
+                            {
+                                'name' : 'Box Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'box-white', 'remove' : 'box-warmgray, box-lightgray,box-midgray1,box-midgray2,box-midgray3, box-black'},
+                                    {'toggle' : false, 'add' : 'box-warmgray', 'remove' : 'box-white, box-lightgray,box-midgray1,box-midgray2,box-midgray3, box-black'},
+                                    {'toggle' : false, 'add' : 'box-lightgray', 'remove' : 'bg-white, bg-lightgray, bg-black'},
+                                    //- {'toggle' : false, 'add' : 'box-midgray1', 'remove' : 'bg-white, bg-lightgray, bg-darkgray'},
+                                    //- {'toggle' : false, 'add' : 'box-midgray2', 'remove' : 'bg-white, bg-lightgray, bg-darkgray'},
+                                    //- {'toggle' : false, 'add' : 'box-black', 'remove' : 'bg-white, bg-lightgray, bg-darkgray'},
+                                ]
+                            }
+                        ]
+                    };
+
+    // Component Markup
+
+    mixin featured-info({mobileType = "block", initialClass = "bg-transparent font-black", count = 2})
+        // block : featured-info
+        if "swiper" == mobileType 
+            .c-spec-info.swiper-mobile
+                .c-spec-info__container
+                    .carousel.panelcontainer
+                        // block : carousel
+                        .cmp-carousel.c-carousel.c-icon-block-contents.type-b(data-cmp-data-layer="", class=`${initialClass}`)
+                            .cmp-carousel__content.swiper-wrapper
+                                // slides
+                                +benefitContents({
+                                    isSwiper: true,
+                                    count
+                                })
+                            // indicator
+                            .c-carousel__handler
+                                .cmp-carousel__actions
+                                    +carouselBtn({type:"pagination", direction:"prev"})(aria-label="")
+                                +carouselPagination
+                                .cmp-carousel__actions
+                                    +carouselBtn({type:"pagination", direction:"next"})(aria-label="")
+
+        if "block" == mobileType 
+            .c-spec-info.block-mobile
+                .c-icon-block-contents.type-a(class=`${initialClass}`)
+                    if "cs-contents" == featured
+                        // block : text-contents
+                        +featuredContents
+                    else 
+                        //- +benefitContents(4)
+                        // 20230306 new design markup change
+                        - var option={isSwiper: false, count, ...params}
+                            - for (var x = 0; x < option.count; x++)
+                                a(href="http://www.daum.net").c-featured__wrap 
+                                    div.c-featured__tit
+                                        // Add an icon image
+                                        .cmp-title(class=headlineClass, data-cmp-data-layer="")
+                                            strong.cmp-title__text.font-m-normal-16.font-w-light-36 Smart diagnosis smart diagnosis smart diagnosis smart diagnosis smart diagnosis
+                                            // Deletion of eybrow (display: none)
+                                            //- .c-text-contents__eyebrow(class=option.isSwiper ? "font-m-light-18" : "font-m-light-16") Type
+                                        +printLazyImage("../../assets/icon/icon-support-featured1-60-60.svg", "Smart Diagnosis")(aria-hidden="true")
+                                    div.c-featured__desc
+                                        .c-text-contents__bodycopy.font-m-normal-14.font-w-normal-16 Troubleshoot your product and solve problems on the spot. Troubleshoot your product and solve problems on the spot. Troubleshoot your product and solve problems on the spot. Troubleshoot your product and solve problems on the spot. Troubleshoot your product and solve problems on the spot. Troubleshoot your product and solve problems on the spot. Troubleshoot your product and solve problems on the spot. Troubleshoot your product and solve problems on the spot.
+                                    // Add button
+                                    .button.c-cta.c-hidden-mo
+                                        +buttonArrow({link:false, color:'black', border:'yes', wsize:'large', msize:'small'}) 
+        if "nonLink" == mobileType 
+            .c-spec-info.block-mobile
+                .c-icon-block-contents.type-a(class=`${initialClass}`)
+                    if "cs-contents" == featured
+                        // block : text-contents
+                        +featuredContents
+                    else 
+                        //- +benefitContents(4)
+                        // 20230306 new design markup change
+                        - var option={isSwiper: false, count, ...params}
+                            - for (var x = 0; x < option.count; x++)
+                                .c-featured__wrap 
+                                    div.c-featured__tit
+                                        // Add an icon image
+                                        .cmp-title(class=headlineClass, data-cmp-data-layer="")
+                                            strong.cmp-title__text.font-m-normal-16.font-w-light-36 Smart diagnosis Smart Diagnosis Smart Diagnosis Smart Diagnosis Smart Diagnosis
+                                            // Deletion of eybrow (display: none)
+                                            //- .c-text-contents__eyebrow(class=option.isSwiper ? "font-m-semibold-18" : "font-m-semibold-16") Type
+                                        +printLazyImage("../../assets/icon/icon-support-featured1-60-60.svg", "Smart diagnosis")
+                                    div.c-featured__desc
+                                        .c-text-contents__bodycopy.font-m-normal-14.font-w-normal-16 Troubleshoot your product and solve problems on the spot. Troubleshoot your product and solve problems on the spot. Troubleshoot your product and solve problems on the spot. Troubleshoot your product and solve problems on the spot. Troubleshoot your product and solve problems on the spot. Troubleshoot your product and solve problems on the spot. Troubleshoot your product and solve problems on the spot. Troubleshoot your product and solve problems on the spot.
+
+    mixin benefitContents(params)
+        - var option={isSwiper: false, count, ...params}
+        - var headlineClass = option.isSwiper ? "c-text-contents__headline font-w-light-24 font-m-light-20 " : "c-text-contents__headline font-w-light-32 font-m-light-24"
+            - for (var x = 0; x < option.count; x++)
+                .c-text-contents(class=option.isSwiper && "cmp-carousel__item swiper-slide" data-cmp-data-layer=option.isSwiper && "" data-cmp-hook-carousel=option.isSwiper && "item")
+                    // Add an icon image
+                    +printLazyImage("../../assets/icon/icon-support-featured1-60-60.svg", "Smart Diagnosis")(aria-hidden="true")
+                    .cmp-title(class=headlineClass, data-cmp-data-layer="")
+                        strong.cmp-title__text Smart diagnosis
+                    // Deletion of eybrow (display: none)
+                    .c-text-contents__eyebrow(class=option.isSwiper ? "font-m-light-18" : "font-m-light-16") Type
+                    // Change font size (modify font-related classes)
+                    .c-text-contents__bodycopy.font-m-normal-14.font-w-normal-16 Troubleshoot your product and solve problems on the spot. 
+                    // Add button
+                    .button.c-cta
+                        +linkButton({name:'learn more', size:"small"})
+
+    mixin bodycopy 
+        .text.c-text-contents__bodycopy 
+            p.cmp-text.font-w-normal-20.font-m-normal-16(data-cmp-data-layer="") consectetuer adipiscing elit. Aenean commodo ligula eget dolor. 
+                a(class="link" href="") Aenean massa.
+                |  Cum sociis natoque penatibus et magnis dis parturient. Body text can be up to 200 characters. 
+
+    .guide-text-type Block Icon
+    // Component Markup
+    .guide-text-option When there is 1 list
+    .c-wrapper.CS0033.type-text.margin-top.margin-bottom
+        .component.c-featured-info
+            .CS0033__container
+                // 20230313 Markup change according to LGness
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline 
+                            +headline("font-w-light-56 font-m-light-28", h2, "Featured topics")
+                        +bodycopy
+                    .button__group
+                        .button.c-cta
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+                        .button.c-cta 
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                //- change mixin name
+                +featured-info({initialClass : "bg-transparent", mobileType : "block", count : 1}, 1)
+
+    .guide-text-option When there is 2 list
+    .c-wrapper.CS0033.type-text.margin-top.margin-bottom
+        .component.c-featured-info
+            .CS0033__container
+                // 20230313 Markup change according to LGness
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline 
+                            +headline("font-w-light-56 font-m-light-28", h2, "Featured topics")
+                        +bodycopy
+                    .button__group
+                        .button.c-cta
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+                        .button.c-cta 
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                // change mixin name
+                +featured-info({initialClass : "bg-transparent", mobileType : "block", count : 2}, 1)
+
+    .guide-text-option When there is 3 list
+    .c-wrapper.CS0033.type-text.margin-top.margin-bottom
+        .component.c-featured-info
+            .CS0033__container
+                // 20230313 Markup change according to LGness
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline 
+                            +headline("font-w-light-56 font-m-light-28", h2, "Featured topics")
+                        +bodycopy
+                    .button__group
+                        .button.c-cta
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+                        .button.c-cta 
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                // change mixin name
+                +featured-info({initialClass : "bg-transparent", mobileType : "block", count : 3}, 1)
+
+    .guide-text-option When there is 4 list
+    .c-wrapper.CS0033.type-text.margin-top.margin-bottom
+        .component.c-featured-info
+            .CS0033__container
+                // 20230313 Markup change according to LGness
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline 
+                            +headline("font-w-light-56 font-m-light-28", h2, "Featured topics")
+                        +bodycopy
+                    .button__group
+                        .button.c-cta
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+                        .button.c-cta 
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                // change mixin name
+                +featured-info({initialClass : "bg-transparent", mobileType : "block", count : 4}, 1)
+    .guide-text-option MO 1X4
+    .c-wrapper.CS0033.type-text.margin-top.margin-bottom
+        .component.c-featured-info.c-list__type2
+            .CS0033__container
+                // 20230313 Markup change according to LGness
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline 
+                            +headline("font-w-light-56 font-m-light-28", h2, "Featured topics")
+                        +bodycopy
+                    .button__group
+                        .button.c-cta
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+                        .button.c-cta 
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                // change mixin name
+                +featured-info({initialClass : "bg-transparent", mobileType : "block", count : 4}, 1)
+
+    .guide-text-option Inner Box
+    .c-wrapper.CS0033.type-text.margin-top.margin-bottom
+        .component.c-featured-info.c-innerBox
+            .CS0033__container
+                // 20230313 Markup change according to LGness
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline 
+                            +headline("font-w-light-56 font-m-light-28", h2, "Featured topics")
+                        +bodycopy
+                    .button__group
+                        .button.c-cta
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+                        .button.c-cta 
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                //- change mixin name
+                +featured-info({initialClass : "bg-transparent", mobileType : "block", count : 1}, 1)
+
+
+    .c-wrapper.CS0033.type-text.margin-top.margin-bottom
+        .component.c-featured-info.c-innerBox
+            .CS0033__container
+                // 20230313 Markup change according to LGness
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline 
+                            +headline("font-w-light-56 font-m-light-28", h2, "Featured topics")
+                        +bodycopy
+                    .button__group
+                        .button.c-cta
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+                        .button.c-cta 
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+
+                //- change mixin name
+                +featured-info({initialClass : "bg-transparent", mobileType : "block", count : 2}, 1)
+
+
+    .c-wrapper.CS0033.type-text.margin-top.margin-bottom
+        .component.c-featured-info.c-innerBox
+            .CS0033__container
+                // 20230313 Markup change according to LGness
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline 
+                            +headline("font-w-light-56 font-m-light-28", h2, "Featured topics")
+                        +bodycopy
+                    .button__group
+                        .button.c-cta
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+                        .button.c-cta 
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+
+                //- change mixin name
+                +featured-info({initialClass : "bg-transparent", mobileType : "block", count : 3}, 1)
+
+
+    .c-wrapper.CS0033.type-text.margin-top.margin-bottom
+        .component.c-featured-info.c-innerBox
+            .CS0033__container
+                // 20230313 Markup change according to LGness
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline 
+                            +headline("font-w-light-56 font-m-light-28", h2, "Featured topics")
+                        +bodycopy
+                    .button__group
+                        .button.c-cta
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+                        .button.c-cta 
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+
+                //- change mixin name
+                +featured-info({initialClass : "bg-transparent", mobileType : "block", count : 4}, 1)
+
+    .guide-text-option global - non link, m 1x4
+    .c-wrapper.CS0033.type-text.margin-top.margin-bottom
+        .component.c-featured-info.c-list__type3
+            .CS0033__container
+                // 20230313 Markup change according to LGness
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline 
+                            +headline("font-w-light-56 font-m-light-28", h2, "Featured topics")
+                        +bodycopy
+                    .button__group
+                        .button.c-cta
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                            +defaultButton({name: 'Learn more', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+                        .button.c-cta 
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                            +linkButton({type:"text", color:"black", size:"medium", name: "Button text", icon:true})
+                // change mixin name
+                +featured-info({initialClass : "bg-transparent", mobileType : "nonLink", count : 4}, 1)
+    
+

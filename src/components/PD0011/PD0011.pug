@@ -1,0 +1,341 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_video.pug
+include ../_common/_product-list.pug
+include ../_common/_pagination.pug
+include ../_common/_filter.pug
+include ../_common/_pop-msg.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "PD0011"
+    - var componentName = "Product Finder"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper.PD0011--summary' : [
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'BG Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'bg-default', 'remove' : 'bg-white, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-white', 'remove' : 'bg-lightgray, bg-darkgray, bg-black, bg-default'},
+                                    {'toggle' : false, 'add' : 'bg-lightgray', 'remove' : 'bg-white, bg-darkgray, bg-black, bg-default'},
+                                    {'toggle' : false, 'add' : 'bg-darkgray', 'remove' : 'bg-white, bg-lightgray, bg-black, bg-default'},
+                                    {'toggle' : false, 'add' : 'bg-black', 'remove' : 'bg-white, bg-lightgray, bg-darkgray, bg-default'},
+                                ]
+                            },
+                        ],
+                    };
+
+    - var resultListId = "PD0011List"
+
+    mixin header-head(headline, description)
+        +component-title-area({
+            alignment:"",
+            headline : {
+                text : headline
+            },
+            description : {
+                text : description,
+                style : "font-w-normal-24 font-m-normal-12"
+            },
+        })
+        //- - var headlineStyle = "font-w-light-56 font-m-light-28"
+        //- - var descStyle = "font-w-normal-24 font-m-normal-12"
+
+        //- // block - text contents
+        //- .c-text-contents
+        //-     .title.c-text-contents__headline 
+        //-         - var pass = false
+        //-         +headline(headlineStyle, "h1", headline)
+        //-     if description
+        //-         .text.c-text-contents__bodycopy 
+        //-             .cmp-text(data-cmp-data-layer class=descStyle)= description
+
+    mixin header-summary
+        - var headlineStyle = "font-w-light-36 font-m-light-24"
+        - var descStyle = "font-w-normal-16 font-m-normal-16"
+
+        +header-head("Laptops Curation", "These are options to you choose.")
+        // block - curation summary banner 
+        .c-curation-summary-banner
+            // block - image
+            .image.c-image
+                +printLazyPicture('https://via.placeholder.com/310x200/000/333', 'https://via.placeholder.com/1440x450/000/333', "")(aria-hidden="true")
+            .c-text-contents
+                .title.c-text-contents__headline
+                    .cmp-text(data-cmp-data-layer class=headlineStyle) Let’s Summarize Your Choices
+                .text.c-text-contents__bodycopy 
+                    .cmp-text(data-cmp-data-layer class=descStyle) There are the options you choices.
+
+    mixin step-summary-line({directive, selected})
+        - var eyebrowStyle = "font-w-normal-16 font-m-normal-16"
+        - var bodyStyle = "font-w-normal-24 font-m-normal-16"
+
+        .c-list__item.c-curation-summary__box(role="listitem")
+            .text.c-curation-summary__eyebrow
+                .cmp-text(data-cmp-data-layer="" class=eyebrowStyle)= directive
+            .text.c-curation-summary__bodycopy
+                .cmp-text(data-cmp-data-layer="" class=bodyStyle)= selected
+
+    mixin step-progress(params)
+        - var config = { currentIndex : 1, max : 7, array : [], ...params} 
+        .c-step-progress
+            ol.c-step-progress__bridge
+                - for(var i=1; i<=config.max; i++)
+                    if config.currentIndex == i
+                        //- on 
+                        li.button.c-step-progress__point.c-step-progress__point--on
+                            button.c-step-progress__point-button.cmp-button(type="button", aria-current="step", data-cmp-data-layer="")
+                                span.cmp-button__text.c-step-progress__point-button-text= i
+                    else if config.currentIndex > i
+                        //- done 
+                        li.button.c-step-progress__point.c-step-progress__point--done
+                            button.c-step-progress__point-button.cmp-button(type="button", data-cmp-data-layer="")
+                                span.cmp-button__text.c-step-progress__point-button-text= i
+                    else 
+                        //- config.currentIndex < i
+                        //- button is disabled 
+                        - var condition = null != config.array[i]
+                        li.button.c-step-progress__point(class={"c-step-progress__point--keep" : condition} data-text=`${config.array[i]}`)
+                            button.c-step-progress__point-button.cmp-button(type="button", data-cmp-data-layer="" disabled=!condition)
+                                span.cmp-button__text.c-step-progress__point-button-text= i
+
+            .text.c-step-progress__paging
+                .cmp-text(data-cmp-data-layer="")
+                    span.c-step-progress__current 0#{config.currentIndex}
+                    span /0#{config.max}
+
+    mixin step-contents(params)
+        - var config = {areaType : "curation", styleType : "card", count : 7, stepHead : "Lorem, ipsum dolor.", ...params}
+        - var introClass = "c-step-option--type-intro" 
+        - var styleClass = `c-step-option--type-${config.styleType}`
+        - var questionStyle = "font-w-normal-24 font-m-normal-16"
+        
+        .c-step-option(class=`${styleClass}` class={[introClass]: -1 < config.styleType.indexOf("intro")})
+            if config.stepHead
+                // block - text contents
+                .c-step-option__question.c-text-contents
+                    span(class=questionStyle) Q.
+                    span.text.c-text-content__subcopy
+                        span.cmp-text(data-cmp-data-layer="" class=questionStyle)= config.stepHead
+
+            // block - list
+            .c-step-option__list.c-list.js-step-option-area(role="list")
+                - for (var i=0; i<config.count; i++)
+                    +step-option-card(config)
+            if "curation" == config.areaType
+                .c-step-option__selected-count
+                    .button
+                        // GA4
+                        a.cmp-button(data-cmp-data-layer="" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" href=`#${resultListId}`)
+                            | Recommended
+                            |
+                            span 4
+                            |
+                            | Products
+
+    mixin step-phase-cta(where)
+        - var phaseClass = `c-step-phase-cta--${where}` 
+        // block - cta
+        .c-step-phase-cta.c-cta(class={[phaseClass] : null != where})
+            .c-step-phase-cta__clean
+                +start-over 
+            +defaultButton({name:"Prev", wSize: "medium", mSize : "small", buttonStyle : "default", isButton : true})(class="c-step-phase-cta__prev")
+            +defaultButton({name:"Next", wSize: "medium", mSize : "small", buttonStyle : "highlight", isButton : true})(class="c-step-phase-cta__next")
+            // to dev - if list display option is "y", anchor's href is get id of "filtered-recommend-list". 
+            +defaultButton({name:"Check Result", wSize: "medium", mSize : "small", buttonStyle : "highlight", isButton : false})(class="c-step-phase-cta__last")
+
+    mixin step-option-image(styleType)
+        // block - image
+        .image.c-image
+            case styleType
+                when "card" 
+                    +printLazyPicture("https://via.placeholder.com/160x187/808080/bbb/", "https://via.placeholder.com/310x330/808080/bbb/")(aria-hidden="true")
+                when "thumbnail" 
+                    +printLazyPicture("https://via.placeholder.com/70x70/808080/bbb/", "https://via.placeholder.com/310x330/808080/bbb/")(aria-hidden="true")
+
+    mixin step-option-text-contents(styleType)
+        - var eyebrowStyle = "font-w-normal-24 font-m-normal-16"
+        - var bodyStyle = "font-w-normal-16 font-m-normal-14"
+
+        // block - text contents
+        .c-text-contents
+            .text.c-text-contents__eyebrow
+                case styleType
+                    when "intro card"
+                        strong.cmp-text(data-cmp-data-layer="" class=eyebrowStyle)
+                            | Design / Music / Artwork
+                    default
+                        strong.cmp-text(data-cmp-data-layer="" class=eyebrowStyle)
+                            | Design / Music / Artwork
+            .text.c-text-contents__bodycopy
+                .cmp-text(data-cmp-data-layer="" class=bodyStyle)
+                    | Lorem ipsum dolor sit amet.
+
+    mixin step-option-cta(styleType)
+        - var config = {wSize: "small", mSize:"small", buttonStyle : "default", name:"Learn More", isButton : false}
+        // block - cta
+        .button.c-cta
+            +defaultButton({...config})(href="#popCurationLearnMore" class="js-pop-open" role="button")
+
+    mixin step-option-card(params)
+        - var config = {useLink : false, ...params}
+        .c-step-option__item.c-list__item.js-step-option(role="listitem" tabindex=(config.useLink == false )&&"0" )
+            if config.useLink
+                // GA4
+                a.c-step-option__intro-linker(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 
+                    +step-option-image(config.styleType)
+                    +step-option-text-contents(config.styleType)
+            else
+                +step-option-image(config.styleType)
+                +step-option-text-contents(config.styleType)
+                +step-option-cta(config.styleType)
+
+    mixin step-recommend-list(flag) 
+        - var count = 8
+        - var banner = false
+        - var multi = false
+        - var useFlagFeatureIcon = false
+        
+        // block - step recommend list
+        .c-step-recommend-list(id=`${resultListId}`)
+            //- share
+            .c-step-recommend-list__share
+                +sns-share-with-tooltip
+            //- list
+            .productlist.productcollection
+                .c-category__root
+                    .c-productcollection__root.productcollection__root(data-cmp-is="productcollection", data-cmp-data-layer)
+                        +filterResult(count, banner, multi, useFlagFeatureIcon)
+            //- buttons
+            +result-button-area
+
+    mixin start-over
+        button.cmp-button.c-icon-button.c-icon-button--start-over(data-cmp-data-layer="" type="button")
+            span.cmp-button__text
+                | Start Over
+
+    mixin result-button-area
+        .button.c-step-recommend-list__button-area
+            //- start over
+            +start-over
+            //- to previous step
+            +defaultButton({name : "Prev", wSize: "medium", mSize:"small", buttonStyle : "default"})
+
+    // Component Markup
+    .guide-text-option Intro
+    - var introConfig = {areaType : "intro", useLink : true, stepHead : ""} 
+    .c-wrapper.PD0011.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +header-head("Curation Category", "Are you looking for a product that’s right for you?")
+                +step-contents({...introConfig})
+
+    .guide-text-option Curation - card
+    .c-wrapper.PD0011.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                // re-rendering area
+                +header-head("Laptops Curation", "These are options to you choose.")
+                +step-progress
+                +step-contents
+                +step-phase-cta("start")
+                // - end : re-rendering area
+
+    .guide-text-option Curation - thumbnail
+    .c-wrapper.PD0011.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                // re-rendering area
+                +header-head("Laptops Curation", "These are options to you choose.")
+
+                - var useIntro = false
+                +step-progress({currentIndex : 2})
+                // thumbnail type
+                +step-contents({styleType : "thumbnail", count : 10})
+                +step-phase-cta
+                // - end : re-rendering area
+
+    .guide-text-option Curation Summary 
+    // 23.03.02 - add component option : background theme (white, lightgray, darkgray, black) 
+    // 23.03.02 - add classname ".PD0011--summary" for identify summary page
+    .c-wrapper.PD0011.margin-top.margin-bottom.bg-default.PD0011--summary
+        .component
+            .cmp-container
+                // re-rendering area
+                // block - region header : this block serves as header of component. no use multiple.
+                +header-summary
+                // block - curation summary
+                .c-curation-summary
+                    // 23.03.02 - remove classname "bg-lightgray" from ".c-list"
+                    .c-list(role="list")
+                        +step-summary-line({directive : "What's the purpose of use?", selected : "game,100€ or less Dolby Atmos, 100€ or less D7.1.2, Virtual Surround"})
+                        +step-summary-line({directive : "Select the level of resolution you want.", selected : "8K(7680x4320),100€ or less Dolby Atmos, 100€ or less D7.1.2, Virtual Surround"})
+                        +step-summary-line({directive : "What audio specifications do you want?", selected : "Dolby Atmos and 7.1.2 Virtual Surround"})
+                        +step-summary-line({directive : "Which panel do you consider?", selected : "'Nano IPS™', 4 channel headphones ,100€ or less Dolby Atmos, 100€ or less D7.1.2, Virtual Surround"})
+                        +step-summary-line({directive : "What's the purpose of use?", selected : "game,100€ or less Dolby Atmos, 100€ or less D7.1.2, Virtual Surround"})
+                        +step-summary-line({directive : "Select the level of resolution you want.", selected : "8K(7680x4320),100€ or less Dolby Atmos, 100€ or less D7.1.2, Virtual Surround"})
+                        +step-summary-line({directive : "What audio specifications do you want?", selected : "Dolby Atmos and 7.1.2 Virtual Surround"})
+                    .text.c-curation-summary__result-text
+                        - var resultStyle = "font-w-normal-24 font-m-normal-20"
+                        strong.cmp-text(data-cmp-data-layer="" class=resultStyle)
+                            | So we recommend 
+                            |
+                            span 2 Products
+                            |
+                            | for your best experience
+
+                // block - cta
+                +step-phase-cta("done")
+                // - end : re-rendering area
+
+    .guide-text-option Result list
+    .c-wrapper.PD0011.margin-top.margin-bottom.bg-default
+        .component.no-filter
+            .cmp-container
+                +header-head("Curation Result For You")
+                +step-recommend-list
+                
+    .guide-text-option Quick view - "Curation" + "Result list" on single page 
+    .c-wrapper.PD0011.margin-top.margin-bottom.bg-default
+        .component.no-filter
+            .cmp-container
+                +header-head("Laptops Curation", "These are options to you choose.")
+                +step-progress({currentIndex : 4, array : ["done", "done", "done", "done", "on", "keep", null]})
+                +step-contents
+                +step-phase-cta
+                - var quickView = true
+                +step-recommend-list(quickView)
+                                
+block modal
+    +printLayerPopup('popCurationLearnMore')
+    +printLayerPopup('popCopyComplete')

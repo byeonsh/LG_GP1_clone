@@ -1,0 +1,1024 @@
+include ../_common/_cart-price-total.pug
+include ./CT0302-inc.pug
+
+mixin iconButtonMx(params)
+    //- 상위에 .button 클래스 추가해야합니다.
+    - var option={color:'black', type:'link', class:'', otherClass:'', comment: true, ...params}
+    - var otherClass = option.otherClass ? ` ${option.otherClass}` : ''
+    if(option.otherClass == 'c-tooltip__button')
+        //- tooltip
+        - var control = option.ariaControls ? `${option.ariaControls}` : ''
+        - var expanded = option.expanded ? `${option.expanded}` : ''
+        - var describedby = option.describedby ? `${option.describedby}` : ''
+        - var attributes = {"aria-controls":control, "aria-expanded": expanded, "aria-describedby": describedby}
+    if(option.type == 'link')
+        if(option.comment)
+            // Option : target="_blank"
+        if(option.ariaControls || attributes.role)
+            a(href="#" class=`cmp-button c-icon-button c-icon-button--${option.class} ${option.color}${otherClass}` data-cmp-data-layer="")&attributes(attributes)
+                +printLazyPicture(`../../assets/icon/icon-gift-card-24-24.svg`)
+                span.cmp-button__text.c-icon-button__text #{option.name}
+        else
+            // GA4
+            a(href="#" class=`cmp-button c-icon-button c-icon-button--${option.class} ${option.color}${otherClass}` data-cmp-data-layer="" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")&attributes(attributes)
+                span.cmp-button__text.c-icon-button__text #{option.name}
+    else if(option.type == 'button')
+        button(type="button" class=`cmp-button c-icon-button c-icon-button--${option.class} ${option.color}${otherClass}` data-cmp-data-layer="")&attributes(attributes)
+            span.cmp-button__text.c-icon-button__text #{option.name}
+            
+    else if(option.type == 'tooltip')
+        button(type="button" class=`cmp-button c-icon-button c-icon-button--${option.class} ${option.color}${otherClass}` data-cmp-data-layer="")&attributes(attributes)
+            span.cmp-button__text.c-icon-button__text #{option.name}
+
+    else if(option.type == 'icon')
+        button(type="button" class=`cmp-button c-icon-button c-icon-button--${option.class} ${option.color}${otherClass}` data-cmp-data-layer="")&attributes(attributes)
+            span.cmp-button__text.c-icon-button__text.sr-only #{option.name}
+
+mixin checkoutOrderDeliveryProduct(delivery, date, params)
+    - let data = {...params}
+        .c-text-contents.align-text-left.c-checkout-orderd__item--delivery-info
+            .c-checkout-orderd__item--delivery-info__title.font-w-normal-16.font-m-normal-16= delivery
+            .c-checkout-orderd__item--delivery-info__date(class=`${data[0].dateColor=='red'?'font-red':''}`)= date
+        each set in data
+            .c-checkout-orderd__product
+                .c-checkout-orderd__product__image-box
+                    .image.c-image
+                        +printLazyImage(`https://via.placeholder.com/80x80/999999/333333`)
+                .c-checkout-orderd__product__title= set.title
+                    .c-checkout-orderd__product__text-box-wrap
+                        if set.giftCard
+                            .c-price__giftCard-wrap
+                                each text in set.giftCardTxt
+                                    .c-price__giftCard
+                                        .c-product-item__button.button
+                                            +iconButtonMx({type:"link",comment:false,color:"red",class:"mx",name:`${text}`, ariaControls: 'link'})
+                        .c-checkout-orderd__product__text-box__desc
+                            if set.qty
+                                .c-checkout-orderd__product__text-box__desc-qty Qty : !{set.qty}
+                                .c-checkout-orderd__product__text-box__desc-price 
+                                    +unitPos(set.unitPos?set.unitPos:'', set.price, set.unitName)
+                                    //- [Start] 2023-09-13 : ADD- Includes $15 EHF fee
+                                    if set.includeEHF
+                                        span.c-checkout-orderd__product__text-box__desc-price__EHF-fee.font-w-normal-16.font-m-normal-12 !{set.includeEHF}
+                                    //- [End] 2023-09-13 : ADD- Includes $15 EHF fee
+
+mixin CT0302(option=false, country=false)
+    .CT0302
+        if(option === "member")
+            case country
+                when 'mx'
+                    .buy-checkout__item.buy-checkout__item--delivery
+                        +checkoutStep({
+                            title:"Delivery",
+                            current:"2",
+                            total:"3",
+                            type: "active"
+                        })
+                        .c-checkout-step02
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag:["Shipping"],
+                                        title:"Robert Surrency",
+                                        address:"México, Circuito Benito Juárez, Integración Latinoamericana, Coyoacán , Ciudad de México, 04310, México",
+                                        num:"123-4567-8910",
+                                        type: "",
+                                    },
+                                ])
+                        .c-checkout-step02.c-checkout-step02--warn
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag: ["Billing"],
+                                        title:"Robert Surrency",
+                                        address:"México, Circuito Benito Juárez, Integración Latinoamericana, Coyoacán , Ciudad de México, 04310, México",
+                                        num:"123-4567-8910",
+                                        type: "",
+                                    },
+                                ])
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'The items(s) are not available for shipping in your area. Please change address options',
+                                remove: true,
+                            },
+                        ])
+
+                        +accRadioDeliveryBox(["LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)"], false, [
+                            {
+                                type: 'Delivery Only',
+                                tooltipMsg: false,
+                                id: 'delivery04',
+                                price:'0.00',
+                                unitPos: 'left',
+                                unitName: '$',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                tooltipMsg: false,
+                                id: 'delivery05',
+                                price:'0.00',
+                                unitPos: 'left',
+                                unitName: '$',
+                                warning : ['Llega en 5 - 14 días hábiles (Dentro de territorio nacional)'],
+                            },
+                        ])
+                        +accRadioDeliveryBox(["LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)", "LG Soundbar SP8YAV"], false, [
+                            {
+                                type: 'Delivery Only',
+                                tooltipMsg: false,
+                                id: 'delivery06',
+                                price:'0.00',
+                                unitPos: 'left',
+                                unitName: '$',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                tooltipMsg: false,
+                                id: 'delivery07',
+                                price:'0.00',
+                                unitPos: 'left',
+                                unitName: '$',
+                                warning : ['Llega en 5 - 14 días hábiles (Dentro de territorio nacional)'],
+                            },
+                        ])
+                        +accRadioDeliveryBox(["OLED65C25LB.AEU + SP9YA"], false, [
+                            {
+                                type: 'Delivery Only',
+                                tooltipMsg: false,
+                                id: 'delivery08',
+                                price:'0.00',
+                                unitPos: 'left',
+                                unitName: '$',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                tooltipMsg: false,
+                                id: 'delivery09',
+                                price:'0.00',
+                                unitPos: 'left',
+                                unitName: '$',
+                                warning : ['Llega en 5 - 14 días hábiles (Dentro de territorio nacional)'],
+                            },
+                        ])
+                        +accRadioDeliveryBox(["LG Soundbar SP8YAV"], false, [
+                            {
+                                type: 'Delivery Only',
+                                tooltipMsg: false,
+                                id: 'delivery10',
+                                price:'0.00',
+                                unitPos: 'left',
+                                unitName: '$',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                tooltipMsg: false,
+                                id: 'delivery11',
+                                price:'0.00',
+                                unitPos: 'left',
+                                unitName: '$',
+                                warning : ['Llega en 5 - 14 días hábiles (Dentro de territorio nacional)'],
+                            },
+                        ])
+                        // [Start] 2023.07.19 UPDATE - error case markup
+                        //- .buy-delivery-box--error
+                        +accRadioDeliveryBox(["LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)"], "error", [
+                            {
+                                type: 'Delivery Only',
+                                tooltipMsg: false,
+                                id: 'delivery12',
+                                price:'0.00',
+                                unitPos: 'left',
+                                unitName: '$',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                tooltipMsg: false,
+                                id: 'delivery13',
+                                price:'0.00',
+                                unitPos: 'left',
+                                unitName: '$',
+                                warning : ['Llega en 5 - 14 días hábiles (Dentro de territorio nacional)'],
+                            },
+                        ])
+                        // [End] 2023.07.19 UPDATE - error case markup
+
+                        // [Start] 2024.02.21 UPDATE - Stand alone 
+                        +deliveryBox(["LG Premium Care 2 Year"], 'only', false, false, false)
+                        // [End] 2024.02.21 UPDATE - Stand alone
+
+                        .buy-delivery-info--list
+                            ul.buy-delivery-info__list
+                                li.font-w-normal-16.font-m-normal-14 La entrega de pedidos para cualquier producto vendido a través de la tienda LG.com . se realizará en días hábiles por el servicio de mensajería elegido por LG Electronics por el total de los productos pedidos o en parcialidades.
+                                li.font-w-normal-16.font-m-normal-14 Se pueden producir retrasos en la entrega debido a circunstancias ajenas a la paqueteria.
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'The items(s) are not available for shipping in your area. Please change address options',
+                                remove: true,
+                            },
+                        ])
+                        .button.buy-order-info-coupon__button 
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                when 'selectDateType-accordion-wrap-global'
+                    // type accordion-wrap : global shipping module
+                    .buy-checkout__item.buy-checkout__item--delivery.buy-checkout__item--delivery-mix
+                        details(open).buy-delivery-box__accordion-mix.buy-delivery-box__accordion-mix--error
+                            summary.c-accordion-mix__head
+                                .c-accordion-mix__head-text
+                                    +deliveryBoxProduct([
+                                        {
+                                            title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                            qty: false,
+                                        },
+                                    ])
+                            .c-accordion-mix__body
+                                
+                                +deliveryBoxSubTitle({
+                                    boxTitle : 'Delivery Method',
+                                    tooltip: '11111',
+                                })
+                                +deliveryMixRadioSelect([
+                                    {
+                                        type: 'Regular delivery',
+                                        tooltipMsg: '11111111111',
+                                        id: 'delivery104-mx',
+                                        price:'25.00',
+                                        unitPos: 'left',
+                                        unitName: '$',
+                                    },
+                                    {
+                                        type: 'Express delivery',
+                                        tooltipMsg: '11111111111',
+                                        id: 'delivery105-mx',
+                                        price:'30.00',
+                                        unitPos: 'left',
+                                        unitName: '$',
+                                    },
+                                    {
+                                        type: 'Delivery only',
+                                        tooltipMsg: '11111111111',
+                                        id: 'delivery106-mx',
+                                        price:'Free',
+                                        useUnitPos: false,
+                                        unitPos: false,
+                                        unitName: false,
+                                    },
+                                ])
+                                +deliveryBoxSubTitle({
+                                    boxTitle : 'Additional Services',
+                                    tooltip: '11111',
+                                })
+                                +deliveryAccodionRadio('Installation', false, [
+                                    {
+                                        type: 'Basic Installation',
+                                        tooltipMsg: '11111111111',
+                                        id: 'delivery86-mx',
+                                        price:'Free',
+                                        useUnitPos: false,
+                                        unitPos: false,
+                                        unitName: false,
+                                    },
+                                    {
+                                        type: 'TV Wallmount',
+                                        tooltipMsg: '11111111111',
+                                        id: 'delivery87-mx',
+                                        price:'30.00',
+                                        unitPos: 'left',
+                                        unitName: '$',
+                                    },
+                                ])
+                                +deliveryAccodionCheck('Haulaway', false, [
+                                    {
+                                        type: 'Haulaway',
+                                        id: 'delivery134-mx',
+                                        tooltipMsg: '1111',
+                                        price:'Free',
+                                        useUnitPos: false,
+                                        nameId: 'delivery134',
+                                        checked: false,
+                                        infoDesc: false,
+                                        select:false,
+                                    }
+                                ])
+                                +deliveryBoxNoneAcc(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], false, false, [
+                                    {
+                                        selectDateAreaTitle : 'Delivery Time',
+                                        selectDateCancel : false,
+                                        type: 'Thu, Oct 18  All day',
+                                        id: 'delivery76',
+                                        price:'',
+                                        validList: [
+                                            {
+                                                text: 'La entrega de pedidos para cualquier producto vendido a través de la tienda LG.com . se realizará en días hábiles por el servicio de mensajería elegido por LG Electronics por el total de los productos pedidos o en parcialidades.',
+                                            },
+                                            {
+                                                text: 'Se pueden producir retrasos en la entrega debido a circunstancias ajenas a la paqueteria.',
+                                            }
+                                        ]
+                                    },
+                                ])
+                                +deliverySelectDateComplete({
+                                    title:'Delivery Time',
+                                    text:'Entrega en 6 - 8 días',
+                                    descList: [
+                                        {
+                                            text: 'La entrega de pedidos para cualquier producto vendido a través de la tienda LG.com . se realizará en días hábiles por el servicio de mensajería elegido por LG Electronics por el total de los productos pedidos o en parcialidades.',
+                                        },
+                                        {
+                                            text: 'Se pueden producir retrasos en la entrega debido a circunstancias ajenas a la paqueteria.',
+                                        }
+                                    ],
+                                    
+                                })
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'The items(s) are not available for shipping in your area. Please change address options',
+                                remove: true,
+                            },
+                        ])
+                                    
+                        .button.buy-order-info-coupon__button 
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                default 
+                    .buy-checkout__item.buy-checkout__item--delivery
+                        +checkoutStep({
+                            title:"Delivery",
+                            current:"2",
+                            total:"3",
+                            type: "active"
+                        })
+                        .c-checkout-step02
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag:["Shipping"],
+                                        title:"Robert Surrency",
+                                        address:"20 Farringdon Street, London, EC4A 4AB, United Kingdom",
+                                        num:"123-4567-8910",
+                                        type: "",
+                                    },
+                                ])
+                        .c-checkout-step02.c-checkout-step02--warn
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag:["Shipping"],
+                                        title:"Robert Surrency",
+                                        address:"20 Farringdon Street, London, EC4A 4AB, United Kingdom",
+                                        num:"123-4567-8910",
+                                        type: "",
+                                    },
+                                ])
+                        +formCheckbox('Receive order status notification from LG.com via SMS', "name", "val1", "checkId1", count="false", false)
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'The items(s) are not available for shipping in your area. Please change address options',
+                                remove: true,
+                            },
+                        ])
+                        //- [Start] 2023-04-18 : ADD - Delivery Error case
+                        // [start] 2023.07.19 UPDATE - error case markup
+                        //- .buy-delivery-box--error
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], "error", false, false, [
+                            {
+                                type: 'Delivery Only',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery60',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery62',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation & Wallmount',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery63',
+                                price:'£25.00',
+                            },
+                        ])
+                        // [End] 2023.07.19 UPDATE - error case markup
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'The items(s) are not available for shipping in your area. Please change delivery options',
+                                remove: true,
+                            },
+                        ])
+                        //- [End] 2023-04-18 : ADD - Delivery Error case
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], false, false, false, [
+                            {
+                                type: 'Delivery Only',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery64',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery65',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation & Wallmount',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery66',
+                                price:'£25.00',
+                            },
+                        ])
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], 'complete', false, false, [
+                            {
+                                type: 'Delivery & Installation',
+                                select: 'Thu, Oct 18  All day',
+                            },
+                        ])
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], 'edit', false, false, [
+                            {
+                                type: 'Delivery Only',
+                                select: 'Thu, Oct 18  All day',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery67',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                select: 'Thu, Oct 18  All day',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery68',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation & Wallmount',
+                                select: 'Thu, Oct 18  All day',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery69',
+                                price:'£25.00',
+                            },
+                        ])
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV"], 'all', false, false, [
+                            {
+                                type: 'Delivery & Installation',
+                                select: 'Thu, Oct 18  All day',
+                            },
+                        ])
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV", "LG Soundbar SP8YAV"], 'all', false, false, [
+                            {
+                                type: 'Delivery & Installation',
+                                select: 'Thu, Oct 18  All day',
+                            },
+                        ])
+                        +deliveryBox(["LG Soundbar SP8YA"], 'only', false, false, false, [
+                            {
+                                type: 'Delivery Only',
+                            },
+                        ])
+                        +radioDeliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV"],'complete',[
+                            {
+                                type: 'Home Delivery & Installation',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery70',
+                                price:'£25.00',
+                            }
+                        ])
+                        +deliveryBox(["LG Soundbar SP8YA"], 'only', false, false, [
+                            {
+                                type: 'Delivery Only',
+                                warn: 'The delivery time is different for each shipping company.',
+                            },
+                        ])
+                        +radioDeliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV"],false,[
+                            {
+                                type: 'Delivery Only',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery71',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery72',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation & Wallmount ',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery73',
+                                price:'£25.00',
+                            }
+                        ])
+                        .button.buy-order-info-coupon__button 
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+
+            +CT0302("complete",'hide')
+
+        if(option === "guest")
+            .buy-checkout__item.buy-checkout__item--delivery
+                +checkoutStep({
+                    title:"Delivery",
+                    current:"2",
+                    total:"3",
+                    type: "active"
+                })
+                .c-checkout-step02.c-checkout-step02-form
+                    // [Start] 2023-06-02 : UPDATE- change messages
+                    p.c-checkout-step01-prevention Aviso: Entrega solo dentro de Mexico
+                    // [End] 2023-06-02 : UPDATE- change messages
+                    p.c-checkout-step02-form__title.font-w-normal-24.font-m-normal-20 Shipping
+                    +myInputForm([
+                        {
+                            type:"text",
+                            label:"Nombre",
+                            id:"firstName",
+                            required:false,
+                            placeholder:"Robert",
+                        },
+                        {
+                            type:"text",
+                            label:"Primer Apellido",
+                            id:"lastName",
+                            required:false,
+                            placeholder:"Surrency",
+                        },
+                        {
+                            type:"text",
+                            label:"Segundo Apellido",
+                            id:"secondName",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"tel",
+                            label:"Número celular",
+                            id:"mobileNumber",
+                            required:false,
+                            placeholder:"XX-XXXX-XXXX",
+                            numberText: '',
+                            telInfo: 'Para preguntas sobre la entrega.',
+                        },
+                        {
+                            type:"tel",
+                            label:"Teléfono fijo",
+                            id:"tel-3",
+                            required:false,
+                            telInfo: 'Para preguntas sobre la entrega.',
+                        },
+                        {
+                            type:"text",
+                            label:"Código postal",
+                            id:"postcode",
+                            required:false,
+                            placeholder:"",
+                            class:"js-CEP-keyup",
+                            maxlength:"9",
+                        },
+                        {
+                            type:"select",
+                            label:"Tipo de Asentamiento",
+                            id:"SettlementType",
+                            value:"",
+                            placeholder:"",
+                            required:true,
+                        },
+                        {
+                            type:"select",
+                            label:"Colonia",
+                            id:"Colony",
+                            value:"",
+                            placeholder:"",
+                            required:true,
+                        },
+                        {
+                            type:"text",
+                            label:"Municipio",
+                            id:"Municipality",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"text",
+                            label:"Ciudad",
+                            id:"State",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"text",
+                            label:"Estado",
+                            id:"city",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"text",
+                            label:"País",
+                            id:"Country",
+                            disabled: true,
+                            required:false,
+                            placeholder:"Mexico",
+                        },
+                        {
+                            type:"text",
+                            label:"Calle",
+                            id:"Street",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"text",
+                            label:"No. Exterior",
+                            id:"Outside",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"text",
+                            label:"No. Interior",
+                            id:"Inside",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"select",
+                            label:"Tipo de casa",
+                            id:"HouseType",
+                            value:"Por favor seleccione",
+                            optionVal: ['Por favor seleccione', 'Casa', 'Departamento', 'Empresa'],
+                            placeholder:"",
+                            required:true,
+                        },
+                        {
+                            type:"text",
+                            label:"Referencias",
+                            id:"References",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"checkbox",
+                            label:false,
+                            id:"sameAddressMX",
+                            required:false,
+                            placeholder:false,
+                            readonly: false,
+                            text:'Same for billing Address'
+                        },
+                    ])
+                    .c-checkout-step02-form-billing-mx
+                        p.c-checkout-step02-form__title.font-w-normal-24.font-m-normal-20 Billing
+                        +myInputForm([
+                            {
+                                type:"text",
+                                label:"Nombre",
+                                id:"firstName",
+                                required:false,
+                                placeholder:"Robert",
+                            },
+                            {
+                                type:"text",
+                                label:"Primer Apellido",
+                                id:"lastName",
+                                required:false,
+                                placeholder:"Surrency",
+                            },
+                            {
+                                type:"text",
+                                label:"Segundo Apellido",
+                                id:"secondName",
+                                required:false,
+                                placeholder:"",
+                            },
+                            {
+                                type:"tel",
+                                label:"Número celular",
+                                id:"mobileNumber",
+                                required:false,
+                                placeholder:"XX-XXXX-XXXX",
+                                numberText: '',
+                                telInfo: 'Para preguntas sobre la entrega.',
+                            },
+                            {
+                                type:"tel",
+                                label:"Teléfono fijo",
+                                id:"tel-3",
+                                required:false,
+                                telInfo: 'Para preguntas sobre la entrega.',
+                            },
+                            {
+                                type:"text",
+                                label:"Código postal",
+                                id:"postcode",
+                                required:false,
+                                placeholder:"",
+                                class:"js-CEP-keyup",
+                                maxlength:"9",
+                            },
+                            {
+                                type:"select",
+                                label:"Tipo de Asentamiento",
+                                id:"SettlementType",
+                                value:"",
+                                placeholder:"",
+                                required:true,
+                            },
+                            {
+                                type:"select",
+                                label:"Colonia",
+                                id:"Colony",
+                                value:"",
+                                placeholder:"",
+                                required:true,
+                            },
+                            {
+                                type:"text",
+                                label:"Municipio",
+                                id:"Municipality",
+                                required:false,
+                                placeholder:"",
+                            },
+                            {
+                                type:"text",
+                                label:"Ciudad",
+                                id:"State",
+                                required:false,
+                                placeholder:"",
+                            },
+                            {
+                                type:"text",
+                                label:"Estado",
+                                id:"city",
+                                required:false,
+                                placeholder:"",
+                            },
+                            {
+                                type:"text",
+                                label:"País",
+                                id:"Country",
+                                disabled: true,
+                                required:false,
+                                placeholder:"Mexico",
+                            },
+                            {
+                                type:"text",
+                                label:"Calle",
+                                id:"Street",
+                                required:false,
+                                placeholder:"",
+                            },
+                            {
+                                type:"text",
+                                label:"No. Exterior",
+                                id:"Outside",
+                                required:false,
+                                placeholder:"",
+                            },
+                            {
+                                type:"text",
+                                label:"No. Interior",
+                                id:"Inside",
+                                required:false,
+                                placeholder:"",
+                            },
+                            {
+                                type:"select",
+                                label:"Tipo de casa",
+                                id:"HouseType",
+                                value:"Por favor seleccione",
+                                optionVal: ['Por favor seleccione', 'Casa', 'Departamento', 'Empresa'],
+                                placeholder:"",
+                                required:true,
+                            },
+                            {
+                                type:"text",
+                                label:"Referencias",
+                                id:"References",
+                                required:false,
+                                placeholder:"",
+                            },
+                        ])
+                .c-checkout-step02.c-checkout-step02-form
+                    .c-checkout-step02__box.c-checkout-step02__box-mx-form
+                        +formCheckbox("¿Alguien Más Recibe?", "name", "val-mx", `checkId-receiving-mx`, count="false", false)
+                        .c-checkout-step02__box-mx-form-content
+                            +myInputForm([
+                                {
+                                    type:"text",
+                                    label:"Persona que recibe",
+                                    id:"receiving",
+                                    required:true,
+                                    placeholder:"",
+                                    warning:['Por favor, ingrese Persona que recibe.']
+                                },
+                                {
+                                    type:"text",
+                                    label:"Número de Teléfono  celular",
+                                    id:"CellPhoneNum",
+                                    required:true,
+                                    placeholder:"XX-XXXX-XXXX",
+                                    warning:[
+                                        'Se introdujeron más/menos numeros en el campo del número celular.', 
+                                        'Por favor, ingrese su Número de Teléfono celular.'
+                                    ]
+                                },
+                                {
+                                    type:"text",
+                                    label:"Número de Teléfono Fijo",
+                                    id:"FixedPhoneNum",
+                                    required:true,
+                                    placeholder:"",
+                                    warning:[
+                                        'Se introdujeron carácteres incorrectos en el campo del número celular (letras, símbolos, etc).',
+                                        'El numero de teléfono solo debe de llevar 9 - 15 digitos.','Por favor, ingrese un Número de Teléfono Fijo valido.'
+                                    ]
+                                },
+                            ])
+                        +formCheckbox("Requiero factura", "name", "val-mx", `checkId-invoice-mx`, count="false", false)
+                        .c-checkout-step02__box-mx-form02-content
+                            +myInputForm([
+                                {
+                                    type:"select",
+                                    label:"Régimen Fiscal",
+                                    id:"Tax",
+                                    required:false,
+                                    placeholder:"",
+                                    value:"",
+                                    optionVal: ['List - Régimen Fiscal', 'Régimen Fiscal'],
+                                },
+                                {
+                                    type:"text",
+                                    label:"RFC",
+                                    id:"RFC",
+                                    required:true,
+                                    placeholder:"",
+                                    warning:[
+                                        'Este es un campo obligatorio',
+                                        'Invalid RFC',
+                                        'RFC for Individual can not be less than 13 characters'
+                                    ]
+                                },
+                                {
+                                    type:"select",
+                                    label:"Uso de CFDI",
+                                    id:"CFDI",
+                                    required:false,
+                                    placeholder:"",
+                                    value:"",
+                                    optionVal: ['List - Uso de CFDI', 'G01 - Adquisición de mercancias', 'G03 - Gastos en general', 'I01 – Construcciones', 'I02 - Mobilario y equipo de oficina por inversiones', 'I04 - Equipo de computo y accesorios', 'I08 - Otra maquinaria y equip', 'S01 - Sin efectos fiscales' ],
+                                },
+                                {
+                                    type:"text",
+                                    label:"Correo Electrónico",
+                                    id:"Correo",
+                                    required:true,
+                                    placeholder:"",
+                                    warning:[
+                                        'Este es un campo obligatorio', 
+                                        'Introduzca una dirección válida de correo electrónico (Ex: johndoe@domain.com)'
+                                    ]
+                                },
+                            ])
+                .button.buy-order-info-coupon__button
+                    +defaultButton({name: "Save Address", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="save")
+
+        if(option === "before")
+            .buy-checkout__item.before
+                +checkoutStep({
+                    title:"Delivery",
+                    current:"2",
+                    total:"3",
+                    type: "checkoutStep"
+                })
+
+        if(option === "complete")
+            .buy-checkout__item.buy-checkout__item--delivery.buy-checkout__item--complete(style=`${country=='hide'?'display:none':''}`)
+                +checkoutStep({
+                    title:"Delivery",
+                    current:"2",
+                    total:"3",
+                    type: "checked",
+                })
+                .c-checkout-step02
+                    .buy-address-box.buy-address-box--complete
+                        +addressBox(false, false, [
+                            {
+                                flag:["Shipping"],
+                                title:"Robert Surrency",
+                                address:"México, Circuito Benito Juárez, Integración Latinoamericana, Coyoacán , Ciudad de México, 04310, México",
+                                num:"123-4567-8910",
+                                type: "",
+                            },
+                        ])
+                .c-checkout-step02.c-checkout-step02--warn
+                    .buy-address-box.buy-address-box--complete
+                        +addressBox(false, false, [
+                            {
+                                flag: ["Billing"],
+                                title:"Robert Surrency",
+                                address:"México, Circuito Benito Juárez, Integración Latinoamericana, Coyoacán , Ciudad de México, 04310, México",
+                                num:"123-4567-8910",
+                                type: "",
+                            },
+                        ])
+                .c-checkout-orderd.c-checkout-orderd--confirm
+                    .c-checkout-orderd__item.c-checkout-orderd__item--delivery
+                        +checkoutOrderDeliveryProduct("Delivery & Installation", "Llega en 5 - 14 días hábiles (Dentro de territorio nacional)", [
+                            {
+                                title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                qty: "1",
+                                price: "2,099.98",
+                                unitPos: "left",
+                                unitName: "$",
+                                giftCard: true,
+                                giftCardTxt: ['€10 Gutschein inklusive']
+                            },
+                            {
+                                title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                qty: "1",
+                                price: "2,099.98",
+                                unitPos: "left",
+                                unitName: "$",
+                                giftCard: true,
+                                giftCardTxt: ['€10 Gutschein inklusive', '€15 Gutschein inklusive']
+                            },
+                        ])
+
+        if(option === "complete-mx")
+            .buy-checkout__item.buy-checkout__item--delivery.buy-checkout__item--complete(style=`${country=='hide'?'display:none':''}`)
+                +checkoutStep({
+                    title:"Delivery",
+                    current:"2",
+                    total:"3",
+                    type: "checked",
+                })
+                .c-checkout-step02
+                    .buy-address-box.buy-address-box--complete
+                        +addressBox(false, false, [
+                            {
+                                flag: ["Shipping"],
+                                title:"Robert Surrency",
+                                address:"20 Farringdon Street, London, EC4A 4AB, United Kingdom",
+                                num:"123-4567-8910",
+                                type: "",
+                            },
+                        ])
+                .c-checkout-orderd.c-checkout-orderd--confirm
+                    .c-checkout-orderd__item.c-checkout-orderd__item--delivery
+                        +checkoutOrderDeliveryProduct("Delivery & Installation", "Thu, Oct 18  07:00~19:00", [
+                            {
+                                title: "LG OLED evo Gallery Edition G2 55'' 4K Smart TV",
+                                qty: "1",
+                                price: "2,099.98",
+                                unitPos: "right",
+                                unitName: " zł",
+                                giftCard: true,
+                                giftCardTxt: ['$10.00 Gift Card is ready for you', '$15.00 Gift Card is ready for you']
+                            },
+                        ])
+                .c-checkout-orderd.c-checkout-orderd--confirm
+                    .c-checkout-orderd__item.c-checkout-orderd__item--delivery
+                        +checkoutOrderDeliveryProduct("Delivery & Installation", "Thu, Oct 18  All day", [
+                            {
+                                title: "LG OLED evo Gallery Edition G2 55'' 4K Smart TV",
+                                qty: "1",
+                                price: "2,099.98",
+                                unitPos: "sup",
+                                dateColor: "red",
+                                giftCard: true,
+                                giftCardTxt: ['$10.00 Gift Card is ready for you', '$15.00 Gift Card is ready for you']
+                            },
+                        ])
+                // au
+                .c-checkout-orderd.c-checkout-orderd--confirm
+                    .c-checkout-orderd__item.c-checkout-orderd__item--delivery
+                        +checkoutOrderDeliveryProduct("DHL", "", [
+                            {
+                                title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                qty: "1",
+                                price: "2,099.98",
+                                unitPos: "left",
+                                unitName: "$",
+                                giftCard: true,
+                                giftCardTxt: ['$10.00 Gift Card is ready for you', '$15.00 Gift Card is ready for you']
+                            },
+                        ])
+                // [Start] 2023-09-13 : ADD- Includes $15 EHF fee
+                .c-checkout-orderd.c-checkout-orderd--confirm
+                    .c-checkout-orderd__item.c-checkout-orderd__item--delivery
+                        +checkoutOrderDeliveryProduct("DHL", "", [
+                            {
+                                title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                qty: "1",
+                                price: "2,099.98",
+                                unitPos: "left",
+                                unitName: "$",
+                                includeEHF: "Includes $15 EHF fee",
+                                giftCard: true,
+                                giftCardTxt: ['$10.00 Gift Card is ready for you', '$15.00 Gift Card is ready for you']
+                            },
+                        ])
+                // [End] 2023-09-13 : ADD- Includes $15 EHF fee
+            

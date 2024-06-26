@@ -1,0 +1,540 @@
+/* stylelint-disable no-descending-specificity */
+@use '../abstract/' as *;
+
+@mixin spec-info {
+  // component type
+  .c-spec-info {
+    display: flex;
+    max-width: rem($design-grid-full);
+
+    // element
+    &__container {
+      width: 100%;
+    }
+    // AEM Class
+    .carousel {
+      width: 100%;
+    }
+
+    // block
+    .c-carousel {
+      width: 100%;
+      height: 100%;
+      @include screen(mobile) {
+        background: transparent;
+        .swiper-wrapper {
+          height: auto;
+          .swiper-slide {
+            &.c-text-contents {
+              height: auto;
+              gap: rem(8px);
+            }
+          }
+        }
+        .c-text-contents {
+          @include lgness-radius('default');
+          // padding-bottom: rem($padding16px + $padding20px);
+        }
+      }
+      @include screen(web) {
+        .swiper-slide {
+          height: auto;
+        }
+      }
+      &__handler {
+        width: 100%;
+        @include screen(web) {
+          display: none;
+        }
+      }
+    }
+    // block : image
+    .c-image {
+      text-align: inherit;
+      img {
+        width: auto;
+        height: rem($icon40px);
+        @include screen(web) {
+          height: rem($icon48px);
+        }
+      }
+    }
+    // block : text-contents
+    .c-text-contents {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: rem(8px);
+      padding: rem($padding20px);
+      // LGCOMMON-2223 : word-break add
+      word-break: break-word;
+
+      &.align-text-left {
+        text-align: left #{'/*!rtl:right*/'}; /*! 230512 RTL */
+      }
+      &.align-text-center {
+        text-align: center;
+      }
+      &.align-text-right {
+        text-align: right #{'/*!rtl:left*/'}; /*! 230512 RTL */
+      }
+      @include screen(web) {
+        max-width: rem(columns(10) + ($block-margin-w * 2));
+        flex: 1;
+        gap: rem(8px);
+        padding: 0;
+        &:not(:last-of-type) {
+          &::after {
+            content: '';
+            position: absolute;
+            background: $light-gray3;
+          }
+        }
+
+        &__headline {
+          min-height: rem(40px);
+        }
+      }
+      &__bodycopy {
+        color: $black;
+      }
+    }
+    // block : icon-block-contents
+    .c-icon-block-contents {
+      display: flex;
+      border-radius: 0;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      @include screen(web) {
+        @include lgness-radius('default', web);
+        padding: rem($padding32px);
+        width: 100%;
+        height: 100%;
+      }
+      &:not(.c-carousel) {
+        align-items: stretch;
+        @include lgness-radius('default');
+        overflow: hidden;
+        // margin: rem($component-margin-m 0);
+        @include screen(web) {
+          margin: 0;
+        }
+        .c-text-contents {
+          @include screen(mobile) {
+            position: relative;
+            flex: 1 1 40%;
+            // padding: rem($padding20px);
+            padding: 0;
+            &:nth-child(2n-1) {
+              &::after {
+                content: '';
+                position: absolute;
+                width: rem(1px);
+                // height: calc(100% - rem($padding30px * 2));
+                height: 100%;
+                background: $mid-gray1;
+                // right: 0;
+                right: rem(-$padding20px);
+              }
+            }
+            // &:nth-child(n + 3) {
+            //     padding-top: 0;
+            //     margin-top: rem(-1px);
+            //     &::after {
+            //         height: calc(100% - rem($padding30px));
+            //     }
+            // }
+            .c-text-contents__eyebrow {
+              min-height: rem(20px);
+            }
+            .icon,
+            .c-text-contents__headline {
+              min-height: rem(32px);
+            }
+          }
+        }
+      }
+      // type : text order
+      &.type-b {
+        .c-text-contents {
+          .c-image,
+          &__headline,
+          &__bodycopy {
+            order: 1;
+          }
+        }
+      }
+
+      &.type-c {
+        .c-text-contents {
+          &__bodycopy {
+            order: 1;
+          }
+          .c-image,
+          &__headline {
+            order: 2;
+          }
+        }
+      }
+    }
+    // carousel on mobile screen
+    &.swiper-mobile {
+      @include screen(mobile) {
+        width: 100%;
+      }
+    }
+    // block on the mobile screen
+    &:not(.swiper-mobile) {
+      // .c-image {
+      //     img {
+      //         height: rem($icon40px);
+      //         @include screen(web) {
+      //             height: rem($icon48px);
+      //         }
+      //     }
+      // }
+      .c-icon-block-contents {
+        @include screen(web) {
+          margin-left: rem($block-margin-w);
+          margin-right: rem($block-margin-w);
+        }
+      }
+    }
+    // type
+    .shape-horizontal & {
+      width: 100%;
+      .c-icon-block-contents {
+        @include screen(web) {
+          gap: rem(48px);
+        }
+        &:not(.c-carousel) {
+          height: auto;
+          // margin: rem($component-margin-m 0);
+          @include screen(mobile) {
+            gap: rem($margin24px $margin40px);
+            padding: rem($padding20px);
+          }
+          @include screen(web) {
+            margin: 0;
+            // margin: rem(0 $block-margin-m);
+          }
+        }
+      }
+
+      .c-text-contents {
+        @include screen(web) {
+          position: relative;
+          &:not(:last-of-type) {
+            &::after {
+              width: rem(1px);
+              height: 100%;
+              right: rem(-24px);
+            }
+          }
+        }
+      }
+
+      .c-carousel {
+        @include screen(web) {
+          .swiper-wrapper {
+            gap: rem(48px);
+          }
+        }
+      }
+    }
+
+    .shape-vertical & {
+      .c-icon-block-contents {
+        @include screen(web) {
+          min-width: rem(columns(3, false));
+          padding: rem($padding32px);
+        }
+        &:not(.c-carousel) {
+          @include screen(web) {
+            gap: rem(48px);
+            flex-direction: column;
+            align-items: center;
+            .c-text-contents {
+              position: relative;
+              &:not(:last-of-type) {
+                &::after {
+                  content: '';
+                  position: absolute;
+                  width: 100%;
+                  height: rem(1px);
+                  background: $light-gray3;
+                  bottom: rem(-24px);
+                }
+              }
+            }
+          }
+        }
+        &.c-carousel {
+          // For invalidity
+          @include screen(web) {
+            .swiper-wrapper {
+              gap: rem(48px);
+              flex-direction: column;
+            }
+            .c-text-contents {
+              width: 100%;
+            }
+          }
+        }
+      }
+      .c-text-contents {
+        @include screen(web) {
+          max-width: none;
+          flex: auto;
+          &:not(:last-of-type) {
+            &::after {
+              width: 100%;
+              height: rem(1px);
+              left: 0;
+              bottom: rem(-24px);
+            }
+          }
+        }
+      }
+    }
+
+    // font color
+    .font-white {
+      .c-text-contents__bodycopy {
+        color: $white;
+      }
+    }
+
+    // ***********
+    // ** theme **
+    // ***********
+
+    // theme (root element)
+    .bg-default &,
+    .bg-white &,
+    .bg-lightgray & {
+      .c-carousel {
+        &__handler {
+          color: $gray3;
+        }
+      }
+      .bg-darkgray,
+      .bg-black {
+        .c-carousel {
+          &__pagination {
+            color: $gray3;
+          }
+          &__button[class*='--pagination'] {
+            &:after {
+              @include screen(mobile) {
+                background-image: url($icon-arrow-black-right-12-7);
+              }
+              @include screen(web) {
+                background-image: url($icon-arrow-black-right-10-16);
+              }
+            }
+            &:disabled {
+              &:after {
+                @include screen(mobile) {
+                  background-image: url($icon-arrow-graycb-right-12-7);
+                }
+                @include screen(web) {
+                  background-image: url($icon-arrow-graycb-right-10-16);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    .bg-darkgray &,
+    .bg-black & {
+      .c-carousel {
+        &__handler {
+          color: $white;
+        }
+      }
+      .c-text-contents {
+        &:after {
+          background: $mid-gray3;
+        }
+      }
+      .bg-white,
+      .bg-lightgray {
+        .c-text-contents {
+          &:after {
+            background: $light-gray3;
+          }
+        }
+        .c-text-contents__bodycopy {
+          color: $gray6;
+        }
+      }
+      .bg-transparent {
+        .c-text-contents {
+          &__bodycopy {
+            color: inherit;
+          }
+        }
+        &.c-icon-block-contents:not(.c-carousel) {
+          @include screen(mobile) {
+            .c-text-contents:nth-child(2n-1) {
+              &::after {
+                background: $mid-gray3;
+              }
+            }
+          }
+        }
+      }
+    }
+    .bg-default & {
+      .bg-transparent {
+        .c-text-contents:not(:last-of-type)::after {
+          background: $mid-gray1;
+        }
+      }
+    }
+
+    // theme (.c-icon-block-contents)
+    .bg-darkgray,
+    .bg-black {
+      .c-text-contents {
+        * {
+          color: $white;
+        }
+        &:after {
+          background: $mid-gray3;
+        }
+      }
+      &.c-icon-block-contents:not(.c-carousel) {
+        @include screen(mobile) {
+          .c-text-contents:nth-child(2n-1) {
+            &::after {
+              background: $mid-gray3;
+            }
+          }
+        }
+      }
+    }
+    .bg-white,
+    .bg-lightgray {
+      .c-text-contents {
+        * {
+          color: $black;
+          background-color: rgb(255 255 255 / 100%);
+        }
+        &__bodycopy {
+          // color: $gray6;
+          color: $black;
+        }
+      }
+      &.c-icon-block-contents:not(.c-carousel) {
+        @include screen(mobile) {
+          .c-text-contents:nth-child(2n-1) {
+            &::after {
+              background: $light-gray3;
+            }
+          }
+        }
+      }
+    }
+    .bg-darkwarmgray {
+      .c-text-contents {
+        background: $light-gray3;
+        * {
+          color: $dark-gray3;
+        }
+        &:after {
+          background: $mid-gray1;
+        }
+        // &__bodycopy {
+        //     color: $gray6;
+        // }
+      }
+      &.c-icon-block-contents:not(.c-carousel) {
+        @include screen(mobile) {
+          .c-text-contents:nth-child(2n-1) {
+            &::after {
+              background: $mid-gray1;
+            }
+          }
+        }
+      }
+    }
+    .bg-white {
+      .c-text-contents {
+        background: $white;
+      }
+    }
+    .bg-lightgray {
+      .c-text-contents {
+        background: $ivory8;
+      }
+    }
+    .bg-darkgray {
+      .c-text-contents {
+        background: $gray3;
+      }
+    }
+    .bg-black {
+      .c-text-contents {
+        background: $black;
+      }
+    }
+
+    .bg-white,
+    .bg-lightgray,
+    .bg-darkgray,
+    .bg-black {
+      .font-black,
+      .font-white {
+        color: inherit;
+      }
+    }
+
+    .bg-transparent {
+      .font-white .c-text-contents__bodycopy {
+        color: $white;
+      }
+      .font-black {
+        &.c-text-contents {
+          &__bodycopy {
+            color: $gray3;
+          }
+          &::after {
+            background: $mid-gray3;
+          }
+        }
+      }
+    }
+
+    // When .c-spec-info is placed on an image,
+    // if the background color is transparent,
+    // the line color is changed to match the font color.
+    .bg-white &,
+    .bg-lightgray &,
+    .bg-darkgray &,
+    .bg-black & {
+      .bg-transparent {
+        &.font-black {
+          .c-text-contents {
+            &::after {
+              background: $black;
+              opacity: 0.3;
+              // background: $graye6;
+            }
+          }
+        }
+        &.font-white {
+          .c-text-contents {
+            &::after {
+              background: $white;
+              opacity: 0.2;
+              // background: $mid-gray3;
+            }
+          }
+        }
+      }
+    }
+  }
+}

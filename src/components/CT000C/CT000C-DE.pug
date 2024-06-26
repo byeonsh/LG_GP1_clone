@@ -1,0 +1,182 @@
+extends ../../components/_common/_layout.pug
+include ../../components/_common/_index.pug
+//- include ../_common/_cart-price-total.pug
+
+block meta 
+    - var CM0007 = "CM0007"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title Checkout
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href="../../components/CM0001/CM0001.css")
+    link(rel="stylesheet", href="../../components/CM0002/CM0002.css")
+    link(rel="stylesheet", href="../../components/CT000C/CT000C.css")
+    link(rel="stylesheet", href="../../components/CT000C/CT0301.css")
+    link(rel="stylesheet", href="../../components/CT000C/CT0302.css")
+    link(rel="stylesheet", href="../../components/CT000C/CT0303.css")
+    //- link(rel="stylesheet", href="../../components/CT000D/CT0402.css")
+    link(rel="stylesheet", href="../../components/CM0007/CM0007.css")
+
+block scripts
+    script(src="../../components/CM0001/CM0001.js" type="module")
+    script(src="../../components/CM0002/CM0002.js" type="module")
+    script(src="../../components/CT000C/CT000C.js" type="module")
+    script(src="../../components/CT000C/CT0301.js" type="module")
+    script(src="../../components/CT000C/CT0302.js" type="module")
+    script(src="../../components/CT000C/CT0303.js" type="module")
+    script(src="../../components/CM0007/CM0007.js" type="module")
+
+block header
+    include ../../components/CM0001/CM0001-inc.pug
+    +CM0001()
+
+block content
+    // Component Markup
+    .c-wrapper.no-crop.CT000C
+        .component
+            .fluid-container
+                //- include ../../components/CT000D/CT0402-inc.pug
+                //- +CT0402()
+                .my-component.my-component--buy.buy-summary-area.margin-top
+                    .buy-summary-area__primary.buy-summary-area__primary--padding.shipping_address
+                        .buy-checkout
+                            include ./CT0301-DE-inc.pug
+                            +CT0301()
+                            include ./CT0302-DE-inc.pug
+                            +CT0302("member", "de")
+                            +CT0302("guest")
+                            +CT0302("before")
+                            //- +CT0302("complete")
+                            include ./CT0303-DE-inc.pug
+                            +CT0303("before")
+                            +CT0303("default", "de")
+                            //- +CT0303("complete")
+                        //- .guide-text-option Option : Digital River(default)
+                        //- +footerInfoDR()
+                        //- .guide-text-option Option : Digital River(DE, AT)
+                        +footerInfoDR("DE")
+                    //- indicate product information 
+                    .buy-summary-area__secondary
+                        .buy-summary-area__payment.buy-sticky-no
+                            +cartPriceTotal([
+                                {
+                                    unitPosition: 'left',
+                                    unitName: '€',
+                                    isMobileBottomFixed: true,
+                                    useToggleFoldBtn: true,
+                                    isStickyBottom: true,
+                                    taxInclude: true,
+                                    discount: true,
+                                    coupon: false,
+                                    delivery: true,
+                                    deliveryInstallationList: true,
+                                    service: true,
+                                    card: false,
+                                    point: false,
+                                    checkoutDiscount: "-€209,00",
+                                    btnName:"Place Order",
+                                    close: true,
+                                    isBtnDisabled: true,
+                                },
+                            ])
+    include ../../components/CM0007/CM0007-inc.pug
+    +CM0007()
+
+block footer
+    include ../../components/CM0002/CM0002-inc.pug
+    +CM0002
+
+block modal
+    .mem-modal
+        +pop-msg-standard({id : `CalendarPopup`, size: "large"})
+            .Buy-calendar
+                .Buy-calendar__box
+                //- (5월 이후 고도화)
+                //- .Buy-calendar__radiobox
+                //-     .Buy-calendar__radio
+                //-         .Buy-calendar__radio-item
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("All day","name", "val1", "radioId1")
+                //-             span.font-w-normal-16.font-m-normal-14 £0
+                //-         .Buy-calendar__radio-item.Buy-calendar__radio-item--disabled
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("10:00 - 17:00","name", "val2", "radioId2")(disabled)
+                //-             span.font-w-normal-16.font-m-normal-14 Not available
+                //-         .Buy-calendar__radio-item
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("16:00 - 17:00","name", "val3", "radioId3")
+                //-                 .Buy-calendar__radio-miximum.font-red Maximum order capacity is almost full.
+                //-             span.font-w-normal-16.font-m-normal-14 £0
+                //-         .Buy-calendar__radio-item
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("18:00 - 19:00","name", "val4", "radioId4")
+                //-             span.font-w-normal-16.font-m-normal-14 £0
+                //-         .Buy-calendar__radio-item
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("20:00 - 21:00","name", "val5", "radioId5")
+                //-             span.font-w-normal-16.font-m-normal-14 £0
+                //-         .Buy-calendar__radio-item
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("22:00 - 23:00","name", "val6", "radioId6")  
+                //-             span.font-w-normal-16.font-m-normal-14 £0
+                .button.Buy-calendar__button
+                    +defaultButton({name: 'Save', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})(class='js-close--btn')
+    .CT0019
+        .CT-KlarnaPopup.CT-KlarnaPopup--gt.CT-KlarnaPopup--de
+            .mem-modal.buy-klarna
+                +pop-msg-standard({id : "KlarnaPopup-de", headline:"Kauf auf Rechnung & Finanzierung mit Klarna", size: "large"})
+                    .mem-scroll 
+                        .mem-scroll__container 
+                            .mem-scroll__item.buy-klarna-step
+                                .buy-klarna-step__subtitle
+                                    span.font-w-normal-20.font-m-normal-16 Und so geht's
+                                ul.buy-klarna-step__list
+                                    li.buy-klarna-step__item
+                                        .buy-klarna-step__num.font-w-normal-16.font-m-normal-16 Schritt 1
+                                        .buy-klarna-step__desc.font-w-normal-16.font-m-normal-14 Lege alle gewünschten Artikel in deinen Warenkorb und wähle an der Kasse „Klarna“ als Bezahlmethode aus.
+                                    li.buy-klarna-step__item
+                                        .buy-klarna-step__num.font-w-normal-16.font-m-normal-16 Schritt 2
+                                        .buy-klarna-step__desc.font-w-normal-16.font-m-normal-14 Gebe die erforderlichen persönlichen Daten ein. Danach erfährst du sofort, ob die Bezahlung genehmigt wurden.
+                                    li.buy-klarna-step__item
+                                        .buy-klarna-step__num.font-w-normal-16.font-m-normal-16 Schritt 3
+                                        .buy-klarna-step__desc.font-w-normal-16.font-m-normal-14 Klarna schickt dir deine Bestellbestätigung per E-Mail und erinnert dich, wenn es an der Zeit ist, zu bezahlen.
+                            .mem-scroll__item.buy-klarna-desc
+                                .buy-klarna-desc__item
+                                    ul.buy-klarna-desc__list
+                                        li.buy-klarna-desc__list--none-bullet  
+                                            span.font-w-normal-16.font-m-normal-16 Klarna Finanzierung
+                                        li.buy-klarna-desc__list--none-bullet
+                                            p.font-w-normal-16.font-m-normal-16 Bestelle dir heute dein LG Wunschprodukt und teile die Kosten bequem in feste oder flexible Raten bis zu 36 Monaten auf!
+                                .buy-klarna-desc__item
+                                    ul.buy-klarna-desc__list
+                                        li.buy-klarna-desc__list--none-bullet  
+                                            span.font-w-normal-16.font-m-normal-16 So einfach gehs's:
+                                        li  
+                                            p.font-w-normal-16.font-m-normal-16 Du kannst den Klarna Ratenkauf bis zu einem Einkaufswert von 5.000 € nutzen. Hierfür ist keine vorherige Registrierung erforderlich und du kannst die Zahlungsmethode „Klarna“ direkt an der Kasse auswählen.
+                                        li  
+                                            p.font-w-normal-16.font-m-normal-16 Du wirst nach dem Bestellabschluss direkt zu Klarna weitergeleitet und kannst die finalen monatlichen Raten, sowie die Kosten und Bedingungen einsehen.
+                                        li  
+                                            p.font-w-normal-16.font-m-normal-16 Unser Tipp: Lade dir die Klarna App herunter und behalte jederzeit die Kontrolle und Übersicht über deine Zahlungen.
+                                    .buy-klarna-desc__info
+                                            span.font-w-normal-14.font-m-normal-14 You must be 18+ and a UK resident to be eligible for this credit offer.
+                                                a(href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="") Pay in 3 terms and conditions​
+                                .buy-klarna-desc__item.buy-klarna-about
+                                    .buy-klarna-desc__title
+                                        span.font-w-normal-16.font-m-normal-16 Über Klarna
+                                    .buy-klarna-desc__bodycopy
+                                        p.font-w-normal-16.font-m-normal-16 LG bietet Klarna als Zahlungsmethode auf LG.de an, um Kunden flexible Zahlungsoptionen anzubieten.
+                                        +textButton({name: 'MEHR ERFAHREN', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" herf="https://www.klarna.com/de/uber-uns/")
+                                .buy-klarna-desc__item.buy-klarna-about
+                                    .buy-klarna-desc__title
+                                        span.font-w-normal-16.font-m-normal-16 Häufig gestellte Fragen
+                                    .buy-klarna-desc__bodycopy
+                                        p.font-w-normal-16.font-m-normal-16 Weitere Informationen zu den Zahlungsmöglichkeiten findest bei den FAQ's.
+                                        +textButton({name: 'MEHR ERFAHREN', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" herf="https://www.klarna.com/de/kundenservice/")
+                                .buy-klarna-desc__item.buy-klarna-about 
+                                    .buy-klarna-desc__title
+                                            span.font-w-normal-16.font-m-normal-16 Datenschutzerklärung
+                                    .buy-klarna-desc__bodycopy
+                                        +textButton({name: 'MEHR ERFAHREN', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', underline : true, isButton: false})(target="_blank" herf="https://www.klarna.com/se/dataskydd/")

@@ -1,0 +1,603 @@
+mixin PD0046(option=false)
+    mixin featureTextContents
+        // block - text contents
+        .c-text-contents
+            .text.c-text-contents__eyebrow
+                span.cmp-text.font-w-normal-20.font-m-normal-14(data-cmp-data-layer="") Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
+            .title.c-text-contents__headline
+                h2.cmp-title.font-w-light-36.font-m-light-24(data-cmp-data-layer="") Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+            .text.c-text-contents__bodycopy
+                p.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+    mixin printTab(div, num, selected)
+        if selected
+            li.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0", data-cmp-hook-tabs="tab", aria-selected="true")
+                    if block
+                        block
+        else 
+            li.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1", data-cmp-hook-tabs="tab", aria-selected="false")
+                    if block
+                        block
+    mixin printTabPanel(div, num, selected)
+        if selected 
+            .cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+        else 
+            .cmp-tabs__tabpanel(id=`tabs-1-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-1-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+    mixin featureList
+        .c-feature-list
+            .carousel.panelcontainer
+                .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                    .cmp-carousel__content.swiper-wrapper
+                        +featureItem(false, "box")
+                        +featureItem(true, "text")
+                        +featureItem(true, "download")
+                    .c-carousel__handler
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"prev"})
+                        +carouselPagination
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"next"})
+    mixin featureItem($video = false, $button)
+        .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+            // block - hero banner
+            .c-feature-list__item
+                .c-feature-list__item--top
+                    .image.c-image
+                        +printLazyImage('https://via.placeholder.com/464x300/999999/333333')
+                    +featureTextContents
+                .c-feature-list__item--bottom
+                    if $button
+                        if($button == "text")
+                            .button
+                                +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                        else if($button == "box")
+                            .button
+                                +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+                        else if($button == "download")
+                            .button
+                                +iconButton({type:"link",color:"black",class:"download",name:"Download"})(role="button")
+                    if $video
+                        .button.c-media(data-media="dynamic")
+                            +video-action-button("brightcove")(class="black w-size24 m-size24")
+                                span.font-w-semibold-16.font-m-semibold-16 Watch the Full Movie
+    mixin awardItem
+        // GA4
+        a.c-award-list__item(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+            .c-award-list__item--image
+                +printLazyImage('https://via.placeholder.com/100x100/999999/333333')
+            .c-text-contents
+                .title.c-text-contents__headline
+                    h2.cmp-title.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") Trusted Reviews
+                .text.c-text-contents__eyebrow
+                    span.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") LG 65G2 
+                .text.c-text-contents__bodycopy
+                    p.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") G2 really is the best OLED TV from LG to date
+    mixin awardList
+        .c-award-list 
+            - for (var x = 0; x < 3; x++)
+                +awardItem
+    mixin heroContents
+        .c-product-hero
+            //- +hero-carousel({usePagination:true, })
+    mixin title-area 
+        +component-title-area({
+            alignment:"",
+            headline : {
+                text : "LG in your home"
+            },
+            description : {
+                text : "We're here to provide all the help you need.",
+                style : "font-w-normal-24 font-m-normal-16"
+            },
+        })
+    //- 원본은 product-list의 "productCarouselList"
+    //- wishlist 출력 여부만 다름.
+    mixin product-carousel-list
+        - var num = 4
+        - var options = {handlerStyle : null, ...params}
+        .c-product-list.c-product-list--carousel.js-product-list
+            .carousel.panelcontainer
+                // block - carousel
+                .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                    .cmp-carousel__content.swiper-wrapper
+                        +productItemSlide( 
+                            {
+                                flag:['New','Pre Order'], 
+                                promotion: "",
+                                installment: true,
+                                membership: '£1,866.98',
+                                soldOut: false,
+                                outOfStock: false ,
+                                imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                type:'inch',
+                                groups:['55','66','77','55','66','77','55','66','77'],
+                                sku:'GSJV70PZTF', 
+                                modelid: 'MD07553044',
+                                ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                gradeIs:true,
+                                gradeBlock2: true,
+                                grade:'a',
+                                repair: true,
+                                Ab: true,
+                                review: true,
+                                wishlist:false,
+                                lumpsum:true,
+                                plInfoTxt:true,
+                                ehf: false,
+                                installment: false,
+                            }
+                        )
+                        +productItemSlide( 
+                            {
+                                flag:[], 
+                                promotion: "",
+                                signature: true,
+                                installment: true,
+                                membership: '£1,866.98',
+                                soldOut: false,
+                                outOfStock: false ,
+                                imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                type:'inch',
+                                groups:['55','66','77'],
+                                sku:'GSJV70PZTF', 
+                                modelid: 'MD07535404',
+                                ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                grade:'f',
+                                review: true,
+                                wishlist:false,
+                                installment: false,
+                            }
+                        )
+                        +productItemSlide( 
+                            {
+                                flag:['Pre Order'], 
+                                promotion: "",
+                                installment: true,
+                                membership: '£1,866.98',
+                                soldOut: false,
+                                outOfStock: false ,
+                                imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                type:'color',
+                                groups:['HA_Black-Stainless-Steel', 'white', 'black', 'HA_Styler_Mirror', 'HA_REF_White','red','HE_RP4_Blue_Green'],
+                                sku:'GSJV70PZTF', 
+                                modelid: 'MD07535502',
+                                ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                grade:'f',
+                                review: true,
+                                wishlist:false,
+                                installment: false,
+                            }
+                        )
+                        +productItemSlide( 
+                            {
+                                flag:['New','Pre Order'], 
+                                promotion: "",
+                                installment: true,
+                                membership: '£1,866.98',
+                                soldOut: false,
+                                outOfStock: false , 
+                                imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                type:'color',
+                                groups:['white','black','HE_RP4_Burgundy'],
+                                sku:'GSJV70PZTF', 
+                                modelid: 'MD07536888',
+                                ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                grade:'f',
+                                review: true,
+                                wishlist:false,
+                                installment: false,
+                            }
+                        )
+                        - if(num > 4)
+                            - for(var x = 0; x < num-4; x++)
+                                +productItemSlide( 
+                                    {
+                                        flag:['New','Pre Order'], 
+                                        promotion: "",
+                                        installment: true,
+                                        membership: '£1,866.98',
+                                        soldOut: false,
+                                        outOfStock: false , 
+                                        imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                        type:'color',
+                                        groups:['white','black','HE_RP4_Burgundy'],
+                                        sku:'GSJV70PZTF', 
+                                        modelid: 'MD07536888',
+                                        ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                        grade:'f',
+                                        review: true,
+                                        wishlist:false,
+                                        installment: false,
+                                    }
+                                )
+
+                    .c-carousel__handler(class={[options.handlerStyle] : options.handlerStyle != null})
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"prev"})
+                        +carouselPagination
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"next"})
+    if (option == 'DEV')
+        .c-wrapper.PD0046.margin-top.margin-bottom.border-top.bg-default
+            .component
+                .cmp-container
+                    +component-title-area({
+                        alignment:"",
+                        headline : {
+                            text : "Feature Product Story (dev code)",
+                        }
+                    })(class="c-region-header--vacate-side")
+                    .tabs.panelcontainer.tabs-margin
+                        #tabs-7f2c95dd8a.cmp-tabs(data-cmp-is="tabs", data-cmp-data-layer="", data-placeholder-text="false")
+                            div(class="cmp-tabs__inner")
+                                ol(role="tablist", class="cmp-tabs__tablist", aria-multiselectable="false")
+                                    li#tabs-7f2c95dd8a-item-a415503d99-tab(role="tab", class="cmp-tabs__tab cmp-tabs__tab--active", aria-controls="tabs-7f2c95dd8a-item-a415503d99-tabpanel", tabindex="0", data-cmp-hook-tabs="tab") Gallery
+                                    li#tabs-7f2c95dd8a-item-da155e62a3-tab(role="tab", class="cmp-tabs__tab", aria-controls="tabs-7f2c95dd8a-item-da155e62a3-tabpanel", tabindex="-1", data-cmp-hook-tabs="tab") Kitchen
+                                    li#tabs-7f2c95dd8a-item-b322853611-tab(role="tab", class="cmp-tabs__tab", aria-controls="tabs-7f2c95dd8a-item-b322853611-tabpanel", tabindex="-1", data-cmp-hook-tabs="tab") Office
+                            #tabs-7f2c95dd8a-item-a415503d99-tabpanel(role="tabpanel", aria-labelledby="tabs-7f2c95dd8a-item-a415503d99-tab", tabindex="0", class="cmp-tabs__tabpanel cmp-tabs__tabpanel--active", data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="{&#34;tabs-7f2c95dd8a-item-a415503d99&#34;:{&#34;@type&#34;:&#34;lge/components/tabs/item&#34;,&#34;repo:modifyDate&#34;:&#34;2023-02-15T13:30:19Z&#34;,&#34;dc:title&#34;:&#34;Gallery&#34;}}")
+                                .container.responsivegrid.c-wrapper.margin-top.margin-bottom
+                                    #container-a415503d99.cmp-container
+                                        .c-wrapper.ST0001.width-content.margin-bottom
+                                            .component.type-default
+                                                .cmp-container
+                                                    .c-hero-banner.font-white.c-hero-banner--main-pos-left.c-hero-banner--main-pos-middle
+                                                        // block : floating-contents
+                                                        .c-floating-contents
+                                                            div(class="c-floating-contents__floor")
+                                                                // block : image
+                                                                div(class="image c-image c-hero-banner__image")
+                                                                    .cmp-image
+                                                                        picture
+                                                                            source(media="(max-width: 768px)", srcset="https://publish-p86205-e863024.adobeaemcloud.com/content/dam/lge/gb/home-page/home-redesign/03_PD0046_Hero_M.jpg.jpg")
+                                                                            source(media="(min-width: 769px)", srcset="https://publish-p86205-e863024.adobeaemcloud.com/content/dam/lge/gb/home-page/home-redesign/03_PD0046_Hero_D.jpg")
+                                                                            img(class="cmp-image__image c-image__img", src="https://publish-p86205-e863024.adobeaemcloud.com/content/dam/lge/gb/home-page/home-redesign/03_PD0046_Hero_M.jpg.jpg", alt="This image LG Objet Collection – Pose", loading="lazy")
+                                                            div(class="c-floating-contents__floating")
+                                                                div(class="c-hero-banner__contents")
+                                                                    div(class="c-floating-contents__main-contents")
+                                                                        // block : text-contents
+                                                                        .c-text-contents.width-narrow
+                                                                            div(class="eyebrow text font-m-semibold-18 font-w-semibold-24 c-text-contents__eyebrow")
+                                                                                #text-3e2df6d0b2.cmp-text(data-cmp-data-layer="{&#34;text-3e2df6d0b2&#34;:{&#34;@type&#34;:&#34;lge/components/text&#34;,&#34;repo:modifyDate&#34;:&#34;2023-02-15T12:17:28Z&#34;,&#34;xdm:text&#34;:&#34;&lt;p>LG Objet Collection - Posé’&lt;/p>\r\n&#34;}}")
+                                                                                    p LG Objet Collection - Posé’
+                                                                            div(class="headline title font-w-semibold-60 font-m-semibold-32 c-text-contents__headline title-width")
+                                                                                #title-43799f56c2.cmp-title(data-cmp-data-layer="{&#34;title-43799f56c2&#34;:{&#34;@type&#34;:&#34;core/wcm/components/title/v3/title&#34;,&#34;repo:modifyDate&#34;:&#34;2023-02-15T12:17:32Z&#34;,&#34;dc:title&#34;:&#34;Experience a new side of life&#34;}}")
+                                                                                    h1(class="cmp-title__text") Experience a new side of life
+                                                                            div(class="bodycopy text font-m-normal-16 font-w-normal-20 c-text-contents__bodycopy")
+                                                                                #text-49f7e97ac3.cmp-text(data-cmp-data-layer="{&#34;text-49f7e97ac3&#34;:{&#34;@type&#34;:&#34;lge/components/text&#34;,&#34;repo:modifyDate&#34;:&#34;2023-02-15T12:17:40Z&#34;,&#34;xdm:text&#34;:&#34;&lt;p>With a design that looks stunning from every angle, you can enjoy Posé front to back.&lt;/p>\r\n&#34;}}")
+                                                                                    p With a design that looks stunning from every angle, you can enjoy Posé front to back
+                                                                            // block : cta
+                                                                            .button.c-cta
+                                                                                // GA4
+                                                                                a.cmp-button.c-button.c-button--box.medium.white(href="https://www.lg.com/uk/tvs/lg-55lx1q6la", target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                                                                                    span(class="cmp-button__text c-button__text") LEARN MORE
+                                                                                // GA4
+                                                                                a.cmp-button.c-button.c-button--box.medium.red(href="https://www.lg.com/uk/tvs/lg-55lx1q6la", target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                                                                                    span(class="cmp-button__text c-button__text") BUY NOW
+                                        +featureList 
+                                                                        
+                            #tabs-7f2c95dd8a-item-da155e62a3-tabpanel(role="tabpanel", aria-labelledby="tabs-7f2c95dd8a-item-da155e62a3-tab", tabindex="0", class="cmp-tabs__tabpanel", data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="{&#34;tabs-7f2c95dd8a-item-da155e62a3&#34;:{&#34;@type&#34;:&#34;lge/components/tabs/item&#34;,&#34;repo:modifyDate&#34;:&#34;2023-02-15T13:32:08Z&#34;,&#34;dc:title&#34;:&#34;Kitchen&#34;}}")
+                                .container.responsivegrid.c-wrapper.margin-top.margin-bottom
+                                    #container-da155e62a3.cmp-container
+                                        .c-wrapper.ST0001.width-content.margin-bottom
+                                            .component.type-default
+                                                .cmp-container
+                                                    .c-hero-banner.font-black.c-hero-banner--main-pos-center.c-hero-banner--main-pos-middle
+                                                        // block : floating-contents
+                                                        .c-floating-contents
+                                                            div(class="c-floating-contents__floor")
+                                                                // block : image
+                                                                div(class="image c-image c-hero-banner__image")
+                                                                    .cmp-image
+                                                                        picture
+                                                                            source(media="(max-width: 768px)", srcset="https://publish-p86205-e863024.adobeaemcloud.com/content/dam/lge/gb/home-page/03_PD0046_Hero_M_2.jpg")
+                                                                            source(media="(min-width: 769px)", srcset="https://publish-p86205-e863024.adobeaemcloud.com/content/dam/lge/gb/home-page/03_PD0046_Hero_D_2.jpg")
+                                                                            img(class="cmp-image__image c-image__img", src="https://publish-p86205-e863024.adobeaemcloud.com/content/dam/lge/gb/home-page/03_PD0046_Hero_M_2.jpg", alt="This image LG TrueSteam™ QuadWash™", loading="lazy")
+                                                            div(class="c-floating-contents__floating")
+                                                                div(class="c-hero-banner__contents")
+                                                                    div(class="c-floating-contents__main-contents")
+                                                                        // block : text-contents
+                                                                        .c-text-contents.width-narrow
+                                                                            div(class="eyebrow text font-m-semibold-18 font-w-semibold-24 c-text-contents__eyebrow")
+                                                                                #text-da5c046d27.cmp-text(data-cmp-data-layer="{&#34;text-da5c046d27&#34;:{&#34;@type&#34;:&#34;lge/components/text&#34;,&#34;repo:modifyDate&#34;:&#34;2023-02-15T12:37:06Z&#34;,&#34;xdm:text&#34;:&#34;&lt;p>LG TrueSteam™ QuadWash™&lt;/p>\r\n&#34;}}")
+                                                                                    p LG TrueSteam™ QuadWash™
+                                                                            div(class="headline title font-w-semibold-60 font-m-semibold-32 c-text-contents__headline title-width")
+                                                                                #title-0ce17b3085.cmp-title(data-cmp-data-layer="{&#34;title-0ce17b3085&#34;:{&#34;@type&#34;:&#34;core/wcm/components/title/v3/title&#34;,&#34;repo:modifyDate&#34;:&#34;2023-02-15T12:37:12Z&#34;,&#34;dc:title&#34;:&#34;New LG Dishwashers&#34;}}")
+                                                                                    h1(class="cmp-title__text") New LG Dishwashers
+                                                                            div(class="bodycopy text font-m-normal-16 font-w-normal-20 c-text-contents__bodycopy")
+                                                                                #text-1720c6612a.cmp-text(data-cmp-data-layer="{&#34;text-1720c6612a&#34;:{&#34;@type&#34;:&#34;lge/components/text&#34;,&#34;repo:modifyDate&#34;:&#34;2023-02-15T12:37:19Z&#34;,&#34;xdm:text&#34;:&#34;&lt;p>Enjoy powerful cleaning and virtually spotless drying with LG TrueSteam™ and QuadWash™ technologies.&lt;/p>\r\n&#34;}}")
+                                                                                    p Enjoy powerful cleaning and virtually spotless drying with LG TrueSteam™ and QuadWash™ technologies
+                                                                            // block : cta
+                                                                            .button.c-cta
+                                                                                a.cmp-button.c-button.c-button--box.medium.white(href="https://www.lg.com/uk/dishwashers/lg-df222fps", target="_self")
+                                                                                    span(class="cmp-button__text c-button__text") LEARN MORE
+                                                                                a.cmp-button.c-button.c-button--box.medium.red(href="https://www.lg.com/uk/dishwashers/lg-df222fps", target="_self")
+                                                                                    span(class="cmp-button__text c-button__text") BUY NOW
+                                        +featureList 
+
+                            #tabs-7f2c95dd8a-item-b322853611-tabpanel(role="tabpanel", aria-labelledby="tabs-7f2c95dd8a-item-b322853611-tab", tabindex="0", class="cmp-tabs__tabpanel", data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                                .container.responsivegrid.c-wrapper.margin-top.margin-bottom
+                                    #container-b322853611.cmp-container
+                                        .c-wrapper.ST0001.width-content.margin-bottom
+                                            .component.type-default
+                                                .cmp-container
+                                                    .c-hero-banner.font-black.c-hero-banner--main-pos-left.c-hero-banner--main-pos-middle
+                                                        // block : floating-contents
+                                                        .c-floating-contents
+                                                            div(class="c-floating-contents__floor")
+                                                                // block : image
+                                                                div(class="image c-image c-hero-banner__image")
+                                                                    .cmp-image
+                                                                        picture
+                                                                            source(media="(max-width: 768px)", srcset="https://publish-p86205-e863024.adobeaemcloud.com/content/dam/lge/gb/home-page/home-redesign/03_PD0046_Hero_M_3.jpg")
+                                                                            source(media="(min-width: 769px)", srcset="https://publish-p86205-e863024.adobeaemcloud.com/content/dam/lge/gb/home-page/home-redesign/03_PD0046_Hero_D_3.png")
+                                                                            img(class="cmp-image__image c-image__img", src="https://publish-p86205-e863024.adobeaemcloud.com/content/dam/lge/gb/home-page/home-redesign/03_PD0046_Hero_M_3.jpg", alt="This image UltraWide™ Monitor Ergo", loading="lazy")
+                                                            div(class="c-floating-contents__floating")
+                                                                div(class="c-hero-banner__contents")
+                                                                    div(class="c-floating-contents__main-contents")
+                                                                        // block : text-contents
+                                                                        .c-text-contents.width-narrow
+                                                                            div(class="eyebrow text font-m-semibold-18 font-w-semibold-24 c-text-contents__eyebrow")
+                                                                                #text-4432d1685c.cmp-text(data-cmp-data-layer="{&#34;text-4432d1685c&#34;:{&#34;@type&#34;:&#34;lge/components/text&#34;,&#34;repo:modifyDate&#34;:&#34;2023-02-15T12:50:09Z&#34;,&#34;xdm:text&#34;:&#34;&lt;p>UltraWide™ Monitor Ergo&lt;/p>\r\n&#34;}}")
+                                                                                    p UltraWide™ Monitor Ergo
+                                                                            div(class="headline title font-w-semibold-60 font-m-semibold-32 c-text-contents__headline title-width")
+                                                                                #title-3b276dfb97.cmp-title(data-cmp-data-layer="{&#34;title-3b276dfb97&#34;:{&#34;@type&#34;:&#34;core/wcm/components/title/v3/title&#34;,&#34;repo:modifyDate&#34;:&#34;2023-02-15T12:50:14Z&#34;,&#34;dc:title&#34;:&#34;More Space for Multi-Tasking&#34;}}")
+                                                                                    h1(class="cmp-title__text") More Space for Multi-Tasking
+                                                                            div(class="bodycopy text font-m-normal-16 font-w-normal-20 c-text-contents__bodycopy")
+                                                                                #text-1ea0603b00.cmp-text(data-cmp-data-layer="{&#34;text-1ea0603b00&#34;:{&#34;@type&#34;:&#34;lge/components/text&#34;,&#34;repo:modifyDate&#34;:&#34;2023-02-15T12:50:21Z&#34;,&#34;xdm:text&#34;:&#34;&lt;p>The UltraWide™ QHD+ screen is great for work as it can display various programs at once.&lt;/p>\r\n&#34;}}")
+                                                                                    p The UltraWide™ QHD+ screen is great for work as it can display various programs at once
+                                                                            // block : cta
+                                                                            .button.c-cta
+                                                                                a.cmp-button.c-button.c-button--box.medium.white(href="https://www.lg.com/uk/monitors/lg-38wq88c-w", target="_self")
+                                                                                    span(class="cmp-button__text c-button__text") LEARN MORE
+                                                                                a.cmp-button.c-button.c-button--box.medium.red(href="https://www.lg.com/uk/monitors/lg-38wq88c-w", target="_self")
+                                                                                    span(class="cmp-button__text c-button__text") BUY NOW
+                                        +featureList
+
+    else if (option == 'HOME')
+        .c-wrapper.PD0046.margin-top.margin-bottom.bg-warmgray.border-top.bg-default
+            .component
+                .cmp-container
+                    //- title-area
+                    +title-area
+                    //- contents
+                    .tabs.panelcontainer.tabs-margin
+                        .cmp-tabs(data-cmp-data-layer="", data-placeholder-text="false")
+                            .cmp-tabs__inner
+                                ul.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                    +printTab(1, 1, true)
+                                        div Fridge Freezers
+                                    +printTab(1, 2, false)
+                                        div Washing Machines
+                                    +printTab(1, 3, false)
+                                        div Cooking Appliances
+                            +printTabPanel(1, 1, true)
+                                .c-product-hero
+                                    +hero-carousel([
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "center", fontColor : "font-black"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : false, cta : "box", textAlign : "right"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "center", fontColor : "font-black"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "left"},
+                                    ])(class="dark-theme" data-carousel-event="default")                          
+                                .c-template-container
+                                    .c-template-container__inner.active(data-index="0")
+                                        +featureList
+                                    .c-template-container__inner(data-index="1")
+                                        +featureList
+                                    .c-template-container__inner(data-index="2")
+                                        +featureList
+                                    .c-template-container__inner(data-index="3")
+                                        +featureList
+                            +printTabPanel(1, 2, false)
+                                // block - product-hero
+                                .c-product-hero
+                                    +hero-carousel([
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "center"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : false, cta : "box", textAlign : "right", fontColor : "font-black"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "center", fontColor : "font-black"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "left"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "center"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : false, cta : "box", textAlign : "right", fontColor : "font-black"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "center"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "left"},
+                                    ])(class="dark-theme" data-carousel-event="default")     
+                                .c-template-container
+                                    .c-template-container__inner.active(data-index="0")
+                                        +featureList
+                                    .c-template-container__inner(data-index="1")
+                                        +featureList
+                                    .c-template-container__inner(data-index="2")
+                                        +featureList
+                                    .c-template-container__inner(data-index="3")
+                                        +featureList
+                                    .c-template-container__inner(data-index="4")
+                                        +featureList
+                                    .c-template-container__inner(data-index="5")
+                                        +featureList
+                                    .c-template-container__inner(data-index="6")
+                                        +featureList
+                                    .c-template-container__inner(data-index="7")
+                                        +featureList
+                            +printTabPanel(1, 3, false)
+                                // block - product-hero
+                                .c-product-hero
+                                    +hero-carousel([
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "center"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : false, cta : "box", textAlign : "right", fontColor : "font-black"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "center"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "left"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "left", fontColor : "font-black"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "left"},
+                                    ])(class="dark-theme" data-carousel-event="default")     
+                                .c-template-container
+                                    .c-template-container__inner.active(data-index="0")
+                                        +featureList
+                                    .c-template-container__inner(data-index="1")
+                                        +featureList
+                                    .c-template-container__inner(data-index="2")
+                                        +featureList
+                                    .c-template-container__inner(data-index="3")
+                                        +featureList
+                                    .c-template-container__inner(data-index="4")
+                                        +featureList
+                                    .c-template-container__inner(data-index="5")
+                                        +featureList
+
+    else if (option == 'NOTAB')
+        .c-wrapper.PD0046.margin-top.margin-bottom.bg-warmgray.border-top.bg-default
+            .component
+                .cmp-container
+                    //- title-area
+                    +title-area
+                    //- contents
+                    .c-product-hero
+                        +hero-carousel([
+                            {caseSelect : "video", width : "content", heroType : "product", dateType : "none", useEyebrow : false, cta : "box", textAlign : "center", fontColor : "font-black"},
+                            {caseSelect : "animation", width : "content", heroType : "product", dateType : "none", useEyebrow : true, bodycopy: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.', cta : "box", textAlign : "right"},
+                            {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "text", textAlign : "center", fontColor : "font-black"},
+                            {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "text", textAlign : "left"},
+                        ])(class="dark-theme" data-carousel-event="default")                          
+                    .c-template-container
+                        .c-template-container__inner.active(data-index="0")
+                            +featureList
+                            +awardList
+                            +product-carousel-list
+                        .c-template-container__inner(data-index="1")
+                            +featureList
+                            +awardList
+                            +product-carousel-list
+                        .c-template-container__inner(data-index="2")
+                            +featureList
+                            +awardList
+                            +product-carousel-list
+                        .c-template-container__inner(data-index="3")
+                            +featureList
+                            +awardList
+                            +product-carousel-list
+
+    else
+        .c-wrapper.PD0046.margin-top.margin-bottom.bg-warmgray.border-top.bg-default
+            .component
+                .cmp-container
+                    //- title-area
+                    +title-area
+                    //- contents
+                    .tabs.panelcontainer.tabs-margin
+                        .cmp-tabs(data-cmp-data-layer="", data-placeholder-text="false")
+                            .cmp-tabs__inner
+                                ul.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                    +printTab(1, 1, true)
+                                        div Fridge Freezers
+                                    +printTab(1, 2, false)
+                                        div Washing Machines
+                                    +printTab(1, 3, false)
+                                        div Cooking Appliances
+                            +printTabPanel(1, 1, true)
+                                .c-product-hero
+                                    +hero-carousel([
+                                        {caseSelect : "animation", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "center", fontColor : "font-black"},
+                                        {caseSelect : "video", width : "content", heroType : "product", dateType : "none", useEyebrow : true, bodycopy: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.', cta : "box", textAlign : "right"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "text", textAlign : "center", fontColor : "font-black"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "text", textAlign : "left"},
+                                    ])(class="dark-theme" data-carousel-event="default")                          
+                                .c-template-container
+                                    .c-template-container__inner.active(data-index="0")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                                    .c-template-container__inner(data-index="1")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                                    .c-template-container__inner(data-index="2")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                                    .c-template-container__inner(data-index="3")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                            +printTabPanel(1, 2, false)
+                                // block - product-hero
+                                .c-product-hero
+                                    +hero-carousel([
+                                        {caseSelect : "video", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "center"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, bodycopy: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.', cta : "box", textAlign : "right"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "text", textAlign : "center", fontColor : "font-black"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "text", textAlign : "left"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "center"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : false, cta : "box", textAlign : "right", fontColor : "font-black"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "center"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "left"},
+                                    ])(class="dark-theme" data-carousel-event="default")     
+                                .c-template-container
+                                    .c-template-container__inner.active(data-index="0")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                                    .c-template-container__inner(data-index="1")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                                    .c-template-container__inner(data-index="2")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                                    .c-template-container__inner(data-index="3")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                                    .c-template-container__inner(data-index="4")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                                    .c-template-container__inner(data-index="5")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                                    .c-template-container__inner(data-index="6")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                                    .c-template-container__inner(data-index="7")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                            +printTabPanel(1, 3, false)
+                                // block - product-hero
+                                .c-product-hero
+                                    +hero-carousel([
+                                        {caseSelect : "video", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "center"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, bodycopy: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.', cta : "box", textAlign : "right"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "text", textAlign : "center"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "text", textAlign : "left"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "left", fontColor : "font-black"},
+                                        {caseSelect : "image", width : "content", heroType : "product", dateType : "none", useEyebrow : true, cta : "box", textAlign : "left"},
+                                    ])(class="dark-theme" data-carousel-event="default")     
+                                .c-template-container
+                                    .c-template-container__inner.active(data-index="0")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                                    .c-template-container__inner(data-index="1")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                                    .c-template-container__inner(data-index="2")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                                    .c-template-container__inner(data-index="3")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                                    .c-template-container__inner(data-index="4")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list
+                                    .c-template-container__inner(data-index="5")
+                                        +featureList
+                                        +awardList
+                                        +product-carousel-list

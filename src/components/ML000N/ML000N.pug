@@ -1,0 +1,136 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_link-banner.pug
+include ../_common/_my-component.pug
+
+
+block meta 
+    - var componentId = "ML000N"
+    - var componentName = "My Account"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+mixin myAccount(params)
+    - let data = {...params}
+        .my-account
+            each set in data
+                .my-account__item
+                    a.my-account__info(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        i(class=`my-account__icon my-account__icon--${set.icon}`)
+                            span.sr-only= set.icon
+                        .font-w-normal-20.font-m-normal-16= set.title
+                    if set.icon === "profile"
+                        .my-account__text 
+                            .my-account__text-item.font-w-normal-20.font-m-normal-16 ID : !{set.id}
+                            .my-account__text-item.font-w-normal-20.font-m-normal-16 Name : !{set.name}
+                            .my-account__text-item.font-w-normal-20.font-m-normal-16 Mobile : !{set.mobile}
+                        .my-account__btn.button.c-cta
+                                +linkButton({type:"text", color:"black", underline: true, name: "Edit"})
+                        .my-account__btn-area
+                            .my-account__notification
+                                .msg You can access more informationon LGE members site.
+                                +linkButton({type:"text", color:"black", underline:true, comment:false, outlink:true, name: "LGE Members website"})(target='_blank')
+                                    span.sr-only Opens in a new window 
+                            
+                    if set.icon === "address"
+                        if !set.address
+                            .my-account__text 
+                                .my-account__text-item.my-account__text-item--empty.font-w-normal-20.font-m-normal-16 You can easily manage the address book for quick buying. 
+                            .my-account__btn.button.c-cta
+                                +linkButton({type:"text", color:"black", underline: true, name: "Add Address"})
+                                +linkButton({type:"text", color:"black", underline: true, name: "Add Tax"})
+                        else
+                            .my-account__text 
+                                .my-account__text-item.font-w-normal-20.font-m-normal-16 Name : !{set.name}
+                                .my-account__text-item.font-w-normal-20.font-m-normal-16 Address : !{set.address}
+                                .my-account__text-item.font-w-normal-20.font-m-normal-16 Country : !{set.country}
+                            .my-account__btn.button.c-cta
+                                +linkButton({type:"text", color:"black", underline: true, name: "Add Address"})
+                                +linkButton({type:"text", color:"black", underline: true, name: "Add Tax"})
+
+mixin ML000N
+    .c-wrapper.ML000N
+        .component
+            .fluid-container
+                +myComponentSubMenu({
+                    title:"My Account",
+                    subMenu:['m1', 'm2', 'm3']
+                })
+                .my-component__wrap.border-only-web.my-component--my-account
+                    .my-component
+                        +myAccount([
+                            {
+                                icon:'profile',
+                                title:'Profile',
+                                id: "dtyu76**@gmail.com",
+                                name: "Rob*** Pa**",
+                                mobile: "28204040*****"
+                            },
+                            {
+                                icon:'password',
+                                title:'Change Password', 
+                            },
+                            {
+                                icon:'address',
+                                title:'Address Book', 
+                                name: "Rob*** Pa**",
+                                address: "253A Portobello***************",
+                                country: "United *********"
+                            },
+                        ])
+                        +myAccount([
+                            {
+                                icon:'profile',
+                                title:'Profile',
+                                id: "dtyu76**@gmail.com",
+                                name: "Rob*** Pa**",
+                                mobile: "28204040*****"
+                            },
+                            {
+                                icon:'password',
+                                title:'Change password', 
+                            },
+                            {
+                                icon:'address',
+                                title:'Address Book', 
+                            },
+                        ])
+                        //- .my-account__notification
+                        //-     span You can find more information on the LGE members site.
+                        //-     +linkButton({type:"text", color:"black", underline:true, comment:false, outlink:true, name: "Go to LGE Members website"})(target='_blank')
+                        //-         span.sr-only Opens in a new window 
+                .my-component__wrap
+                    .my-component
+                        +linkBanner({
+                            type:"padding-tb",
+                            mobileTextAlignLeft:true,
+                            bgColor:"transparent",
+                            title:[{
+                                text:"VIP Upgrade",
+                            }],
+                            desc:[{
+                                text:"Upgrade to VIP program by key",
+                                font:"font-w-normal-20 font-m-normal-16"
+                            }], 
+                            button:[{
+                                size:"large",
+                                sizeMobile:"medium",
+                                name: "Upgrade",
+                                buttonStyle: 'default',
+                                isButton: false
+                            }],
+                        })
+
+block content
+    // Component Markup
+    +ML000N

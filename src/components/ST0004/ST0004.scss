@@ -1,0 +1,338 @@
+@charset "UTF-8";
+
+@use 'sass:string';
+@use '../../scss/abstract/' as *;
+
+$component: '.ST0004';
+#{$component} {
+  .cmp-container {
+    @include screen(web) {
+      @include container($design-grid-full, true);
+      @include inset-padding-hz;
+    }
+  }
+
+  // block : c-block-image
+  .c-block-image {
+    width: 100%;
+    display: grid;
+    gap: rem($margin12px);
+    grid-template-columns: 1fr;
+    @include screen(web) {
+      gap: rem($margin24px);
+    }
+
+    // option : type-right
+    &.type-right {
+      .c-block-image__flex {
+        @include screen(web) {
+          flex-direction: row-reverse;
+        }
+      }
+    }
+
+    &__item {
+      position: relative;
+      @include screen(web) {
+        @include lgness-radius('default', web);
+        overflow: hidden;
+      }
+      .c-media-contents,
+      .c-image,
+      .c-image * {
+        height: 100%;
+        .fit-content {
+          .cmp-image__image {
+            width: fit-content;
+            max-width: fit-content;
+            max-height: fit-content;
+            height: fit-content;
+          }
+        }
+      }
+      img {
+        object-fit: cover;
+      }
+    }
+
+    .area-main,
+    .area-sub {
+      .c-text-contents {
+        position: absolute;
+        top: 0;
+        padding: rem($padding24px) rem($padding25px);
+      }
+    }
+    .area-main {
+      .c-text-contents {
+        width: 100%;
+        @include screen(web) {
+          padding: rem($margin32px);
+          max-width: rem($width400px) + (rem($margin30px) * 2);
+        }
+      }
+    }
+    .area-sub {
+      .c-text-contents {
+        width: 100%;
+        left: 0;
+        @include screen(web) {
+          padding: rem($margin32px);
+          max-width: rem($width300px) + (rem($margin30px) * 2);
+        }
+      }
+    }
+  }
+
+  // block : c-block-image (option style)
+  .c-block-image {
+    dl,
+    dt,
+    dd {
+      margin: 0;
+    }
+    @include screen(web) {
+      .area-main {
+        grid-area: main;
+      }
+      .area-sub1 {
+        grid-area: sb1;
+      }
+      .area-sub2 {
+        grid-area: sb2;
+      }
+      .area-sub3 {
+        grid-area: sb3;
+      }
+    }
+
+    // option : c-block-image(2 block)
+    &-2block {
+      $left-standard: calc(columns(8, false) / $design-grid-full * 100%);
+      &.type-right {
+        @include screen(web) {
+          grid-template-columns: auto $left-standard;
+          grid-template-areas: 'sb2 sb1';
+        }
+      }
+      @include screen(web) {
+        grid-template-columns: $left-standard auto;
+        grid-template-areas: 'sb1 sb2';
+      }
+      .area-sub1 {
+        .c-text-contents {
+          @include screen(web) {
+            max-width: rem($text-box-width-xs) + (rem($margin30px) * 2);
+          }
+        }
+      }
+    }
+    // option : c-block-image(3 block)
+    &-3block {
+      $left-standard-d: calc(columns(5, false) / $design-grid-full * 100%);
+      $left-standard-t: calc(columns(6, false) / columns(10, false) * 100%);
+      &.type-right {
+        @include screen(web) {
+          grid-template-columns: auto $left-standard-d;
+          grid-template-areas:
+            'sb1 main'
+            'sb2 main';
+        }
+        @include screen(tablet) {
+          grid-template-columns: auto $left-standard-t;
+        }
+      }
+      @include screen(web) {
+        grid-template-columns: $left-standard-d auto;
+        grid-template-areas:
+          'main sb1'
+          'main sb2';
+      }
+      @include screen(tablet) {
+        grid-template-columns: $left-standard-t auto;
+      }
+    }
+    // option : c-block-image(4 block)
+    &-4block {
+      $left-standard-d: calc(columns(5, false) / $design-grid-full * 100%);
+      $middle-standard-d: calc(columns(3, false) / $design-grid-full * 100%);
+      $left-standard-t: calc(columns(6, false) / columns(10, false) * 100%);
+      &.type-right-image-on-top {
+        @include screen(web) {
+          grid-template-columns: auto $middle-standard-d $left-standard-d;
+          grid-template-areas:
+            'sb3 sb3 main'
+            'sb2 sb1 main';
+        }
+        @include screen(tablet) {
+          grid-template-columns: auto $left-standard-t;
+          grid-template-areas:
+            'sb3 sb3'
+            'sb1 main'
+            'sb2 main';
+        }
+      }
+    }
+    // option : c-block-image(4 block / 5 block)
+    &-4block,
+    &-5block {
+      $left-standard-d: calc(columns(5, false) / $design-grid-full * 100%);
+      $middle-standard-d: calc(columns(4, false) / $design-grid-full * 100%);
+      $left-standard-t: calc(columns(6, false) / columns(10, false) * 100%);
+      &.type-right {
+        @include screen(web) {
+          grid-template-columns: auto $middle-standard-d $left-standard-d;
+          grid-template-areas:
+            'sb2 sb1 main'
+            'sb3 sb3 main';
+        }
+        @include screen(tablet) {
+          grid-template-columns: auto $left-standard-t;
+          grid-template-areas:
+            'sb1 main'
+            'sb2 main'
+            'sb3 sb3';
+        }
+      }
+      @include screen(web) {
+        grid-template-columns: $left-standard-d $middle-standard-d auto;
+        grid-template-areas:
+          'main sb1 sb2'
+          'main sb3 sb3';
+      }
+      @include screen(tablet) {
+        grid-template-columns: $left-standard-t auto;
+        grid-template-areas:
+          'main sb1'
+          'main sb2'
+          'sb3 sb3';
+      }
+    }
+    &-5block {
+      // only in 5 block type
+      .c-block-image__flex {
+        display: flex;
+        flex-direction: column;
+        gap: rem($margin10px);
+        @include screen(web) {
+          gap: rem($margin24px);
+          flex-direction: row;
+        }
+
+        &-item {
+          position: relative;
+        }
+        > div,
+        a {
+          @include screen(web) {
+            @include lgness-radius('default', web);
+            overflow: hidden;
+          }
+          &:nth-child(1) {
+            @include screen(web) {
+              flex: calc(columns(4, false) / columns(7, false) * 100%);
+            }
+            @include screen(tablet) {
+              flex: 1;
+            }
+          }
+          &:nth-child(2) {
+            @include screen(web) {
+              flex: calc(columns(3, false) / columns(7, false) * 100%);
+            }
+            @include screen(tablet) {
+              flex: 1;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // block : c-text-contents
+  .c-text-contents {
+    display: flex;
+    flex-direction: column;
+    gap: rem($margin8px);
+    color: $black;
+    &.font-white {
+      color: $white;
+      .c-text-contents__bodycopy {
+        color: $white;
+      }
+      .c-button--text-icon {
+        color: $white;
+        &:after {
+          background-image: url($icon-arrow-white-right-9-14);
+        }
+      }
+    }
+    &__bodycopy {
+      display: none;
+      @include screen(web) {
+        display: block;
+      }
+    }
+    .c-cta {
+      a {
+        flex: none !important;
+      }
+    }
+  }
+
+  // block : c-media
+  .c-media {
+    position: absolute;
+    top: 0;
+    left: 0;
+    &-contents {
+      position: relative;
+    }
+    &__button {
+      &:focus-visible {
+        outline-offset: rem(-$offset2px);
+      }
+
+      $icon: '&:before';
+      @include screen(mobile) {
+        #{$icon} {
+          position: absolute;
+          bottom: rem($margin20px);
+          left: rem($margin25px);
+          border: rem($border1) solid $white;
+        }
+      }
+
+      #{$icon} {
+        border: rem($border1) solid $white;
+        @include screen(web) {
+          bottom: rem($margin30px);
+          left: rem($margin30px);
+        }
+      }
+      &--large {
+        @include screen(mobile) {
+          #{$icon} {
+            width: rem($icon24px);
+            height: rem($icon24px);
+          }
+        }
+      }
+      @include screen(web) {
+        &:not(&--large) {
+          #{$icon} {
+            @include screen(web) {
+              position: absolute;
+              bottom: rem($margin30px);
+              left: rem($margin30px);
+            }
+          }
+        }
+      }
+
+      #{$icon} {
+        border-radius: $radius-full;
+      }
+    }
+  }
+}

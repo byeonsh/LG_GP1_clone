@@ -1,0 +1,156 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_headline.pug
+include ../_common/_resource.pug
+include ../_common/_pop-msg.pug
+
+
+block meta 
+    - var componentId = "ML000C"
+    - var componentName = "Return Detail"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+
+mixin myReturnDetailHeadbox(params)
+    - let data = { ...params }
+    .my-return-detail__headbox
+        .my-return-detail__txtbox
+            .my-return-detail__desc
+                each set in data.desc
+                    .my-return-detail__desc-item
+                        span.font-w-normal-16.font-m-normal-14.my-return-detail__title !{set.descTitle} 
+                        span.font-w-semibold-16.font-m-semibold-14.my-return-detail__num !{set.descText}               
+
+mixin myReturnAddress(params)
+    - let data = {...params}
+    .my-return__container
+        .c-text-contents
+            .my-return-address__list.font-w-normal-16.font-m-normal-14
+                p.cmp-text=data.name
+                p.cmp-text=data.address
+                p.cmp-text=data.postcode
+
+mixin myItemDetailProduct(params)
+    - let data = { ...params }
+    - let itemType = String(data.tagIcon).replace(/ /g, '-')
+    .my-detail-product
+        .my-detail-product__item
+            .my-detail-product__img
+                .image.c-image
+                    +printLazyImage("https://via.placeholder.com/120x120/999999/333333")
+            .my-detail-product__txt
+                .c-text-contents
+                    // tag heading tag
+                    .my-detail-product__tag(class=`my-detail-product__tag--${data.tagType}`)
+                        i.my-detail-product__tag__icon(class=`my-detail-product__tag__icon--${itemType}`)
+                            span.sr-only= data.tagText
+                        span.my-detail-product__tag__text= data.tagText
+                    .c-text-contents__eyebrow
+                        .font-w-normal-16.font-m-normal-12= data.eyebrow
+                    .c-text-contents__title
+                        .font-w-normal-20.font-m-normal-16= data.title
+                    if data.serial
+                        .c-text-contents__quantity.font-w-normal-20.font-m-normal-16 Serial number : !{data.serial}
+                    if data.price
+                        .my-detail-product__price-box 
+                            span.c-price.font-w-semibold-20.font-m-semibold-16
+                                span.c-price__purchase !{data.price}
+                            if data.quantity
+                                span.c-text-contents__quantity.font-w-normal-16i.font-m-normal-14i Qty : !{data.quantity}
+                            if block
+                                block
+        if data.aside
+            ul.my-detail-product-aside.my-detail-product-aside--step01
+                each set in data.aside ? data.aside : [] 
+                    li.my-detail-product-aside__item 
+                        .my-detail-product-aside__title.font-w-normal-16.font-m-normal-12=set.title
+                        .my-detail-product-aside__desc.font-w-normal-24.font-m-normal-16=set.desc
+        if data.img 
+            ul.my-detail-product-aside.my-detail-product-aside--step02
+                each set in data.img
+                    li.my-detail-product-aside__item 
+                        .my-detail-product-aside__title.font-w-normal-16.font-m-normal-12=set.title
+                        each text in set.text
+                            .my-detail-product-aside__desc.font-w-normal-24.font-m-normal-16=text
+mixin myComments(params)
+    .my-comments 
+        .my-comments__desc.my-component__title-section
+            each data in params.text
+                p.cmp-text.font-w-normal-16.font-m-normal-12=data
+
+
+mixin ML000C
+    .c-wrapper.ML000C
+        .component
+            .fluid-container
+                .my-component.my-page-title
+                    .c-text-contents.my-component__title-section
+                        .c-text-contents__headline
+                            +headline("font-w-light-56 font-m-light-28", 'h3', "Exchange detail")
+                // case 1. Return Details
+                .my-component--maximum
+                    .my-return-detail__headbox--wrap
+                        +myReturnDetailHeadbox({
+                            desc : [
+                                {descTitle:'Exchange no', descText:'113050200848​'},
+                                {descTitle:'Exchange date', descText:'31 Jan. 2023'},
+                                {descTitle:'Email', descText:'customer01@gmail.com'},
+                            ],
+                        })
+                .my-component.my-component--return-detail
+                    .my-return-detail
+                        .my-return-address
+                            .text.c-text-contents__title.my-component__title-section
+                                .font-w-normal-32.font-m-normal-20 Exchange Address
+                            +myReturnAddress({
+                                name:'Robert Surrency',
+                                address:'Gv Globus, 776 Buckingham Avenue, Slough, Berkshire, SL1 4NL, United Kingdom',
+                                postcode:'(415) 123-4560'
+                            })
+                        .my-return-requested
+                            .text.c-text-contents__title.my-component__title-section
+                                .font-w-normal-32.font-m-normal-20 Item Exchange Requested For
+                            .my-return__container
+                                //- tagText: returned, return authorized, return processing, return completed, return refund
+                                +myItemDetailProduct({
+                                    tagType: "exchange",
+                                    tagIcon:"exchange requested",
+                                    tagText:"Exchange requested",
+                                    eyebrow:'OLED55C24LA',
+                                    title:"LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)​",
+                                    quantity:'1',
+                                    price:'€2,099.98',
+                                    aside: [
+                                        {title:'Condition', desc:'New (unboxed)'},
+                                        {title:'Reason', desc:'Box damaged but item is ok'},
+                                        {title:'Qty', desc:'1'},
+                                    ],
+                                    img: [
+                                        {title: 'Img', text:['image.jpg','image.jpg','image.jpg']},
+                                    ]
+                                })
+                        .my-return-comments
+                            .text.c-text-contents__title.my-component__title-section
+                                .font-w-normal-32.font-m-normal-20 Comments
+                            +myComments({
+                                text: ['Customer services : 28/04/2022 15:42 We placed your Exchange Requested', 'Bob loblaw : 30/04/2022 15:42 Some parts are missing so couldn’t install the TV'],
+                            })
+                            .my-return__container
+                                +formTextarea("text", "Leave Your Comments", "Message", false, "OLED G2 Stand for 55 G2 is damaged, wasn’t able to install.")(minLength="20", maxlength="1000 Character")
+                            .c-btn-submit__group  
+                                .button.c-cta
+                                    +defaultButton({name: 'Cancel Request', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                                    +defaultButton({name: 'Submit', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+block content
+    // Component Markup
+    +ML000C

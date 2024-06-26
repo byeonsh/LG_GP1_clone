@@ -1,0 +1,227 @@
+@charset "UTF-8";
+// module
+@use '../../scss/abstract/' as *;
+
+$component: '.ST0036';
+#{$component} {
+  > .component > .cmp-container {
+    @include container($design-full, true);
+    // @include container($design-grid-full, true);
+    @include screen(web) {
+      @include inset-padding-hz;
+    }
+  }
+  > .component {
+    &.width-wide {
+      > .cmp-container {
+        @include container($design-full, true);
+      }
+      .c-carousel-tabs__panel {
+        .c-text-contents {
+          max-width: 100%;
+          & > * {
+            max-width: 100%;
+          }
+        }
+      }
+    }
+    @include screen(web) {
+      &:not(.width-wide) {
+        .c-carousel-tabs__panel {
+          .c-text-contents {
+            &.pos-left > * {
+              /*! rtl:ignore */
+              margin-right: auto;
+            }
+            &.pos-center > * {
+              margin-left: auto;
+              margin-right: auto;
+            }
+            &.pos-right > * {
+              /*! rtl:ignore */
+              margin-left: auto;
+            }
+          }
+        }
+      }
+    }
+  }
+  // block: carousel tabs
+  .c-carousel-tabs {
+    &__list {
+      // block : carousel
+      .c-carousel {
+        .swiper-wrapper {
+          @include screen(web) {
+            justify-content: center;
+            gap: min(rem($gutter-w), $gutter-w / $design-grid-full * 100%);
+          }
+        }
+        &__item {
+          cursor: pointer;
+          align-items: center;
+          @include screen(web) {
+            width: rem(columns(2, false));
+          }
+          &:focus-visible {
+            outline-offset: rem(-$border2);
+          }
+          .c-image {
+            border-radius: $radius-full;
+            width: rem($width64px);
+            aspect-ratio: 1 / 1;
+            &.on {
+              display: none;
+            }
+          }
+          &:hover,
+          &:focus {
+            text-decoration: none;
+            .c-text-contents__imagetext {
+              color: $black;
+            }
+          }
+          &.swiper-slide-active {
+            .c-image {
+              &.on {
+                display: block;
+              }
+              &.off {
+                display: none;
+              }
+            }
+            .c-text-contents__imagetext {
+              p {
+                font-weight: $font-bold;
+              }
+            }
+          }
+        }
+      }
+    }
+    &__panel {
+      margin-top: rem($margin16px);
+      @include screen(web) {
+        margin-top: rem($margin36px);
+      }
+      // variable
+      $text-contents: '.c-text-contents';
+      #{$text-contents} {
+        &.pos-center {
+          text-align: center;
+        }
+        &.pos-right {
+          /*! rtl:ignore */
+          text-align: right;
+        }
+        @include screen(mobile) {
+          @include inset-padding-hz;
+        }
+        @include screen(web) {
+          @include container($design-grid-full, false);
+          width: 100%;
+          & > * {
+            max-width: rem($text-box-width-lg);
+          }
+        }
+      }
+      .c-carousel {
+        .swiper-slide {
+          z-index: -$z-index1;
+          &-active {
+            z-index: $z-index1;
+          }
+        }
+        &__item {
+          @include screen(web) {
+            display: none;
+            &.swiper-slide-active {
+              display: flex;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // block : carousel
+  .c-carousel__item {
+    display: flex;
+    flex-direction: column;
+  }
+  // block : image
+  .c-image {
+    overflow: hidden;
+    @include screen(web) {
+      @include lgness-radius('default', web);
+    }
+  }
+
+  // block : media
+  .c-media {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: $z-index1;
+    &__controls {
+      padding-bottom: rem($padding20px);
+      @include screen(web) {
+        padding-bottom: rem($padding30px);
+      }
+    }
+    button,
+    a {
+      &:focus-visible {
+        outline-offset: rem(-$border2);
+        @include lgness-radius('default');
+      }
+    }
+  }
+
+  // layout : margin
+  $component-title: '.c-text-contents';
+  $text: '.c-text-contents';
+  $image: '.c-image';
+
+  #{$component-title} + .c-media-contents {
+    @include lgness-component-title-margin;
+  }
+  #{$text}__headline + #{$text}__bodycopy {
+    margin-top: rem($margin8px);
+  }
+  #{$image} + #{$text} {
+    margin-top: rem($margin12px);
+    @include screen(web) {
+      margin-top: rem($margin16px);
+    }
+  }
+
+  // theme
+  &.bg-darkgray,
+  &.bg-black {
+    .c-carousel-tabs__list {
+      .c-text-contents {
+        &__imagetext {
+          color: $white;
+        }
+      }
+      .c-carousel__item {
+        &:hover,
+        &:focus {
+          color: $white;
+          .c-text-contents__imagetext {
+            color: inherit;
+          }
+        }
+        &.swiper-slide-active {
+          color: $white;
+          .c-text-contents__imagetext {
+            color: inherit;
+          }
+        }
+      }
+    }
+  }
+}

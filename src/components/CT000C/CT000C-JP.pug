@@ -1,0 +1,192 @@
+extends ../../components/_common/_layout.pug
+include ../../components/_common/_index.pug
+//- include ../_common/_cart-price-total.pug
+
+block meta 
+    - var CM0007 = "CM0007"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title Checkout
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href="../../components/CM0001/CM0001.css")
+    link(rel="stylesheet", href="../../components/CM0002/CM0002.css")
+    link(rel="stylesheet", href="../../components/CT000C/CT000C.css")
+    link(rel="stylesheet", href="../../components/CT000C/CT0301.css")
+    link(rel="stylesheet", href="../../components/CT000C/CT0302.css")
+    link(rel="stylesheet", href="../../components/CT000C/CT0303.css")
+    //- link(rel="stylesheet", href="../../components/CT000D/CT0402.css")
+    link(rel="stylesheet", href="../../components/CM0007/CM0007.css")
+
+block scripts
+    script(src="../../components/CM0001/CM0001.js" type="module")
+    script(src="../../components/CM0002/CM0002.js" type="module")
+    script(src="../../components/CT000C/CT000C.js" type="module")
+    script(src="../../components/CT000C/CT0301.js" type="module")
+    script(src="../../components/CT000C/CT0302.js" type="module")
+    script(src="../../components/CT000C/CT0303.js" type="module")
+    script(src="../../components/CM0007/CM0007.js" type="module")
+
+block header
+    include ../../components/CM0001/CM0001-inc.pug
+    +CM0001()
+
+block content
+    // Component Markup
+    .c-wrapper.no-crop.CT000C
+        .component
+            .fluid-container
+                //- include ../../components/CT000D/CT0402-inc.pug
+                //- +CT0402()
+                .my-component.my-component--buy.buy-summary-area.margin-top
+                    .buy-summary-area__primary.buy-summary-area__primary--padding.shipping_address
+                        .buy-checkout
+                            include ./CT0301-inc.pug
+                            +CT0301()
+                            include ./CT0302-JP-inc.pug
+                            +CT0302("member", "jp")
+                            //- +CT0302("member", "selectDateType-accordion-wrap-global")
+                            +CT0302("guest")
+                            +CT0302("member", "selectDateType-accordion-wrap-global")
+                            +CT0302("before")
+                            //- +CT0302("complete")
+                            include ./CT0303-inc.pug
+                            +CT0303("before")
+                            +CT0303("default", "jp")
+                        +footerInfoDR("JP")
+                    //- indicate product information 
+                    .buy-summary-area__secondary
+                        .buy-summary-area__payment.buy-sticky-no
+                            +cartPriceTotal([
+                                {
+                                    unitPosition: 'left',
+                                    unitName: '￥',
+                                    isMobileBottomFixed: true,
+                                    useToggleFoldBtn: true,
+                                    isStickyBottom: true,
+                                    discount: true,
+                                    taxIncludeSub: true,
+                                    deliveryFee: true,
+                                    serviceFeeTooltip: true,
+                                    card: false,
+                                    checkoutDiscount: "£0.00",
+                                    btnName:"Place Order",
+                                    close: true,
+                                },
+                            ])
+    include ../../components/CM0007/CM0007-inc.pug
+    +CM0007()
+
+block footer
+    include ../../components/CM0002/CM0002-inc.pug
+    +CM0002
+
+block modal
+    .mem-modal
+        +pop-msg-standard({id : `CalendarPopup`, size: "large"})
+            .Buy-calendar
+                .Buy-calendar__box
+                //- (5월 이후 고도화)
+                //- .Buy-calendar__radiobox
+                //-     .Buy-calendar__radio
+                //-         .Buy-calendar__radio-item
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("All day","name", "val1", "radioId1")
+                //-             span.font-w-normal-16.font-m-normal-14 £0
+                //-         .Buy-calendar__radio-item.Buy-calendar__radio-item--disabled
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("10:00 - 17:00","name", "val2", "radioId2")(disabled)
+                //-             span.font-w-normal-16.font-m-normal-14 Not available
+                //-         .Buy-calendar__radio-item
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("16:00 - 17:00","name", "val3", "radioId3")
+                //-                 .Buy-calendar__radio-miximum.font-red Maximum order capacity is almost full.
+                //-             span.font-w-normal-16.font-m-normal-14 £0
+                //-         .Buy-calendar__radio-item
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("18:00 - 19:00","name", "val4", "radioId4")
+                //-             span.font-w-normal-16.font-m-normal-14 £0
+                //-         .Buy-calendar__radio-item
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("20:00 - 21:00","name", "val5", "radioId5")
+                //-             span.font-w-normal-16.font-m-normal-14 £0
+                //-         .Buy-calendar__radio-item
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("22:00 - 23:00","name", "val6", "radioId6")  
+                //-             span.font-w-normal-16.font-m-normal-14 £0
+                .button.Buy-calendar__button
+                    +defaultButton({name: 'Save', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})(class='js-close--btn')
+    .CT0019
+        .CT-KlarnaPopup
+            .mem-modal.buy-klarna
+                +pop-msg-standard({id : "KlarnaPopup", headline:"Pay with Klarna", size: "large"})
+                    .buy-klarna-step__title
+                        span.font-w-normal-16.font-m-normal-16 Shop now, Pay later with Klarna.
+                    .mem-scroll 
+                        .mem-scroll__container 
+                            .mem-scroll__item.buy-klarna-step
+                                .buy-klarna-step__subtitle
+                                    span.font-w-normal-20.font-m-normal-16 Here's how it works:
+                                ul.buy-klarna-step__list
+                                    li.buy-klarna-step__item
+                                        .buy-klarna-step__num
+                                            span.font-w-normal-16.font-m-normal-16 Step 1
+                                        .buy-klarna-step__desc
+                                            span.font-w-normal-16.font-m-normal-14 Add products to your cart and select “Klarna” when you checkout
+                                    li.buy-klarna-step__item
+                                        .buy-klarna-step__num
+                                            span.font-w-normal-16.font-m-normal-16 Step 2
+                                        .buy-klarna-step__desc
+                                            span.font-w-normal-16.font-m-normal-14 Enter a few personal details and you'll know instantly if you're approved
+                                    li.buy-klarna-step__item
+                                        .buy-klarna-step__num
+                                            span.font-w-normal-16.font-m-normal-16 Step 3
+                                        .buy-klarna-step__desc
+                                            span.font-w-normal-16.font-m-normal-14 Klarna will send you an email confirmation and reminders when it's time to pay and you can manage your orders and payments in the Klarna app.
+
+                            .mem-scroll__item.buy-klarna-desc
+                                .buy-klarna-desc__item
+                                    .buy-klarna-desc__title
+                                        span.font-w-normal-24.font-m-normal-16 Pay in 3 interest-free instalments
+                                    .buy-klarna-desc__bodycopy
+                                        p.font-w-normal-16.font-m-normal-16
+                                            | Spread the cost of your purchase into 3 interest-free instalments. The first payment is made at point of purchase, with remaining instalments scheduled automatically every 30 days. No interest or fees. Select the Klarna option and enter your debit or credit card information. To check your eligibility, Klarna will perform a soft search with a credit reference agency. This will not affect your credit score.
+                                .buy-klarna-desc__item
+                                    .buy-klarna-desc__title
+                                        span.font-w-normal-24.font-m-normal-16 No interest. No fees. No impact to your credit score.
+                                    ul.buy-klarna-desc__list
+                                        li
+                                            span.font-w-normal-16.font-m-normal-16 A new way to pay that's an alternative to a credit card.
+                                        li
+                                            span.font-w-normal-16.font-m-normal-16 3 instalments gives you flexibility to shop without interest or hidden fees.
+                                        li
+                                            span.font-w-normal-16.font-m-normal-16 Not making your payment on time could affect your ability to use Klarna in the future.
+                                        li
+                                            span.font-w-normal-16.font-m-normal-16 Debt collection agencies are used as a last resort.
+                                    .buy-klarna-desc__info
+                                        span.font-w-normal-14.font-m-normal-14 You must be 18+ and a UK resident to be eligible for this credit offer. 
+                                            a(href="https://cdn.klarna.com/1.0/shared/content/legal/terms/0/en-GB/paylaterin3" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="") Pay in 3 Terms and Conditions
+                                .buy-klarna-desc__item.buy-klarna-about
+                                    .buy-klarna-desc__title
+                                        span.font-w-normal-24.font-m-normal-16 About Klarna
+                                    .buy-klarna-desc__bodycopy
+                                        p.font-w-normal-16.font-m-normal-16
+                                            |
+                                            span.buy-klarna-about__bold LG has partnered with Klarna to help give our customers flexible payment options for eligible purchases on LG.com/uk.
+                                            |
+                                            br
+                                            | Please spend responsibly. Borrowing more than you can afford could seriously affect your financial status. Make sure you can afford to make your monthly repayments on time. [Merchant's legal entity name] is not a lender and acts only as an introducer. The credit product is provided by Klarna Bank AB (publ). Credit is only available to permanent UK residents aged 18 and over, depending on their status. Terms and conditions apply. Please note that Pay in 30 days and Pay in 3 instalments are not regulated by the FCA.
+                                .buy-klarna-desc__item.buy-klarna-more
+                                    .buy-klarna-desc__title
+                                        span.font-w-normal-24.font-m-normal-16 Frequently asked questions
+                                    .buy-klarna-desc__bodycopy
+                                        p.font-w-normal-16.font-m-normal-16 Visit the Klarna FAQ page to find out more about using Klarna. 
+                                        +linkButton({href: 'https://www.klarna.com/uk/customer-service/', type:'text', color: 'black', name: 'Learn more', uppercase: false, underline: true})
+                                .buy-klarna-desc__item.buy-klarna-more
+                                    .buy-klarna-desc__title
+                                        span.font-w-normal-24.font-m-normal-16 Safe and secure
+                                    .buy-klarna-desc__bodycopy
+                                        p.font-w-normal-16.font-m-normal-16 With Klarna, you are always covered through Klarna's Buyer Protection policy. Modern safeguards protect your information to prevent unauthorized purchases.
+                                        +linkButton({href: 'https://www.klarna.com/uk/buyer-protection-description/', type:'text', color: 'black', name: 'Privacy Policy', uppercase: false, underline: true})

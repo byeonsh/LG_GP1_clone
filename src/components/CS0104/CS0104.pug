@@ -1,0 +1,373 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_cs-form.pug
+
+block meta 
+    - var componentId = "CS0104"
+    - var componentName = "Call Appointment_product sympton"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    -
+        const stepList = [
+            {
+                'eyebrow': 'Your Product Symptom',
+                'stepNumber': 2
+            },
+        ]
+    -
+        const productList = [
+            //- {
+            //-     'productName':'All Topic',
+            //- },
+            {
+                'productName':'Cooling',
+            },
+            {
+                'productName':'Icemaker Issues',
+            },
+            {
+                'productName':'Door',
+            },
+            {
+                'productName':'Frost Buildup',
+            },
+            {
+                'productName':'How to Install and Operate',
+            },
+            {
+                'productName':'Dispenser',
+            },
+            {
+                'productName':'Leaking',
+            },
+            {
+                'productName':'More Troubleshooting',
+            },
+            {
+                'productName':'Noise',
+            },
+            {
+                'productName':'Others',
+            },
+        ]
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${controlsId}` aria-label="")
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+    
+    
+    mixin pack(faq, stepNumber, controlsId)
+        - var option = { selected:false }
+        .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+            .c-accordion__head
+                // block - text contents
+                // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+                //- .c-accordion__head-text.c-text-contents.c-step-active
+                .c-accordion__head-text.c-text-contents
+                    span.c-accordion__initial.font-m-normal-16.font-w-normal-20(aria-hidden="true") 
+                        span.c-accordion__step  
+                        span.c-accordion__head-flag.font-m-normal-14.font-w-semibold-18 
+                +trigger(controlsId)
+            // This area is accordion content. Please include only this area during development.
+            .c-accordion__body(id=`${controlsId}` class=`step2`)
+                +contentsBody(stepNumber, selected)
+    
+    mixin contentsBody(stepNumber)
+        // block - text contents
+        .c-text-contents.c-accordion__body-text
+            case stepNumber 
+                when 1
+                    section 
+                        dl
+                            dt.font-m-normal-20.font-w-normal-24 2-1. Issue details
+                            dd.font-m-normal-12.fonw-w-normal-16 Choose symptoms from the drop-downs, and provide a detailed description of the issue.
+                        .cs-form
+                            .cmp-form
+                                label(for="symptoms").c-select-label.font-m-normal-16.font-w-normal-24 Symptoms #[em.require *]#[span.sr-only Required Field] 
+                                .c-list-area.type-accordion.type-product 
+                                    .mobile-only    
+                                        .c-list-area__box
+                                            .c-list-area__scroll
+                                                // 20230321 add class :: error msg add class .list-type--error
+                                                .c-accordion.list-type.js-accordion(role="list")
+                                                    each faq, index in productList
+                                                        - var controlsId = `faq-set-0${index}`;
+                                                        +pack2(faq, controlsId)
+                                        .c-warning.c-topic-required02 Select your topic is required.
+                                        .c-warning.font-m-normal-14i.font-w-normal-14i.c-subtopic-required02 Select your sub topic is required.
+
+                                    .pc-only 
+                                        div
+                                            // 20230321 modify class :: error msg add class .c-list-area__box-wrap--error
+                                            .c-list-area__box-wrap
+                                                .c-list-area__box.c-list-area__box-topic
+                                                    .c-list-area__scroll
+                                                        // 20230317 add .c-list-area__scroll-inner
+                                                        .c-list-area__scroll-inner
+                                                            .c-wide-list(role="list")
+                                                                // block : modelList
+                                                                // active : --active
+                                                                //- +modelList({isList:true, categoryType: false, productName: 'All Topic'})
+                                                                +modelList({isList:true, categoryType: false, productName: 'Cooling'})    
+                                                                +modelList({isList:true, categoryType: false, productName: 'Door'})   
+                                                                +modelList({isList:true, categoryType: false, productName: 'Leaking'})    
+                                                                +modelList({isList:true, categoryType: false, productName: 'Noise'})    
+                                                                +modelList({isList:true, categoryType: false, productName: 'Icemaker issues'})    
+                                                                +modelList({isList:true, categoryType: false, productName: 'Cooling'})    
+                                                                +modelList({isList:true, categoryType: false, productName: 'Cooling'})    
+                                            .c-warning.c-topic-required Select your topic is required.
+
+                                        div
+                                            // 20230321 modify class :: error msg add class .c-list-area__box-wrap--error
+                                            .c-list-area__box-wrap.c-list-area__box-category
+                                                p.c-list-area__disabled-text.font-w-normal-16 After selecting main topic, sub topic is exposed.
+                                                    <br>If there is no sub topic, don't need to select it.
+                                                .c-list-area__box.c-list-area__box-subtopic
+                                                    .c-list-area__scroll
+                                                        // 20230317 add .c-list-area__scroll-inner
+                                                        .c-list-area__scroll-inner
+                                                            .c-wide-list(role="list")
+                                                                // block : modelList
+                                                                - for (var x = 0; x < 1; x++)
+                                                                //- +modelList({isList:true, categoryType: false, productName: 'All sub topic'}) 
+                                                                +modelList({isList:true, categoryType: true, categoryName: 'Cooling', productLength: 5, productName: 'Cooling'}) 
+                                                                +modelList({isList:true, categoryType: true, categoryName: 'Door', productLength: 8, productName: 'Door'})
+                                                                +modelList({isList:true, categoryType: true, categoryName: 'Leaking', productLength: 1, productName: 'Leaking'})
+                                                                +modelList({isList:true, categoryType: true, categoryName: 'Noise', productLength: 4, productName: 'Noise'})
+                                                                +modelList({isList:true, categoryType: true, categoryName: 'Icemaker issues', productLength: 4, productName: 'Icemaker issues'})
+                                                                +modelList({isList:true, categoryType: true, categoryName: 'etc', productLength: 4, productName: 'etc'})
+                                                                +modelList({isList:true, categoryType: true, categoryName: 'Cooling', productLength: 5, productName: 'Cooling'}) 
+                                            .c-warning.font-m-normal-14i.font-w-normal-14i.c-subtopic-required Select your sub topic is required.
+                            // When selecting Symptoms, if there is data according to the selected item, Symptoms for solution area is exposed (Video & Article)   
+                            .cs-form__wrap          
+                                .cmp-form#solution
+                                    +csForm_Select({id: 'select1', label: 'Symptoms for solution ', require: 'false', requireMsg: 'Symptoms for solution is required.  ​', value_01: 'Touch for solution', value_02: 'Touch for solution-2', class:'c-responsavel-valid' })  
+                                .cmp-form  
+
+                    .c-button-wrap
+                        .button.c-cta
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-next")
+                when 2
+                    section 
+                        dl
+                            dt.font-m-normal-20.font-w-normal-24 2-1. Issue details
+                            dd.font-m-normal-12.fonw-w-normal-16 Choose symptoms from the drop-downs, and provide a detailed description of the issue.
+                        .cs-form
+                            .cmp-form
+                                label(for="symptoms").c-select-label.font-m-normal-16.font-w-normal-24 Symptoms #[em.require *]#[span.sr-only Required Field] 
+                                .c-list-area.type-accordion.type-product 
+                                    .mobile-only    
+                                        .c-list-area__box
+                                            .c-list-area__scroll
+                                                // 20230321 add class :: error msg add class .list-type--error
+                                                .c-accordion.list-type.js-accordion(role="list")
+                                                    each faq, index in productList
+                                                        - var controlsId = `faq-set-0${index}`;
+                                                        +pack2(faq, controlsId)
+                                        .c-warning.c-topic-required02 Select your topic is required.
+                                        .c-warning.font-m-normal-14i.font-w-normal-14i.c-subtopic-required02 Select your sub topic is required.
+
+                                    .pc-only 
+                                        div
+                                            // 20230321 modify class :: error msg add class .c-list-area__box-wrap--error
+                                            .c-list-area__box-wrap
+                                                .c-list-area__box.c-list-area__box-topic
+                                                    .c-list-area__scroll
+                                                        // 20230317 add .c-list-area__scroll-inner
+                                                        .c-list-area__scroll-inner
+                                                            .c-wide-list(role="list")
+                                                                // block : modelList
+                                                                // active : --active
+                                                                //- +modelList({isList:true, categoryType: false, productName: 'All Topic'})
+                                                                +modelList({isList:true, categoryType: false, productName: 'Cooling'})    
+                                                                +modelList({isList:true, categoryType: false, productName: 'Door'})   
+                                                                +modelList({isList:true, categoryType: false, productName: 'Leaking'})    
+                                                                +modelList({isList:true, categoryType: false, productName: 'Noise'})    
+                                                                +modelList({isList:true, categoryType: false, productName: 'Icemaker issues'})    
+                                                                +modelList({isList:true, categoryType: false, productName: 'Cooling'})    
+                                                                +modelList({isList:true, categoryType: false, productName: 'Cooling'})    
+                                            .c-warning.c-topic-required Select your topic is required.
+
+                                        div
+                                            // 20230321 modify class :: error msg add class .c-list-area__box-wrap--error
+                                            .c-list-area__box-wrap.c-list-area__box-category
+                                                p.c-list-area__disabled-text.font-w-normal-16 After selecting main topic, sub topic is exposed.
+                                                    <br>If there is no sub topic, don't need to select it.
+                                                .c-list-area__box.c-list-area__box-subtopic
+                                                    .c-list-area__scroll
+                                                        // 20230317 add .c-list-area__scroll-inner
+                                                        .c-list-area__scroll-inner
+                                                            .c-wide-list(role="list")
+                                                                // block : modelList
+                                                                - for (var x = 0; x < 1; x++)
+                                                                //- +modelList({isList:true, categoryType: false, productName: 'All sub topic'}) 
+                                                                +modelList({isList:true, categoryType: true, categoryName: 'Cooling', productLength: 5, productName: 'Cooling'}) 
+                                                                +modelList({isList:true, categoryType: true, categoryName: 'Door', productLength: 8, productName: 'Door'})
+                                                                +modelList({isList:true, categoryType: true, categoryName: 'Leaking', productLength: 1, productName: 'Leaking'})
+                                                                +modelList({isList:true, categoryType: true, categoryName: 'Noise', productLength: 4, productName: 'Noise'})
+                                                                +modelList({isList:true, categoryType: true, categoryName: 'Icemaker issues', productLength: 4, productName: 'Icemaker issues'})
+                                                                +modelList({isList:true, categoryType: true, categoryName: 'etc', productLength: 4, productName: 'etc'})
+                                                                +modelList({isList:true, categoryType: true, categoryName: 'Cooling', productLength: 5, productName: 'Cooling'}) 
+                                            .c-warning.font-m-normal-14i.font-w-normal-14i.c-subtopic-required Select your sub topic is required.
+                            // When selecting Symptoms, if there is data according to the selected item, Symptoms for solution area is exposed (Video & Article)     
+                    .c-button-wrap
+                        .button.c-cta
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-next")
+                when 3
+                    div
+                        .c-result__txtBox.font-m-normal-12.font-w-normal-16 My symptom : 
+                            | Dispenser &gt; Dispenser light
+                    .button.c-cta
+                        +linkButton({type:"text", color:"black", name: "Edit"})(role="button")
+                when 4
+                    div
+                        .c-result__txtBox.font-m-normal-12.font-w-normal-16 My symptom &gt;
+                    .button.c-cta
+                        +linkButton({type:"text", color:"black", name: "Edit"})(role="button")    
+                when 5
+                    .c-no-result 
+                        .c-no-result__wrap
+                            span.c-no-result__icon 
+                            p.font-m-normal-16.font-w-normal-20 There is no symptom data with the model. Click the next button to continue the remaining steps.
+                    .c-button-wrap
+                        .button.c-cta
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-next")
+
+    mixin roleList(item)
+        if item 
+            .c-wide-list__item(role="listitem" tabindex="0")
+                if block
+                    block
+        else
+            .c-wide-list__item
+                if block
+                    block
+    mixin roleList3(item)
+        if item 
+            .c-wide-list__item(role="listitem" tabindex="-1")
+                if block
+                    block
+        else
+            .c-wide-list__item
+                if block
+                    block
+
+    mixin modelList(params)
+        - var option={contents:both, isList:false, linkType: false, categoryType: false, categoryName: '', productLength: '', productName: '', ...params}
+            if option.categoryType
+                .c-wide-list__item-category
+                    .category-text 
+                        //- p #{option.categoryName}
+                    //- +roleList(option.isList)
+                    //-     // block : text-contents 
+                    //-     a(href="#")
+                    //-         p.c-text-contents #{option.productAllName}
+                    - for (var x = 0; x < option.productLength; x++)
+                        +roleList3(option.isList)
+                            // block : text-contents 
+                            a(href="#none" data-link-name data-link-destination data-link-menu data-link-page-type)
+                                p.c-text-contents #{option.productName}
+            else if option.linkType
+                +roleList(option.isList)
+                    a(href="#solution" role="button")
+                        // block : text-contents 
+                        p.c-text-contents #{option.productName}
+            else
+                +roleList(option.isList)
+                    // block : text-contents 
+                    p.c-text-contents #{option.productName}
+
+    mixin contentsBody2
+        .c-wide-list(role="list")
+            +modelList({isList:true, linkType: true, productName: 'productlist'}) 
+            +modelList({isList:true, linkType: true, productName: 'productlist'}) 
+            +modelList({isList:true, linkType: true, productName: 'productlist'}) 
+            +modelList({isList:true, linkType: true, productName: 'productlist'}) 
+            +modelList({isList:true, linkType: true, productName: 'productlist'}) 
+            +modelList({isList:true, linkType: true, productName: 'productlist'}) 
+
+    mixin pack2(faq, controlsId)
+        .c-accordion__box.js-accordion-handle-target(role="listitem")
+            .c-accordion__head
+                .c-accordion__head-text.c-text-contents #{faq.productName}
+                +trigger(controlsId)
+            .c-accordion__body(id=`${controlsId}`)
+                +contentsBody2
+
+
+    .guide-text-type Call Appointment_symptom (Defalut)
+        br
+        | Video Consultation_symptom (IN)
+        br
+        |  Live remote service appointment (CA_EN, CA_FR)
+    
+    // 20230321 full markup change
+    // Component Markup
+    .c-wrapper.CS0104.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0104__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(faq, 1, controlsId, selected)
+
+    .guide-text-type Call Appointment_symptom (No solution)
+        br
+        | Video Consultation_symptom (IN)
+        br
+        |  Live remote service appointment (CA_EN, CA_FR)
+    
+    //- // 20230321 full markup change
+    //- // Component Markup
+    .c-wrapper.CS0104.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0104__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(faq, 2, controlsId)
+
+    .guide-text-option complete(default)
+    .c-wrapper.CS0104.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0104__container
+                // Add class when displaying complete - .type-accordion__result
+                .c-accordion.js-accordion.type-accordion__result
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(faq, 3, controlsId)
+
+    .guide-text-option complete(no No solution)
+    .c-wrapper.CS0104.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0104__container
+                // Add class when displaying complete - .type-accordion__result
+                .c-accordion.js-accordion.type-accordion__result
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(faq, 4, controlsId)
+
+    .guide-text-option no data
+    .c-wrapper.CS0104.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0104__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(faq, 5, controlsId)
+
+

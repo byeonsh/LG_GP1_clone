@@ -1,0 +1,174 @@
+extends ../../components/_common/_layout.pug
+include ../../components/_common/_index.pug
+//- include ../_common/_cart-price-total.pug
+
+block meta 
+    - var CM0007 = "CM0007"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title Checkout
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href="../../components/CM0001/CM0001.css")
+    link(rel="stylesheet", href="../../components/CM0002/CM0002.css")
+    link(rel="stylesheet", href="../../components/CT000C/CT000C.css")
+    link(rel="stylesheet", href="../../components/CT000C/CT0301.css")
+    link(rel="stylesheet", href="../../components/CT000C/CT0302.css")
+    link(rel="stylesheet", href="../../components/CT000C/CT0303.css")
+    //- link(rel="stylesheet", href="../../components/CT000D/CT0402.css")
+    link(rel="stylesheet", href="../../components/CM0007/CM0007.css")
+
+block scripts
+    script(src="../../components/CM0001/CM0001.js" type="module")
+    script(src="../../components/CM0002/CM0002.js" type="module")
+    script(src="../../components/CT000C/CT000C.js" type="module")
+    script(src="../../components/CT000C/CT0301.js" type="module")
+    script(src="../../components/CT000C/CT0302.js" type="module")
+    script(src="../../components/CT000C/CT0303.js" type="module")
+    script(src="../../components/CM0007/CM0007.js" type="module")
+
+block header
+    include ../../components/CM0001/CM0001-inc.pug
+    +CM0001()
+
+block content
+    // Component Markup
+    .c-wrapper.no-crop.CT000C
+        .component
+            .fluid-container
+                //- include ../../components/CT000D/CT0402-inc.pug
+                //- +CT0402()
+                .my-component.my-component--buy.buy-summary-area.margin-top
+                    .buy-summary-area__primary.buy-summary-area__primary--padding.shipping_address
+                        .buy-checkout
+                            include ./CT0301-AU-inc.pug
+                            +CT0301()
+                            include ./CT0302-AU-inc.pug
+                            +CT0302("member", "au")
+                            +CT0302("guest")
+                            +CT0302("before")
+                            //- +CT0302("complete")
+                            include ./CT0303-AU-inc.pug
+                            +CT0303("before")
+                            +CT0303("default", "au")
+                            //- +CT0303("complete")
+                        //- .guide-text-option Option : Digital River(default)
+                        +footerInfoDR()
+                    //- indicate product information 
+                    .buy-summary-area__secondary
+                        .buy-summary-area__payment.buy-sticky-no
+                            +cartPriceTotal([
+                                {
+                                    unitPosition: 'left',
+                                    unitName: '$',
+                                    isMobileBottomFixed: true,
+                                    useToggleFoldBtn: true,
+                                    isStickyBottom: true,
+                                    discount: true,
+                                    taxInclude: true,
+                                    taxIncludeVat:true,
+                                    coupon: false,
+                                    shippingIn: true,
+                                    service: true,
+                                    card: false,
+                                    point: false,
+                                    checkoutDiscount: "-$209.90",
+                                    btnName:"Place Order",
+                                    close: true,
+                                    isBtnDisabled: true,
+                                },
+                            ])
+    include ../../components/CM0007/CM0007-inc.pug
+    +CM0007()
+
+block footer
+    include ../../components/CM0002/CM0002-inc.pug
+    +CM0002
+
+block modal
+    .mem-modal
+        +pop-msg-standard({id : `CalendarPopup`, size: "large"})
+            .Buy-calendar
+                .Buy-calendar__box
+                //- (5월 이후 고도화)
+                //- .Buy-calendar__radiobox
+                //-     .Buy-calendar__radio
+                //-         .Buy-calendar__radio-item
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("All day","name", "val1", "radioId1")
+                //-             span.font-w-normal-16.font-m-normal-14 £0
+                //-         .Buy-calendar__radio-item.Buy-calendar__radio-item--disabled
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("10:00 - 17:00","name", "val2", "radioId2")(disabled)
+                //-             span.font-w-normal-16.font-m-normal-14 Not available
+                //-         .Buy-calendar__radio-item
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("16:00 - 17:00","name", "val3", "radioId3")
+                //-                 .Buy-calendar__radio-miximum.font-red Maximum order capacity is almost full.
+                //-             span.font-w-normal-16.font-m-normal-14 £0
+                //-         .Buy-calendar__radio-item
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("18:00 - 19:00","name", "val4", "radioId4")
+                //-             span.font-w-normal-16.font-m-normal-14 £0
+                //-         .Buy-calendar__radio-item
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("20:00 - 21:00","name", "val5", "radioId5")
+                //-             span.font-w-normal-16.font-m-normal-14 £0
+                //-         .Buy-calendar__radio-item
+                //-             .Buy-calendar__radio-info
+                //-                 +formRadio("22:00 - 23:00","name", "val6", "radioId6")  
+                //-             span.font-w-normal-16.font-m-normal-14 £0
+                .button.Buy-calendar__button
+                    +defaultButton({name: 'Save', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})(class='js-close--btn')
+    .CT0019
+        .CT-Afterpay
+            .mem-modal.buy-Afterpay
+                +pop-msg-standard({id : "AfterpayPopup", headline:"Pay with Afterpay", size: "large", headerBorder: true})
+                    .mem-scroll 
+                        .mem-scroll__container 
+                            .buy-Afterpay__header
+                                img.buy-Afterpay__logo(src=`../../assets/icon/icon-afterpay-popup-logo-240-50.svg`, alt="icon-payment-au-zip-pay")
+                                p.font-w-normal-24.font-m-normal-16 Shop now. Pay later. Always interest-free.
+                                ul.buy-Afterpay__list
+                                    li.buy-Afterpay__item 
+                                        i.buy-Afterpay__icon.buy-Afterpay__icon--cart
+                                            span.sr-only cart
+                                        p.font-w-normal-16.font-m-normal-14 Add your Favourites to cart
+                                    li.buy-Afterpay__item 
+                                        i.buy-Afterpay__icon.buy-Afterpay__icon--checkout
+                                            span.sr-only checkout
+                                        p.font-w-normal-16.font-m-normal-14 Select Afterpay at checkout
+                                    li.buy-Afterpay__item 
+                                        i.buy-Afterpay__icon.buy-Afterpay__icon--account
+                                            span.sr-only account
+                                        p.font-w-normal-16.font-m-normal-14 Log into or create your Afterpay account, with instant approval decision
+                                    li.buy-Afterpay__item 
+                                        i.buy-Afterpay__icon.buy-Afterpay__icon--installment
+                                            span.sr-only installment
+                                        p.font-w-normal-16.font-m-normal-14 Your purchase will be split into 4 payments, payable every 2 weeks
+                            .buy-Afterpay__text
+                                p.font-w-normal-16.font-m-normal-16 All you need to appply is to have a debit or credit card, to be over 18 years of age, and to be a resident of Australia.
+                                    |
+                                    br 
+                                    | 
+                                    br
+                                    | Late fees and additional eligibility criteria apply. The first payment may be due at the time of purchase. For complete terms visit afterpay.com/en-AU/terms.
+                                .buy-Afterpay__text-info
+                                    p.font-w-normal-14.font-m-normal-14 LG Electronics Australia is offering Afterpay to online customers for orders up to the value of $3,000.
+                                    p.font-w-normal-14.font-m-normal-14 Click below to find out more :
+                                        a.buy-Afterpay__text-info__link.cmp-button.c-button.c-button--text-underline.red(href="#" target="_blank" data-cmp-data-layer data-link-url="")
+                                            span.cmp-button__text.c-button__text How it Work and FAQs
+                            // [Start] 2023-09-25 : UPDATE - popup close button
+                            //- .button.align-text-center
+                            //-     +defaultButton({name: 'Close', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+                            .button.align-text-center
+                                +defaultButton({
+                                    name: "Close",
+                                    wSize:"medium", 
+                                    mSize:"medium",
+                                    buttonStyle : "highlight",
+                                    isButton : true 
+                                })(class="c-pop-msg__close-btn js-pop-close" aria-controls="")
+                            // [End] 2023-09-25 : UPDATE - popup close button

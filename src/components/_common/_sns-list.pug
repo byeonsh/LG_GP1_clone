@@ -1,0 +1,114 @@
+mixin snsItem(isWechat, mobileOnly)
+    if(isWechat)
+        li.c-list__item(class=`bdsharebuttonbox ${mobileOnly}`)
+            if block 
+                block
+    else 
+        li.c-list__item(class=`${mobileOnly}`)
+            if block 
+                block
+
+mixin snsButton(params)
+    //- 상위에 .button 클래스 추가해야합니다.
+    - var option={sns:'', href:"#", target:'_self', roleButton: false, comment: false, ...params}
+    - var otherClass = option.otherClass ? ` ${option.otherClass}` : ''
+    - var mobileOnly = option.sns == '' ? 'mobile-only' : ''
+    +snsItem(option.sns == 'wechat', mobileOnly)
+        .button
+            - var attributes = {}
+            if(option.sns == 'link')
+                // link
+                - var dataUrl = option.dataUrl ? `${option.dataUrl}` : ''
+                - var dataText = option.dataText ? `${option.dataText}` : ''
+                - var attributes = {...attributes, "data-copyurl":dataUrl, "data-text":dataText, "role":"button"}
+            if(option.sns == 'facebook' || option.sns == 'ok')
+                // Facebook
+                - var dataUrl = option.dataUrl ? `${option.dataUrl}` : ''
+                - var attributes = {...attributes, "data-url":dataUrl, "role":"button"}
+            if(option.sns == 'twitter-X')
+                // Twitter-X
+                - var dataUrl = option.dataUrl ? `${option.dataUrl}` : ''
+                - var dataTitle = option.dataTitle ? `${option.dataTitle}` : ''
+                - var dataVia = option.dataVia ? `${option.dataVia}` : ''
+                - var attributes = {...attributes, "data-url":dataUrl, "data-title":dataTitle, "data-via":dataVia, "role":"button"}
+            if(option.sns == 'vk')
+                // VK
+                - var dataUrl = option.dataUrl ? `${option.dataUrl}` : ''
+                - var dataTitle = option.dataTitle ? `${option.dataTitle}` : ''
+                - var attributes = {...attributes, "data-url":dataUrl, "data-title":dataTitle, "role":"button"}
+            if(option.sns == 'email' || option.sns == 'linkedin')
+                // email
+                - var attributes = {...attributes, "role":"button"}
+            if(option.sns == 'wechat')
+                // Wechat
+                - var dataUrl = option.dataUrl ? `${option.dataUrl}` : ''
+                - var attributes = {...attributes, "data-url":dataUrl, "data-cmd":"weixin", "data-text": "LG CN", "role":"button"}
+            if(option.sns == 'pinterest' || option.sns == 'weibo')
+                // pinterest or weibo
+                - var dataUrl = option.dataUrl ? `${option.dataUrl}` : ''
+                - var dataTitle = option.dataTitle ? `${option.dataTitle}` : ''
+                - var dataImage = option.dataImage ? `${option.dataImage}` : ''
+                - var attributes = {...attributes, "data-url":dataUrl, "data-title":dataTitle, "data-image":dataImage, "role":"button"}
+            if(option.comment)
+                if(option.sns == 'link')
+                    // We temporarily put a uk page, but please enter the url to share in 'data-copyurl'.
+                else
+                    // We temporarily put a uk page, but please enter the url to share in 'data-url'.
+            // GA4
+            a(href=option.href class=`cmp-button c-sns-button c-sns-button--${option.sns}${otherClass}` target=`${option.target}` data-cmp-data-layer="" data-link-name=(attributes.role == null))&attributes(attributes)
+                span.cmp-button__text.c-sns-button__text.sr-only #{option.name}
+mixin snsList
+    .c-text-contents
+        .text.c-text-contents__bodycopy.align-text-center
+            .cmp-text.font-w-normal-14.font-m-normal-14i(data-cmp-data-layer="")
+                p Share this content.<br> You can share the items you like with your friends.
+        //- block : list
+        ul.c-list
+            +snsButton({sns:"facebook",name:"Facebook",target:"_self",dataUrl:'https://www.lg.com/uk', comment:true})
+            +snsButton({sns:"twitter-X",name:"Twitter-X",target:"_self", dataUrl:"https://www.lg.com/uk", dataTitle:"page title", dataVia:"LGUS", comment:true})
+            +snsButton({sns:"pinterest",name:"Pinterest",target:"_self", dataUrl:"https://www.lg.com/uk", dataTitle:"page title", dataImage:"https://www.lg.com/lg4-common/img/global/share/share-default.jpg", comment:true})
+            +snsButton({sns:"email",name:"E-mail",target:"_self"})
+            // 22-11-01 modified [s] HK/HK_EN
+            +snsButton({sns:"link", name:"Link",href:"#popCopyComplete",target:"_self",dataUrl:'https://www.lg.com/uk', roleButton:true, comment:true})
+            // CN/HK/HK_EN
+            +snsButton({sns:"weibo",name:"weibo",target:"_self", dataUrl:"https://www.lg.com/uk", dataTitle:"page title", dataImage:"https://www.lg.com/lg4-common/img/global/share/share-default.jpg", comment:true})
+            // 23-05-19 modified [s]
+            +snsButton({sns:"wechat",name:"wechat",target:"_self"})
+            // KZ/RU
+            +snsButton({sns:"whatsapp",name:"whatsapp", href:"https://wa.me/?text=https://www.lg.com/kz/monitors/lg-22MK430H-B", target:"_blank", roleButton:"true"})
+            // 23-06-20 HK, HK_EN
+            +snsButton({sns:"vk",name:"vk",target:"_self",dataUrl:"https://www.lg.com/uk", dataTitle:"page title", comment:true})
+            // RU
+            +snsButton({sns:"ok",name:"ok",target:"_self",dataUrl:"https://www.lg.com/uk", comment:true})
+            // HR/BG/HU/RS
+            +snsButton({sns:"linkedin",name:"linkedin",target:"_self",dataUrl:"https://www.lg.com/uk", comment:true})
+            // CN
+            // '/cn/baidumap/baiduShare-master/static/api/js/share.js?v=89860593.js' The file should be in that location.
+            +snsButton({sns:"youtube",name:"youtube",href:"https://www.youtube.com/user/LGdoBrasil", target:"_blank"})
+            +snsButton({sns:"instagram",name:"instagram",href:"https://www.instagram.com/lgdobrasil", target:"_blank"})
+            // 22-11-01 modified [e]
+
+
+mixin promotionSns
+    //- block : list
+    ul.c-list
+        +snsButton({sns:"facebook",name:"Facebook",target:"_self",dataUrl:'https://www.lg.com/uk', comment:true})
+        +snsButton({sns:"twitter",name:"Twitter",target:"_self", dataUrl:"https://www.lg.com/uk", dataTitle:"page title", dataVia:"LGUS", comment:true})
+        +snsButton({sns:"pinterest",name:"Pinterest",target:"_self", dataUrl:"https://www.lg.com/uk", dataTitle:"page title", dataImage:"https://www.lg.com/lg4-common/img/global/share/share-default.jpg", comment:true})
+        // KZ/RU
+        +snsButton({sns:"vk",name:"vk",target:"_self",dataUrl:"https://www.lg.com/uk", dataTitle:"page title", comment:true})
+        // RU
+        +snsButton({sns:"ok",name:"ok",target:"_self",dataUrl:"https://www.lg.com/uk", comment:true})
+        // HR/BG/HU/RS
+        +snsButton({sns:"linkedin",name:"linkedin",target:"_self",dataUrl:"https://www.lg.com/uk", comment:true})
+        // CN/HK/HK_EN
+        +snsButton({sns:"weibo",name:"weibo",target:"_self", dataUrl:"https://www.lg.com/uk", dataTitle:"page title", dataImage:"https://www.lg.com/lg4-common/img/global/share/share-default.jpg", comment:true})
+        // CN
+        +snsButton({sns:"wechat",name:"wechat",target:"_self"})
+        +snsButton({sns:"email",name:"E-mail",target:"_self"})
+        +snsButton({sns:"youtube",name:"youtube",href:"https://www.youtube.com/user/LGdoBrasil", target:"_blank"})
+        +snsButton({sns:"instagram",name:"instagram",href:"https://www.instagram.com/lgdobrasil", target:"_blank"})
+        // KZ : Apply Only on mobile version
+        +snsButton({sns:"whatsapp",name:"whatsapp", href:"https://wa.me/?text=https://www.lg.com/kz/monitors/lg-22MK430H-B", target:"_blank", roleButton:"true"})
+        +snsButton({sns:"link", name:"Link",href:"#popCopyComplete",target:"_self",dataUrl:'https://www.lg.com/uk', roleButton:true, comment:true})
+//- promotion 추가

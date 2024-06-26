@@ -1,0 +1,762 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_forms.pug
+include ../_common/_filter.pug
+include ../_common/_brand-detail.pug
+include ../_common/_product-list.pug
+include ../_common/_pagination.pug
+
+block meta 
+    - var componentId = "PD0035"
+    - var componentName = "Where to buy (CN)"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+    <meta name="ps-account" content="1698">
+    <meta name="ps-config" content="59d4fb4e369c750034b61c08">
+    <meta name="ps-country" content="CA">
+    <meta name="ps-language" content="en">
+
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        'body' : [
+                            {
+                                'name' : 'Dark Theme',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'dark-theme'},
+                                ]
+                            }
+                        ],
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'BG Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'bg-default', 'remove' : 'bg-white, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-white', 'remove' : 'bg-default, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-lightgray', 'remove' : 'bg-default, bg-white, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-darkgray', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-black', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-darkgray'},
+                                ]
+                            },
+                        ],
+                    };
+
+
+    mixin categoryFilter()
+        form.cmp-form.c-category-filter
+            fieldset.c-category-filter__inner
+                legend.sr-only Select a Product to Review
+                .c-category-filter__body
+                    .c-form__item
+                        +formSelect("城市", "selectCity", "Select a City", false)(class="js-select-product" required)
+                            option(value="" disabled selected) Select City
+                            option(value="city1") City 1
+                            option(value="city2") City 2
+                            option(value="city3") City 3
+                        .c-warning.hidden Model number is required.
+
+    mixin onlineListItem(link, name, cta)
+        - var nameStyle = "font-w-normal-24 font-m-normal-16"
+        
+        // GA4
+        a.c-online-shop-item(href=`${link}` data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+            .image.c-image.c-online-shop-item__top
+                +printLazyImage('https://via.placeholder.com/180x60/999999/333333').c-online-image-web
+                +printLazyImage('https://via.placeholder.com/80x28/999999/333333').c-online-image-mobile
+            if(name || cta)
+                .c-online-shop-item__bottom
+                    if(name)
+                        p.c-online-shop-name(class=nameStyle) amazon
+                    if(cta)
+                        +defaultButton({
+                            name : "Buy Now",
+                            wSize : "small",
+                            mSize : "small",
+                            buttonStyle : "default",
+                            isButton : "none"
+                        })(class="c-online-shop-button")
+
+    mixin printTab(div, num, selected)
+        if selected
+            li.c-tabs__tab.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0", data-cmp-hook-tabs="tab", aria-selected="true")
+                if block
+                    block
+        else 
+            li.c-tabs__tab.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1", data-cmp-hook-tabs="tab", aria-selected="false")
+                if block
+                    block
+
+    mixin printTabPanel(div, num, selected)
+        if selected 
+            .c-tabs__tabpanel.cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+        else 
+            .c-tabs__tabpanel.cmp-tabs__tabpanel(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+
+    mixin mapSearchBox
+        //- block : c-map-search__box
+        form.cmp-form.c-map-search__box(action="#" method="get")&attributes(attributes)
+            .c-map-search__box-inner
+                label.sr-only(for='finderSearch') search
+                input.c-map-search__box-input(type='text' id='finderSearch' placeholder='请输入地址')
+                .c-map-search__box-button
+                    button(type="submit").c-icon-search
+                        span.sr-only search
+                    p.c-map-search__box-divider
+                    button(type="button").c-icon-place
+                        span.sr-only location
+            if block
+                block
+
+    mixin mapSearchResultBrand(params)
+        +brandMapSearchPdp(params)
+
+    mixin mapTooltipBrand
+        +brandDetailItem(
+            {
+                brandLogo: {src: 'https://via.placeholder.com/80x28/999999/333333'},
+                brandDistance: '2.2 KM',
+                brandName: 'Paulson’s',
+                brandAddr: {address: '1880 Broadway New York, NY 10023, United States', hasExport: false, fontStyle: 'font-w-normal-14 font-m-normal-14'},
+                contact: [
+                    {type: 'phone', number: ['212-246-9734']},
+                ],
+                buttons: [
+                    {name: 'Get Directions'}
+                ],
+                category: {title: 'Product Category', text: ['Blu-ray & DVD Players, FridgeBlu-ray & DVD Players', 'Blu-ray & DVD Players, FridgBlu-ray']},
+            }
+        )
+
+    mixin mapDirectionDefault(type, direction, pin, text)
+        //- - var bg = type ? 'c-box-gray' : ''
+        - var itmType = type ? direction : 'item'
+        - var color = direction == 'departure' ? 'is-black' : ''
+        - var indent = pin == 'car' ? 'c-pin-text__indent' : ''
+        
+        .c-pin-text(class=`c-map-direction__result-${itmType}`)
+            .c-pin-text__pin
+                if type
+                    .c-pin-text__pin
+                        .c-map__pin(class=`${color}`)= pin
+                else
+                    .c-pin__icon(class=`${pin}`)
+                        span.sr-only= pin
+            if block
+                block
+
+    mixin mapDirectionResultTitle(direction, pin, text)
+        - var fontStyle = "font-w-normal-16 font-m-normal-14"
+
+        +mapDirectionDefault(true, direction, pin, text) 
+            .c-pin-text__content(class=fontStyle)= text
+
+    mixin mapDirectionResultItem(pin)
+        +mapDirectionDefault(false, '', pin, '')
+            .c-pin-text__content
+                if block
+                    block
+    
+    - var headlineStyle = "font-w-light-56 font-m-light-28"
+    - var bodyStyle = "font-w-normal-24 font-m-normal-12"
+    - var noDataTitleStyle = "font-w-normal-24 font-m-normal-20"
+    - var noDataDescStyle = "font-w-normal-16 font-m-normal-16"
+
+    .guide-text-type Type01. Default
+    .c-wrapper.PD0035.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+
+                //- block : shop
+                .c-online-shop
+                    .c-text-contents
+                        .c-text-contents__headline
+                            +headline(headlineStyle, "h2", "在线购买")
+                        .text.c-text-contents__bodycopy
+                            p.cmp-text(data-cmp-data-layer="" class=bodyStyle) Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.<br>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+
+                    //- input(name=bvCampaignId)
+                    +categoryFilter
+                    
+                    .c-online-shop-list
+                        - for (var x = 0; x < 10; x++)
+                            +onlineListItem('#', true, true)
+
+                    p.c-online-shop-desc.font-w-normal-16.font-m-normal-12 *我们将在每天9:00对以下电商的库存状态进行更新，给您带来的不便敬请谅解。
+
+                    .button.align-text-center.c-online-shop-bottom
+                        +textButton({
+                            name: 'More', 
+                            wSize: 'medium', 
+                            mSize: 'small', 
+                            buttonStyle: 'down', 
+                            isButton: true
+                        })
+
+                //- block : search
+                .c-search-box
+                    .c-text-contents.c-search-box__header
+                        .c-text-contents__headline
+                            +headline(headlineStyle, "h2", "线下门店")
+                    //- element : .c-search-box__body(--multi, --double)
+                    form.cmp-form.c-search-box__body.c-search-box__body--multi(action="#" method="get")
+                        //- element : c-search-box__form
+                        .c-search-box__form
+                            +formSelect("省", "findState", "省", false)
+                                option(value="") 省
+                                option(value="state1") State1
+                                option(value="state2") State2
+                                option(value="state3") State3
+                            +formSelect("城市", "findCity", "城市", false)
+                                option(value="") 城市
+                                option(value="city1") City1
+                                option(value="city2") City2
+                                option(value="city3") City3
+                            +formSelect("产品名称", "findMainCategory", "产品名称", false)(class="c-search-box__main")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                            +formSelect("产品名称", "findSubCategory", "产品名称", false)(class="c-search-box__sub" disabled="disabled")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                        .button.c-search-box__button
+                            +defaultButton({
+                                name : "搜索",
+                                wSize : "medium",
+                                mSize : "small",
+                                buttonStyle : "highlight",
+                                isButton : true,
+                            })(type="submit")
+
+                //- block : c-map-search
+                //- 검색타입 : is-search
+                //- 길찾기, 검색 없는 리스트 : is-direction
+                .c-map-search.is-direction
+                    .c-map-search__inner
+                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                            span.sr-only Collapse
+                            span.sr-only Expand
+                        //- +mapSearchBox
+                        //- block : c-map
+                        .c-map
+                            .c-map__inner
+                                //- element : c-map__pin
+                                .c-map__pin 2
+                                .c-map__pin.is-active 1
+                                //- element : c-map-tooltip
+                                .c-map-tooltip
+                                    .c-map-tooltip__container
+                                        .button
+                                            button(type="button").c-map-tooltip__close
+                                                span.sr-only Close
+                                        //- block : c-brand-detail
+                                        .c-map-tooltip__contents
+                                            +mapTooltipBrand()
+                                //- google map
+                        .c-map-search__body
+                            //- result
+                            .c-map-search__result
+                                //- block : c-tabs
+                                .c-tabs.tabs.panelcontainer.c-tabs__button
+                                    .cmp-tabs.c-tabs__wrap(data-cmp-data-layer="", data-placeholder-text="false")
+                                        //- RO V0.1 Tab Menu hidden
+                                        //- tab
+                                        .c-tabs__inner
+                                           ul.c-tabs__tablist.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                               +printTab(1, 1, true) 销售网点
+                                               +printTab(1, 2, false) 维修网络
+
+                                        //- tab panel | RO V0.1 isExport: flase
+                                        +printTabPanel(1, 1, true)
+                                            .c-brand-detail-list
+                                                +mapSearchResultBrand({ isPin: false, isExport: flase, isToggle: false })
+                                                +mapSearchResultBrand({ isPin: true, isExport: flase, isToggle: true })
+                                                +mapSearchResultBrand({ isPin: false, isExport: flase, isToggle: false })
+                                        //- RO V0.1 Tab Menu hidden
+                                        +printTabPanel(1, 2, false)
+                                           .c-brand-detail-list
+                                               +mapSearchResultBrand({ isPin: false, isExport: flase, isToggle: false })
+                                               +mapSearchResultBrand({ isPin: true, isExport: flase, isToggle: true })
+                                               +mapSearchResultBrand({ isPin: false, isExport: flase, isToggle: false })
+                            .c-map-search__pagenation
+                                +paginationFraction
+    
+    .guide-text-type Type02. Message
+    .c-wrapper.PD0035.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+
+                //- block : search
+                .c-search-box
+                    .c-text-contents.c-search-box__header
+                        .c-text-contents__headline
+                            +headline(headlineStyle, "h2", "线下门店")
+                    //- element : .c-search-box__body(--multi, --double)
+                    form.cmp-form.c-search-box__body.c-search-box__body--multi(action="#" method="get")
+                        //- element : c-search-box__form
+                        .c-search-box__form
+                            +formSelect("省", "findState", "省", false)
+                                option(value="") 省
+                                option(value="state1") State1
+                                option(value="state2") State2
+                                option(value="state3") State3
+                            +formSelect("城市", "findCity", "城市", false)
+                                option(value="") 城市
+                                option(value="city1") City1
+                                option(value="city2") City2
+                                option(value="city3") City3
+                            +formSelect("产品名称", "findMainCategory", "产品名称", false)(class="c-search-box__main")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                            +formSelect("产品名称", "findSubCategory", "产品名称", false)(class="c-search-box__sub" disabled="disabled")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                        .button.c-search-box__button
+                            +defaultButton({
+                                name : "搜索",
+                                wSize : "medium",
+                                mSize : "small",
+                                buttonStyle : "highlight",
+                                isButton : true,
+                            })(type="submit")
+
+                //- block : c-map-search
+                //- 검색타입 : is-search
+                //- 길찾기, 검색 없는 리스트 : is-direction
+                .c-map-search.is-direction
+                    .c-map-search__inner
+                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                            span.sr-only Collapse
+                            span.sr-only Expand
+                        //- +mapSearchBox
+                        //- block : c-map
+                        .c-map
+                            .c-map__inner
+                                //- google map
+                        .c-map-search__body
+                            //- result
+                            .c-map-search__result
+                                //- block : c-tabs
+                                .c-tabs.tabs.panelcontainer.c-tabs__button
+                                    .cmp-tabs.c-tabs__wrap(data-cmp-data-layer="", data-placeholder-text="false")
+                                        //- RO V0.1 Tab Menu hidden
+                                        //- tab
+                                        //-.c-tabs__inner
+                                        //-    ul.c-tabs__tablist.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                        //-        +printTab(2, 1, true) 销售网点
+                                        //-        +printTab(2, 2, false) 维修网络
+
+                                        //- tab panel
+                                        +printTabPanel(2, 1, true)
+                                            .c-no-data-wrap.small 
+                                                .c-no-data 
+                                                    strong(class=noDataTitleStyle) 请输入位置
+                                        //- RO V0.1 Tab Menu hidden            
+                                        //-+printTabPanel(2, 2, false)
+                                        //-    .c-no-data-wrap.small 
+                                        //-        .c-no-data 
+                                        //-            strong(class=noDataTitleStyle) 请输入位置
+    
+    .guide-text-type Type03. No Results
+    .c-wrapper.PD0035.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+
+                //- block : search
+                .c-search-box
+                    .c-text-contents.c-search-box__header
+                        .c-text-contents__headline
+                            +headline(headlineStyle, "h2", "线下门店")
+                    //- element : .c-search-box__body(--multi, --double)
+                    form.cmp-form.c-search-box__body.c-search-box__body--multi(action="#" method="get")
+                        //- element : c-search-box__form
+                        .c-search-box__form
+                            +formSelect("省", "findState", "省", false)
+                                option(value="") 省
+                                option(value="state1") State1
+                                option(value="state2") State2
+                                option(value="state3") State3
+                            +formSelect("城市", "findCity", "城市", false)
+                                option(value="") 城市
+                                option(value="city1") City1
+                                option(value="city2") City2
+                                option(value="city3") City3
+                            +formSelect("产品名称", "findMainCategory", "产品名称", false)(class="c-search-box__main")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                            +formSelect("产品名称", "findSubCategory", "产品名称", false)(class="c-search-box__sub" disabled="disabled")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                        .button.c-search-box__button
+                            +defaultButton({
+                                name : "搜索",
+                                wSize : "medium",
+                                mSize : "small",
+                                buttonStyle : "highlight",
+                                isButton : true,
+                            })(type="submit")
+
+                //- block : c-map-search
+                //- 검색타입 : is-search
+                //- 길찾기, 검색 없는 리스트 : is-direction
+                .c-map-search.is-direction
+                    .c-map-search__inner
+                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                            span.sr-only Collapse
+                            span.sr-only Expand
+                        //- +mapSearchBox
+                        //- block : c-map
+                        .c-map
+                            .c-map__inner
+                                //- google map
+                        .c-map-search__body
+                            //- result
+                            .c-map-search__result
+                                //- block : c-tabs
+                                .c-tabs.tabs.panelcontainer.c-tabs__button
+                                    .cmp-tabs.c-tabs__wrap(data-cmp-data-layer="", data-placeholder-text="false")
+                                        //- RO V0.1 Tab Menu hidden
+                                        //- tab
+                                        //-.c-tabs__inner
+                                        //-    ul.c-tabs__tablist.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                        //-        +printTab(3, 1, true) 销售网点
+                                        //-        +printTab(3, 2, false) 维修网络
+
+                                        //- tab panel
+                                        +printTabPanel(3, 1, true)
+                                            .c-no-data-wrap.small 
+                                                .c-no-data 
+                                                    strong(class=noDataTitleStyle) 无数据。
+                                        //- RO V0.1 Tab Menu hidden
+                                        //-+printTabPanel(3, 2, false)
+                                        //-    .c-no-data-wrap.small 
+                                        //-        .c-no-data 
+                                        //-            strong(class=noDataTitleStyle) 无数据。
+    
+    .guide-text-type Type04. Get Directions
+    .c-wrapper.PD0035.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+
+                //- block : search
+                .c-search-box
+                    .c-text-contents.c-search-box__header
+                        .c-text-contents__headline
+                            +headline(headlineStyle, "h2", "线下门店")
+                    //- element : .c-search-box__body(--multi, --double)
+                    form.cmp-form.c-search-box__body.c-search-box__body--multi(action="#" method="get")
+                        //- element : c-search-box__form
+                        .c-search-box__form
+                            +formSelect("省", "findState", "省", false)
+                                option(value="") 省
+                                option(value="state1") State1
+                                option(value="state2") State2
+                                option(value="state3") State3
+                            +formSelect("城市", "findCity", "城市", false)
+                                option(value="") 城市
+                                option(value="city1") City1
+                                option(value="city2") City2
+                                option(value="city3") City3
+                            +formSelect("产品名称", "findMainCategory", "产品名称", false)(class="c-search-box__main")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                            +formSelect("产品名称", "findSubCategory", "产品名称", false)(class="c-search-box__sub" disabled="disabled")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                        .button.c-search-box__button
+                            +defaultButton({
+                                name : "搜索",
+                                wSize : "medium",
+                                mSize : "small",
+                                buttonStyle : "highlight",
+                                isButton : true,
+                            })(type="submit")
+
+                //- block : c-map-search
+                //- 검색타입 : is-search
+                //- 길찾기, 검색 없는 리스트 : is-direction
+                .c-map-search.is-direction
+                    .c-map-search__inner
+                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                            span.sr-only Collapse
+                            span.sr-only Expand
+                        //- +mapSearchBox
+                        //- block : c-map
+                        .c-map
+                            .c-map__inner
+                                //- google map
+                        .c-map-search__body
+                            //- block : c-map-direction__search
+                            .c-map-direction__search
+                                .c-map-direction__search-title
+                                    p.font-w-normal-24.font-m-normal-20 位置
+                                    button.c-button.c-map-direction__search-close(type="button")
+                                        span.sr-only Close
+                                //- element : departure
+                                .c-pin-text.c-map-direction__search-departure
+                                    .c-pin-text__pin.c-map-direction__search-pin
+                                        .c-map__pin.is-black A
+                                    +mapSearchBox(class="c-pin-text__content")
+                                        .c-warning 地理位置 是必录项
+                                //- element : to
+                                .c-pin-text.c-map-direction__search-arrival
+                                    .c-pin-text__pin.c-map-direction__search-pin
+                                        .c-map__pin B
+                                    .c-pin-text__content.font-w-normal-14.font-m-normal-16 1 PARK AVE MT VERNON, NY 10550
+
+                            //- result
+                            .c-map-search__result
+                                //- block : c-map-direction__result
+                                .c-map-direction__result
+                                    .c-no-data-wrap.small
+                                        .c-no-data 
+                                            strong(class=noDataTitleStyle) 请输入位置
+    
+    .guide-text-type Type05. Get Directions_Suggested Routes
+    .c-wrapper.PD0035.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+
+                //- block : search
+                .c-search-box
+                    .c-text-contents.c-search-box__header
+                        .c-text-contents__headline
+                            +headline(headlineStyle, "h2", "线下门店")
+                    //- element : .c-search-box__body(--multi, --double)
+                    form.cmp-form.c-search-box__body.c-search-box__body--multi(action="#" method="get")
+                        //- element : c-search-box__form
+                        .c-search-box__form
+                            +formSelect("省", "findState", "省", false)
+                                option(value="") 省
+                                option(value="state1") State1
+                                option(value="state2") State2
+                                option(value="state3") State3
+                            +formSelect("城市", "findCity", "城市", false)
+                                option(value="") 城市
+                                option(value="city1") City1
+                                option(value="city2") City2
+                                option(value="city3") City3
+                            +formSelect("产品名称", "findMainCategory", "产品名称", false)(class="c-search-box__main")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                            +formSelect("产品名称", "findSubCategory", "产品名称", false)(class="c-search-box__sub" disabled="disabled")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                        .button.c-search-box__button
+                            +defaultButton({
+                                name : "搜索",
+                                wSize : "medium",
+                                mSize : "small",
+                                buttonStyle : "highlight",
+                                isButton : true,
+                            })(type="submit")
+
+                //- block : c-map-search
+                //- 검색타입 : is-search
+                //- 길찾기, 검색 없는 리스트 : is-direction
+                .c-map-search.is-direction
+                    .c-map-search__inner
+                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                            span.sr-only Collapse
+                            span.sr-only Expand
+                        //- +mapSearchBox
+                        //- block : c-map
+                        .c-map
+                            .c-map__inner
+                                //- element : c-map__pin
+                                .c-map__pin.c-tooltip-direction.is-black A
+                                .c-map__pin.c-tooltip-direction B
+                                //- element : c-map-tooltip
+                                .c-map-tooltip.c-tooltip-direction
+                                    .c-map-tooltip__container
+                                        .button
+                                            button(type="button").c-map-tooltip__close
+                                                span.sr-only Close
+                                        //- block : c-brand-detail
+                                        .c-map-tooltip__contents
+                                            p.font-w-normal-14.font-m-normal-14 550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States
+                                //- google map
+                        .c-map-search__body
+                            //- block : c-map-direction__search
+                            .c-map-direction__search
+                                .c-map-direction__search-title
+                                    p.font-w-normal-24.font-m-normal-20 位置
+                                    button.c-button.c-map-direction__search-close(type="button")
+                                        span.sr-only Close
+                                //- element : departure
+                                .c-pin-text.c-map-direction__search-departure
+                                    .c-pin-text__pin.c-map-direction__search-pin
+                                        .c-map__pin.is-black A
+                                    +mapSearchBox(class="c-pin-text__content")
+                                        .c-warning 地理位置 是必录项
+                                //- element : to
+                                .c-pin-text.c-map-direction__search-arrival
+                                    .c-pin-text__pin.c-map-direction__search-pin
+                                        .c-map__pin B
+                                    .c-pin-text__content.font-w-normal-14.font-m-normal-16 1 PARK AVE MT VERNON, NY 10550
+
+                            //- result
+                            .c-map-search__result
+                                //- block : c-map-direction__result
+                                .c-map-direction__result(tabindex="0")
+                                    .font-w-normal-20.font-m-normal-16.c-map-direction__result-title 建议路线
+                                    +mapDirectionResultTitle('departure', 'A', '550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States')
+
+                                    +mapDirectionResultItem('car')
+                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__indent 5.5 MI. About 12 mins
+                                    +mapDirectionResultItem('turn-left')
+                                        p.c-pin-text__icon 1
+                                        p.font-w-normal-14.font-m-normal-14 At the roundabout, take the 2nd exit onto Hanger Hill/A317
+                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                    +mapDirectionResultItem('turn-left')
+                                        p.c-pin-text__icon 2
+                                        p.font-w-normal-14.font-m-normal-14 Head east toward Baker St
+                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                    +mapDirectionResultItem('turn-left')
+                                        p.c-pin-text__icon 3
+                                        p.font-w-normal-14.font-m-normal-14 Head east toward Baker St
+                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                    +mapDirectionResultItem('turn-left')
+                                        p.c-pin-text__icon 4
+                                        p.font-w-normal-14.font-m-normal-14 At the roundabout, take the 2nd exit onto Hanger Hill/A317
+                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+
+                                    +mapDirectionResultTitle('arrival', 'B', '550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States')
+    
+    .guide-text-type Type06. No Results
+    .c-wrapper.PD0035.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+
+                //- block : search
+                .c-search-box
+                    .c-text-contents.c-search-box__header
+                        .c-text-contents__headline
+                            +headline(headlineStyle, "h2", "线下门店")
+                    //- element : .c-search-box__body(--multi, --double)
+                    form.cmp-form.c-search-box__body.c-search-box__body--multi(action="#" method="get")
+                        //- element : c-search-box__form
+                        .c-search-box__form
+                            +formSelect("省", "findState", "省", false)
+                                option(value="") 省
+                                option(value="state1") State1
+                                option(value="state2") State2
+                                option(value="state3") State3
+                            +formSelect("城市", "findCity", "城市", false)
+                                option(value="") 城市
+                                option(value="city1") City1
+                                option(value="city2") City2
+                                option(value="city3") City3
+                            +formSelect("产品名称", "findMainCategory", "产品名称", false)(class="c-search-box__main")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                            +formSelect("产品名称", "findSubCategory", "产品名称", false)(class="c-search-box__sub" disabled="disabled")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                        .button.c-search-box__button
+                            +defaultButton({
+                                name : "搜索",
+                                wSize : "medium",
+                                mSize : "small",
+                                buttonStyle : "highlight",
+                                isButton : true,
+                            })(type="submit")
+
+                //- block : c-map-search
+                //- 검색타입 : is-search
+                //- 길찾기, 검색 없는 리스트 : is-direction
+                .c-map-search.is-direction
+                    .c-map-search__inner
+                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                            span.sr-only Collapse
+                            span.sr-only Expand
+                        //- +mapSearchBox
+                        //- block : c-map
+                        .c-map
+                            .c-map__inner
+                                //- google map
+                        .c-map-search__body
+                            //- block : c-map-direction__search
+                            .c-map-direction__search
+                                .c-map-direction__search-title
+                                    p.font-w-normal-24.font-m-normal-20 位置
+                                    button.c-button.c-map-direction__search-close(type="button")
+                                        span.sr-only Close
+                                //- element : departure
+                                .c-pin-text.c-map-direction__search-departure
+                                    .c-pin-text__pin.c-map-direction__search-pin
+                                        .c-map__pin.is-black A
+                                    +mapSearchBox(class="c-pin-text__content")
+                                        .c-warning 地理位置 是必录项
+                                //- element : to
+                                .c-pin-text.c-map-direction__search-arrival
+                                    .c-pin-text__pin.c-map-direction__search-pin
+                                        .c-map__pin B
+                                    .c-pin-text__content.font-w-normal-14.font-m-normal-16 1 PARK AVE MT VERNON, NY 10550
+
+                            //- result
+                            .c-map-search__result
+                                //- block : c-map-direction__result
+                                .c-map-direction__result
+                                    .c-no-data-wrap.small
+                                        .c-no-data 
+                                            strong(class=noDataTitleStyle) 无数据

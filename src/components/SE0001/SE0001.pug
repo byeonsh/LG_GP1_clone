@@ -1,0 +1,651 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_pop-msg.pug
+include ../_common/_carousel.pug
+include ../_common/_hero-banner.pug
+include ../_common/_forms.pug
+
+block meta 
+    - var componentId = "SE0001"
+    - var componentName = "Search Bar"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+    link(rel="stylesheet", href="../CM0001/CM0001.css")
+block scripts
+    script(src=componentId+".js" type="module")
+    script(src="../../components/CM0001/CM0001.js" type="module")
+    
+mixin csSearchBarTitle(paras)
+    - let data = { ...paras }
+    .cs-search-bar__title(class=`${data.class ? data.class:''}`)
+        h2.font-w-normal-16.font-m-normal-16 !{data.title}
+        if data.description
+            span.cs-search-bar__description !{data.description}
+        if data.button
+            +button({type:"text", color:"black", underline:false, name: data.button,})(data-link-name)
+        if data.fold
+            .button.c-cta.cs-search-bar__fold
+                // to dev - id value is sample.
+                button.cmp-button.c-accordion__button(aria-expanded="false" aria-controls=`${data.ariaControls}`)
+                    span.c-accordion__button-text.expand.sr-only Expand
+                    span.c-accordion__button-text.collapse.sr-only Collapse
+
+mixin csSuggestList(list)
+    ul.cs-search-bar__suggest-list
+        each set in list
+            li.cs-search-bar__suggest-item
+                a(href='#' data-link-name data-link-destination).font-w-normal-20.font-m-normal-14= set.list
+
+mixin csRecentList(list)
+    ul.cs-search-bar__recent-list(role="list")
+        each set, index in list
+            li.cs-search-bar__recent-item(role="listitem")
+                a(href='#' data-link-name data-link-destination id=`label_recent_${index}`).font-w-normal-20.font-m-normal-14= set.list
+                button(type="button" class='cs-search-bar__close' data-cmp-data-layer='' aria-describedby=`label_recent_${index}`)
+                    span.sr-only close
+
+mixin csRankItem(params)
+    - let data = { ...params }
+    li.cs-search-bar__rank-item(class=`${data.rank == '1' ? 'cs-search-bar__rank-item--first' : ''}`)
+        a(href=`${data.href}` data-link-name data-link-destination)
+            span.font-w-normal-24.font-m-normal-16(class=`cs-search-bar__rank-num cs-search-bar__rank-num--${data.rank}`)= data.rank
+            span.font-w-normal-24.font-m-normal-16.cs-search-bar__rank-title= data.title
+            //- rankIcon: up, down, keep
+            if (data.rankIcon)
+                i.cs-search-bar__rank-icon(class=`cs-search-bar__rank-icon--${data.rankIcon}`)
+                    span.sr-only= data.rankIcon
+
+mixin csSearchLink(isTag, params)
+    - let data = { ...params }
+    .cs-search-bar__search-link
+        each set in data
+            .cs-search-bar__search-item(class=`${isTag ? 'cs-search-bar__search-tag' : ''}`)
+                a(href=`${set.href}` data-link-name data-link-destination)
+                    span.font-w-normal-24.font-m-normal-16.cs-search-bar__search-title !{set.title}
+                    if set.tag
+                        span.font-w-normal-16.font-m-normal-12.cs-search-bar__tag-item= set.tag
+
+mixin csRecordList(params)
+    - let data = { ...params }
+    .cs-search-bar__record
+        each set in data
+            .cs-search-bar__record-item
+                i.cs-search-bar__record-icon
+                    span.sr-only search record
+                a(href=`${set.href}` data-link-name data-link-destination class=`font-w-normal-16 font-m-normal-14`) !{set.title}
+
+mixin csMatchedItem(params)
+    - let data = { ...params }
+    .cs-search-bar__match(class=`${data.isRecommend ? 'cs-search-bar__match--recommend' : ''}` data-pim-category1="" data-pim-category2="" data-pim-category3="" data-pim-category4="" data-pim-sku="" data-pim-model-name="" data-pim-model-year="" data-pim-flag="" data-pim-model-type="" data-shop-stock-status="" data-shop-msrp="" data-shop-price="" data-shop-pbp-coupon="" data-shop-pbp-coupon-dc="")
+        .cs-search-bar__match-txt.cs-search-bar__match-product
+            a.image.c-image(href="#" data-link-name data-link-destination)
+                //- +printLazyImage(`https://www.lg.com/uk/images/tvs/md07546594/gallery/GT1.jpg`)
+                +printLazyPicture(`https://via.placeholder.com/100x100`, `https://via.placeholder.com/180x180`)
+            a.c-text-contents(href="#" data-link-name data-link-destination)
+                .text.c-text-contents__eyebrow
+                    if data.tag
+                        span.c-text-contents__tag-item.font-w-normal-16.font-m-normal-12=data.tag
+                    span.font-w-normal-16.font-m-normal-12= data.eyebrow
+                .title.c-text-contents__title(id='label_Matched_Pd_01')
+                    span.font-w-semibold-32.font-m-semibold-16 !{data.title}
+            .button.c-cta
+                +defaultButton({name: 'Learn More', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})(data-link-name="learn_more" data-link-destination aria-describedby='label_Matched_Pd_01')
+                // [Start] 2023-05-15 : ADD- add button 'Buy Now'
+                +defaultButton({name: 'Buy Now', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})(data-link-name="buy_now" data-link-destination aria-describedby='label_Matched_Pd_01')
+            if !data.isRecommend
+                .cs-search-bar__buttonbox
+                    +iconButton({type:"link",color:"black",class:"manual",otherClass:"c-tooltip__button", name:"Manual & Software", ariaControls:"manual", expanded:"false", describedby:"label_Matched_Pd_01"})(data-link-name data-link-destination)
+                    +iconButton({type:"link",color:"black",class:"product",otherClass:"c-tooltip__button", name:"Product Registration", ariaControls:"product", expanded:"false", describedby:"label_Matched_Pd_01"})(data-link-name data-link-destination)
+                    +iconButton({type:"link",color:"black",class:"support",otherClass:"c-tooltip__button", name:"Product Support", ariaControls:"support", expanded:"false", describedby:"label_Matched_Pd_01"})(data-link-name data-link-destination)
+                    +iconButton({type:"link",color:"black",class:"request",otherClass:"c-tooltip__button", name:"Request a Repair", ariaControls:"request", expanded:"false", describedby:"label_Matched_Pd_01"})(data-link-name data-link-destination)
+            else 
+                .cs-search-bar__buttonbox
+                    +iconButton({type:"link",color:"black",class:"support",otherClass:"c-tooltip__button", name:"Product Support", ariaControls:"support", expanded:"false", describedby:"label_Matched_Pd_01"})(data-link-name data-link-destination)
+
+//- mixin csSearchNone(params)
+//-     - let data = { ...params }
+//-     .cs-search-bar__search-none
+//-         span.font-w-semibold-24.font-m-semibold-18 No suggestions found for "!{data.search}"
+//-         span.font-w-semibold-18.font-m-semibold-16.cs-search-bar__none-link
+//-             | Did you mean "
+//-             a(href=`${data.suggest}`)
+//-                 span.font-w-semibold-18.font-m-semibold-16.font-underline= data.suggest
+//-             |"?
+mixin csSearchNone()
+    //- - let data = { ...params }
+    .cs-search-bar__search-none
+        span.font-w-normal-24.font-m-normal-16 No suggestions found for "aaasssddddd"
+        //- span.font-w-semibold-18.font-m-semibold-16.cs-search-bar__none-link
+        //-     | Did you mean "
+        //-     a(href=`${data.suggest}`)
+        //-         span.font-w-semibold-18.font-m-semibold-16.font-underline= data.suggest
+        //-     |"?
+
+mixin csSearchStore(params)
+    - let data = {...params}
+    ul.cs-search-bar__store(role="list")
+        each set in data
+            li.cs-search-bar__store-item(role="listitem")
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        span.font-w-semibold-18.font-m-semibold-16= set.name
+                    .text.c-text-contents__bodycopy
+                        span.font-w-normal-16.font-m-normal-14= set.context
+                    .cs-search-bar__store-call
+                            span.font-w-semibold-16= set.phone
+                    .cs-search-bar__store-distance
+                        i.cs-search-bar__icon.cs-search-bar__icon--map
+                            span.sr-only find a store
+                        span.font-w-semibold-14.font-m-semibold-14= set.distance
+                .button.c-cta
+                    +linkButton({type:"box-outlined", color:"black", name: "CALL", class: "cs-search-bar__store-callbtn", })(data-link-name data-link-destination)
+                    if set.viewBtn
+                        +linkButton({type:"box-outlined", color:"black", name: "VIEW ONLINE"})(data-link-name data-link-destination)
+                    +linkButton({type:"box", color:"red", name: "GET DIRECTIONS"})(data-link-name data-link-destination)
+
+//- PD0003 promotion banner custom
+mixin csSearchBanner(params)
+    - let data = {...params}
+    .c-summary-recommended-promotion
+        .c-summary-recommended-promotion__carousel
+            .carousel.panelcontainer
+                // block : carousel
+                .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                    .cs-search-bar__title
+                        span.font-w-semibold-18.font-m-semibold-16 Related Promotion
+                        .cs-search-bar__carousel
+                            +carouselPagination
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"prev"})
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"next"})
+                    .cmp-carousel__content.swiper-wrapper
+                        each set in data
+                            .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer=`${bannerType}` data-cmp-hook-carousel="item")
+                                +csSearchBannerItem(set)
+
+//- PD0003 promotion banner
+mixin csSearchBannerItem(set)
+    - var imageHeight = 180
+    .c-summary-banner.c-summary-banner--overlay-side
+        .c-summary-banner__visual
+            // block - image
+            .iamge.c-image
+                +printLazyPicture(`https://via.placeholder.com/310x150/333/999`, `https://via.placeholder.com/676x180/333/999`)
+        .c-summary-banner__contents
+            // block - text contents
+            .c-text-contents
+                .text.c-text-contents__subcopy
+                    span.cmp-text.font-w-semibold-24.font-m-semibold-18(data-cmp-data-layer="") !{set.title}
+                // block - cta
+                .c-cta 
+                    +linkButton({type:"box", color:"white", size: "small", name :"Learn More"})
+
+//- CM0001 search link
+mixin linkHref(params)
+    - var option={text:'', itemLv:'', otherClass:'', srOnly:false, target:'self', ...params}
+    - var attributes = {}
+    - var blank = option.target == 'blank' ? attributes.rel = 'noopener noreferrer' : ''
+    a(href="#" class=`c-gnb__item-link c-gnb__item-link${option.itemLv ? `--${option.itemLv}` : ``} ${option.otherClass && `${option.otherClass}`}` target=`_${option.target}`)&attributes(attributes)
+        if option.srOnly == true
+            span.sr-only #{option.text}
+            if(option.otherClass == 'icon-cart')
+                span.count 5
+            if block
+                block
+        else
+            |#{option.text}
+            if block
+                block
+
+mixin pop-msg-layout(params)
+    - var option={id:`popMsg${new Date().getTime()}`, ...params}
+    - var dialogId = option.id
+    - var dialogLabelId = `${option.id}-headline`
+    - var dialogSize = option.size || "medium"
+    - var dialogClass = `${dialogSize}`
+    - var useHeadline = option.headline != null && 0 < option.headline.length
+    // block - pop-msg ( dialog )
+    .c-pop-msg(class=`${dialogClass}` class={[option.classes] : !!option.classes} id=`${dialogId}` role="dialog" aria-modal="true" aria-labelledby=useHeadline&&dialogLabelId)
+        .c-pop-msg__container
+            if useHeadline
+                //- header
+                +pop-msg-header(params)
+            //- contents
+            if block
+                block
+            //- close button
+            .button.c-pop-msg__close.c-pop-msg__close--on-top
+                button.cmp-button.c-pop-msg__close-button.js-pop-close(type="button", aria-controls=`${dialogId}` data-cmp-data-layer="")
+                    span.cmp-button__text.sr-only Cancel
+        .c-pop-msg__dimmed
+
+block content
+    include ../CM0001/CM0001-inc.pug
+    include ../_common/_eprivacy.pug
+    // +CM0001('noBreadcrumb')
+    +CM0001('search')
+        .SE0001 
+            +pop-msg-standard({id : 'search', classes:'pop-cs-search', size:'customized'})
+                .cs-search-bar
+                    .searchbar
+                        .c-gnb__logo
+                            a(href="#" class="c-gnb__logo-link" data-link-name data-link-destination)
+                                .image.c-image
+                                    +printLazyImage(`../../assets/image/logo-lg-128-60.png`, `LG logo (Life's Good)`)
+                        #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                            .searchBar__searchInner
+                                form.searchBar__form(autocomplete='off' action='#')
+                                    span.fieldIcons__root
+                                        span.fieldIcons__input
+                                            input.textInput__input.field__input.font-w-normal-24.font-m-normal-16(name='search_query' value='' role='searchbox' placeholder='What can we help you find today?' title="search bar" autofocus="autofocus")
+                                            +iconButton({type:"button",color:"black", class:"delete", otherClass:"searchbar__delete", name:"delete"})
+                                            a(title="search" href="#" role='button').fieldIcons__before
+                                                span.icon__root
+                    .cs-search-bar__content
+                        .cs-search-bar__content-inr
+                            //- +csSearchNone({
+                            //-     search:'TadasdV',
+                            //-     suggest:'TV',
+                            //- })
+                            +csSearchNone()
+                            +csSearchBarTitle({ title:"Recent Searches", button:"Clear All", class:"cs-bdt-m cs-bdt-w"})
+                            +csRecentList([
+                                { 
+                                    list:"Oled",
+                                },
+                                { 
+                                    list:"Oled TV",
+                                },
+                                { 
+                                    list:"Register",
+                                },
+                                { 
+                                    list:"Repair",
+                                },
+                                { 
+                                    list:"Promotion",
+                                },
+                            ])
+                            +csSearchBarTitle({title:"Matched Products"})
+                            +csMatchedItem({
+                                tag:'New',
+                                eyebrow:'OLED65B1PUA',
+                                title:"<em>LG OLED evo C2 83'' 4K Smart TV</em>",
+                            })
+                            +csMatchedItem({
+                                tag:'New',
+                                eyebrow:'OLED65B1PUA',
+                                title:"<em>LG OLED evo C2 83'' 4K Smart TV</em>",
+                            })
+                            +csSearchBarTitle({title:"Suggested Keyword"})
+                            +csSearchLink(true, [
+                                {
+                                    href:'#',
+                                    title:'<em>Regi</em>stered',
+                                },
+                                {
+                                    href:'#',
+                                    title:'<em>Regi</em>steration',
+                                },
+                                {
+                                    href:'#',
+                                    title:'<em>Regi</em>ster receiver',
+                                },
+                                {
+                                    href:'#',
+                                    title:'<em>Regi</em>ster TV',
+                                },
+                                {
+                                    href:'#',
+                                    title:'<em>Regi</em>ster Product',
+                                },
+                            ])
+                            +csSearchBarTitle({title:"Suggested Contents"})
+                            +csSearchLink(true, [
+                                {
+                                    href:'#',
+                                    title:'<em>Regi</em>ster a Product',
+                                    tag:'',
+                                },
+                                {
+                                    href:'#',
+                                    title:'How to <em>regi</em>ster LG TV to LG ThinQ',
+                                    tag:'Operation',
+                                },
+                                {
+                                    href:'#',
+                                    title:"Why can't I <em>regi</em>ster my Home",
+                                    tag:'Troubleshooting',
+                                },
+                                {
+                                    href:'#',
+                                    title:'How do I <em>regi</em>ster a fingerprint?',
+                                    tag:'Helpful Hint',
+                                },
+                                {
+                                    href:'#',
+                                    title:'How do I <em>regi</em>ster the product',
+                                    tag:'FAQ',
+                                },
+                                {
+                                    href:'#',
+                                    title:'How to <em>regi</em>ster LG TV',
+                                    tag:'Operation',
+                                },
+                                {
+                                    href:'#',
+                                    title:'10,000 discount coupon when <em>regi</em>stering a ...',
+                                    tag:'Article',
+                                },
+                                {
+                                    href:'#',
+                                    title:'Where is the fingerprint sensor located?',
+                                    tag:'Troubleshooting',
+                                },
+                                {
+                                    href:'#',
+                                    title:'I cannot use voice recognition on Magic Re...',
+                                    tag:'Troubleshooting',
+                                },
+                                {
+                                    href:'#',
+                                    title:'How to Troubleshoot an LG remote control',
+                                    tag:'Article',
+                                },
+                            ])
+                            +csSearchBarTitle({title:"Popularity Ranking", ariaControls:"rankingArea", description:"As of 2023/01/16 GMT 00:00"})
+                            .cs-search-bar__rank(id="rankingArea")
+                                ol.cs-search-bar__rank-list
+                                    +csRankItem({
+                                        rank:'1',
+                                        href:'#',
+                                        title:'LG TV and Home Theater Deals',
+                                    })
+                                    +csRankItem({
+                                        rank:'2',
+                                        href:'#',
+                                        title:'Register a Product',
+                                    })
+                                    +csRankItem({
+                                        rank:'3',
+                                        href:'#',
+                                        title:'Support',
+                                    })
+                                    +csRankItem({
+                                        rank:'4',
+                                        href:'#',
+                                        title:'Products',
+                                    })
+                                    +csRankItem({
+                                        rank:'5',
+                                        href:'#',
+                                        title:'OLED48C14LB.AEKLG C1 48 inch 4K...',
+                                    })
+                                    +csRankItem({
+                                        rank:'6',
+                                        href:'#',
+                                        title:'32LQ63006LA.AEK32" LG Smart TVs',
+                                    })
+                                    +csRankItem({
+                                        rank:'7',
+                                        href:'#',
+                                        title:'Smart Share',
+                                    })
+                                    +csRankItem({
+                                        rank:'8',
+                                        href:'#',
+                                        title:'43UP75006LF',
+                                    })
+                                    +csRankItem({
+                                        rank:'9',
+                                        href:'#',
+                                        title:'LG C1 55 inch 4K Smart OLED TV',
+                                    })
+                                    +csRankItem({
+                                        rank:'10',
+                                        href:'#',
+                                        title:'PL2',
+                                    })
+                            //- case : divide
+                            .cs-search-bar__primary
+                                +csSearchBarTitle({ title:"Recent Searches", button:"Clear All", })
+                                +csRecentList([
+                                    { 
+                                        list:"Oled",
+                                    },
+                                    { 
+                                        list:"Oled TV",
+                                    },
+                                    { 
+                                        list:"Register",
+                                    },
+                                    { 
+                                        list:"Repair",
+                                    },
+                                    { 
+                                        list:"Promotion",
+                                    },
+                                ])
+                                +csSearchBarTitle({title:"Suggested Searches"})
+                                +csSuggestList([
+                                    { 
+                                        list:"LG OLED Flex-B",
+                                    },
+                                    { 
+                                        list:"TV",
+                                    },
+                                    { 
+                                        list:"Repair",
+                                    },
+                                    { 
+                                        list:"Screen Split",
+                                    },
+                                    { 
+                                        list:"Manuals & Software",
+                                    },
+                                ])
+                                +csSearchBarTitle({title:"AI Recommend Searches", class:"cs-search-bar__title--coveo", description:"Coveo engine it provides AI-optimized search keywords"})
+                                +csSuggestList([
+                                    { 
+                                        list:"Software & Drivers",
+                                    },
+                                    { 
+                                        list:"Gas",
+                                    },
+                                    { 
+                                        list:"Oled",
+                                    },
+                                    { 
+                                        list:"Washing machine",
+                                    },
+                                    { 
+                                        list:"Life's is good music",
+                                    },
+                                ])
+                                +csSearchBarTitle({title:"Suggested Keyword"})
+                                +csSearchLink(true, [
+                                    {
+                                        href:'#',
+                                        title:'<em>OL</em>ED',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'<em>OL</em>ED B2 TV',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'<em>OL</em>ED TV Stand',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'<em>OL</em>ED TV Manual',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'<em>OL</em>ED CS 55inch TV',
+                                    },
+                                ])
+                                +csSearchBarTitle({title:"Suggested Contents"})
+                                +csSearchLink(true, [
+                                    {
+                                        href:'#',
+                                        title:'LG SIGNATURE <em>OL</em>ED TV 65” Series R1 – Rollable',
+                                        tag:'',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'<em>OL</em>ED TVs',
+                                        tag:'',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'LG B2 77 inch 4K Smart <em>OL</em>ED TV',
+                                        tag:'',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'LG LED LQ 6300 32” HD Smart TV',
+                                        tag:'',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'LG <em>OL</em>ED CS 55" 4K Smart TV',
+                                        tag:'Business Product',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'How do I turn my <em>OL</em>ED TV on or off',
+                                        tag:'FAQ',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'2019 <em>OL</em>ED, Nano TVs, and Soundbar - How to Optimize Pictures, and How to Optimize Pictures How to Optimize Pictures, and How to Optimize Pictures',
+                                        tag:'Video Tutorials',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'LG C1 48 inch 4K Smart <em>OL</em>ED tV',
+                                        tag:'Manuals & Software',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'LG <em>OL</em>ED Flex 42"',
+                                        tag:'',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'LG G1 77 Inch <em>OL</em>ED TV Stand',
+                                        tag:'',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'LG <em>OL</em>ED TV - best picture settings',
+                                        tag:'Articles',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'How to find the best <em>OL</em>ED TV for sports',
+                                        tag:'Helpful Hint',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'Heating Solution (AWHP)',
+                                        tag:'',
+                                    },
+                                    {
+                                        href:'#',
+                                        title:'LG <em>OL</em>ED TVs 50% Off',
+                                        tag:'Promotion',
+                                    },
+                                ])
+                            .cs-search-bar__secondary
+                                +csSearchBarTitle({title:"Popularity Ranking", ariaControls:"rankingArea", description:"As of 2023/01/16 GMT 00:00", class:"rank"})
+                                .cs-search-bar__rank(id="rankingArea")
+                                    ol.cs-search-bar__rank-list
+                                        +csRankItem({
+                                            rank:'1',
+                                            href:'#',
+                                            title:'LG TV and Home Theater Deals',
+                                        })
+                                        +csRankItem({
+                                            rank:'2',
+                                            href:'#',
+                                            title:'Register a Product',
+                                        })
+                                        +csRankItem({
+                                            rank:'3',
+                                            href:'#',
+                                            title:'Support',
+                                        })
+                                        +csRankItem({
+                                            rank:'4',
+                                            href:'#',
+                                            title:'Products',
+                                        })
+                                        +csRankItem({
+                                            rank:'5',
+                                            href:'#',
+                                            title:'OLED48C14LB.AEKLG C1 48 inch 4K Smart TV',
+                                        })
+                                        +csRankItem({
+                                            rank:'6',
+                                            href:'#',
+                                            title:'32LQ63006LA.AEK32" LG Smart TVs',
+                                        })
+                                        +csRankItem({
+                                            rank:'7',
+                                            href:'#',
+                                            title:'Smart Share',
+                                        })
+                                        +csRankItem({
+                                            rank:'8',
+                                            href:'#',
+                                            title:'43UP75006LF',
+                                        })
+                                        +csRankItem({
+                                            rank:'9',
+                                            href:'#',
+                                            title:'LG C1 55 inch 4K Smart OLED TV',
+                                        })
+                                        +csRankItem({
+                                            rank:'10',
+                                            href:'#',
+                                            title:'PL2',
+                                        })
+                                +csSearchBarTitle({title:"Recommend Products", class:"cs-bdt-m"})
+                                +csMatchedItem({
+                                    eyebrow:'OLED65B1PUA',
+                                    title:"LG <em>OL</em>ED CS 65'' 4K Smart TV",
+                                    isRecommend: true,
+                                })
+                                +csMatchedItem({
+                                    eyebrow:'OLED65B1PUA',
+                                    title:"LG <em>OL</em>ED CS 65'' 4K Smart TV",
+                                    isRecommend: true,
+                                })
+                                +csMatchedItem({
+                                    eyebrow:'OLED65B1PUA',
+                                    title:"LG <em>OL</em>ED CS 65'' 4K Smart TV",
+                                    isRecommend: true,
+                                })
+                                +csMatchedItem({
+                                    eyebrow:'OLED65B1PUA',
+                                    title:"LG <em>OL</em>ED CS 65'' 4K Smart TV",
+                                    isRecommend: true,
+                                })
+                    //- button(class='js-pop-close' aria-controls='search' type='button') cancel
+
+    .button.c-cta
+        +linkButton({href:"#search", type:"box", color:"red", class:"js-pop-open", name:"search", roleButton:"true"})
+
+    div(style="height:1000px")
+block modal

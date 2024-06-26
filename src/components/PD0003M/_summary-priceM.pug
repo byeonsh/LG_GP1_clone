@@ -1,0 +1,928 @@
+include ../_common/_product-list.pug
+include ../_common/_pagination.pug
+include ../_common/_image.pug
+
+mixin deliverly-item-icon(type)
+	.image.c-image.c-pbp-icon
+		//- .pre-welcome-coupon-carmine image ==> /assets/icon/icon-welcome-32-32.svg
+		//- .tag-pound-carmine image ==> /assets/icon/icon-exclusive-32-32.svg
+		case type
+			when "stock"
+				+printLazyImage('../../mocks/PD0003/icon-stock-32-32.png', 'stock')
+			when "calendar"
+				+printLazyImage('../../mocks/PD0003/icon-calendar-32-32.png', 'calendar')
+			when "limited"
+				+printLazyImage('../../mocks/PD0003/icon-limited-32-32.svg', 'limited')
+			when "shipment"
+				+printLazyImage('../../mocks/PD0003/icon-shipment-32-32.png', 'shipment')
+			when "delivery"
+				+printLazyImage('../../mocks/PD0003/icon-delivery-32-32.png', 'delivery')
+			when "install"
+				+printLazyImage('../../mocks/PD0003/icon-install-32-32.png', 'install')
+			when "point"
+				+printLazyImage('../../mocks/PD0003/icon-point-32-32.png', 'point')
+			default 
+				+printLazyImage('https://via.placeholder.com/32x32/999999/333333')
+
+mixin deliverly-item(type)
+	li.c-list__item
+		if type != "none"
+			+deliverly-item-icon(type)
+		.c-product-delivery-information__cont
+			if block
+				block
+		if type == "default"
+			.text.c-product-delivery-information__box
+				span.c-icon-button.c-icon-button--more-info
+				.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+					p This product is provided to customers at competitive prices by securing stock through pre-order for a limited time. As a product, delivery will start from Mar 01,2023
+		if type == "limited"
+			.text.c-product-delivery-information__box.full
+				.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+					p Almost sold out. Hurry up to own 2021 new monitor.
+
+mixin deliverly-item-text
+	.text.c-product-delivery-information__text
+		.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+			if block
+				block
+				
+mixin product-promotion-information                    
+	// block : product-promotion-list
+	ul.c-list
+		li.c-list__item
+			.c-pm-icon.welcome-benefit-carmine
+			.c-list-item__cont
+				.text.c-list-item__text
+					.cmp-text
+						p.font-w-normal-20.font-m-normal-14 Get 5% off on your first purchase.
+		li.c-list__item
+			.c-pm-icon.tag-pound-carmine
+			.c-list-item__cont
+				.text.c-list-item__text
+					.cmp-text
+						// 2023-05-20 changed class name
+						p.font-w-normal-20.font-m-normal-14 Buy now, claim £300 cashback. 
+							a.cmp-button.c-button(href="#" target="" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="") 
+								span.cmp-button__text.font-w-normal-20.font-m-normal-14 Click here for details.
+		li.c-list__item
+			.c-pm-icon.pre-welcome-coupon-carmine
+			.c-list-item__cont
+				.text.c-list-item__text
+					.cmp-text
+						// 2023-05-20 changed class name
+						p.font-w-normal-20.font-m-normal-14 FREE delivery, connection &amp; disposal with selected models**Services Include: &gt; FREE unpacking, power connection &amp; base stand installation. UK mainland only.
+		li.c-list__item
+			.c-pm-icon.delivery-coupon-carmine
+			.c-list-item__cont
+				.text.c-list-item__text
+					.cmp-text
+						// 2023-05-20 changed class name
+						p.font-w-normal-20.font-m-normal-14 
+							| 遠距離配送地域は追加送料がかかります。<br>
+							| 詳しくは
+							a.cmp-button.c-button.font-red(href="#" target="" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="")
+								span.cmp-button__text.font-w-normal-20.font-m-normal-14 こちら
+							| をご確認ください。
+
+mixin exchangeTooltip(tooltipTitle, tooltipText, usedButton = true, direction = 'bottom-left', size = '', describedby, buttonName)
+		- var title = tooltipTitle || "Well Maintained"
+		- var text = tooltipText || "Perfactly working in flawless condition with all accessrories availbalbe."
+			if (size == 'large')
+					- var size = 'c-tooltip__contents--large'
+			if (size == 'medium')
+					- var size = 'c-tooltip__contents--medium'
+					.c-tooltip
+							.button
+									button.cmp-button.c-icon-button.c-icon-button--more-info.c-tooltip__button(type="button" aria-expanded="false", data-cmp-data-layer="", aria-describedby=describedby)
+											span.sr-only More information
+							.c-tooltip__container(class=direction)
+									.c-tooltip__contents.has-close(class=size)
+											button.c-tooltip__close(type='button')
+													span.sr-only Close
+											.c-text-contents
+													.text.c-text-contents__bodycopy
+															.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+																	p= title										
+															.cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")
+																	p= text
+													if usedButton
+															.button
+																	+textButton({name: buttonName, wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: false})
+
+
+// exchange offer
+mixin product-exchange-information   
+	dl.c-list
+		dt.c-list__item--title
+			.text.c-list-item__text
+				.cmp-text
+					.font-w-normal-20.font-m-normal-14
+						.icon-checked-title Your Product to Exchange
+		dd.c-list__item--cont
+			.c-text-contents
+				span.font-w-semibold-16.font-m-semibold-14 Congratulations! Your exchange offer has been applied. 
+				.c-text-contents
+					span.font-w-normal-16.font-m-normal-14 
+						| 	Get exchange value of up to 
+						a.cmp-button.c-button.font-red(href="#" target="" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="")
+							span.cmp-button__text.font-w-normal-16.font-m-normal-14 ₹2700								
+						| on your old product. <br>						
+						strong.font-w-semibold-16.font-m-semibold-14 By : Digi2l
+				.c-text-contents
+					span.font-w-normal-16.font-m-normal-14 Actual exchange value will depend upon product evaluation results 
+					+exchangeTooltip('', '', false, 'bottom-left', 'medium')
+	.exchange__button-area--bottom.align-right
+		+textButton({name: 'Change', wSize: 'small', mSize: 'small', buttonStyle: 'highlight', underline : true, isButton: false})
+		+textButton({name: 'Cancel', wSize: 'small', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})
+	
+mixin product-delivery-information
+	// block : product delivery information
+	.c-product-delivery-information
+		.c-product-delivery-information__inner
+			// block : list
+			ul.c-list
+				+deliverly-item("calendar")
+					+deliverly-item-text
+						p Pre-Order Period : 
+							span 01/09 ~ 31/09/2023
+							span.red Remain 3 days
+					//- +deliverly-item-text
+					//- 	p Available on stock : 
+					//- 		span 6ea
+					//- 		span 3 days Left
+				+deliverly-item("limited")
+					+deliverly-item-text
+						p Limited Offer
+							span.qty Available Qty : 
+								b.red 0
+								
+				+deliverly-item("shipment")
+					+deliverly-item-text
+						p Shipment will start from 
+							span.green 03/01/2023
+				//- +deliverly-item("none")
+				//- 	.text.c-product-delivery-information__box
+				//- 		span.c-icon-button.c-icon-button--more-info
+				//- 		.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+				//- 			p This product is provided to customers at competitive prices by securing stock through pre-order for a limited time. As a product, delivery will start from Mar 01,2023
+				+deliverly-item("delivery")
+					+deliverly-item-text
+						p  FREE delivery available
+				+deliverly-item("install")
+					+deliverly-item-text
+						p  Home Installation, Haul Away and  FREE Delivery available
+				+deliverly-item("point")
+					+deliverly-item-text
+						p  3% Points back in every purchase
+				+deliverly-item("default")
+					+deliverly-item-text
+						p  
+							+textButton({name: 'Link text', wSize: 'small', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})
+							| &#32;Lorem ipsum
+		ul.c-product-delivery__disclaimer
+			li 
+				.text.c-product-delivery-information__disclaimer.c-product-delivery-information__disclaimer--important
+					.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+						p Shipping options may vary by region.
+						//- p Delivery time may vary depending on circumstances.
+			li
+				.text.c-product-delivery-information__disclaimer
+					.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+						p Shipping delays may occur due to the delivery company's circumstance.
+						//- p Shipping options may vary by region.
+
+mixin product-installment
+	mixin installListItem(title,price)
+		li.c-list__item
+			.text.c-product-installment__title
+				.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")
+					p #{title}
+			.text.c-product-installment__value 
+				.cmp-text.font-w-semibold-18.font-m-semibold-16(data-cmp-data-layer="")
+					p #{price}
+	// product installment
+	.c-product-installment
+		.c-product-installment__inner
+			input.c-product-installment__input.sr-only(type="checkbox", name='product-installment', value='product-installment', id='product-installment')
+			.c-product-installment__cont
+				.c-product-installment__label
+					span.label Buy now, Par later with Klarna.
+					label.checkbox(for='product-installment')
+						span.sr-only Select klarna installments
+				.c-product-installment__info
+					ul.c-list
+						+installListItem('Cost of Purchase', '$1,129.00')
+						+installListItem('Referrer_IT_wisestion', '-$ 9.99')
+						+installListItem('Instalment rate', '0%')
+						+installListItem('Total cost inc. interest', '$ 4,999.99')
+					.text.c-product-installment__disclaimer
+						.cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")
+							p The cost may be changed due to the change of information at the last payment.
+
+mixin product-pay-cta(country)
+	// block : product pay cta
+	case country
+		when 'full'
+			.c-product-pay-cta.button.c-cta
+				// .main-button is visible when sticky
+				// - case : add to basket
+				//- button.cmp-button.c-button.c-button--box-outlined.large.black(type='button' data-cmp-data-layer='')
+				//- 	span.cmp-button__text.c-button__text Add to basket
+				//- button.cmp-button.c-button.c-button--box.large.red.main-button(type='button' data-cmp-data-layer='')
+				//- 	span.cmp-button__text.c-button__text Go to checkout
+				+defaultButton({name: 'Add to Cart', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="main-button")
+				+defaultButton({name: 'Checkout', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="main-button")
+				//- <button class="cmp-button c-button c-button--box-outlined large black main-button" type="button" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Add to basket</span></button>
+				//- <button class="cmp-button c-button c-button--box large red main-button" type="button" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Go to checkout</span></button>
+				// - case : out of stock 
+				//- icon version 
+				//- a.js-pop-open.cmp-button.c-button.c-button--box-outlined.large.black.main-button.custom.main-button(type="button" href="#popStockAlert" data-cmp-data-layer="")
+				//- 	span.c-button__icon.icon-alarm
+				//- 	span.cmp-button__text.c-button__text Get Stock Alert
+				// <button class="js-pop-open cmp-button c-button c-button--box large gray6 main-button main-button" type="button" aria-controls="popStockAlert" data-cmp-data-layer="" data-link-name="get_stock_alert"><span class="cmp-button__text c-button__text">Get Stock Alert</span></button>
+				// - case : discontinued product
+				//- button.js-pop-open.cmp-button.c-button.c-button--box.large.red.main-button(type='button' aria-controls="popRecommendedProducts" data-cmp-data-layer='')
+				//- 	span.cmp-button__text.c-button__text Recommended Products
+				// <button class="js-pop-open cmp-button c-button c-button--box large red main-button" type="button" aria-controls="popRecommendedProducts" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Recommended Products</span></button>
+
+				//- +linkButton({type:"box", color: "red", size:"large", comment:false, name: "To the authorized reseller"})
+				//- +linkButton({type:"box", color: "red", size:"large", comment:false, name: "Product Support"})
+				//- +linkButton({type:"box", color: "red", size:"large", comment:false, name: "Book Online"})
+				//- +linkButton({type:"box-outlined", color: "black", size:"large", comment:false, name: "Product Enquiry"})
+				//- +linkButton({type:"box-outlined", color: "black", size:"large", comment:false, name: "Recommended Products"})
+				//- +linkButton({type:"box-outlined", iconClass:"icon-alarm", color: "black", size:"large", comment:false, name: "Get Stock Alert"})
+				//- +linkButton({type:"box-outlined", iconClass:"icon-alarm", color: "black", size:"large", name: "Get Stock Alert"})
+			.c-product-pay-cta.button.c-cta
+				+defaultButton({name: 'Product Enquiry', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="fold-none-button")
+				+defaultButton({name: 'Add to Cart', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="main-button")
+				+defaultButton({name: 'Checkout', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="main-button full-size-button")
+		when 'in'
+			.c-product-pay-cta.button.c-cta
+				+defaultButton({name: 'Product Enquiry', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="fold-none-button")
+				+defaultButton({name: 'Add to Cart', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="main-button")
+				+defaultButton({name: 'Checkout', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="main-button full-size-button")
+		default
+			.c-product-pay-cta.button.c-cta
+				+defaultButton({name: 'Add to Cart', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="main-button")
+				+defaultButton({name: 'Checkout', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="main-button")
+
+mixin product-card-info
+	.c-product-card-info.text
+		.cmp-text.c-product-card-info__text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")
+			p You can pay with
+		ul.c-product-card-info__image 
+			//- span.image.c-image
+			//- 	+printLazyImage('../../mocks/PD0003/icon-visa-87-28.png', 'visa')
+			//- span.image.c-image
+			//- 	+printLazyImage('../../mocks/PD0003/icon-master-39-28.png', 'master')
+			//- span.image.c-image
+			//- 	+printLazyImage('../../mocks/PD0003/icon-american-29-28.png', 'american express')
+			//- span.image.c-image
+			//- 	+printLazyImage('../../mocks/PD0003/icon-maestro-39-28.png', 'maestro')
+			//- span.image.c-image
+			//- 	+printLazyImage('../../mocks/PD0003/icon-klarna-127-28.png', 'klarna')
+			//- span.image.c-image
+			//- 	+printLazyImage('../../mocks/PD0003/icon-paypal-30-28.png', 'paypal')
+			//- span.image.c-image
+			//- 	+printLazyImage('../../mocks/PD0003/icon-apple-pay-45-28.png', 'apple pay')
+			//- span.image.c-image
+			//- 	+printLazyImage('../../mocks/PD0003/icon-google-pay-72-28.png', 'google pay')
+			// RO
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-visa-44-20.png', 'visa')
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-master-28-20.png', 'master')
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-american-20-20.png', 'american express')
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-maestro-24-20.png', 'maestro')
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-klarna-60-20.png', 'klarna')
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-paypal-20-20.png', 'paypal')
+			//- SG
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-apple-pay-40-20.png', 'apple pay')
+			//- SG
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-google-pay-50-20.png', 'google pay')
+			//- AU
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-after-pay-102-20.png', 'after pay')
+			//- AU
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-zip-55-20.png', 'zip')
+			//- BR,CO
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-dinus-club-70-20.png', 'dinus club')
+			//- BR
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-hipercard-38-20.png', 'hipercard')
+			//- BR
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-elo-52-20.png', 'elo')
+			//- BR
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-boleto-40-20.png', 'boleto')
+			//- CA
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-adyen-62-20.png', 'adyen')
+			//- CA
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-affirm-50-20.png', 'affirm')
+			//- CN,HK,TH
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-union-pay-32-20.png', 'union pay')
+			//- CO
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-pse-20-20.png', 'pse')
+			//- FR
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-alma-35-20.png', 'alma')
+			//- HK
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-hsbc-74-20.png', 'hsbc')
+			//- HK
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-standard-chartered-50-20.png', 'standard chartered')
+			//- ID
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-kredivo-60-20.png', 'kredivo')
+			//- IT
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-my-bank-36-20.png', 'my bank')
+			//- IT
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-findomestic-80-20.png', 'findomestic')
+			//- PT
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-mb-way-33-20.png', 'mb way')
+			//- PT
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-mb-multibanco-17-20.png', 'mb multibanco')
+			//- SA
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-mada-60-20.png', 'mada')
+			//- SA
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-tamara-64-20.png', 'tamara')
+			//- TH
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-jcb-26-20.png', 'jcb')
+			//- TH
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-thai-qr-49-20.png', 'thai qr')
+			//- TR
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-troy-44-20.png', 'troy')
+			//- VN
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-vn-pay-64-20.png', 'vn pay')
+			//- VN
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-momo-20-20.png', 'momo')
+			//- BR
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-ae-29-18.png', 'American Express')
+			//- BR
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-vi-30-18.png', 'Visa')
+			//- BR
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-mc-29-18.png', 'Master card')
+			//- BR
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-dn-29-18.png', 'Dinus club')
+			//- BR
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-hc-30-18.png', 'Hiper card')
+			//- BR
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-elo-29-18.png', 'elo')
+			//- BR
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-hi-30-18.png', 'hiper')
+			//- CL,ID,MX,
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-creditcard-23-22.png', 'credit card')
+			//- CL
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-mercado-pago-33-22.png', 'mercado pago')
+			//- CN
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-unionpay-72-18.png', 'unionpay')
+			//- CN
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-unionpay2-19-18.png', 'unionpay2')
+			//- CN
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-wechat-78-18.png', 'wechat')
+			//- CN
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-alipay-61-18.png', 'alipay')
+			//- CN
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-alipay-installment-49-18.png', 'alipay installment')
+			//- IT
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-poste-pay-77-16.png', 'poste pay')
+			//- KZ
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-eurasian-bank-99-16.png', 'eurasian bank')
+			//- KZ
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-freedom-credit-53-16.png', 'freedom credit')
+			//- KZ
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-halyk-bank-45-16.png', 'halyk bank')
+			//- KZ
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-kaspi-64-16.png', 'kaspi')
+			//- PT
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-bank-transfer-58-18.png', 'bank transfer')
+			//- SG
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-grabpay-62-16.png', 'grabpay')
+			//- SG
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-paynow-73-14.png', 'paynow')
+			//- TH
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-kbank-19-18.png', 'kbank')
+			//- TH
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-bbl-19-18.png', 'bbl')
+			//- TH
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-scb-19-18.png', 'scb')
+			//- TH
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-bay-19-18.png', 'bay')
+			//- TH
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-ktb-25-18.png', 'ktb')
+			//- VN
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-atm-26-22.png', 'atm')
+			//- VN
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-cash-23-22.png', 'cash')
+			//- ES,JP
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-visa-29-18.png', 'visa')
+			//- ES.JP
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-mastercard-29-18.png', 'mastercard')
+			//- ES
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-paypal-29-18.png', 'paypal')
+			//- ES
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-bank-transfer-29-18.png', 'bank transfer')
+			//- ES
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-maestro-29-18.png', 'maestro')
+			//- ES
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-unionpay-29-18.png', 'unionpay')
+			//- ES,JP
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-diners-29-18.png', 'diners')
+			//- ES
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-discover-29-18.png', 'discover')
+			//- ES,JP
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-jcb-29-18.png', 'jcb')
+			//- ES
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-cetelem-29-18.png', 'cetelem')
+			//- JP
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-americanexpress-30-18.png', 'americanexpress')
+			//- JP
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-jaccs-41-18.png', 'jaccs')
+			//- JP
+			li
+				span.image.c-image
+					+printLazyImage('../../mocks/PD0003/icon-convini-30-18.png', 'convini')
+
+//- [Start] FR - Repairability Index Label
+mixin product_repair()
+	.c-product-item__repair
+		a.c-product-item__repair--click(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+			//- span.cmp-text Repairability Index
+			//- RO - dev request one image
+			//- +printLazyPicture(`../../assets/image/icon-repair-index-fr-48-30.png`, '../../assets/image/icon-repair-index-fr-76-47.png')
+			.cmp-image(data-cmp-data-layer="")
+				img.cmp-image__image.c-image__img(src="../../assets/image/icon-repair-index-fr-96-56.png" alt="")
+//- [End] FR - Repairability Index Label
+
+mixin product-price-sticky(country)
+	// block : product price sticky
+	.c-product-price-sticky.can-sticky.bottom
+		// block : product price information
+		.c-product-price-information
+			.c-product-price-information__inner
+				.button.c-product-price-information__btn-toggle
+					button.cmp-button(aria-controls="productPriceDetailInformation" aria-expanded="false" data-cmp-data-layer="")
+						span.cmp-button__text.sr-only open/close
+				.c-product-price-information__labels
+					// RO_FR - Repairability Index Label
+					+product_repair()
+					//- product_rating(grade, modelid='MD07546559', specsheet=false, rating=true, catalog=false, summary=false, labels=false, bottomSheet=false)
+					+product_rating("a", 'MD07546559', false, false, false, false, false, true, gradeBlock2=true)
+
+				.c-WAI-layer
+					.c-WAI-box
+						+quantity
+					.c-WAI-box
+						// block : price box
+						+total-priceM
+						//- .c-product-price-information__special-price
+						//- 	ul.c-list
+						//- 		li.c-list__item
+						//- 			.cmp-text(data-cmp-data-layer="")
+						//- 				p Type
+						//- 		// limited-qty
+						//- 		li.c-list__item.limited-qty
+						//- 			.cmp-text(data-cmp-data-layer="")
+						//- 				p Available Qty
+						//- 					em.qty
+						//- 						span 19
+						//- 					em.qty.zero 
+						//- 						span 0
+						.text.c-price-box.font-w-normal-16.font-m-normal-16(id="productPriceDetailInformation")
+							//- .c-price-box__item.c-price-box__item--promotion
+							//- 	.cmp-text(data-cmp-data-layer="")
+							//- 		p Black Friday Promotion
+
+							.c-price-box__item
+								.c-price-info
+									.c-price-info__wrapper
+										.c-price-info__title 
+											strong.c-price-info__title--main Subtotal(tax included)
+										.c-price-info__price
+											strong $N,NNN.NN
+									.c-price-info__wrapper
+										.c-price-info__title
+											span Base Type
+										.c-price-info__price
+											.c-price-info__price--wrapper
+												span $N,NNN.NN
+									.c-price-info__wrapper
+										.c-price-info__price
+											.c-price-info__price--wrapper
+												span The lowest price for the last 30 days.
+									//- .c-price-info__wrapper
+									//- 	.c-price-info__price
+									//- 		.c-price-info__price--wrapper
+									//- 			span No PIX 5% off R$N,NNN.NN
+									.c-price-info__wrapper
+										.c-price-info__title
+											span Base Type(QTY : 2) 
+										.c-price-info__price
+											.c-price-info__price--wrapper
+												.c-price-info__bundle
+													span 
+														del $N,NNN.NN
+														b.sale 20% Off
+													span $N,NNN.NN 
+									//- .c-price-info__wrapper
+									//- 	.c-price-info__title
+									//- 		span OLED G2 Stand for 55 G2
+									//- 	.c-price-info__price
+									//- 		.c-price-info__price--wrapper
+									//- 			span $N,NNN.NN
+									//- .c-price-info__wrapper
+									//- 	.c-price-info__title
+									//- 		span LG Premium Care 3 Year
+									//- 	.c-price-info__price
+									//- 		.c-price-info__price--wrapper
+									//- 			span $N,NNN.NN
+									
+								.c-price-info
+									.c-price-info__wrapper
+										.c-price-info__title
+											strong.c-price-info__title--main Strong Type
+										.c-price-info__price
+											strong $NNN.NN
+									.c-price-info__wrapper
+										.c-price-info__title
+											span VAT(NN%)
+										.c-price-info__price
+											.c-price-info__price--wrapper
+												span $NN.NN
+									// RO_CA - EHF tooltip
+									//- .c-price-info__wrapper
+									//- 	.c-price-info__title
+									//- 		span Environmental Handling Fee (EHF)
+									//- 		+exclamTooltip(option.tooltipMsg, true, option.direction, option.size, 'Link text')
+									//- 	.c-price-info__price
+									//- 		.c-price-info__price--wrapper
+									//- 			span £50.00
+									
+								.c-price-info
+									//- .c-price-info__wrapper
+									//- 	.c-price-info__title
+									//- 		strong.c-price-info__title--main Delivery
+									//- 	.c-price-info__price
+									//- 		strong $NN.NN
+									//- .c-price-info__wrapper
+									//- 	.c-price-info__title
+									//- 		span OLW480B
+									//- 	.c-price-info__price
+									//- 		.c-price-info__price--wrapper
+									//- 			span.price-wrap
+									//- 				span $NN.NN
+									.c-price-info__wrapper
+										.c-price-info__title
+											span Base Type
+										.c-price-info__price
+											.c-price-info__price--wrapper
+												span.price-wrap
+													span $NN.NN
+								.c-price-info
+									.c-price-info__wrapper
+										.c-price-info__title
+											strong.c-price-info__title--main Strong Type
+										.c-price-info__price
+											strong $NN.NN
+									.c-price-info__wrapper
+										.c-price-info__title
+											span Base Type(has tooltip)
+											+exclamTooltip('Lorem Ipsum is simply dummy text of the printing and typesetting industry.', true, option.direction, option.size, 'Link text', 'Button')
+										.c-price-info__price
+											.c-price-info__price--wrapper
+												span $NN.NN
+									.c-price-info__wrapper
+										.c-price-info__title
+											span Base Type
+										.c-price-info__price
+											.c-price-info__price--wrapper
+												span $NN.NN
+								.c-price-info
+									// RO_CA - EHF tooltip
+									.c-price-info__wrapper
+										.c-price-info__title
+											strong.c-price-info__title--main Strong Type(has Tooltip)
+											+exclamBorderTooltip("Please note, the EHF fee associated with this item is based on the delivery address postal code. For more details on the EHF fee visit.")
+										.c-price-info__price
+											strong $NN.NN
+								.c-price-info
+									.c-price-info__wrapper
+										.c-price-info__title
+											strong.c-price-info__title--main Earning point
+										.c-price-info__price
+											strong NN points
+									.c-price-info__wrapper
+										.c-price-info__title
+											span Points earned will be provided 3 days after delivery is complete.
+
+
+								//- +price-info({emphasis : false, useTooltip : false, name : "Product Price", productId:'OLED77C9PLA', price : "$ 4,999.99", previous:"$ 4,999.99", save:"$200"})
+								//- +price-info({emphasis : false, useTooltip : false, name : "Tex", productId:'OLED77C9PLA', price : "$ 4,999.99", previous:"$ 4,999.99", save:"$200"})
+								//- +price-info({emphasis : false, useTooltip : false, name : "Services charge", price : "$0.00"})
+							//- .c-price-box__item.c-price-box__item--border
+								//- .c-price-box__item--wrapper
+								//- 	+price-info({emphasis : false, useTooltip : true, name : "LG Member Exclusive", price : "$ 4,999.99", tooltipMsg:'Please take into account that the policy of LG Electronics RUS LLC implies the complete independence of companies in establishing pricing procedures. LLC LG Electronics RUS does not follow the instructions of economic entities to set prices for goods. The prices recommended by LG Electronics RUS LLC to their counterparties are for informational(recommendatory) purposes only.'})
+								//- 	.c-payment-info
+								//- 		.button.c-payment-info__payment
+								//- 			a.cmp-button.c-payment-info__link.font-w-normal-16.font-m-normal-14(href="#" data-cmp-data-layer="" role="button")
+								//- 				span.cmp-button__text $5000000 / mo for 6 mos at 0% or
+								//- 			a.js-pop-open.cmp-button.c-payment-info__link.font-w-normal-16.font-m-normal-14(href="#popPayWithAfterpay" role="button" data-cmp-data-layer="")
+								//- 				span.cmp-button__text 6 payments of $123 with
+								//- 				span.image.c-image
+								//- 					+printLazyImage('../../mocks/PD0003/icon-logo-afterpay-black-144-30.png')
+								//- 			a.js-pop-open.cmp-button.c-payment-info__link.font-w-normal-16.font-m-normal-14(href="#popPayWithAfterpay" role="button" data-cmp-data-layer="")
+								//- 				span.cmp-button__text or interest free up to 12 months with
+								//- 				span.image.c-image
+								//- 					+printLazyImage('../../mocks/PD0003/icon-logo-zip-black-81-31.png')
+								//- +price-info({emphasis : false, useTooltip : false, name : "Black Friday Promotion", price : "$200.00"})
+								//- +price-info({emphasis : false, useTooltip : false, name : "Warranty Price", price : "$200.00"})
+								//- +price-info({emphasis : false, useTooltip : false, name : "Delivery", price : "$100.00"})
+								//- +price-info({emphasis : false, useTooltip : true, direction:"top-left", size:'large', tooltipMsg:'Please take into account that the policy of LG Electronics RUS LLC implies the complete independence of companies in establishing pricing procedures. LLC LG Electronics RUS does not follow the instructions of economic entities to set prices for goods. The prices recommended by LG Electronics RUS LLC to their counterparties are for informational(recommendatory) purposes only.', name : "Recommended price", price : "104,990 rub"})
+								//- +price-info({emphasis : true, useTooltip : false, name : "Discount Price", price : "-$100.00"})
+								//- +price-info({emphasis : false, useTooltip : false, name : "Delivery & Standard", price : "$29.99"})
+								//- +price-info({emphasis : false, useTooltip : false,  name : "See Retailer for Pricing"})
+								//- +price-info({emphasis : true, link : true, useTooltip : false, name : "Up to $450 available in 3 rebates"})
+								//- +price-info({emphasis : false, bold: true, useTooltip : true, tooltipMsg:'The Member Price is the price applicable to the Member and is the benefit price applicable when you log in and place an order.', name : "LG Member Exclusive"})
+								//- +price-info({list:true,dimmed:true,emphasis : true, useTooltip : false, name : "LG Members only 2% off", price : "-$20.00"})
+								//- +price-info({list:true,emphasis : true, useTooltip : false, name : "LG Members only 2% off", price : "-$20.00"})
+						
+						//- +total-price
+						//- .c-product-price-information__retailer.text
+						//- 	span.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") 
+						//- 		span See Retailer for Pricing
+
+		//- // block - cta
+		.c-product-price--laptop
+			p.cmp-text.font-w-normal-16.font-m-normal-14 Incluye Compensación Por Copia Privada. Tasa 5,33€ *
+		+product-pay-cta(country)
+		+product-card-info
+
+//- mixin price-info(params)
+//- 	- var option = {list:false, dimmed:false, bold:false, ...params}
+//- 	// block : price info
+//- 	.c-price-info(class={'font-red' : option.emphasis, 'sub-tree': option.list, 'font-semibold' : option.bold,'dimmed': option.dimmed})
+//- 		.c-price-info__title
+//- 			if(option.link)
+//- 				a(href="#")= option.name
+//- 			else
+//- 				div(data-cmp-data-layer="").cmp-text.font-w-normal-16.font-m-semibold-14= option.name
+//- 					if option.useTooltip
+//- 						+exclamTooltip(option.tooltipMsg, true, option.direction, option.size, 'Check your final price')
+//- 				if(option.productId)
+//- 					span(data-cmp-data-layer="").c-price-info__product-id.cmp-text.font-w-normal-14.font-m-normal-14= `${option.productId}`
+//- 		if(option.price)
+//- 			.c-price-info__price(class={'font-red' : option.emphasis})
+//- 				if(option.previous || option.save)
+//- 					.c-price-info__price--wrapper
+//- 						if(option.save)
+//- 							span(data-cmp-data-layer="").cmp-text.font-w-normal-14i.font-m-normal-14i.font-black= `Save ${option.save}`
+//- 						if(option.previous)
+//- 							span(data-cmp-data-layer="").cmp-text.font-w-normal-16.font-m-normal-14i.c-price-info__price--previous= option.previous
+//- 				span.font-w-semibold-16.font-m-semibold-14=option.price
+//- 		if block
+//- 			block
+
+mixin quantity
+	// block : product price quantity
+	// Added 'disabled' class when quantity cannot be modified
+	.c-product-price-qty.disabled
+		label.c-qty__label.sr-only(for="productQty") Select Quantity
+		.c-qty
+			button.c-qty__btn.c-qty__btn--minus(type="button" disabled)
+				span.sr-only Minus
+			input.c-qty__input(type="number" id='productQty' value="1" max="999" disabled)
+			button.c-qty__btn.c-qty__btn--plus(type="button" disabled)
+				span.sr-only Plus
+	//- .c-product-price-qty
+	//- 	label.c-qty__label.sr-only(for="productQty") Select Quantity
+	//- 	.c-qty
+	//- 		button.c-qty__btn.c-qty__btn--minus(type="button")
+	//- 			span.sr-only Minus
+	//- 		input.c-qty__input(type="number" id='productQty' value="1" max="999")
+	//- 		button.c-qty__btn.c-qty__btn--plus(type="button")
+	//- 			span.sr-only Plus
+
+mixin total-priceM
+	// block : product total price
+	.c-product-total-price
+		.c-product-total-price__box
+			.text.c-product-total-price__text
+				.cmp-text.font-w-normal-32.font-m-normal-20(data-cmp-data-layer="")
+					p(id='grandTotal') Total
+			.text.c-product-total-price__num.multishop-price
+				.c-price-info__bundle
+					span.font-w-normal-16.font-m-normal-12 
+						del From €1,899.00
+						b.sale Save €400.00
+				div.c-product-total-price__price(aria-labelledby='grandTotal' role='status' aria-live='polite')
+					//- span.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+					//- 	span MSRP
+					//- //- product_rating(grade, modelid='MD07546559', specsheet=false, rating=true, catalog=false, summary=false, labels=false, bottomSheet=false)
+					//- +product_rating("A", 'MD07546559', false, false, false, false, false, true)
+					span.cmp-text.font-w-normal-24.font-m-normal-16.font-red
+						strong -21%
+					span.cmp-text.font-w-normal-32.font-m-normal-20(data-cmp-data-layer="")
+						strong £2,644.98
+					//- // RO_CN - Currencies and small decimals size down
+					//- span.cmp-text.font-w-normal-32.font-m-normal-20(data-cmp-data-layer="")
+					//- 	strong
+					//- 		span.smallFont ￥
+					//- 		span 99990.
+					//- 		span.smallFont 00
+					//- // RO_VN
+					//- span.cmp-text.font-w-normal-32.font-m-normal-20(data-cmp-data-layer="")
+					//- 	strong 
+					//- 		span 11.990.000
+					//- 		sup.smallFont ₫
+				.button.c-product-total-price__payment
+					.c-multishop__installment
+						span £599.99 / mo for 3 mos at 0%
+					.c-price__installment
+						span dont 18,00€ d'éco-participation
+					.c-price__installment
+						span À vista R$N,NNN.NN
+					a.js-pop-open.cmp-button.c-product-total-price__link(href="#popPayWithAfterpay" role="button" data-cmp-data-layer="")
+						span.cmp-button__text N payments of $N,NNN.NN with
+						span.image.c-image
+							+printLazyImage('../../mocks/PD0003/icon-logo-afterpay-black-144-30.png')
+					a.js-pop-open.cmp-button.c-product-total-price__link(href="#popPayWithAfterpay" role="button" data-cmp-data-layer="")
+						span.cmp-button__text N payments of $N,NNN.NN with
+						span.image.c-image
+							+printLazyImage('../../mocks/PD0003/icon-logo-zip-black-81-31.png')
+	
+	
+	
+mixin product-info-etc(country)
+	if country == "pl"
+		.c-product-info-etc
+			//- .text.c-product-info-etc__item.c-product-info-etc__item--imp
+			//- 	.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")
+			//- 		span.c-icon-button.c-icon-button--more-info
+			//- 		p Energy Information Update In Progress
+			.text.c-product-info-etc__item.c-product-info-etc__item--link-text
+				.subscribe-button
+					a(href="#" target="_blank")
+						span.link.font-w-normal-16.font-m-normal-14 SUBSKRYBUJ Subflex
+						span.info.font-w-normal-16.font-m-normal-14 65,00 zł na 36 miesiące
+			.text.c-product-info-etc__item.c-product-info-etc__item--dot-text-fixed
+				.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+					span.c-icon-button.c-icon-button--more-info
+					p Informujemy, iż klikając ten przycisk zostaniesz przeniesiony poza środowisko LG na stronę PROA Store prowadzoną przez FAIROWN. Odpowiedzialność za proces sprzedaży i treści znajdujące się na sklepie ponosi ProaStore.
+	else
+		.c-product-info-etc
+			//- .text.c-product-info-etc__item.c-product-info-etc__item--imp
+			//- 	.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")
+			//- 		span.c-icon-button.c-icon-button--more-info
+			//- 		p Energy Information Update In Progress
+			.text.c-product-info-etc__item.c-product-info-etc__item--dot-text
+				.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")
+					p If you want to buy, please change the country to 'kazakhstan'
+			.text.c-product-info-etc__item.c-product-info-etc__item--dot-text-fixed
+				.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+					span.c-icon-button.c-icon-button--more-info
+					p Afterpay available on the LG Online Store for purchases up to $3,000 subject to approval by Afterpay. Afterpay Terms of Service apply.
+			.text.c-product-info-etc__item.c-product-info-etc__item--download
+				.button.font-w-normal-14.font-m-normal-14
+					// 2023-01-27 : Add role to download link for tagging
+					+iconButton({type:'link',color:"black", class:"download", name:"Download the microwave English panel"})(role="button")

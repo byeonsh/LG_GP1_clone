@@ -1,0 +1,594 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_toast.pug
+include ../_common/_pop-msg.pug
+include ../../components/CT000E/CT502-inc.pug
+include ../../components/CM000A/CM000A-inc.pug
+
+block meta 
+    - var componentId = "CM000A"
+    - var componentName = "Member Create Account"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href="../../components/CT000E/CT502.css")
+    link(rel="stylesheet" href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+    //- recaptcha
+    //- script(src="https://www.google.com/recaptcha/api.js?render=explicit&onload=onRecaptchaLoadCallback" async)
+    
+    //- script(type='text/javascript').
+    //-     onRecaptchaLoadCallback = function(){
+    //-         var clientId = grecaptcha.render('security-box', {
+    //-             'sitekey': '6Le3NdgaAAAAAK8TXN0_DHQfP-FtiHoGCdiK1QQT',
+    //-             'badge': 'inline',
+    //-             'size': 'invisible',
+    //-         });
+    //-         grecaptcha.ready(function() {
+    //-             grecaptcha.execute(clientId, {action: 'homepage'})
+    //-             .then(function(token) {
+    //-                 // token
+    //-                 document.getElementById('g-recaptcha').value = token;
+    //-             });
+    //-         });
+    //-     }
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-16.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-16.font-m-normal-14= infoTextSecond
+
+mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected, required= false})
+    .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+        +formSelect(label, id, placeholder, required)
+            if optionVal
+                - for(var i=0; i < optionVal.length; i++)
+                    if selected === i + 1
+                        option(value="" selected)= optionVal[i]
+                    else
+                        option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText})
+
+mixin myCaptcha({label, id, placeholder, warning= false, required= false})
+    .c-input-item
+        .my-captcha
+            .my-captcha__container
+                label.font-w-normal-16.font-m-normal-14(for=`${id}`)= label
+                    if required
+                        em.c-required *
+                            span.sr-only Required fields
+                #security-box.my-captcha__area
+
+mixin myVerify(params)
+    - let data = {...params}
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                if data.required
+                    em.c-required *
+                        span.sr-only Required fields
+            if data.validation
+                .input-button__container.input-button__container--validation
+                    .my-button-validation
+                        .my-verify__inner
+                            input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}` value= data.value)&attributes(attributes)
+                            span.my-verify__time.font-m-normal-16.font-w-normal-16= data.time
+                        +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                    .button.c-cta
+                        +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+
+            else
+                .input-button__container
+                    .my-verify__inner
+                        input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}` value= data.value)&attributes(attributes)
+                        span.my-verify__time.font-m-normal-16.font-w-normal-16= data.time
+                    .button.c-cta
+                        +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+
+            if !data.validation
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst ? 'my-warn' : ''}`
+    if data.type === 'verify'
+        +myVerify(params)
+    //- 2023-05-24 Date of Birth
+    else if data.type === 'birth'
+        +myBirth(params)
+    else if data.type === 'birth1'
+        +myBirth1(params)
+    else if data.type === 'birth2'
+        +myBirth2(params)
+    //- 2023-05-24
+    else if data.type === 'select'
+        +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required})
+    else if data.type === 'captcha'
+        +myCaptcha({label: data.label, id: data.id, placeholder: data.placeholder, warning: data.warning, required: data.required})
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                    if data.required
+                        em.c-required *
+                            span.sr-only Required fields
+            if data.required && !data.button && data.type !== "password"
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+                //- [Start] 2023-05-24
+                if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                //- [End] 2023-05-24
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+            else if data.type === 'textarea'
+                if data.limit
+                    .my-textarea__container
+                        textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class='my-textarea--limit')&attributes(attributes)
+                        .my-count
+                            span.font-w-normal-14.font-m-normal-12 0 / !{data.limit} byte
+                else 
+                    textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder)&attributes(attributes)
+            else if data.button
+                if data.validation
+                    .input-button__container.input-button__container--validation
+                        .my-button-validation
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required)&attributes(attributes)
+                            +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                        each item in data.button
+                            .button.c-cta.button-full
+                                +defaultButton({name:item, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                else
+                    .input-button__container
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required)&attributes(attributes)
+                        // [Start] 2023-05-03 : ADD - email form case
+                        each item in data.button
+                            .button.c-cta.button-full
+                                +defaultButton({name:item, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                        // [End] 2023-05-03 : ADD - email form case
+            else 
+                if data.active
+                    input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value, required)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                    else if data.search 
+                        button(type='button' class='my-form__search__icon')
+                            span.sr-only search
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config} ${data.search ? 'my-form__search' : ''}`, required)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                    else if data.search 
+                        button(type='button' class='my-form__search__icon')
+                            span.sr-only search
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, })
+                
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+mixin formCheckbox(label, name, val, id, count = "false", disabled = false, required)
+    .c-checkbox-item&attributes(attributes)
+        label.checkbox(for=`${id}`)
+            if(disabled)
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, disabled="disabled")&attributes(attributes)
+            else 
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`)&attributes(attributes)
+            if(label)
+                span.label= label
+                    -if(count >= 0 & count != "false") // for filter
+                        sup.count= count 
+                    if required
+                        em.c-required *
+                            span.sr-only Required fields
+            else 
+                if block 
+                    span.label
+                        block
+mixin CM000A(option=false)
+    if option == 'all'
+        .c-wrapper.CM000A.margin-bottom
+            .component
+                .fluid-container
+                    .my-component
+                        p.my-form-required.font-w-normal-16.font-m-normal-12
+                            em.c-required * 
+                                span.sr-only Required fields
+                            | Required fields 
+                        .my-formbox
+                            .my-check                            
+                                .button.custom-item
+                                    +formCheckbox("", "name", "val1_all", 'checkId2_all', count="false")
+                                        span I agree with the terms of use.
+                                            em.c-required *
+                                                span.sr-only Required fields
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more', href:"/uk/lge-terms/",})(target='_blank')
+                                .button.custom-item
+                                    +formCheckbox('', "name", "val1_all", `checkId3_all`, count="false")
+                                        span I have read and understand the privacy policy and cookie policy.
+                                            em.c-required *
+                                                span.sr-only Required fields
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more', href:"/uk/privacy/",})(target='_blank')
+                                .button
+                                    +formCheckbox('Receipt of marketing messages (optional)', "name", "val1", `checkId4`, count="false")
+                                div.my-check--receipt-text I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE 
+                                    +linkButton({type: 'text', color: 'black', underline: true, name: 'Privacy Policy.', href:"/uk/privacy?tabType=empMktPolicy/",})(target='_blank')                               
+               
+    else if option == 'it'
+        .c-wrapper.CM000A.margin-bottom
+            .component
+                .fluid-container
+                    .my-component
+                        p.my-form-required.font-w-normal-16.font-m-normal-12
+                            em.c-required * 
+                                span.sr-only Required fields
+                            | Required fields 
+                        .my-formbox
+                            .my-check                            
+                                .button.custom-item
+                                    +formCheckbox("", "name", "val1_it", 'checkId1_it', count="false")
+                                        span Accetto i Termini d’uso.
+                                            em.c-required *
+                                                    span.sr-only Required fields
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Leggi di più', href:"/uk/lge-terms/",})(target='_blank')
+                                .button.custom-item
+                                    +formCheckbox('', "name", "val2_it", `checkId2_it`, count="false")
+                                        span Ho letto e compreso la Politica sulla privacy e la Politica sui cookie.
+                                            em.c-required *
+                                                    span.sr-only Required fields
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Leggi di più', href:"/uk/privacy/",})(target='_blank')                                        
+                                .button.js-optional-check
+                                    +formCheckbox('Ricezione di messaggi di marketing (Opzionale)', "name", "val3_it", `checkId3_it`, count="false")
+                                    div.my-check--receipt-text.w-full Acconsento ad essere contattato da LGE e dai suoi affiliati in merito alle ultime novità e alle offerte speciali tramite e-mail, SMS, notifica push, telefonata, siti di social media e/o altre forme di messaggi elettronici. Posso cambiare idea in qualsiasi momento seguendo le istruzioni fornite mediante ogni canale di comunicazione, incluso, ma non solo, l'e-mail e in conformità
+                                        +linkButton({type: 'text', color: 'black', underline: true, name: 'con l’Informativa sulla privacy', href:"/uk/privacy?tabType=empMktPolicy/",})(target='_blank')       
+                                        span di LGE.    
+                                        .optional-check
+                                            +formCheckbox('', "name", "val4_it", `checkId4_it`, count="false")
+                                                span Dò il consenso al trattamento dei dati personali per analisi di abitudini, interessi e preferenze al fine di elaborare dei profili e ricevere comunicazioni e offerte mirate sulla base degli stessi (ad es. offerte e buoni sconto personalizzati come lo sconto in occasione del compleanno
+                                            +formCheckbox('', "name", "val5_it", `checkId5_it`, count="false")
+                                                span Dò il consenso al trattamento dei dati personali per la comunicazione a terzi partner commerciali per finalità di marketing tramite email
+                 
+    else if option == 'es'
+        .c-wrapper.CM000A.margin-bottom
+            .component
+                .fluid-container
+                    .my-component
+                        p.my-form-required.font-w-normal-16.font-m-normal-12
+                            em.c-required * 
+                                span.sr-only Required fields
+                            | Required fields 
+                        .my-formbox
+                            .my-check-terms
+                                .my-check-terms-item
+                                    .my-check-terms-title Responsable
+                                    .my-check-terms-content
+                                        b.font-semibold LG Electronics España S.A.U. 
+                                        | (en adelante, « LGEES »).
+                                        br
+                                        | Address : Calle Chile 1, 28290, Las Rozas, Madrid.
+                                        br
+                                        br
+                                        b.font-semibold LG Electronics Inc. 
+                                        | (en adelante « LGE »)
+                                        br
+                                        | LG Twin tower, 128 Yeoui—daero, Yeongdeungpo-gu, Seoul, Republic of Korea
+                                        br
+                                        br
+                                        | DPO contact details : 
+                                        a.font-underline(href="mailTo:dpo-eu@lge.com") dpo-eu@lge.com
+
+                                .my-check-terms-item
+                                    .my-check-terms-title Finalidades
+                                    .my-check-terms-content
+                                        ul
+                                            li Proporcionarle nuestros servicios, así como las características específicas por las que opte al utilizar nuestros servicios, lo que puede requerir la personalización del contenido de nuestros Servicios.
+                                            li Llevar a cabo la autenticación o verificación de su identidad para que pueda utilizar algunos de nuestros servicios.
+                                            li En caso aplicable, Gestionar los pedidos de productos y/o servicios realizados a través de los Servicios, incluyendo el pago y la entrega de nuestros productos y/o productos de terceros que compre a través de nuestros servicios, así como gestionar sus derechos relativos a la garantía sobre los productos y/o servicios contratados por usted u otros derechos que ostenta en virtud de la relación contractual con usted.
+                                            li Facilitar instalaciones y registros, solución a problemas técnicos, prestación de servicios de atención al cliente y envío de información necesaria o transaccional relacionada con los servicios contratados por usted.
+                                            li Llevar a cabo actividades de marketing directo (cuando no se requiera legalmente la obtención de consentimiento expreso), incluyendo el envío de comunicaciones de marketing por correo electrónico, llamadas telefónicas, correos, mensajes de texto, canales de redes sociales o notificaciones push a través de nuestras aplicaciones móviles, presentándole anuncios en línea tanto en nuestros servicios como en sitios web de terceros, creando perfiles de marketing y personalizando las recomendaciones y el contenido de marketing que nosotros y otros le presentamos, y ejecutando promociones, concursos y sorteos de premios. Tenga en cuenta que tiene derecho a oponerse en cualquier momento al tratamiento de sus datos para esta finalidad – véase la sección “Sus elecciones” a continuación.
+                                            li Mejorar nuestros servicios y atención al cliente, incluso buscando sus opiniones y realizando encuestas e investigaciones de mercado, realizando análisis de datos sobre el uso de nuestros servicios, analizando los comportamientos de los clientes, creando patrones y perfiles de uso de los clientes para identificar tendencias de usuarios regionales y globales, y optimizar nuestra oferta a los clientes a nivel global;
+                                            li Gestionar de manera eficaz la relación con nuestros clientes, incluyendo las comunicaciones que puedan surgir con usted, así como la gestión de sus consultas.
+                                            li Proteger nuestras operaciones comerciales, así como identificar y prevenir el fraude u otras actividades ilegales o prohibidas conforme a nuestras Condiciones de uso
+                                            li Proteger la seguridad, disponibilidad e integridad de nuestros servicios y sistemas de información, incluso mediante el uso de mecanismos de autenticación y otras medidas de seguridad, la monitorización de nuestros sistemas en busca de amenazas de seguridad, el mantenimiento de las copias de seguridad, la anonimización de datos y la realización de servicios de mantenimiento del sistema.
+                                            li Accionar nuestros derechos legales, así como proteger la seguridad de los usuarios finales, incluyendo mediante la gestión de reclamaciones, la obtención de asesoramiento jurídico y la interposición, ejercicio o defensa de demandas legales relacionadas con nosotros u otras empresas de nuestro grupo y nuestros Servicios;
+                                            li Mejorar su experiencia de usuario, incluso brindándole funcionalidades hechas a medida, como una función de autocompletar, una función de búsqueda rápida basada en sus páginas web más visitadas y contenido adicional adaptado a sus intereses;
+                                            li Gestionar de manera efectiva nuestro negocio, incluso mediante la generación de informes y el análisis del rendimiento de nuestros servicios (mediante el uso de información agregada), la auditoría de nuestros procesos comerciales y el uso de estadísticas para tomar decisiones comerciales informadas.
+                                            li Remitirle comunicaciones de mercadotecnia (cuando así lo exija la ley o cuando preferimos utilizar el consentimiento como base legitimadora). En caso de haberlo autorizado expresamente, gestionar el envío de comunicaciones comerciales sobre productos, servicios, promociones, eventos y/o noticias de LGEES, a través de los medios electrónicos, telemáticos o convencionales facilitados por usted, así como a través de las redes sociales (por ejemplo, Facebook o Instagram) con las que usted cuente.
+                                            li Cuando se requiera legamente el consentimiento expreso, facilitarle o permitir facilitarle recomendaciones y anuncios personalizados de contenido, productos y servicios que nosotros u otros entendemos que se pueden ajustar a sus intereses, mediante el análisis de información relacionada con su uso de los Servicios combinado con diversa información que usted proporcionada por otros medios, para los fines estipulados en esta Política de privacidad. Esto puede implicar la remisión de comunicaciones comerciales a través de distintos canales, incluyendo el correo electrónico, a través de la cuenta de LG, en nuestros sitios web o en plataformas de terceros (incluidas las redes sociales).
+                                            li En caso de que el Usuario nos otorgue su consentimiento expresamente marcando la casilla correspondiente, elaborar un perfil basado en la información obtenida por fuentes propias, esto es, de sus acciones como usuario registrado en cualquiera de los sitios web titularidad de LGEES, así como del resto de acciones que usted realice ante LGEES y aquella obtenida por fuentes de terceros, esto es, de acciones que usted realice ante terceras entidades (ya sean entidades pertenecientes el Grupo LG Electronics, o terceras entidades independientes con las que podamos tener algún tipo de colaboración). Dicha elaboración de perfiles se realiza con el objeto de llevar estadísticas que nos ayude a mejorar nuestros productos y servicios que más interés puedan despertar, así como, en caso de que el interesado haya autorizado expresamente la recepción de comunicaciones comerciales, personalizar las mismas según dicho perfil.
+                                            li Cumplir con nuestros requerimientos y/u obligaciones legales en virtud de la normativa que pueda resultar de aplicación (por ejemplo, obligaciones fiscales y contables, obligaciones relacionadas con la seguridad del producto, garantías y protección del consumidor).
+                                            li Cumplir con las órdenes y citaciones judiciales, así como responder a los requerimientos legalmente vinculantes del Gobierno, los Cuerpos y Fuerzas de Seguridad del Estado, las Autoridades Públicas y/o las Autoridades Reguladoras o Competentes.
+                                            li Otras finalidades que requieran su consentimiento expreso.
+                                    
+                                .my-check-terms-item
+                                    .my-check-terms-title Derechos
+                                    .my-check-terms-content Acceso, recitificación, oposición, supresión, portabilidad y revocación del consentimiento.
+
+                                .my-check-terms-item
+                                    .my-check-terms-title Información adicional
+                                    .my-check-terms-content Para obtener información más detallada, por favor diríjase a la 
+                                        a.font-underline(href="https://www.lg.com/es/privacy" target="_blank") Política de Privacidad.
+                            .my-check                            
+                                .button.custom-item
+                                    +formCheckbox("", "name", "val1_es", 'checkId1_es', count="false")
+                                        span Acepto los Términos de Uso de LGE Service
+                                            em.c-required *
+                                                    span.sr-only Required fields
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Leer más', href:"/uk/lge-terms/",})(target='_blank')
+                                .button.custom-item
+                                    +formCheckbox('', "name", "val2_es", `checkId2_es`, count="false")
+                                        span He leído y comprendo la Política de privacidad y Política de Cookies.
+                                            em.c-required *
+                                                    span.sr-only Required fields
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Leer más', href:"/uk/privacy/",})(target='_blank')                                        
+                                .button
+                                    +formCheckbox('Recepción de mensajes de marketing (Opcional)', "name", "val3_es", `checkId3_es`, count="false")
+                                    div.my-check--receipt-text.w-full Doy consentimiento a ser contactado por LGE y sus afiliados acerca de las últimas noticias y ofertas especiales por correo electrónico, SMS, notificaciones push, llamadas telefónicas, sitios de medios sociales y/o otra forma de mensajes electrónicas. Puedo cambiar de opinión en cualquier momento siguiendo las instrucciones dadas en cada canal de comunicación incluyendo pero sin limitarse al correo electrónico y de conformidad con la
+                                        +linkButton({type: 'text', color: 'black', underline: true, name: 'Política de Privacidad', href:"/uk/privacy?tabType=empMktPolicy/",})(target='_blank')       
+                                        span di LGE.    
+                                
+                                .button.custom-item
+                                    +formCheckbox('', "name", "val4_es", `checkId4_es`, count="false")
+                                        span Deseo que LG trate información obtenida por medios propios, así como procedente de terceras entidades con las que LG pueda tener colaboración con el fin de realizar un perfil para, por un lado, fines estadísticos con el fin de mejorar los servicios y productos y, por otro lado, en caso de que haya autorizado la recepción de comunicaciones comerciales, para personalizar las mismas con base en dicho perfil. (opcional)
+                                                                   
+                   
+    
+    else if option == 'cn'
+        .c-wrapper.CM000A.margin-bottom
+            .component
+                .fluid-container
+                    .my-component
+                        p.my-form-required.font-w-normal-16.font-m-normal-12
+                            em.c-required * 
+                                span.sr-only Required fields
+                            | Required fields 
+                        .my-formbox
+                            .my-check                            
+                                .button.custom-item
+                                    +formCheckbox("", "name", "val1_cn", 'checkId1_cn', count="false")
+                                        span 我同意使用条款
+                                            em.c-required *
+                                                    span.sr-only Required fields
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: '阅读政策', href:"/uk/lge-terms/",})(target='_blank')
+                                .button.custom-item
+                                    +formCheckbox('', "name", "val2_cn", `checkId2_cn`, count="false")
+                                        span 我已阅读并理解隐私政策和 Cookie 政策。
+                                            em.c-required *
+                                                    span.sr-only Required fields
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: '阅读政策', href:"/uk/privacy/",})(target='_blank')                                        
+                                .button
+                                    +formCheckbox('', "name", "val3_cn", `checkId3_cn`, count="false")
+                                        span 数据跨境传输声明
+                                            em.c-required *
+                                                span.sr-only Required fields
+                                    div.my-check--receipt-text.w-full 为确保LG集团的全球统一管理以及为实现《隐私政策》中所述的目的，《隐私政策》中提及的您的个人信息将由LGE传输出境并存储在中国境外的系统中。在将数据转移出境前，我们将遵守适用的中国个人信息保护相关法律法规的规定。您可以通过我们的《隐私政策》所载明的联系方式联系LGE以行使您的数据主体权利。
+                                    div.my-check--receipt-text.w-full 您还可以通过下表查阅其他境外接收方的名称和联系方式、处理目的和方式、处理的个人信息类型以及您行使权利的方式和程序。
+                                    div.my-check--receipt-text.w-full.bg-gray 第三方数据接收方名称 : LG Electronics Inc.<br />
+                                        p 联系方式及所在国家/地区 : contact.lgaccount@lge.com 韩国<br />提供的个人信息和数据 : 一般个人信息(姓名，手机号码，电子邮箱，IP地址及设备IMEI信息)、敏感个人信息(联系地址)<br />理目的 : 用户信息数据全球统一使用同一个数据库，数据库载体服务器部署在韩国，因此涉及到数据跨境传输 处理方式 : 接口加密传输
+                                        p 第三方数据接收方名称 : [Google]<br />联系方式及所在国家/地区 : https://support.google.com/google-ads/gethelp 美国<br />提供的个人信息和数据 : 哈希加密的用户号码、App操作系统版本、App使用信息<br />处理目的 : 改善App运行方式<br />处理方式 : 通过服务器发送
+                                .button
+                                    +formCheckbox('接收营销信息（可选）', "name", "val4_cn", `checkId4_cn`, count="false")
+                                    div.my-check--receipt-text.w-full 本人同意接收LGE 及其附属公司通过电子邮件、短信、推送通知、电话、社交媒体网站和/或其他形式的电子信息提供的产品或服务的最新消息及特别优惠。本人可以随时通过各通讯平台（包括但不限于电子邮件）中的说明并依据 LGE 私隐政策 变更上述决定。
+                  
+    else if option == 'tr'
+        .c-wrapper.CM000A.margin-bottom
+            .component
+                .fluid-container
+                    .my-component
+                        p.my-form-required.font-w-normal-16.font-m-normal-12
+                            em.c-required * 
+                                span.sr-only Required fields
+                            | Required fields 
+                        .my-formbox
+                            .my-check                            
+                                .button.custom-item
+                                    +formCheckbox("", "name", "val1_tr", 'checkId1_tr', count="false")
+                                        span Kullanım Koşullarını kabul ediyorum
+                                            em.c-required *
+                                                    span.sr-only Required fields
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Daha Fazla Bilgi', href:"/uk/lge-terms/",})(target='_blank')
+                                .button.custom-item
+                                    +formCheckbox('', "name", "val2_tr", `checkId2_tr`, count="false")
+                                        span Gizlilik İlkesini ve Çerez İlkesini okudum ve anladım.
+                                            em.c-required *
+                                                    span.sr-only Required fields
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Daha Fazla Bilgi', href:"/uk/privacy/",})(target='_blank')                                        
+                                .button
+                                    +formCheckbox('Verilerin Uluslararası Aktarımı', "name", "val3_tr", `checkId3_tr`, count="false")
+                                    div.my-check--receipt-text.w-full Gizlilik Politikasını ve Genel Kullanım koşulları kapsamında kişisel verilerimin ürün ve hizmetlere yönelik bilgi verilmesi, etkinlik, tanıtım, pazarlama, kampanya faaliyetlerinin yürütülmesi ve pazarlama analizi çalışmaları yapılması amacıyla işlenmesine, iş ortakları ile paylaşılmasına ve yurtdışına aktarılmasına izin veriyorum.
+                                .button
+                                    +formCheckbox('Pazarlama mesajlarının alınması (İsteğe bağlı)', "name", "val4_tr", `checkId4_tr`, count="false")
+                                    div.my-check--receipt-text.w-full I LGE ve onun bağlı kuruluşlarının en son haberler ve özel teklifler hakkında e-posta, SMS, anlık bildirim, telefon çağrısı, sosyal medya siteleri ve/ya diğer elektronik ileti biçimleri yoluyla benimle iletişime geçmesine izin veriyorum. E-posta dâhil ancak bununla sınırlı olmamak üzere, her iletişim kanalında sağlanan talimatları izleyerek ve LGE Gizlilik Politikasına uygun olarak fikrimi herhangi bir zaman değiştirebilirim.                            
+                                        
+                                    
+    else if option == 'ca'
+        .c-wrapper.CM000A.margin-bottom
+            .component
+                .fluid-container
+                    .my-component
+                        .my-formbox
+                            .my-check                            
+                                //- .button.custom-item
+                                //-     +formCheckbox("", "name", "val1_ca", 'checkId1_ca', count="false")
+                                //-         span 14 years old or older.
+                                //-             em.c-required *
+                                //-                     span.sr-only Required fields
+                                .button.custom-item
+                                    +formCheckbox('', "name", "val2_ca", `checkId2_ca`, count="false")
+                                        span I agree with the Terms of Use.
+                                            em.c-required *
+                                                    span.sr-only Required fields
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more', href:"/uk/privacy/",})(target='_blank')                                        
+                                .button.custom-item
+                                    +formCheckbox('', "name", "val3_ca", `checkId3_ca`, count="false")
+                                        span I have read and understand the Privacy Policy and Cookie Policy.
+                                            em.c-required *
+                                                    span.sr-only Required fields
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more', href:"/uk/privacy/",})(target='_blank')                                        
+                                .button
+                                    +formCheckbox('Receipt of marketing messages(Optional)', "name", "val4_ca", `checkId4_ca`, count="false")
+                                    div.my-check--receipt-text.w-full I consent to being contacted by *LG Electronics, Inc. and **LG Electronics Canada, Inc. about the latest news and special offers by email, SMS, push notification and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE 
+                                        +linkButton({type: 'text', color: 'black', underline: true, name: 'Privacy Policy', href:"/uk/privacy/",})(target='_blank')                                        
+                            p.add-comment You can access both of your sites using different languages through single sign in.
+                        .my-form-etc
+                            ul 
+                                li *LG Electronics Inc. – LG Twin tower, 128 Yeoui—daero, Yeongdeungpo-gu, Seoul, Republic of Korea
+                                li **LG Electronics Canada, Inc. – 20 Norelco Drive, North York, Ontario M9L 2X6, Canada. 
+                                    a(href="http://www.lg.com/ca_en") www.lg.com/ca_en                
+                 
+                    .my-component
+                        .my-formbox
+                            .my-check                            
+                                //- .button.custom-item
+                                //-     +formCheckbox("", "name", "val1_ca2", 'checkId1_ca2', count="false")
+                                //-         span 14 ans ou plus.
+                                //-             em.c-required *
+                                //-                     span.sr-only Required fields
+                                .button.custom-item
+                                    +formCheckbox('', "name", "val2_ca2", `checkId2_ca2`, count="false")
+                                        span J’accepte les conditions générales d’utilisation
+                                            em.c-required *
+                                                    span.sr-only Required fields
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more', href:"/uk/privacy/",})(target='_blank')                                        
+                                .button.custom-item
+                                    +formCheckbox('', "name", "val3_ca2", `checkId3_ca2`, count="false")
+                                        span Je confirme avoir lu et compris la Politique de confidentialité et la Politique en matière de cookies.
+                                            em.c-required *
+                                                    span.sr-only Required fields
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more', href:"/uk/privacy/",})(target='_blank')                                        
+                                .button
+                                    +formCheckbox('Réception de messages publicitaires (facultatif)', "name", "val4_ca2", `checkId4_ca2`, count="false")
+                                    div.my-check--receipt-text.w-full Je consens à ce que *LG Electronics Inc. et **LG Electronics Canada, Inc. communiquent avec moi au sujet des nouveautés et des offres spéciales par courriel, par message texte, par notification poussée, ou par toute autre forme de message électronique. Je peux changer d’avis à tout moment en suivant les directives fournies dans chaque voie de communication, y compris, mais sans s’y limiter, les courriels, et conformément à lapolitique de confidentialité de LGE.
+                                        +linkButton({type: 'text', color: 'black', underline: true, name: 'Privacy Policy', href:"/uk/privacy/",})(target='_blank')                                        
+                            p.add-comment Vous pouvez accéder à nos deux sites dans différentes langues grâce à l’inscription unique.
+                        .my-form-etc
+                            ul 
+                                li *LG Electronics Inc. – LG Twin tower, 128 Yeoui—daero, Yeongdeungpo-gu, Seoul, Republic of Korea
+                                li **LG Electronics Canada, Inc. – 20 Norelco Drive, North York, Ontario M9L 2X6, Canada. 
+                                    a(href="http://www.lg.com/ca_fr") www.lg.com/ca_fr           
+                                    
+    
+    else if option == 'hk'
+        .c-wrapper.CM000A.margin-bottom
+            .component
+                .fluid-container
+                    .my-component
+                        .my-formbox
+                            .my-check                            
+                                .button.custom-item
+                                    +formCheckbox("", "name", "val1_hk", 'checkId1_hk', count="false")
+                                        span 本人同意使用條款
+                                            em.c-required *
+                                                span.sr-only 閱讀更多
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: '閱讀更多', href:"/uk/privacy/",})(target='_blank')                                        
+                                .button.custom-item
+                                    +formCheckbox('', "name", "val2_hk", `checkId2_hk`, count="false")
+                                        span 本人已閱讀和明白《私隱政策》及《Cookie 政策》。
+                                            em.c-required *
+                                                span.sr-only 閱讀更多
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: '閱讀更多', href:"/uk/privacy/",})(target='_blank')                                                                 
+                                .button
+                                    +formCheckbox('接收行銷資訊（可選）', "name", "val3_hk", `checkId3_hk`, count="false")
+                                    div.my-check--receipt-text.w-full 本人同意 LGE 及其附屬公司 透過電子信件、簡訊、推播通知、電話、社交媒體網站和/或其他形式的電子資訊提供<br />的最新消息和特別優惠。 本人可以隨時透過按照各通訊管道（包括但不限於電子信件）中的說明並依據《LGE
+                                        +linkButton({type: 'text', color: 'black', underline: true, name: '閱讀更多', href:"/uk/privacy/",})(target='_blank')                                        
+                            p.add-comment 您可透過單一登入，以不同語言版本存取兩個網站。
+                             
+
+                    .my-component
+                        .my-formbox
+                            .my-check                            
+                                .button.custom-item
+                                    +formCheckbox("", "name", "val1_hk2", 'checkId1_hk2', count="false")
+                                        span I agree with the Terms of Use
+                                            em.c-required *
+                                                span.sr-only Read More
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Read More', href:"/uk/privacy/",})(target='_blank')  
+                                .button.custom-item
+                                    +formCheckbox('', "name", "val2_hk2", `checkId2_hk2`, count="false")
+                                        span I have read and understood the Privacy Policy and Cookie Policy.
+                                            em.c-required *
+                                                    span.sr-only Read More
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more', href:"/uk/privacy/",})(target='_blank')                                        
+                                .button
+                                    +formCheckbox('Receipt of marketing messages (Optional)', "name", "val3_hk2", `checkId3_hk2`, count="false")
+                                    div.my-check--receipt-text.w-full I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE 
+                                        +linkButton({type: 'text', color: 'black', underline: true, name: 'Privacy Policy', href:"/uk/privacy/",})(target='_blank')                                        
+                            p.add-comment You can access both of your sites using different languages through single sign in.  
+
+    else if option == 'sa'
+        .c-wrapper.CM000A.margin-bottom
+            .component
+                .fluid-container
+                    .my-component
+                        .my-formbox
+                            .my-check                            
+                                .button.custom-item
+                                    +formCheckbox("", "name", "val1_sa2", 'checkId1_sa2', count="false")
+                                        span I agree with the Terms of Use
+                                            em.c-required *
+                                                span.sr-only Read More
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Read More', href:"/uk/privacy/",})(target='_blank')  
+                                .button.custom-item
+                                    +formCheckbox('', "name", "val2_sa2", `checkId2_sa2`, count="false")
+                                        span I have read and understood the Privacy Policy and Cookie Policy.
+                                            em.c-required *
+                                                    span.sr-only Read More
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more', href:"/uk/privacy/",})(target='_blank')                                        
+                                .button
+                                    +formCheckbox('Receipt of marketing messages (Optional)', "name", "val3_sa2", `checkId3_sa2`, count="false")
+                                    div.my-check--receipt-text.w-full I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE
+                                        +linkButton({type: 'text', color: 'black', underline: true, name: 'Privacy Policy', href:"/uk/privacy/",})(target='_blank')                                        
+                            p.add-comment You can access both of your sites using different languages through single sign in.    
+
+block content
+    // Component Markup
+    .guide-text-type signup Terms
+    +CM000A('all')   
+    .guide-text-type signup Terms Italy (IT)
+    +CM000A('it')   
+    .guide-text-type signup Terms Spain (ES)
+    +CM000A('es')   
+    .guide-text-type signup Terms China (CN)
+    +CM000A('cn')   
+    .guide-text-type signup Terms Türkiye (TR)
+    +CM000A('tr')   
+    .guide-text-type signup Terms Canada (CA_EN, CA_FR)
+    +CM000A('ca')   
+    .guide-text-type signup Terms Hong Kong (HK, HK_EN)
+    +CM000A('hk')   
+    .guide-text-type signup Terms Saudi Arabia (en) (SA_EN)
+    +CM000A('sa')   

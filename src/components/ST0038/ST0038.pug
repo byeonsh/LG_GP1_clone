@@ -1,0 +1,147 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+
+block meta 
+    - var componentId = "ST0038"
+    - var componentName = "Scroll Image"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const headLineSize = {
+                        'web' : [
+                            {}
+                        ]
+                    }
+                    const guideList = {
+                        '.c-wrapper' : [ 
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'BG Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'bg-default', 'remove' : 'bg-white, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-white', 'remove' : 'bg-default, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-lightgray', 'remove' : 'bg-default, bg-white, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-darkgray', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-black', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-darkgray'},
+                                ]
+                            },
+                        ],
+                        '.cmp-container' : [
+                            {
+                                'name' : 'Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-left', 'remove' : 'align-center, align-right'},
+                                    {'toggle' : false, 'add' : 'align-center', 'remove' : 'align-left, align-right'},
+                                    {'toggle' : false, 'add' : 'align-right', 'remove' : 'align-left, align-center'},
+                                ]
+                            }
+                        ],
+                        '.text.c-text-contents__bodycopy' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            }
+                        ],
+                    };
+
+    mixin text-box(params)
+        - var option={headline:'', bodycopy:'', ...params}
+
+            .c-text-contents(class=`${option.bodycopy}`)
+                .align-container
+                    .c-text-contents__inner 
+                        // tag heading tag
+                        .title.c-text-contents__headline
+                            +headline(`${option.headline}`)
+
+                        .text.c-text-contents__bodycopy 
+                            p(data-cmp-data-layer="") Body text can be up to 350 characters. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec.
+
+                        // block :cta 
+                        .button.c-cta
+                            +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                            +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+                        .button.c-cta
+                            +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                            +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+
+    mixin scroll-image(params)
+        - var option={webBackUrl: "", mobileBackUrl: "", backAlt: 'picture', webInsetUrl: "", mobileInsetUrl: "", insetAlt: 'picture', max: 768, min: 769, eventDirection: 'bottom', ...params}
+        
+        .c-floating-contents.c-scroll-image
+            .c-floating-contents__floor
+                // block - image
+                +printLazyPicture(`${option.mobileBackUrl}`, `${option.webBackUrl}`, `${option.max}`, `${option.min}`, `${option.backAlt}`)
+                
+            .c-floating-contents__floating.c-scroll-image--item(class=`c-scroll-image--${option.eventDirection}`)
+                // block - image
+                +printLazyPicture(`${option.mobileInsetUrl}`, `${option.webInsetUrl}`, `${option.max}`, `${option.min}`, `${option.insetAlt}`)
+
+    // Component Markup
+    // Type,1 - Image Show bottom
+    // option - Placement top
+    .guide-text-type TYPE1. Image Show bottom
+    .guide-text-option Text Placement - top
+    .c-wrapper.ST0038.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+
+                // block : text content
+                +text-box({headline:'font-w-light-56 font-m-light-28', bodycopy:'font-w-normal-20 font-m-normal-16'})
+
+                // block : floating contents
+                +scroll-image({webBackUrl: "../../mocks/ST0038/temp-w-bg.png", mobileBackUrl: "../../mocks/ST0038/temp-m-bg.png", webInsetUrl: "../../mocks/ST0038/temp-w-inset.png", mobileInsetUrl: "../../mocks/ST0038/temp-m-inset.png"})
+
+    // Type.2 - Image Show right
+    // option - Placement button
+    .guide-text-type TYPE2. Image Show right
+    .guide-text-option Text Placement - button
+    .c-wrapper.ST0038.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+
+                // block : floating contents
+                +scroll-image({webBackUrl: "../../mocks/ST0038/temp-w-bg.png", mobileBackUrl: "../../mocks/ST0038/temp-m-bg.png", webInsetUrl: "../../mocks/ST0038/temp-w-inset.png", mobileInsetUrl: "../../mocks/ST0038/temp-m-inset.png", eventDirection: "right"})
+
+                // block : text content
+                +text-box({headline:'font-w-light-56 font-m-light-28', bodycopy:'font-w-normal-20 font-m-normal-16'})

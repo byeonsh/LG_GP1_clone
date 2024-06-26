@@ -1,0 +1,556 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_pop-msg.pug
+include ../../components/CT000E/CT502-inc.pug
+include ../_common/_toast.pug
+
+block meta 
+    - var componentId = "MB000A"
+    - var componentName = "Member Sign in"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+    link(rel="stylesheet", href="../../components/CT000E/CT502.css")
+    link(rel="stylesheet", href="../../components/PD0006/PD0006.css")
+
+block scripts
+    script(src="../../components/CT000E/CT502.js" type="module")
+    script(src=componentId+".js" type="module")
+    //- recaptcha
+    //- script(src="https://www.google.com/recaptcha/api.js?render=explicit&onload=onRecaptchaLoadCallback" async)
+    
+    //- script(type='text/javascript').
+    //-     onRecaptchaLoadCallback = function(){
+    //-         var clientId = grecaptcha.render('security-box', {
+    //-             'sitekey': '6Le3NdgaAAAAAK8TXN0_DHQfP-FtiHoGCdiK1QQT',
+    //-             'badge': 'inline',
+    //-             'size': 'invisible',
+    //-         });
+
+    //-         grecaptcha.ready(function() {
+    //-             grecaptcha.execute(clientId, {
+    //-                 action: 'homepage',
+    //-             })
+    //-             .then(function(token) {
+    //-                 // token
+    //-                 document.getElementById('g-recaptcha').value = token;
+    //-             });
+    //-         });
+    //-     }
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin myFile({attachments= false, option=true})
+    .my-formFile
+        if !option
+            span.font-m-semibold-14.font-w-semibold-16.my-formFile__title Proof of purchase
+        else 
+            span.font-m-semibold-14.font-w-semibold-16.my-formFile__title Proof of purchase (optional)
+        .my-formFile__upload
+            .my-formFile__inner
+                label.c-not-required(for='file-input')
+                    span.btn-upload.font-m-normal-14i.font-w-normal-14i UPLOAD
+                input#file-input.file.sr-only(type='file' name='file-input' multiple)
+            .my-formFile__preview
+                p   File Name.jpeg 
+                button.my-formFile__preview__btn-delete(type='button')
+                    span.sr-only delete
+
+        .my-formFile__msg.font-m-normal-14i.font-w-normal-14 File must be less than 10MB. Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip
+
+mixin myVerify(params)
+    - let data = {...params}
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            label.font-w-semibold-16.font-m-semibold-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+            if data.validation
+                .input-button__container.input-button__container--validation
+                    .my-button-validation
+                        .my-verify__inner
+                            input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}` value= data.value)&attributes(attributes)
+                            span.my-verify__time.font-m-normal-14i.font-w-normal-14i= data.time
+                        +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                    .button.c-cta
+                        +linkButton({name: 'send'})
+            else
+                .input-button__container
+                    .my-verify__inner
+                        input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}` value= data.value)&attributes(attributes)
+                        span.my-verify__time.font-m-normal-14i.font-w-normal-14i= data.time
+                    .button.c-cta
+                        +linkButton({name: 'send'})
+            if !data.validation
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected})
+    .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+        +formSelect(label, id, placeholder, false)
+            if optionVal
+                - for(var i=0; i < optionVal.length; i++)
+                    if selected === i + 1
+                        option(value="" selected)= optionVal[i]
+                    else
+                        option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText})
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+    if data.type === 'file'
+        +myFile({attachments: data.attachments, option: data.option})
+    else if data.type === 'verify'
+        +myVerify(params)
+    else if data.type === 'select'
+        +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected})
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-semibold-16.font-m-semibold-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                if data.active
+                    input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+            if data.required
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+            else if data.type === 'textarea'
+                if data.limit
+                    .my-textarea__container
+                        textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class='my-textarea--limit')&attributes(attributes)
+                        .my-count
+                            span.font-w-normal-14.font-m-normal-12 0 / !{data.limit} byte
+                else 
+                    textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder)&attributes(attributes)
+            else if data.button
+                if data.validation
+                    .input-button__container.input-button__container--validation
+                        .my-button-validation
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config)&attributes(attributes)
+                            +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                        .button.c-cta.button-full
+                            +linkButton({name: data.button})
+                else
+                    .input-button__container
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config)&attributes(attributes)
+                        .button.c-cta.button-full
+                            +linkButton({name: data.button})
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+                
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin myLinkedLoginIcon(data)
+    ul.my-linkedlogin-icon
+        each set in data
+            li 
+                button(class='my-linkedlogin-icon__ico-box' type="button")
+                    i(class=`my-linkedlogin-icon__ico my-linkedlogin-icon__ico--${set.apps}`)
+                    span.sr-only= set.apps
+                    
+mixin myMembershipImage({ico})
+    .image.c-image
+        +printLazyImage(`../../assets/icon/icon-mylg-${ico}-64-64.svg`)
+        if block
+            block
+
+mixin myMemberMyOrder({ico})
+    .image.c-image
+        +printLazyImage(`../../assets/icon/icon-member-${ico}-72-72.svg`)
+        if block
+            block
+
+mixin myMembershipImageList({ico})
+    .image.c-image
+        +printLazyImage(`../../assets/icon/icon-member-${ico}-64-64.svg`)
+        if block
+            block
+
+mixin myMembershipNeed(ico)
+    .image.c-image
+        +printLazyImage(`../../assets/icon/icon-mylg-${ico}-64-64.svg`)
+        if block
+            block
+
+mixin myMembershipCard(data)
+    ul.my-membership__list
+        each set in data
+            li.my-membership__item
+                a(href="https://www.lgechat.com/us/index.html" class="my-membership__link" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="")
+                    .c-text-contents
+                        .title.c-text-contents__headline
+                            .cmp-title.font-w-light-36.font-m-normal-16(data-cmp-data-layer="") !{set.title}
+                        .c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-16.font-m-normal-12 !{set.desc}
+                    +myMembershipImage({ico: set.ico})
+                        span.sr-only= set.ico
+
+mixin myResources(params)
+    - let data = {...params}
+    .panelcontainer
+        .my-resources
+            .my-resources__list
+                each set in params
+                    .my-resources__box.my-signIn__container
+                        .my-resources__txt
+                            .my-resources__tit 
+                                span.font-w-light-36.font-m-normal-16 !{set.title}
+                            .my-resources__desc 
+                                span.font-w-normal-16.font-m-normal-12 !{set.desc}
+                            if set.isButton
+                                .button
+                                    +circleButton({name: 'Button', wSize: 'medium', mSize: 'medium', buttonStyle: 'white arrow', isButton: false})
+                        +myMemberMyOrder({ico: set.ico})
+                            span.sr-only= set.ico
+
+mixin myListbox(params)
+    - let data = {...params}
+    .my-list.panelcontainer
+        .my-listbox
+            .my-listbox__area
+                each set in params
+                    .my-listbox__box.my-signIn__container
+                        //- a태그 기획 확인
+                        .my-resources__txt
+                            .my-resources__tit 
+                                span.font-w-light-36.font-m-normal-16 !{set.title}
+                            .my-resources__desc 
+                                span.font-w-normal-16.font-m-normal-12 !{set.desc}
+                            if set.isButton
+                                .button
+                                    +circleButton({name: 'Button', wSize: 'medium', mSize: 'medium', buttonStyle: 'white arrow', isButton: false})
+                        +myMembershipImageList({ico: set.ico})
+                            span.sr-only= set.ico
+    // PD0006
+mixin learnMore
+    // 2023-02-08 added .c-cta
+    .c-cta
+        +circleButton({name: 'Learn More', wSize: 'large', mSize: 'small', buttonStyle: 'white arrow', isButton: "none"})
+mixin itemType(item)
+    if item 
+        div(class='cmp-carousel__item swiper-slide c-list__item')
+            if block
+                block
+    else
+        li(class='c-list__item')
+            if block
+                block
+mixin listItemCard(params)
+    - var options={headText:'headline text', bodyText:'body text', isSwiper:false, ...params}
+    +itemType(options.isSwiper)
+        // GA4
+        a(href="#" class="c-list__link" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+            // block : text contents
+            .c-text-contents
+                .title.c-text-contents__headline
+                    .cmp-title.font-w-light-36.font-m-normal-16(data-cmp-data-layer="")
+                        strong #{options.headText}
+                .text.c-text-contents__bodycopy
+                    .cmp-text.font-w-normal-16(data-cmp-data-layer="")
+                        p #{options.bodyText}
+            if options.ico 
+                +myMembershipNeed(options.ico)
+                    span.sr-only= options.ico
+            +learnMore
+mixin title
+    .c-support__title
+        //- title area
+        +component-title-area({
+            alignment : "align-text-left",
+            headline : {
+                text : "Need Help?",
+            },
+            description : {
+                text : "We're here to provide all the help you need.",
+                style : "font-w-normal-16 font-m-normal-12"
+            }
+        })(class="c-region-header--justify-w")
+            //- buttons
+            // block - cta
+            .c-cta
+                +defaultButton({name: 'Get Support', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})
+
+
+mixin MB000A
+    .MB000A
+        .my-component.margin-top.margin-bottom
+            .my-signIn
+                .my-signIn__item
+                    .c-text-contents.my-signIn__titleline
+                        // tag heading tag  
+                        .title.c-text-contents__headline
+                            .cmp-title
+                                h2.cmp-title__text.font-w-light-56.font-m-light-28
+                                    | Sign in Your LG Account
+                            .text.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-12
+                                p.cmp-text
+                                    | Take advantage of exclusive benefits for LG.com  shoppers
+                    .my-signIn__list
+                        .my-formbox
+                            .my-signIn__container
+                                // [Start] 2023-05-17 : UPDATE - change location to country
+                                +myInputForm([
+                                    {
+                                        type: 'select',
+                                        selected: 2,
+                                        optionVal: ['UK', 'UK', 'UK'],
+                                        label: 'Country',
+                                        id: 'country',
+                                    },
+                                    {
+                                        type:"email",
+                                        label:"Email Address",
+                                        id:"email",
+                                        required:false,
+                                        placeholder:"Email Account (Case Sensitive)",
+                                    },
+                                    {
+                                        type:"password", 
+                                        label:"Password", 
+                                        id:"password",
+                                        required:false,
+                                        placeholder:"Password (Case Sensitive)",
+                                    },
+                                ])
+                                // [End] 2023-05-17 : UPDATE - change location to country
+                                .my-signIn__list__check
+                                    .button.c-cta
+                                        +formCheckbox('Remember Email', "name", "val1", `checkId1`, count="false")
+                                        +linkButton({type: 'text', name: "Forgot your password?", underline: true})
+                            .my-signIn__list__button
+                                .button.c-cta.my-button__block-m
+                                    // [Start] 2023-05-04 : button Update
+                                    +defaultButton({name: 'Sign In', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                                    +defaultButton({name: 'Join Us', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="only-mo")
+                                    // [End] 2023-05-04 : button Update
+                .my-signIn__item
+                    .c-text-contents.my-signIn__titleline
+                        .title.c-text-contents__headline
+                            .cmp-title
+                                h2.cmp-title__text.font-w-light-56.font-m-light-28
+                                    // [Start] 2023-04-26 : Update title Text
+                                    | Become a LG Member
+                                    // [End] 2023-04-26 : Update title Text
+                            .text.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-12
+                                p.cmp-text Enjoy all the benefits of FREE LG membership, from special discounts to exclusive services and offers.
+                    +myMembershipCard([
+                        {ico:"coupon", title:"Welcome Coupon", desc:"Get 5% off your first purchase when you join", buttonName:"view more"},
+                        {ico:"price", title:"Exclusive Pricing", desc:"Receive an extra 2% membership discount", buttonName:"view more"},
+                        {ico:"delivery", title:"Free Delivery", desc:"Free delivery for all LG.com orders", buttonName:"view more"}
+                    ])
+                    .my-signIn__list__button
+                        .button.c-cta.my-button__block-m
+                            // [Start] 2023-05-04 : button Update
+                            +defaultButton({name: 'Join Us', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="only-pc")
+                            // [End] 2023-05-04 : button Update
+                        // [Start] 2023-05-17 : ADD - Member Benefits button
+                        //- .button.c-cta
+                        //-     +defaultButton({name: 'Member Benefits', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                        // [End] 2023-05-17 : ADD - Member Benefits button
+
+        // [Start] 2023-04-27 : Sign in with Update
+        .my-component__wrap
+            +CT502()
+        // [End] 2023-04-27 : Sign in with Update
+
+        .my-component__wrap
+            .my-component.margin-top.margin-bottom
+                .my-signIn
+                    .my-signIn__item
+                        .c-text-contents.my-signIn__titleline
+                            // tag heading tag  
+                            .title.c-text-contents__headline
+                            .cmp-title
+                                h2.cmp-title__text.font-w-light-56.font-m-light-28
+                                    | Sign in Your LG Account
+                            .text.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-12
+                                p.cmp-text
+                                    | Take advantage of exclusive benefits for LG.com  shoppers
+                        .my-signIn__list
+                            .my-formbox
+                                .my-signIn__container
+                                    // [Start] 2023-05-17 : UPDATE - change location to country
+                                    +myInputForm([
+                                        {
+                                            type: 'select',
+                                            selected: 2,
+                                            optionVal: ['UK', 'UK', 'UK'],
+                                            label: 'Country',
+                                            id: 'country',
+                                        },
+                                        {
+                                            type:"email",
+                                            label:"Email Address",
+                                            id:"email",
+                                            required:false,
+                                            placeholder:"Email Account (Case Sensitive)",
+                                            warning: ['Email is required.'],
+                                        },
+                                        {
+                                            type:"password", 
+                                            label:"Password", 
+                                            id:"password",
+                                            required:false,
+                                            placeholder:"Password (Case Sensitive)",
+                                            warning: ['Password (Case Sensitive) is required.'],
+                                        },
+                                    ])
+                                    // [End] 2023-05-17 : UPDATE - change location to country
+                                    //- .my-signInform__text
+                                    //-     span.font-w-semibold-16.font-m-semibold-14 Security text
+                                    //-     #security-box.security-box
+                                            //- recaptcha
+                                    .my-signIn__list__check
+                                        .button.c-cta
+                                            +formCheckbox('Remember Email', "name", "val1", `checkId2`, count="false")
+                                            +linkButton({type: 'text', name: "Forgot your password?", underline: true})
+                                +toastPopup([
+                                    {
+                                        type:"warning", 
+                                        text:`The email or password is incorrect.`,
+                                        remove:true,
+                                    }
+                                ])
+                                .my-signIn__list__button
+                                    .button.c-cta
+                                        // [Start] 2023-05-04 : button Update
+                                        +defaultButton({name: 'Sign In', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                                        +defaultButton({name: 'Join Us', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="only-mo")
+                                        // [End] 2023-05-04 : button Update
+                    
+                    .my-signIn__item
+                        .c-text-contents.my-signIn__titleline
+                            .title.c-text-contents__headline
+                                .cmp-title
+                                h2.cmp-title__text.font-w-light-56.font-m-light-28
+                                    // [Start] 2023-04-26 : Update title Text
+                                    | Become a LG Member
+                                    // [End] 2023-04-26 : Update title Text
+                            .text.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-12
+                                p.cmp-text Enjoy all the benefits of FREE LG membership, from special discounts to exclusive services and offers.
+                        +myMembershipCard([
+                            {ico:"coupon", title:"Welcome Coupon", desc:"Get 5% off your first purchase when you join", buttonName:"view more"},
+                            {ico:"price", title:"Exclusive Pricing", desc:"Receive an extra 2% membership discount", buttonName:"view more"},
+                            {ico:"delivery", title:"Free Delivery", desc:"Free delivery for all LG.com orders", buttonName:"view more"}
+                        ])
+                        .my-signIn__list__button
+                            .button.c-cta.my-button__block-m
+                                // [Start] 2023-05-04 : button Update
+                                +defaultButton({name: 'Join Us', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="only-pc")
+                                // [End] 2023-05-04 : button Update
+                            // [Start] 2023-05-17 : ADD - Member Benefits button
+                            //- .button.c-cta.my-button__block-m
+                            //-     +defaultButton({name: 'Member Benefits', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                            // [End] 2023-05-17 : ADD - Member Benefits button
+
+        // [Start] 2023-04-27 : Sign in with Update
+        .my-component__wrap
+            +CT502()
+        // [End] 2023-04-27 : Sign in with Update
+        
+        //RO SG
+        .my-component__wrap
+            +CT502Descript('sg')
+
+        // [Start] 2023-04-27 : Need Help Update
+        .my-component__wrap
+            .my-component.PD0006.margin-top.margin-bottom
+                .cmp-containerss
+                    .c-support.c-support--card
+                        .c-support__inner
+                            +title
+                            if(option == 'MOBILESWIPER')
+                            else 
+                                .c-support__box
+                                    // block : list
+                                    // 2023-02-08 added class 'c-list--flex'
+                                    ul.c-list.c-list--flex
+                                        +listItemCard({ico:'productregister', headText:'Product Register', bodyText:'Registering your product will help you get faster support.'})
+                                        +listItemCard({ico:'productsupport', headText:'Product Support', bodyText:'Find manual, troubleshoot, and warranty of your LG product.'})
+                                        +listItemCard({ico:'ordersupport', headText:'Order Support', bodyText:'Track your order and check order FAQ.'})
+                                        +listItemCard({ico:'requestarepair', headText:'Request a Repair', bodyText:'Request repair service conveniently online.'})
+                                        +listItemCard({ico:'chatwith', headText:'Chat with Us', bodyText:'You can chat with an LG Support Representative.'})
+                                        +listItemCard({ico:'whatsapp', headText:'Whatsapp', bodyText:'We are on WhatsApp. Text with our expert.'})
+                                        +listItemCard({ico:'callus', headText:'Call Us', bodyText:'We look forward to speaking and providing further LG.'})
+                                        +listItemCard({ico:'emailme', headText:'Email Me', bodyText:'For more straightforward questions, send us an email.'})
+        // [End] 2023-04-27 : Need Help Update
+
+block content
+    // Component Markup
+    .c-wrapper
+        .component
+            .fluid-container
+                +MB000A
+                // RO 리캡챠 임시 표시
+                .recapcha(style={position: 'fixed', right: '0px', bottom: '20px'})
+                    img(src="../../assets/image/recaptcha.png", alt="")
+
+block modal
+    .my-email-validation(class=componentId)
+        +pop-msg-standard({id : `productionInformationDelete`, headline:"Almost complete to sign in"})
+            .my-email-validation__text.font-w-normal-16.font-m-normal-14 If you sign in with this ID at first, please fill email address out.
+            .my-formbox
+                // [Start] 2023-05-17 : UPDATE - change location to country
+                +myInputForm([
+                    {
+                        type:"select",
+                        optionVal: ['Country select', 'Country select', 'Country select'],
+                        label: 'Country',
+                        id: 'country',
+                        placeholder: 'Country select',
+                    },
+                    {
+                        type:"email",
+                        label:"Email Address",
+                        id:"EmailAddress",
+                        required:false,
+                        placeholder:"Email Account (Case Sensitive)"
+                    },
+                ])
+                // [End] 2023-05-17 : UPDATE - change location to Country
+            .button.c-cta.my-button.my-button__full
+                +linkButton({name: "Duplicate check",})

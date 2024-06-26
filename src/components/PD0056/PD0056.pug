@@ -1,0 +1,514 @@
+extends ../_common/_layout.pug
+include ../_common/_index.pug
+
+block meta 
+    - var componentId = "PD0056"
+    - var componentName = "Product selector"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content   
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                        '.c-hero-banner' : [
+                            {
+                                'name' : 'Text Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-white', 'remove' : 'font-black'},
+                                    {'toggle' : false, 'add' : 'font-black', 'remove' : 'font-white'}
+                                ]
+                            },
+                            {
+                                'name' : 'Text Color - mobile ',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-white-mobile', 'remove' : 'font-black-mobile'},
+                                    {'toggle' : false, 'add' : 'font-black-mobile', 'remove' : 'font-white-mobile'}
+                                ]
+                            }
+                        ],
+                        '.c-hero-banner__bgImage' : [
+                            {
+                                'name' : 'Gradient BG Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'gradient-typeA', 'remove' : 'gradient-typeB, gradient-typeC, gradient-typeD'},
+                                    {'toggle' : false, 'add' : 'gradient-typeB', 'remove' : 'gradient-typeA, gradient-typeC, gradient-typeD'},
+                                    {'toggle' : false, 'add' : 'gradient-typeC', 'remove' : 'gradient-typeA, gradient-typeB, gradient-typeD'},
+                                    {'toggle' : false, 'add' : 'gradient-typeD', 'remove' : 'gradient-typeA, gradient-typeB, gradient-typeC'},
+                                ],
+                            }
+                        ],
+                        '.store-map__pin' : [
+                            {
+                                'name' : 'store tooltip',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'active'}
+                                ]
+                            },
+                        ],
+                        '.store-pannel-box-inner' : [
+                            {
+                                'name' : 'onlineStore result',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'onlineStore-active'}
+                                ]
+                            },
+                        ],
+                    };
+            .button-wrapper
+                .guide-column
+                    .target Popup Btns
+                    ul.btn-list
+                        li.btn-item 
+                            +linkButton({href:"#popStore", type:"guide", class:"js-pop-open", name:"popStore", roleButton:"true"})
+
+    include ./PD0056-inc.pug
+
+    .guide-text-option PDP Find a store Banner
+    +PD0056('default')
+    .guide-text-option 3rd-party (No Tab)
+    +PD0056('3rd-party')
+       
+block modal
+    mixin onlineStoreList(link, name, cta, status, statusText, statusType=true)
+        - var nameStyle = "font-w-normal-16 font-m-normal-16"
+        // GA4
+        if(name || cta)
+            a(href=`${link}` data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-online-shop-box-item
+                .image.c-image.c-online-shop-item__top
+                    +printLazyPicture(
+                        `https://via.placeholder.com/80x28/999999/333333`,
+                        `https://via.placeholder.com/100x30/999999/333333`
+                    )
+                .c-online-shop-item__bottom
+                    if(name)
+                        p.c-online-shop-name(class=nameStyle) amazon
+                    if(status)
+                        if(statusType)
+                            span.txt01 !{statusText}
+                        else 
+                            span.txt02 !{statusText}
+            if(cta)
+                +defaultButton({
+                    name : "Visit Website",
+                    wSize : "small",
+                    mSize : "small",
+                    buttonStyle : "default",
+                    isButton : true
+                })(class="c-online-shop-button")
+
+    +pop-msg-standard({id : `popStore`, useHeadline:true, size: "w-1280", label: "Where to buy?"})
+        .store__contents.find-a-store
+            .store__head.title 
+                h2.font-w-semibold-48.font-m-semibold-24 Where to buy?
+            .store__tab_info.cmp-tabs
+                .cmp-tabs__tablist(role="tablist")
+                    button(class="cmp-tabs__tab cmp-tabs__tab--active" role="tab" aria-selected="true" id="store_offline" aria-controls="store_offline_pannel" tabindex="0")
+                        | Offline store
+                    button(class="cmp-tabs__tab" role="tab" id="store_online" aria-controls="store_online_pannel")
+                        | Online store
+                    button(class="cmp-tabs__tab" role="tab" id="3rd_store_online" aria-controls="3rd_online_pannel")
+                        | 3rd Online store
+                a(href="#" class="store-all-link cmp-button c-button c-button--text-icon default m-small w-medium")
+                    | Search all stores
+            .store-pannel-area
+                .cmp-tabs__tabpanel(id="store_offline_pannel" class="cmp-tabs__tabpanel--active" aria-labelledby="store_offline" role="tabpanel" tabindex="0")
+                    .store-map                        
+                        .store-list-area
+                            .store-search.store-scroll.x-scroll
+                                form(class="store-search-form" action="#" method="get")
+                                    ul.sch-distance-list
+                                        li
+                                            button(type="submit" value="5") 5km
+                                        li
+                                            button(type="submit" value="10") 10km
+                                        li
+                                            button(type="submit" value="15") 15km 
+                                        li
+                                            button(type="submit" value="20") 20km 
+                                        li
+                                            button(type="submit" value="25") 25km 
+                                        li
+                                            button(type="submit" value="25") 50km 
+                                        li
+                                            button(type="submit" value="25") 100km 
+                            .store-search-result
+                                button.store-btnList(aria-expanded="false" aria-controls="store-search-resultList") 
+                                    span.sr-only List
+                                        span Open
+                                        span Close
+                                .store-list__txt
+                                    p List of nearby stores
+                                .store-list__inner.store-scroll(id="store-search-resultList")
+                                    .no-result
+                                        .c-no-data 
+                                            strong.font-w-normal-24.font-m-normal-20 No Results
+                                            p.c-no-data__desc.font-w-normal-16.font-m-normal-16 TIP: Try entering a location or using your current location
+                                    ul.store-list
+                                        li
+                                            .store-item
+                                                .store-pin
+                                                    p 1
+                                                        span.sr-only store
+                                                .store-info
+                                                    p.store-brand LG Brand Shop
+                                                    a(href="#" class="store-link") APOLLO SALES
+                                                    .store-way
+                                                        p.store-address 1880 Broadway New York, NY 10023, United States
+                                                        p.store-distance 0.2 Km
+                                                    p.store-time
+                                                        span Open today - 
+                                                        span 8:00 ~ 20:00
+                                                    .store-stock
+                                                        p.store-status In stock
+                                        li
+                                            .store-item
+                                                .store-pin
+                                                    p 2
+                                                        span.sr-only store
+                                                .store-info
+                                                    a(href="#" class="store-link") VARDHMAN SALES ELECTRONIC Length area 2Line Length
+                                                    .store-way
+                                                        p.store-address 1880 Broadway New York, NY 10023, United States
+                                                        p.store-distance 100 Km
+                                                    p.store-time
+                                                        span Open today - 
+                                                        span 8:00 ~ 20:00
+                                                    .store-stock
+                                                        p.store-status In stock
+                                        li
+                                            .store-item
+                                                .store-pin
+                                                    p 3
+                                                        span.sr-only store
+                                                .store-info
+                                                    p.store-brand LG Brand Shop
+                                                    a(href="#" class="store-link") VARDHMAN
+                                                    .store-way
+                                                        p.store-address 1880 Broadway New York, NY 10023, United States
+                                                        p.store-distance 0.2 Km
+                                                    p.store-time
+                                                        span Open today - 
+                                                        span 8:00 ~ 20:00
+                                                    .store-stock
+                                                        p.store-status.st-onhand 5 left in store 
+                                        li
+                                            .store-item
+                                                .store-pin
+                                                    p 4
+                                                        span.sr-only store
+                                                .store-info
+                                                    a(href="#" class="store-link") 
+                                                        img(src="https://via.placeholder.com/74x20/999999/000000", alt="logo text")
+                                                    .store-way
+                                                        p.store-address 1880 Broadway New York, NY 10023, United States
+                                                        p.store-distance 100,000 Km
+                                                    p.store-time 
+                                                        span Open today - 
+                                                        span 8:00 ~ 20:00
+                                                    .store-stock
+                                                        p.store-status.st-out Out of stock
+                                        li
+                                            .store-item
+                                                .store-pin
+                                                    p 5
+                                                        span.sr-only store
+                                                .store-info
+                                                    p.store-brand LG Brand Shop
+                                                    a(href="#" class="store-link") 
+                                                        img(src="https://via.placeholder.com/100x40/999999/000000", alt="logo text")
+                                                    .store-way
+                                                        p.store-address 1880 Broadway New York, NY 10023, United States
+                                                        p.store-distance 0.2 Km
+                                                    p.store-time 
+                                                        span Open today - 
+                                                        span 8:00 ~ 20:00
+                                                    .store-stock
+                                                        p.store-status.st-no No Stock Info 
+
+                        .store-map__view.store-scroll.x-scroll
+                            .store-side__view
+                                button.store-side__close
+                                    span.sr-only Close
+                                .store-side__inner
+                                    //- .store-side__banner
+                                    //-     img(src="https://via.placeholder.com/720x342/999999/000000", alt="banner alt" class="")
+                                    .store-scroll
+                                        //- info
+                                        .store-side__info.side-box
+                                            p.store-brand LG Brand Shop
+                                            p.store-name APOLLO SALES
+                                            p.store-name 
+                                                img(src="https://via.placeholder.com/100x40/999999/000000", alt="logo text")
+                                            .store-way
+                                                p.store-address 1880 Broadway New York, NY 10023, United States
+                                                p.store-distance 0.2 Km
+                                            .store-code
+                                                p.divider
+                                                    strong Pin Code
+                                                    span 152870
+                                                p.divider
+                                                    strong Std Code
+                                                    span 0261
+                                            .store-tel
+                                                p.divider
+                                                    span 212-246-9734
+                                                p.divider
+                                                    span 212-246-9734
+                                            .store-url
+                                                a(href="" titel="" target="_blank") amazon.com/lgbrandshop
+                                        //- inventory
+                                        .store-side__inventory.side-box
+                                            p.side-txt Inquiry product store inventory
+                                            ul
+                                                li
+                                                    .inven-box
+                                                        .inven-image
+                                                            img(src="https://via.placeholder.com/64x64/999999/000000", alt="image alt" class="")
+                                                        .inven-info
+                                                            p.inven-name American Fridge Freezer 635L Water &amp; Ice Dispenser
+                                                            p.store-status In stock
+                                                            p.store-status.st-out Out stock
+                                                            p.store-status.st-no No Stock Info
+                                                            p.store-status.st-onhand 5 left in store
+                                                li
+                                                    .inven-box
+                                                        .inven-image
+                                                            img(src="https://via.placeholder.com/64x64/999999/000000", alt="image alt" class="")
+                                                        .inven-info
+                                                            p.inven-name American Fridge Freezer 635L Water &amp; Ice Dispenser
+                                                            p.store-status.st-out Out stock
+                                                li
+                                                    .inven-box
+                                                        .inven-image
+                                                            img(src="https://via.placeholder.com/64x64/999999/000000", alt="image alt" class="")
+                                                        .inven-info
+                                                            p.inven-name OLED TV
+                                                            p.store-status.st-no No Stock Info
+                                                li
+                                                    .inven-box
+                                                        .inven-image
+                                                            img(src="https://via.placeholder.com/64x64/999999/000000", alt="image alt" class="")
+                                                        .inven-info
+                                                            p.inven-name OLED TV
+                                                            p.store-status.st-onhand 5 left in store
+                                        //- category
+                                        .store-side__category.side-box
+                                            p.side-txt Handling categories
+                                            .category-inner
+                                                ul
+                                                    li
+                                                        p.category-name LG SIGNATURE OLED
+                                                    li
+                                                        p.category-name Refrigerators
+                                                    li
+                                                        p.category-name Product category
+                                                    li
+                                                        P.category-name Product category Product
+                                        //- week
+                                        .store-side__week.side-box
+                                            p.side-txt Store Operating Hours
+                                            ul
+                                                li
+                                                    p.side-day 
+                                                        span Monday
+                                                        span 8:00 ~ 20:00
+                                                li
+                                                    p.side-day 
+                                                        span Tuesday
+                                                        span 8:00 ~ 20:00
+                                                li
+                                                    p.side-day 
+                                                        span Wednesday
+                                                        span 8:00 ~ 20:00
+                                                li
+                                                    p.side-day 
+                                                        span Thursday
+                                                        span 8:00 ~ 20:00
+                                                li
+                                                    p.side-day.to-day 
+                                                        span Today
+                                                        span 8:00 ~ 20:00
+                                                li
+                                                    p.side-day 
+                                                        span Saturday
+                                                        span No operating
+                                                li
+                                                    p.side-day 
+                                                        span Sunday
+                                                        span No operating
+                                            p.day-holi * Closed on public holidays.
+                                            .mini-map
+                                                //- goolemap 영역
+                                                .store-map__pin.active
+                                                    .s-maps-pin(style="position:absolute;left:0;top:0") 
+                                                        p 1
+                                                            span.sr-only Store
+                                                
+                                                .store-map__pin.active
+                                                    .s-maps-pin(style="position:absolute;left:0;top:0") 
+                                                        p 99
+                                                            span.sr-only Store
+
+                                            a.link-ggmap(href="#") View on Google Maps
+                                        //- gallery
+                                        .store-side__gallery.side-box
+                                            p.side-txt Store Gallery
+                                            .slider-box.swiper.c-carousel(class="autoplay" data-cmp-autoplay="autoplay" data-cmp-timedelay="5000" data-cmp-autopause="true" style="--heroTimer:5s" data-cmp-data-layer="")
+                                                ul.swiper-wrapper
+                                                    li.swiper-slide
+                                                        img(src="https://via.placeholder.com/700x326/999999/000000", alt="")
+                                                    li.swiper-slide
+                                                        img(src="https://via.placeholder.com/700x326/999999/000000", alt="")
+                                                    li.swiper-slide
+                                                        img(src="https://via.placeholder.com/700x326/999999/000000", alt="")
+                                                .c-carousel__handler
+                                                    .cmp-carousel__actions
+                                                        +carouselBtn({type:"pagination", direction:"prev"})
+                                                    +carouselPagination
+                                                    .cmp-carousel__actions
+                                                        +carouselBtn({type:"pagination", direction:"next"})
+                                                    // autoplay
+                                                    button.c-carousel-controls__action.c-carousel-controls__action--pause.js-carousel-pause(type="button" class="cmp-carousel__action cmp-carousel__action--pause" data-cmp-hook-carousel="pause")
+                                                        span.cmp-carousel__action-text.sr-only Pause carousel
+                                                    button.c-carousel-controls__action.c-carousel-controls__action--play.js-carousel-play(type="button" class="cmp-carousel__action cmp-carousel__action--play" data-cmp-hook-carousel="play" disabled)
+                                                        span.cmp-carousel__action-text.sr-only Play carousel
+                                        //- help
+                                        .store-side__help.side-box
+                                            a.help-link(href="#")
+                                                p.help-tit
+                                                    | When you need help
+                                                p.help-txt
+                                                    | If you have a problem, you can also find it at LG.com.
+
+                            .my-location
+                                button(class="btn-my-location")
+                                    span.sr-only my location
+                        
+                            .store-map__pin.active
+                                .s-maps-pin(style="position:absolute;left:0;top:0") 
+                                    p 1
+                                        span.sr-only Store
+                                .s-maps-tooltip
+                                    button(class="s-maps-tooltip__close")
+                                        span.sr-only Close
+                                    .s-maps-info
+                                        .store-info
+                                            p.store-brand LG Brand Shop
+                                            p.store-name APOLLO SALES APOLLO SALES APOLLO SALES 
+                                            p.store-time
+                                                span Open today - 
+                                                span 8:00 ~ 20:00
+                                        .s-maps-btn
+                                            button.cmp-button.c-button.c-button--default.default.m-small.w-small Detail view    
+                            
+                            .store-map__pin.active
+                                .s-maps-pin(style="position:absolute;left:0;top:0")
+                                    p 2
+                                        span.sr-only Store
+                                .s-maps-tooltip
+                                    button(class="s-maps-tooltip__close")
+                                        span.sr-only Close
+                                    .s-maps-info
+                                        .store-info
+                                            p.store-name 
+                                                img(src="https://via.placeholder.com/74x20/999999/000000", alt="logo text") 
+                                            p.store-time
+                                                span Open today - 
+                                                span 8:00 ~ 20:00
+                                        .s-maps-btn
+                                            button.cmp-button.c-button.c-button--default.default.m-small.w-small Detail view
+
+                            .store-map__pin.active
+                                .s-maps-pin(style="position:absolute;left:0;top:0")
+                                    p 3
+                                        span.sr-only Store
+                                .s-maps-tooltip
+                                    button(class="s-maps-tooltip__close")
+                                        span.sr-only Close
+                                    .s-maps-info
+                                        .store-info
+                                            p.store-brand brand &amp; logo
+                                            p.store-name 
+                                                img(src="https://via.placeholder.com/200x40/999999/000000", alt="logo text")
+                                            p.store-time
+                                                span Open today - 
+                                                span 8:00 ~ 20:00
+                                        .s-maps-btn
+                                            button.cmp-button.c-button.c-button--default.default.m-small.w-small Detail view
+                .cmp-tabs__tabpanel(id="store_online_pannel" aria-labelledby="store_online" role="tabpanel" tabindex="-1")
+                    .store-pannel-box
+                        .store-pannel-box-inner.onlineStore-active
+                            .no-result
+                                .c-no-data 
+                                    strong.font-w-normal-24.font-m-normal-20 There is no data.
+                            - let lengthMobile = 15;
+                            - let lengthDesktop = 15;
+                            ul.c-online-shop-list(data-length-mobile=lengthMobile, data-length-desktop=lengthDesktop)
+                                li.c-online-shop-box
+                                    a(href=`${link}` data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-online-shop-box-item
+                                        .image.c-image.c-online-shop-item__top
+                                            +printLazyImage(`../../assets/image/logo-lg-69-30_white.svg`)(alt="LG logo (Life's Good)")
+                                        .c-online-shop-item__bottom
+                                            p.c-online-shop-name.font-w-normal-16.font-m-normal-16 
+                                                | This product is on sale at LG.com
+                                    +defaultButton({
+                                        name : "Buy Now",
+                                        wSize : "small",
+                                        mSize : "small",
+                                        buttonStyle : "highlight",
+                                        isButton : true
+                                    })(class="c-online-shop-button")
+                                - for (var x = 0; x < 25; x++)
+                                    li.c-online-shop-box
+                                        +onlineStoreList('#', true, true)
+                            .cmp-button.align-text-center.more-btn
+                                +textButton({name: 'More', wSize: 'large', mSize: 'medium', buttonStyle: 'down', isButton: true})(id="onlineStoreMore")
+                .cmp-tabs__tabpanel(id="3rd_online_pannel" aria-labelledby="3rd_store_online" role="tabpanel" tabindex="-1")
+                    .store-pannel__3rd-party.store-scroll
+                        .store__3rd-inner
+                            ul.c-online-shop-list(data-length-mobile=lengthMobile, data-length-desktop=lengthDesktop)
+                                - for (var x = 0; x < 6; x++)
+                                    li.c-online-shop-box
+                                            +onlineStoreList('#', true, true, true, 'Currently Unavailable', false)
+                            include ./PD0056-3rd-inc.pug
+                            +PD0056-3rd('3rd-tab')
+    +pop-msg-standard({id : `popStore_3rdAll`, useHeadline:true, size: "w-1280", label: "Where to buy?"})
+        .store__contents.find-a-store
+            .store__head.title
+                h2.font-w-semibold-48.font-m-semibold-24 Where to buy?
+            .store-all__3rd-party.store-scroll
+                .store__3rd-inner
+                    include ./PD0056-3rd-inc.pug
+                    +PD0056-3rd('no-tab')

@@ -1,0 +1,44 @@
+include ./_headline.pug
+include ./_image.pug
+include ./_button.pug
+include ./_carousel.pug
+
+mixin rolling-banner(params)
+	- var options = {itemList : [{}], ...params}
+	// block - rolling banner
+	.carousel.panelcontainer.c-rolling-banner
+		// block : carousel
+		.cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+			.cmp-carousel__content.swiper-wrapper
+				each set, index in options.itemList
+					.cmp-carousel__item.swiper-slide.c-carousel__item(class={"swiper-slide-active" : index === 0} data-cmp-data-layer="" data-cmp-hook-carousel="item")
+						+rolling-banner-item(set, index)
+			.cmp-carousel__actions(class="c-rolling-banner__actions") 
+				button.cmp-carousel__action.cmp-carousel__action--previous(type="button" class=`c-rolling-banner__action c-rolling-banner__action--prev js-carousel-prev` data-cmp-hook-carousel="previous")
+					span.cmp-carousel__action-text.sr-only Previous Slide
+				button.cmp-carousel__action.cmp-carousel__action--next(type="button" class=`c-rolling-banner__action c-rolling-banner__action--next js-carousel-next` data-cmp-hook-carousel="next") 
+					span.cmp-carousel__action-text.sr-only Next Slide
+
+mixin rolling-banner-item(params, index)
+	- var image = `https://via.placeholder.com/692x330/fff/eee`
+	- var title = '20% off Newlywed Home Appliance Package'
+	- var date = '21/01/23 ~ 31/12/23'
+	- var buttonConfig = {name: 'Shop now', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false}
+	- var options = {image, title, date, buttonConfig, ...params} 
+
+	.c-rolling-banner__item&attributes(attributes)
+		.c-rolling-banner__item-image
+			// block - image
+			.c-image
+				+printLazyImage(options.image)
+		.c-rolling-banner__contents
+			.c-rolling-banner__contents-container
+				// block - text contents
+				.c-text-contents(class="c-rolling-banner__item-text-box ")
+					.text.c-text-contents__subcopy(class="c-rolling-banner__item-title")
+						.cmp-text(data-cmp-data-layer="")= options.title
+					.text.c-text-contents__date(class="c-rolling-banner__item-promotion-date")
+						.cmp-text(data-cmp-data-layer="")= options.date
+				// block - cta
+				.c-cta 
+					+defaultButton(options.buttonConfig)

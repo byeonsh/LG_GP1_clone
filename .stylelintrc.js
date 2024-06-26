@@ -1,0 +1,22 @@
+module.exports = {
+  extends: ['stylelint-config-standard-scss', 'stylelint-config-prettier-scss'],
+  syntax: 'scss',
+  rules: {
+    'selector-class-pattern': null,
+    'no-duplicate-selectors': null,
+    'no-descending-specificity': null,
+    'media-feature-range-notation': 'prefix',
+    'value-no-vendor-prefix': null,
+    'property-no-vendor-prefix': null,
+    'selector-id-pattern': null,
+    'rule-empty-line-before': null,
+    'declaration-empty-line-before': null,
+    'scss/double-slash-comment-empty-line-before': null,
+    'selector-pseudo-element-colon-notation': null,
+    'comment-whitespace-inside': null,
+    'declaration-block-no-redundant-longhand-properties': null,
+    'scss/dollar-variable-pattern': null,
+    'number-max-precision': null,
+    'at-rule-no-vendor-prefix': null,
+  },
+};

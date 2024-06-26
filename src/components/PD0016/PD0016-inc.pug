@@ -1,0 +1,816 @@
+mixin PD0016(option=false)
+    mixin onlineListItem(link, name, cta)
+        - var nameStyle = "font-w-normal-24 font-m-normal-16"
+        // GA4
+        a(href=`${link}` data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-online-shop-item
+            .image.c-image.c-online-shop-item__top
+                +printLazyImage('https://via.placeholder.com/180x60/999999/333333')(aria-hidden='true' class='c-online-image-web')
+                +printLazyImage('https://via.placeholder.com/80x28/999999/333333')(aria-hidden='true' class='c-online-image-mobile')
+            if(name || cta)
+                .c-online-shop-item__bottom
+                    if(name)
+                        p.c-online-shop-name(class=nameStyle) amazon
+                    if(cta)
+                        +defaultButton({
+                            name : "Buy Now",
+                            wSize : "small",
+                            mSize : "small",
+                            buttonStyle : "default",
+                            isButton : "none"
+                        })(class="c-online-shop-button")
+    //- 2023-05-19 PDP Stock List     
+    mixin onlineListItem2(link, name, status, cta, statusText, statusType=true)
+        - var nameStyle = "font-w-normal-24 font-m-normal-16"
+        // GA4
+        a(href=`${link}` data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-online-shop-item
+            .image.c-image.c-online-shop-item__top
+                +printLazyImage('https://via.placeholder.com/180x60/999999/333333').c-online-image-web
+                +printLazyImage('https://via.placeholder.com/80x28/999999/333333').c-online-image-mobile
+            if(name || status || cta)
+                .c-online-shop-item__bottom.form
+                    if(name)
+                        p.c-online-shop-name(class=nameStyle) Amazon.co.jp
+                    if(status)
+                        if(statusType)
+                            span.txt01 !{statusText}  
+                        else 
+                            span.txt02 !{statusText}     
+                    if(cta)
+                        +defaultButton({
+                            name : "Visit Website",
+                            wSize : "small",
+                            mSize : "small",
+                            buttonStyle : "default",
+                            isButton : "none"
+                        })(class="c-online-shop-button")
+
+    mixin onlineListItem3(link, name, cta)
+        - var nameStyle = "font-w-normal-24 font-m-normal-16"
+        // GA4
+        .c-online-shop-box
+            if(name || cta)
+                a(href=`${link}` data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-online-shop-box-item
+                    .image.c-image.c-online-shop-item__top
+                        +printLazyImage('https://via.placeholder.com/180x60/999999/333333')(aria-hidden='true' class='c-online-image-web')
+                        +printLazyImage('https://via.placeholder.com/80x28/999999/333333')(aria-hidden='true' class='c-online-image-mobile')
+                    .c-online-shop-item__bottom
+                        if(name)
+                            p.c-online-shop-name(class=nameStyle) amazon
+                if(cta)
+                    +defaultButton({
+                        name : "Buy Now",
+                        wSize : "small",
+                        mSize : "small",
+                        buttonStyle : "default",
+                        isButton : true
+                    })(class="c-online-shop-button")
+
+    mixin printTab(div, num, selected)
+        if selected
+            li.c-tabs__tab.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0", data-cmp-hook-tabs="tab", aria-selected="true")
+                if block
+                    block
+        else 
+            li.c-tabs__tab.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1", data-cmp-hook-tabs="tab", aria-selected="false")
+                if block
+                    block
+
+    mixin printTabPanel(div, num, selected)
+        if selected 
+            .c-tabs__tabpanel.cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+        else 
+            .c-tabs__tabpanel.cmp-tabs__tabpanel(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+
+    mixin mapSearchBox
+        //- block : c-map-search__box
+        form.cmp-form.c-map-search__box(action="#" method="get")&attributes(attributes)
+            .c-map-search__box-inner
+                label.sr-only(for='finderSearch') search
+                input.c-map-search__box-input(type='text' id='finderSearch' placeholder='Enter your city or address')
+                .c-map-search__box-button
+                    button(type="submit").c-icon-search
+                        span.sr-only search
+                    p.c-map-search__box-divider
+                    button(type="button").c-icon-place
+                        span.sr-only location
+            if block
+                block
+
+    mixin mapSearchResultBrand(params)
+        +brandMapSearchPdp(params)
+
+    mixin mapTooltipBrand
+        +brandDetailItem(
+            {
+                brandLogo: {src: 'https://via.placeholder.com/80x28/999999/333333'},
+                brandDistance: '5.2 KM',
+                brandName: 'Paulson’s',
+                brandAddr: {address: '1880 Broadway New York, NY 10023, United States', hasExport: false},
+                contact: [
+                    {type: 'phone', number: ['212-246-9734']},
+                ],
+                buttons: [
+                    {name: 'Get Directions'}
+                ],
+                category: {title: 'Product Category', text: ['Blu-ray & DVD Players, FridgeBlu-ray & DVD Players', 'Blu-ray & DVD Players, FridgBlu-ray']},
+            }
+        )
+
+    mixin mapDirectionDefault(type, direction, pin, text)
+        //- - var bg = type ? 'c-box-gray' : ''
+        - var itmType = type ? direction : 'item'
+        - var color = direction == 'departure' ? 'is-black' : ''
+        - var indent = pin == 'car' ? 'c-pin-text__indent' : ''
+        
+        .c-pin-text(class=`c-map-direction__result-${itmType}`)
+            .c-pin-text__pin
+                if type
+                    .c-pin-text__pin
+                        .c-map__pin(class=`${color}`)= pin
+                else
+                    .c-pin__icon(class=`${pin}`)
+                        span.sr-only= pin
+            if block
+                block
+
+    mixin mapDirectionResultTitle(direction, pin, text)
+        - var fontStyle = "font-w-normal-16 font-m-normal-14"
+
+        +mapDirectionDefault(true, direction, pin, text) 
+            .c-pin-text__content(class=fontStyle)= text
+
+    mixin mapDirectionResultItem(pin)
+        +mapDirectionDefault(false, '', pin, '')
+            .c-pin-text__content
+                if block
+                    block
+
+    mixin product_item
+        //- +productCard({
+        //-     flag: false, 
+        //-     compare: false,
+        //-     wishlist: false,
+        //-     modelid: 'MD07258328',
+        //-     sku: 'GSJV70PZTF',
+        //-     ufn: '5.2 cu. ft. Large Smart wi-fi Enabled Front Load Washer',
+        //-     grade: 'f',
+        //-     review: false,
+        //-     type:false,
+        //-     groups:false,
+        //-     youreko: false,
+        //-     signature: false,
+        //-     thinq: false,
+        //-     soldOut: false,
+        //-     outOfStock: false,
+        //-     discontinued: false,
+        //-     promotion: flase,
+        //-     limited: false,
+        //-     vip: false,
+        //-     installment: true,
+        //-     membership: '£1,866.98',
+        //-     hiddenCta: false,
+        //-     imageSize:'450'
+        //- })
+        // GA4
+        .c-product-item(data-pim-category1="" data-pim-category2="" data-pim-category3="" data-pim-category4="" data-pim-sku="" data-pim-model-name="" data-pim-model-year="" data-pim-flag="" data-pim-modeltype="" data-shop-stock-status="" data-shop-msrp="" data-shop-price="")
+            //- top
+            .c-product-item__top-container
+                +product_image("https://via.placeholder.com/450x450/999999/000000", false)
+            //- bottom
+            .c-product-item__bottom-container
+                +product_name("GSJV70PZTF", "5.2 cu. ft. Large Smart wi-fi Enabled Front Load Washer", {headline:"font-w-normal-24 font-m-normal-20", sku:"font-w-normal-16 font-m-normal-12"}, true)
+                // RO only UK,AT,PL - Energy saving
+                .c-product-item__energy-saving(style="max-width:222px;height:66px;background:#fafafa;line-height:66px;text-align:center;overflow:hidden") Energy Saving Banner Area
+                // RO - Energy labels
+                +product_rating("A", 'MD07546559', specsheet=true, false, false, false, false, false, gradeBlock2=true)
+                // RO only FR - Repairability Index Label
+                .c-product-item__repair
+                    a.c-product-item__repair--click(href="#" target="_blank" role="button" rel="noopener noreferrer" data-link-name="")
+                        //- RO - dev request one image
+                        //- +printLazyPicture(`../../assets/image/icon-repair-index-fr-71-44.png`, '../../assets/image/icon-repair-index-fr-76-47.png')
+                        .cmp-image(data-cmp-data-layer="")
+                            img.cmp-image__image.c-image__img(src="../../assets/image/icon-repair-index-fr-76-47.png" alt="")
+                        span.cmp-text Repairability index
+                .price-box.c-mobile
+                    +product_price({promotion:false, outOfStock: false, soldOut: false, limited:false, onlyPurchase: true, membership:'£1,866.98', discount: "20% off", installment:false, ehf: false, cashDiscount:true, lowPrice30Days:true,priceFontStyle:"font-w-normal-32 font-m-light-28",subPriceFontStyle:"font-w-normal-16 font-m-normal-12", soldOutFontStyle:"font-w-normal-32 font-m-normal-20"}).
+                    //- [Start] 2023-07-06 : REMOVE +product_rating 
+                    //- +product_rating("f", 'MD07546559', false)
+                    //- [End] 2023-07-06 : REMOVE +product_rating
+                +product_cta({use2ndOnly : true, soldOut: false, outOfStock: false, plInfoTxt: true})
+
+    - var headlineStyle = "font-w-light-56 font-m-light-28"
+    - var headlineStyleVar1 = "font-w-light-36 font-m-light-24"
+    - var noDataTitleStyle = "font-w-normal-24 font-m-normal-20"
+    - var noDataDescStyle = "font-w-normal-16 font-m-normal-16"
+
+    if(option == 'DEFAULT' || option == 'PDP')
+        .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+            .component
+                .cmp-container
+
+                    //- block : Buy Directly From LG
+                    .c-product-directly
+                        .c-text-contents
+                            // remove align-text-left class
+                            .c-text-contents__headline
+                                +headline(headlineStyle, "h2", "Buy Directly From LG")
+                            .c-product-directly-item
+                                +product_item
+
+                    //- block : shop
+                    .c-online-shop
+                        //- title
+                        .c-text-contents
+                            .c-text-contents__headline
+                                +headline(headlineStyle, "h2", "Find Online")
+                                
+                        p(style='text-align:center;margin-bottom:15px;font-size:20px') 기본
+                        ul.c-online-shop-list
+                            - for (var x = 0; x < 4; x++)
+                                li
+                                    +onlineListItem('#', true, true)
+                            
+                        p(style='text-align:center;margin-bottom:15px;font-size:20px') A태그 &amp; Button 같이 쓰일때
+                        ul.c-online-shop-list
+                            - for (var x = 0; x < 4; x++)
+                                li
+                                    +onlineListItem3('#', true, true)
+
+                                
+                        .button.align-text-center.c-online-shop-bottom
+                            +textButton({
+                                name: 'More', 
+                                wSize: 'medium', 
+                                mSize: 'small', 
+                                buttonStyle: 'down', 
+                                isButton: true
+                            })
+
+                    //- block : search
+                    .c-search-box
+                        .c-text-contents.c-search-box__header
+                            .c-text-contents__headline
+                                +headline(headlineStyle, "h2", "Find Locally")
+                        //- block : .c-search-box__body(--multi, --double)
+                        form.cmp-form.c-search-box__body(action="#" method="get")
+                            //- element : c-search-box__form
+                            .c-search-box__form
+                                +formSelect("Country", "findLocallyCountry", "Select a Country", false)
+                                    option(value="") Select a Country
+                                    option(value="country1") Country1
+                                    option(value="country2") Country2
+                                    option(value="country3") Country3
+                            .button.c-search-box__button
+                                +defaultButton({
+                                    name : "Search",
+                                    wSize : "medium",
+                                    mSize : "small",
+                                    buttonStyle : "highlight",
+                                    isButton : true,
+                                })(type="submit")
+
+                    //- block : c-map-search
+                    //- 검색타입 : is-search
+                    //- 길찾기, 검색 없는 리스트 : is-direction
+                    .c-map-search.is-search
+                        .c-map-search__inner
+                            button.c-map-search__toggle(type="button" aria-expanded="false")
+                                span.sr-only Search Box
+                            +mapSearchBox
+                            //- block : c-map
+                            .c-map
+                                .c-map__inner
+                                    //- google map
+                            .c-map-search__body
+                                //- result
+                                .c-map-search__result--no-label
+                                    //- block : c-tabs
+                                    .c-tabs.tabs.panelcontainer.c-tabs__button
+                                        .cmp-tabs.c-tabs__wrap(data-cmp-data-layer="", data-placeholder-text="false")
+                                            //- tab
+                                            .c-tabs__inner
+                                                ul.c-tabs__tablist.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                                    +printTab(2, 1, true) LG Best Shop
+                                                    +printTab(2, 2, false) All
+
+                                            //- tab panel
+                                            +printTabPanel(2, 1, true)
+                                                .c-no-data-wrap.small
+                                                    .c-no-data 
+                                                        strong(class=noDataTitleStyle) Please enter a location
+                                                        p.c-no-data__desc(class=noDataDescStyle) TIP: Try entering a location or using your current location
+                                            +printTabPanel(2, 2, false)
+                                                .c-no-data-wrap.small
+                                                    .c-no-data 
+                                                        strong(class=noDataTitleStyle) Please enter a location
+                                                        p.c-no-data__desc(class=noDataDescStyle) TIP: Try entering a location or using your current location
+
+    if(option == 'OFFLINEDATA')
+        .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+            .component
+                .cmp-container
+                    //- block : search
+                    .c-search-box.c-text-only
+                        .c-text-contents.c-search-box__header
+                            .c-text-contents__headline
+                                +headline(headlineStyle, "h2", "Find Locally")
+
+                    //- block : c-map-search
+                    //- 검색타입 : is-search
+                    //- 길찾기, 검색 없는 리스트 : is-direction
+                    .c-map-search.is-search
+                        .c-map-search__inner
+                            button.c-map-search__toggle(type="button" aria-expanded="false")
+                                span.sr-only Search Box
+                            +mapSearchBox
+                            //- block : c-map
+                            .c-map
+                                .c-map__inner
+                                    //- element : c-map__pin
+                                    .c-map__pin.is-active 1
+                                    //- element : c-map-tooltip
+                                    .c-map-tooltip
+                                        .c-map-tooltip__container
+                                            .button
+                                                button(type="button").c-map-tooltip__close
+                                                    span.sr-only Close
+                                            //- block : c-brand-detail
+                                            .c-map-tooltip__contents
+                                                +mapTooltipBrand
+
+                            .c-map-search__body
+                                //- result
+                                .c-map-search__result
+                                    //- block : c-tabs
+                                    .c-tabs.tabs.panelcontainer.c-tabs__button
+                                        .cmp-tabs.c-tabs__wrap(data-cmp-data-layer="", data-placeholder-text="false")
+                                            //- tab
+                                            .c-tabs__inner
+                                                ul.c-tabs__tablist.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                                    +printTab(1, 1, true) LG Best Shop
+                                                    +printTab(1, 2, false) All
+
+                                            //- tab panel
+                                            +printTabPanel(1, 1, true)
+                                                .c-brand-detail-list
+                                                    +mapSearchResultBrand({ isPin: true, isExport: false, isToggle: true, isStock: true })
+                                                    +mapSearchResultBrand({ isPin: false, isExport: false, isToggle: false })
+                                            +printTabPanel(1, 2, false)
+                                                .c-brand-detail-list
+                                                    +mapSearchResultBrand({ isPin: true, isExport: false, isToggle: true, isStock: true })
+                                                    +mapSearchResultBrand({ isPin: false, isExport: false, isToggle: false })
+                                .c-map-search__pagenation
+                                    +paginationFraction
+
+    if(option == 'OFFLINENODATA')
+        .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+            .component
+                .cmp-container
+                    //- block : shop
+                    .c-online-shop
+                        .c-text-contents
+                            .c-text-contents__headline
+                                +headline(headlineStyle, "h2", "Find Online")
+                        .c-no-data-wrap.c-no-data-wrap--standard
+                            .c-no-data 
+                                strong(class=noDataTitleStyle) There is no data.
+
+                    //- block : search
+                    .c-search-box
+                        .c-text-contents.c-search-box__header
+                            .c-text-contents__headline
+                                +headline(headlineStyle, "h2", "Find Locally")
+                        //- element : .c-search-box__body(--multi, --double)
+                        form.cmp-form.c-search-box__body.c-search-box__body--double(action="#" method="get")
+                            //- element : c-search-box__form
+                            .c-search-box__form
+                                +formSelect("State", "findLocallyState", "Select a State", false)(class="c-search-box__state")
+                                    option(value="") Select a State
+                                    option(value="state1") State1
+                                    option(value="state2") State2
+                                    option(value="state3") State3
+                                +formSelect("City", "findLocallyCity", "Select a City", false)(class="c-search-box__city" disabled="disabled")
+                                    option(value="") Select a City
+                                    option(value="city1") City1
+                                    option(value="city2") City2
+                                    option(value="city3") City3
+                            .button.c-search-box__button
+                                +defaultButton({
+                                    name : "Search",
+                                    wSize : "medium",
+                                    mSize : "small",
+                                    buttonStyle : "highlight",
+                                    isButton : true,
+                                })(type="submit")
+
+                    //- block : c-map-search
+                    //- 검색타입 : is-search
+                    //- 길찾기, 검색 없는 리스트 : is-direction
+                    .c-map-search.is-direction
+                        .c-map-search__inner
+                            button.c-map-search__toggle(type="button" aria-expanded="false")
+                                span.sr-only Search Box
+                            //- block : c-map
+                            .c-map
+                                .c-map__inner
+                                    //- google map
+                            .c-map-search__body
+                                //- result
+                                .c-map-search__result
+                                    //- block : c-tabs
+                                    .c-tabs.tabs.panelcontainer.c-tabs__button
+                                        .cmp-tabs.c-tabs__wrap(data-cmp-data-layer="", data-placeholder-text="false")
+                                            //- tab
+                                            .c-tabs__inner
+                                                ul.c-tabs__tablist.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                                    +printTab(3, 1, true) LG Best Shop
+                                                    +printTab(3, 2, false) All
+
+                                            //- tab panel
+                                            +printTabPanel(3, 1, true)
+                                                .c-no-data-wrap.small 
+                                                    .c-no-data 
+                                                        strong(class=noDataTitleStyle) No results
+                                                        p.c-no-data__desc(class=noDataDescStyle) TIP: Try entering a location or using your current location
+                                            +printTabPanel(3, 2, false)
+                                                .c-no-data-wrap.small 
+                                                    .c-no-data 
+                                                        strong(class=noDataTitleStyle) No results
+                                                        p.c-no-data__desc(class=noDataDescStyle) TIP: Try entering a location or using your current location
+
+    if(option == 'GETDIRECTION')
+        .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+            .component
+                .cmp-container
+                    //- block : search
+                    .c-search-box
+                        .c-text-contents.c-search-box__header
+                            .c-text-contents__headline
+                                +headline(headlineStyle, "h2", "Find Locally")
+                        //- block : .c-search-box__body(--multi, --double)
+                        form.cmp-form.c-search-box__body(action="#" method="get")
+                            //- element : c-search-box__form
+                            .c-search-box__form
+                                +formSelect("City", "findLocallyCity", "Select a City", false)
+                                    option(value="") Select a City
+                                    option(value="city1") City1
+                                    option(value="city2") City2
+                                    option(value="city3") City3
+                            .button.c-search-box__button
+                                +defaultButton({
+                                    name : "Search",
+                                    wSize : "medium",
+                                    mSize : "small",
+                                    buttonStyle : "highlight",
+                                    isButton : true,
+                                })(type="submit")
+
+                    //- block : c-map-search
+                    //- 검색타입 : is-search
+                    //- 길찾기, 검색 없는 리스트 : is-direction
+                    .c-map-search.is-direction
+                        .c-map-search__inner
+                            button.c-map-search__toggle(type="button" aria-expanded="false")
+                                span.sr-only Search Box
+                            //- block : c-map
+                            .c-map
+                                .c-map__inner
+                                    //- element : c-map__pin
+                                    .c-map__pin.is-active 1
+                                    //- element : c-map-tooltip
+                                    .c-map-tooltip
+                                        .c-map-tooltip__container
+                                            .button
+                                                button(type="button").c-map-tooltip__close
+                                                    span.sr-only Close
+                                            //- block : c-brand-detail
+                                            .c-map-tooltip__contents
+                                                +mapTooltipBrand()
+                                    //- google map
+                            .c-map-search__body
+                                //- block : c-map-direction__search
+                                .c-map-direction__search
+                                    .c-map-direction__search-title
+                                        p.font-w-normal-24.font-m-normal-20 Get Directions
+                                        button.c-button.c-map-direction__search-close(type="button")
+                                            span.sr-only Close
+                                    //- element : departure
+                                    .c-pin-text.c-box-gray.c-map-direction__search-departure
+                                        .c-pin-text__pin.c-map-direction__search-pin
+                                            .c-map__pin.is-black A
+                                        +mapSearchBox(class="c-pin-text__content")
+                                            .c-warning Address is required.
+                                    //- element : to
+                                    .c-pin-text.c-box-gray.c-map-direction__search-arrival
+                                        .c-pin-text__pin.c-map-direction__search-pin
+                                            .c-map__pin B
+                                        .c-pin-text__content.font-w-normal-16.font-m-normal-16 1 PARK AVE MT VERNON, NY 10550
+
+                                //- result
+                                .c-map-search__result
+                                    //- block : c-map-direction__result
+                                    .c-map-direction__result
+                                        .c-no-data-wrap.small
+                                            .c-no-data 
+                                                strong(class=noDataTitleStyle) No results
+                                                p.c-no-data__desc(class=noDataDescStyle) TIP: Try entering a location or using your current location
+    
+    if(option == 'GETDIRECTION/SUGGESTED')
+        .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+            .component
+                .cmp-container
+                    //- block : search
+                    .c-search-box
+                        .c-text-contents.c-search-box__header
+                            .c-text-contents__headline
+                                +headline(headlineStyle, "h2", "Find Locally")
+                        //- block : .c-search-box__body(--multi, --double)
+                        form.cmp-form.c-search-box__body(action="#" method="get")
+                            //- element : c-search-box__form
+                            .c-search-box__form
+                                +formSelect("City", "findLocallyCity", "Select a City", false)
+                                    option(value="") Select a City
+                                    option(value="city1") City1
+                                    option(value="city2") City2
+                                    option(value="city3") City3
+                            .button.c-search-box__button
+                                +defaultButton({
+                                    name : "Search",
+                                    wSize : "medium",
+                                    mSize : "small",
+                                    buttonStyle : "highlight",
+                                    isButton : true,
+                                })(type="submit")
+
+                    //- block : c-map-search
+                    //- 검색타입 : is-search
+                    //- 길찾기, 검색 없는 리스트 : is-direction
+                    .c-map-search.is-direction
+                        .c-map-search__inner
+                            button.c-map-search__toggle(type="button" aria-expanded="false")
+                                span.sr-only Collapse
+                                span.sr-only Expand
+                            //- block : c-map
+                            .c-map
+                                .c-map__inner
+                                    //- element : c-map__pin
+                                    .c-map__pin.is-active 1
+                                    //- element : c-map-tooltip
+                                    .c-map-tooltip
+                                        .c-map-tooltip__container
+                                            .button
+                                                button(type="button").c-map-tooltip__close
+                                                    span.sr-only Close
+                                            //- block : c-brand-detail
+                                            .c-map-tooltip__contents
+                                                +mapTooltipBrand()
+                                    //- google map
+                            .c-map-search__body
+                                //- block : c-map-direction__search
+                                .c-map-direction__search
+                                    .c-map-direction__search-title
+                                        p.font-w-normal-24.font-m-normal-20 Get Directions
+                                        button.c-button.c-map-direction__search-close(type="button")
+                                            span.sr-only Close
+                                    //- element : departure
+                                    .c-pin-text.c-box-gray.c-map-direction__search-departure
+                                        .c-pin-text__pin.c-map-direction__search-pin
+                                            .c-map__pin.is-black A
+                                        +mapSearchBox(class="c-pin-text__content")
+                                            .c-warning Address is required.
+                                    //- element : to
+                                    .c-pin-text.c-box-gray.c-map-direction__search-arrival
+                                        .c-pin-text__pin.c-map-direction__search-pin
+                                            .c-map__pin B
+                                        .c-pin-text__content.font-w-normal-16.font-m-normal-16 1 PARK AVE MT VERNON, NY 10550
+
+                                //- result
+                                .c-map-search__result
+                                    //- block : c-map-direction__result
+                                    .c-map-direction__result(tabindex="0")
+                                        .font-w-normal-20.font-m-normal-16.c-map-direction__result-title Suggested Routes
+                                        +mapDirectionResultTitle('departure', 'A', '550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States')
+
+                                        +mapDirectionResultItem('car')
+                                            p.font-w-normal-14.font-m-normal-14.c-pin-text__indent 5.5 MI. About 12 mins
+                                        +mapDirectionResultItem('turn-left')
+                                            p.c-pin-text__icon 1
+                                            p.font-w-normal-14.font-m-normal-14 At the roundabout, take the 2nd exit onto Hanger Hill/A317
+                                            p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                        +mapDirectionResultItem('turn-left')
+                                            p.c-pin-text__icon 2
+                                            p.font-w-normal-14.font-m-normal-14 Head east toward Baker St
+                                            p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                        +mapDirectionResultItem('turn-left')
+                                            p.c-pin-text__icon 3
+                                            p.font-w-normal-14.font-m-normal-14 Head east toward Baker St
+                                            p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                        +mapDirectionResultItem('turn-left')
+                                            p.c-pin-text__icon 4
+                                            p.font-w-normal-14.font-m-normal-14 At the roundabout, take the 2nd exit onto Hanger Hill/A317
+                                            p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+
+                                        +mapDirectionResultTitle('arrival', 'B', '550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States')
+
+    if(option == 'SearchTR')
+        .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+            .component
+                .cmp-container
+                    //- block : search
+                    .c-search-box
+                        .c-text-contents.c-search-box__header
+                            .c-text-contents__headline
+                                +headline(headlineStyle, "h2", "Find a Store Near You")
+                        //- element : .c-search-box__body(--multi, --double)
+                        form.cmp-form.c-search-box__body.c-search-box__body--multi(action="#" method="get")
+                            //- element : c-search-box__form
+                            .c-search-box__form
+                                +formSelect("İl", "findLocallyState1", "İl Seçiniz", false)(class="c-search-box__state--multi")
+                                    option(value="") İl Seçiniz
+                                    option(value="state1") İl Seçiniz1
+                                    option(value="state2") İl Seçiniz2
+                                    option(value="state3") İl Seçiniz3
+                                +formSelect("İlçe", "findLocallyState2", "Tümü", false)(class="c-search-box__state--multi")
+                                    option(value="") Tümü
+                                    option(value="state1") Tümü1
+                                    option(value="state2") Tümü2
+                                    option(value="state3") Tümü3
+                                +formSelect("Kategori", "findLocallyCity", "Televizyon", false)(class="c-search-box__city")
+                                    option(value="") Televizyon
+                                    option(value="city1") Televizyon1
+                                    option(value="city2") Televizyon2
+                                    option(value="city3") Televizyon3
+                            .button.c-search-box__button
+                                +defaultButton({
+                                    name : "ARA",
+                                    wSize : "medium",
+                                    mSize : "small",
+                                    buttonStyle : "highlight",
+                                    isButton : true,
+                                })(type="submit")
+
+                    //- block : c-map-search
+                    //- 검색타입 : is-search
+                    //- 길찾기, 검색 없는 리스트 : is-direction
+                    .c-map-search.is-direction
+                        .c-map-search__inner
+                            button.c-map-search__toggle(type="button" aria-expanded="false")
+                                span.sr-only Search Box
+                            //- block : c-map
+                            .c-map
+                                .c-map__inner
+                                    //- google map
+                            .c-map-search__body
+                                //- result
+                                .c-map-search__result
+                                    //- block : c-tabs
+                                    .c-tabs.tabs.panelcontainer.c-tabs__button
+                                        .cmp-tabs.c-tabs__wrap(data-cmp-data-layer="", data-placeholder-text="false")
+                                            //- tab
+                                            .c-tabs__inner
+                                                ul.c-tabs__tablist.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                                    +printTab(3, 1, true) LG Best Shop
+                                                    +printTab(3, 2, false) All
+
+                                            //- tab panel
+                                            +printTabPanel(3, 1, true)
+                                                .c-no-data-wrap.small 
+                                                    .c-no-data 
+                                                        strong(class=noDataTitleStyle) No results
+                                                        p.c-no-data__desc(class=noDataDescStyle) TIP: Try entering a location or using your current location
+                                            +printTabPanel(3, 2, false)
+                                                .c-no-data-wrap.small 
+                                                    .c-no-data 
+                                                        strong(class=noDataTitleStyle) No results
+                                                        p.c-no-data__desc(class=noDataDescStyle) TIP: Try entering a location or using your current location
+
+    if(option == 'SearchIN')
+        .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+            .component
+                .cmp-container
+                    //- block : c-map-search
+                    //- 검색타입 : is-search
+                    //- 길찾기, 검색 없는 리스트 : is-direction
+                    .c-map-search.is-search
+                        .c-map-search__inner
+                            button.c-map-search__toggle(type="button" aria-expanded="false")
+                                span.sr-only Search Box
+                            form.cmp-form.c-map-search__box(action="#" method="get")&attributes(attributes)
+                                .c-search-box__form--no-label
+                                    +formSelect(false, "findLocallyCountry", "Select a Country", false)
+                                        option(value="") Select a Country
+                                        option(value="country1") Country1
+                                        option(value="country2") Country2
+                                        option(value="country3") Country3
+                                .c-map-search__box-inner
+                                    label.sr-only(for='finderSearch') search
+                                    input.c-map-search__box-input(type='text' id='finderSearch' placeholder='Enter your city or address')
+                                    .c-map-search__box-button
+                                        button(type="submit").c-icon-search
+                                            span.sr-only search
+                                        p.c-map-search__box-divider
+                                        button(type="button").c-icon-place
+                                            span.sr-only location
+                            //- block : c-map
+                            .c-map
+                                .c-map__inner
+                                    //- google map
+                            .c-map-search__body
+                                //- result
+                                .c-map-search__result--no-label
+                                    //- block : c-tabs
+                                    .c-tabs.tabs.panelcontainer.c-tabs__button
+                                        .cmp-tabs.c-tabs__wrap(data-cmp-data-layer="", data-placeholder-text="false")
+                                            //- tab
+                                            .c-tabs__inner
+                                                ul.c-tabs__tablist.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                                    +printTab(2, 1, true) LG Best Shop
+                                                    +printTab(2, 2, false) All
+
+                                            //- tab panel
+                                            +printTabPanel(2, 1, true)
+                                                .c-no-data-wrap.small
+                                                    .c-no-data 
+                                                        strong(class=noDataTitleStyle) Please enter a location
+                                                        p.c-no-data__desc(class=noDataDescStyle) TIP: Try entering a location or using your current location
+                                            +printTabPanel(2, 2, false)
+                                                .c-no-data-wrap.small
+                                                    .c-no-data 
+                                                        strong(class=noDataTitleStyle) Please enter a location
+                                                        p.c-no-data__desc(class=noDataDescStyle) TIP: Try entering a location or using your current location
+
+    if(option == 'BrandshopIN')
+        .c-wrapper.PD0016.ETC000I.margin-top.margin-bottom.border-top.bg-default
+            .component
+                .cmp-container
+                    //- block : c-map-search
+                    //- 검색타입 : is-search
+                    //- 길찾기, 검색 없는 리스트 : is-direction
+                    .c-map-search.is-search
+                        .c-map-search__inner
+                            button.c-map-search__toggle(type="button" aria-expanded="false")
+                                span.sr-only Search Box
+                            form.cmp-form.c-map-search__box(action="#" method="get")&attributes(attributes)
+                                .c-search-box__form--no-label
+                                    +formSelect(false, "findLocallyState", "Select a State", false)
+                                        option(value="") Select a State
+                                        option(value="state1") State1
+                                        option(value="state2") State2
+                                        option(value="state3") State3
+                                .c-map-search__box-inner
+                                    label.sr-only(for='finderSearch') search
+                                    input.c-map-search__box-input(type='text' id='finderSearch' placeholder='Enter your city or address')
+                                    .c-map-search__box-button
+                                        button(type="submit").c-icon-search
+                                            span.sr-only search
+                                        p.c-map-search__box-divider
+                                        button(type="button").c-icon-place
+                                            span.sr-only location
+                            //- block : c-map
+                            .c-map
+                                .c-map__inner
+                                    //- google map
+                            .c-map-search__body
+                                //- result
+                                .c-map-search__result--no-label
+                                    .c-no-data-wrap.small
+                                        .c-no-data 
+                                            strong(class=noDataTitleStyle) Please enter a location
+                                                p.c-no-data__desc(class=noDataDescStyle) TIP: Try entering a location or using your current location
+    
+    if(option == 'BrandshopID')
+        .c-wrapper.PD0016.ETC000I.margin-top.margin-bottom.border-top.bg-default
+            .component
+                .cmp-container
+                    //- block : c-map-search
+                    //- 검색타입 : is-search
+                    //- 길찾기, 검색 없는 리스트 : is-direction
+                    .c-map-search.is-search
+                        .c-map-search__inner
+                            button.c-map-search__toggle(type="button" aria-expanded="false")
+                                span.sr-only Search Box
+                            form.cmp-form.c-map-search__box(action="#" method="get")&attributes(attributes)
+                                .c-map-search__box-inner
+                                    label.sr-only(for='finderSearch') search
+                                    input.c-map-search__box-input(type='text' id='finderSearch' placeholder='Enter your city or address')
+                                    .c-map-search__box-button
+                                        button(type="submit").c-icon-search
+                                            span.sr-only search
+                                        p.c-map-search__box-divider
+                                        button(type="button").c-icon-place
+                                            span.sr-only location
+                            //- block : c-map
+                            .c-map
+                                .c-map__inner
+                                    //- google map
+                            .c-map-search__body
+                                //- result
+                                .c-map-search__result--no-label
+                                    .c-no-data-wrap.small
+                                        .c-no-data 
+                                            strong(class=noDataTitleStyle) Please enter a location
+                                                p.c-no-data__desc(class=noDataDescStyle) TIP: Try entering a location or using your current location

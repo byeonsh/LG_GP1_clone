@@ -1,0 +1,737 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_cs-form.pug
+
+block meta
+    - var componentId = "CS0123"
+    - var componentName = "Step_Type of Repair"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    -
+        const stepList = [
+            {
+                'eyebrow': 'Type of Repair',
+                'stepNumber': 3
+            },
+        ]
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${controlsId}` aria-label="")
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+    
+    mixin printTab(div, num, selected)
+        if selected
+            li.swiper-slide.cmp-tabs__tab.cmp-tabs__tab--active.font-m-normal-16(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0" data-cmp-hook-tabs="tab" aria-selected="true")
+                a(role="tab" aria-label="")
+                    if block
+                        block
+        else 
+            li.swiper-slide.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1" data-cmp-hook-tabs="tab" aria-selected="false")
+                a(role="tab" aria-label="")
+                    if block
+                        block
+
+    mixin formCheckbox(label, linkLabel, name, val, id, count = "false", disabled = false, link=true)
+        .c-checkbox-item
+            label.checkbox(for=`${id}`)
+                if(disabled)
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="", disabled="disabled")&attributes(attributes)
+                else 
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="")&attributes(attributes)
+
+                if(label)
+                    span.label.font-m-normal-12.font-w-normal-20= label 
+                        a(href="daum.net").link.font-m-normal-12.font-w-normal-20= linkLabel
+                        -if(count >= 0 & count != "false") // for filter
+                            sup.count= count 
+                else 
+                    if block 
+                        span.label
+                            block  
+    mixin formRadio(label, name, val, id , flag = false)
+        .c-radio-item
+            label.radio(for=`${id}`)
+                input(type="radio" name=`${name}`, value=`${val}`, id=`${id}`)&attributes(attributes)
+                if(flag)
+                    span.label
+                        span!= label
+                            span.flag-red.cmp-button.c-button.c-button--default.highlight.default.m-medium.w-medium Top Ranked
+                else
+                    span.label
+                        span!= label
+                    
+
+    mixin packNorthAmerica(faq, stepNumber, controlsId) 
+        .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+            .c-accordion__head
+                // block - text contents
+                // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+                //- .c-a ccordion__head-text.c-text-contents.c-step-active
+                .c-accordion__head-text.c-text-contents
+                    span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true")
+                        span.c-accordion__step
+                        span.c-accordion__head-flag.font-m-normal-16.font-w-semibold-20
+                +trigger(controlsId)
+            // This area is accordion content. Please include only this area during development.
+            .c-accordion__body(id=`${controlsId}` class=`step3`)
+                +contentsBody1(stepNumber)
+    mixin contentsBody1(stepNumber)
+        if (stepNumber < 7)
+            // block - text contents
+            .c-text-contents.c-accordion__body-text
+                case stepNumber
+                    when 1
+                        section
+                            .c-info-box
+                                span.font-m-normal-12.font-w-normal-16 This service is scheduling to visit to the customer's home or office
+                                    | <br> – with LG technician. We'll contact your information you complete below.                            
+                            .c-info-box
+                                span.font-m-normal-20.font-w-normal-24 Check availability of LG repair service
+
+                            .cs-form
+                                .cs-form__wrap          
+                                    +csForm_SchInput({id: 'postalCode', label: 'Postal code', placeholder: '(___-___)',  valueType: 'c-after-search-valid-CA'})
+                    when 2
+                        section
+                            .c-info-box
+                                span.font-m-normal-12.font-w-normal-16 This service is scheduling to visit to the customer's home or office
+                                    | <br> – with LG technician. We'll contact your information you complete below.                            
+                            .c-info-box
+                                span.font-m-normal-20.font-w-normal-24 Check availability of LG repair service
+
+                            .cs-form
+                                .cs-form__wrap          
+                                    +csForm_SchInput({id: 'postalCode', label: 'Postal code', placeholder: '(___-___)', length: '6', valueType: 'c-after-search-valid-CA'})
+                            .c-form__wrap-info-msg
+                                span.font-m-normal-12.font-w-normal-16 Unfortunately, 
+                                                                        | <br>  online repair service is not available for the model.
+                            .c-form__wrap-info-msg.font-m-normal-12.font-w-normal-16  Please contact us  
+                                                                                        span.c-color-red 1-888-542-2623 
+                                                                                        | to receive support.
+
+
+
+                    when 3
+                        section
+                            .c-info-box
+                                span.font-m-normal-12.font-w-normal-16 This service is scheduling to visit to the customer's home or office
+                                    | <br> – with LG technician. We'll contact your information you complete below.
+                            
+                            .c-info-box
+                                span.font-m-normal-20.font-w-normal-24 Check availability of LG repair service
+
+                            .cs-form
+                                .cs-form__wrap          
+                                    +csForm_SchInput({id: 'postalCode', label: 'Postal code', placeholder: '(___-___)', length: '6', valueType: 'c-after-search-valid-CA', value:'00000'})
+
+
+                        section 
+                            dl
+                                dt.font-m-normal-20.font-w-normal-24 Select reservation date and time
+                                dd.font-m-normal-12.fonw-w-normal-16 We have dedicated LG direct service technicians in your area available to be scheduled.
+                            .cs-form
+                                .cs-form__wrap
+                                    .cmp-form#reservationDate
+                                        +csForm_Select({id: 'reservationDate', label: 'Reservation date', require: 'true', requireMsg: 'Reservation date is required', value_01: 'Reservation date', value_02: 'Reservation date-2', info: 'true' ,infoMsg:'Please select a date and time that is convenient for you for the repair service'})
+                                    .cmp-form#scheduleTime
+                                        +csForm_Select({id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+                    when 4
+                        section
+                            .c-info-box
+                                span.font-m-normal-12.font-w-normal-16 This service is scheduling to visit to the customer's home or office
+                                    | <br> – with LG technician. We'll contact your information you complete below.
+                            
+                            .c-info-box
+                                span.font-m-normal-20.font-w-normal-24 Check availability of LG repair service
+
+                            .cs-form
+                                .cs-form__wrap          
+                                    +csForm_SchInput({id: 'postalCode', label: 'Postal code', placeholder: '(___-___)', length: '6', valueType: 'c-after-search-valid-CA'})
+
+
+                        section 
+                            dl
+                                dt.font-m-normal-20.font-w-normal-24 Select reservation date and time
+                                dd.font-m-normal-12.fonw-w-normal-16 We have dedicated LG direct service technicians in your area available to be scheduled.
+                            .cs-form
+                                .cs-form__wrap
+                                    .cmp-form#reservationDate
+                                        +csForm_Select({className:'reservation-date', id: 'reservationDate', label: 'Reservation date', require: 'true', requireMsg: 'Reservation date is required.', value_01: 'Reservation date', value_02: 'Reservation date-2' , class:"c-responsavel-valid", info: 'true', infoMsg:" Please select a date and time that is convenient for you for the repair service"})
+                                    .cmp-form#scheduleTime
+                                        +csForm_Select({className:'scheduleTime' ,id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.​', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+
+                        section 
+                            .cs-form
+                                .cs-form__wrap          
+                                    .cmp-form
+                                        .c-info-box
+                                            span.font-m-normal-20.font-w-normal-24 Select a repair service center #[em.require *]
+                                        //- label.font-label.c-radio-label.font-m-normal-16.font-w-normal-24 Select a repair service center #[em.require *]
+                                        .c-form__box.c-form__radio-box
+                                            .c-form-box.is-flag
+                                                +formRadio("Across Canada in your area LG Direct Service Technicians","sort01", "FT00000001", "FV00000001" ,flag = true)(aria-controls="resultTarget" aria-label="" checked )
+                                            .c-form-box
+                                                +formRadio("UNIT #102, 19232 ENTERPRISE WAY V3S 6J9(S6,G)UNIVERSAL TV SERVICE CENTRE","sort01", "FT00000001", "FV00000002")(aria-controls="resultTarget" aria-label="")
+                                        .c-warning.c-service-center-required Repair service center is required.
+                                    .cmp-form
+                                    
+
+                    when 5
+                        section
+                            .c-info-box
+                                span.font-m-normal-12.font-w-normal-16 This service is scheduling to visit to the customer's home or office
+                                    | <br> – with LG technician. We'll contact your information you complete below.
+                            
+                            .c-info-box
+                                span.font-m-normal-20.font-w-normal-24 Check availability of LG repair service
+
+                            .cs-form
+                                .cs-form__wrap          
+                                    +csForm_SchInput({id: 'postalCode', label: 'Postal code', placeholder: '(___-___)', length: '6', valueType: 'c-after-search-valid-CA'})
+
+
+                        section 
+                            dl
+                                dt.font-m-normal-20.font-w-normal-24 Select reservation date and time
+                                dd.font-m-normal-12.fonw-w-normal-16 We have dedicated LG direct service technicians in your area available to be scheduled.
+                            .cs-form
+                                .cs-form__wrap
+                                    .cmp-form#reservationDate
+                                        +csForm_Select({className:'reservation-date', id: 'reservationDate', label: 'Reservation date', require: 'true', requireMsg: 'Reservation date is required.', value_01: 'Reservation date', value_02: 'Reservation date-2' , class:"c-responsavel-valid", info: 'true', infoMsg:" Please select a date and time that is convenient for you for the repair service"})
+                                    .cmp-form#scheduleTime
+                                        +csForm_Select({className:'scheduleTime' ,id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.​', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+
+                        section 
+                            .cs-form
+                                .cs-form__wrap          
+                                    .cmp-form
+                                        .c-info-box
+                                            span.font-m-normal-20.font-w-normal-24 Select a repair service center #[em.require *]
+                                        //- label.font-label.c-radio-label.font-m-normal-16.font-w-normal-24 Select a repair service center #[em.require *]
+                                        .c-form__box.c-form__radio-box
+                                            .c-form-box.is-flag
+                                                +formRadio("Across Canada in your area LG Direct Service Technicians","sort01", "FT00000001", "FV00000001", flag = true)(aria-controls="resultTarget" aria-label="" checked)
+                                            .c-form-box
+                                                +formRadio("UNIT #102, 19232 ENTERPRISE WAY V3S 6J9(S6,G)UNIVERSAL TV SERVICE CENTRE","sort01", "FT00000001", "FV00000002")(aria-controls="resultTarget" aria-label="")
+                                        .c-warning.c-service-center-required Repair service center is required.
+                                    .cmp-form
+                                    
+                        section 
+                            .cs-form
+                                .cs-form__wrap          
+                                    .cmp-form
+                                        .c-info-box
+                                            span.font-m-normal-20.font-w-normal-24 Did the dates above meet your scheduling needs? #[em.require *]
+                                        //- label.font-label.c-radio-label.font-m-normal-16.font-w-normal-24 Did the dates above meet your scheduling needs? #[em.require *]
+                                        .c-form__box.c-form__radio-box
+                                            .c-form-box
+                                                +formRadio("yes","sort02", "FT00000001", "FV00000001", )(aria-controls="resultTarget" aria-label="" checked)
+                                            .c-form-box
+                                                +formRadio("No","sort02", "FT00000001", "FV00000002", )(aria-controls="resultTarget" aria-label="")
+                                        .c-warning.c-service-center-required This is required.
+
+                    when 6
+                        section
+                            .c-info-box
+                                span.font-m-normal-12.font-w-normal-16 This service is scheduling to visit to the customer's home or office
+                                    | <br> – with LG technician. We'll contact your information you complete below.
+                            
+                            .c-info-box
+                                span.font-m-normal-20.font-w-normal-24 Check availability of LG repair service
+
+                            .cs-form
+                                .cs-form__wrap          
+                                    +csForm_SchInput({id: 'postalCode', label: 'Postal code', placeholder: '(___-___)', length: '6', valueType: 'c-after-search-valid-CA'})
+
+
+                        section 
+                            dl
+                                dt.font-m-normal-20.font-w-normal-24 Select reservation date and time
+                                dd.font-m-normal-12.fonw-w-normal-16 We have dedicated LG direct service technicians in your area available to be scheduled.
+                            .cs-form
+                                .cs-form__wrap
+                                    .cmp-form#reservationDate
+                                        +csForm_Select({className:'reservation-date', id: 'reservationDate', label: 'Reservation date', require: 'true', requireMsg: 'Reservation date is required.', value_01: 'Reservation date', value_02: 'Reservation date-2' , class:"c-responsavel-valid", info: 'true', infoMsg:" Please select a date and time that is convenient for you for the repair service"})
+                                    .cmp-form#scheduleTime
+                                        +csForm_Select({className:'scheduleTime' ,id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.​', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+
+                        section 
+                            .cs-form
+                                .cs-form__wrap          
+                                    .cmp-form
+                                        .c-info-box
+                                            span.font-m-normal-20.font-w-normal-24 Select a repair service center #[em.require *]
+                                        //- label.font-label.c-radio-label.font-m-normal-16.font-w-normal-24 Select a repair service center #[em.require *]
+                                        .c-form__box.c-form__radio-box
+                                            .c-form-box.is-flag
+                                                +formRadio("Across Canada in your area LG Direct Service Technicians","sort01", "FT00000001", "FV00000001", flag = true)(aria-controls="resultTarget" aria-label="" checked)
+                                            .c-form-box
+                                                +formRadio("UNIT #102, 19232 ENTERPRISE WAY V3S 6J9(S6,G)UNIVERSAL TV SERVICE CENTRE","sort01", "FT00000001", "FV00000002", )(aria-controls="resultTarget" aria-label="")
+                                        .c-warning.c-service-center-required Repair service center is required.
+                                    .cmp-form
+                                    
+                        section 
+                            .cs-form
+                                .cs-form__wrap          
+                                    .cmp-form
+                                        .c-info-box
+                                            span.font-m-normal-20.font-w-normal-24 Did the dates above meet your scheduling needs? #[em.require *]
+                                        //- label.font-label.c-radio-label.font-m-normal-16.font-w-normal-24 Did the dates above meet your scheduling needs? #[em.require *]
+                                        .c-form__box.c-form__radio-box
+                                            .c-form-box
+                                                +formRadio("yes","sort02", "FT00000001", "FV00000001", )(aria-controls="resultTarget" aria-label="" checked)
+                                            .c-form-box
+                                                +formRadio("No","sort02", "FT00000001", "FV00000002", )(aria-controls="resultTarget" aria-label="")
+                                        .c-warning.c-service-center-required This is required.
+
+                        section 
+                            .cs-form
+                                .cs-form__wrap          
+                                    .cmp-form 
+                                        +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'selectDate', label: 'Did the dates above meet your scheduling needs?', placeholder: 'Aprobación No válido es obligatorio.', 
+                                        requireMsg:'Inputting date is required.' })
+                                    .cmp-form 
+                
+                .c-button-wrap
+                        .button.c-cta
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="c-btn-next")
+    
+        else
+            // block - text contents
+            .c-text-contents.c-accordion__body-text.c-result-wrap
+                case stepNumber
+                    when 7
+                        .c-result__txtBox.font-m-normal-12.font-w-normal-16 Onsite service : 04/06/2023 16:01 ~ 17:00
+                            br
+                            | Preferred date : 04/06/2023 
+                        .button.c-cta
+                            +textButton({name: 'Edit', wSize: 'small', mSize: 'small', buttonStyle: 'default'})(role="button")
+                    when 8
+                        .c-result__txtBox.font-m-normal-12.font-w-normal-16 Onsite service : 04/06/2023 16:01 ~ 17:00
+                        .button.c-cta
+                            +textButton({name: 'Edit', wSize: 'small', mSize: 'small', buttonStyle: 'default'})(role="button")
+
+
+
+    mixin packBR(faq, stepNumber, controlsId)
+        .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+            .c-accordion__head
+                // block - text contents
+                // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+                //- .c-accordion__head-text.c-text-contents.c-step-active
+                .c-accordion__head-text.c-text-contents
+                    span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true")
+                        span.c-accordion__step
+                        span.c-accordion__head-flag.font-m-normal-16.font-w-semibold-20
+                +trigger(controlsId)
+            // This area is accordion content. Please include only this area during development.
+            .c-accordion__body(id=`${controlsId}` class=`step3`)
+                +contentsBody2(stepNumber)
+    mixin contentsBody2(stepNumber)
+            if (stepNumber != 5)
+                // block - text contents
+                .c-text-contents.c-accordion__body-text
+                    case stepNumber
+                        when 1
+                            section
+                                .c-info-box
+                                    span.font-m-normal-12.font-w-normal-16 O serviço de assistência doméstica está disponível para o seu modelo. A Assistência Técnica Autorizada pode cobrar pelo serviço de reparo de acordo com a política e o modelo de cada produto por perda de garantia (uso indevido). Consulte a política de reparo para obter mais detalhes.
+                                
+                                .c-info-box
+                                    span.font-m-normal-20.font-w-normal-24 Verifique a disponibilidade do serviço no seu endereço:
+
+                                .cs-form
+                                    .cs-form__wrap  
+                                        +csForm_SchInputMuilt({id: 'postalCode', label: 'Digite seu CEP', placeholder: '_____-___', btnName:'Selecione meu endereço',className:'c-after-search-valid02 c-after-search-valid03', requireMsg:'CEP é obrigatório' ,length:'8'})        
+
+                        when 2
+                            section
+                                .c-info-box
+                                    span.font-m-normal-12.font-w-normal-16 O serviço de assistência doméstica está disponível para o seu modelo. A Assistência Técnica Autorizada pode cobrar pelo serviço de reparo de acordo com a política e o modelo de cada produto por perda de garantia (uso indevido). Consulte a política de reparo para obter mais detalhes.
+                                
+                                .c-info-box
+                                    span.font-m-normal-20.font-w-normal-24 Verifique a disponibilidade do serviço no seu endereço:
+                                
+                                .cs-form
+                                    .cs-form__wrap  
+                                        +csForm_SchInputMuilt({id: 'postalCode', label: 'Digite seu CEP', placeholder: '_____-___', btnName:'Selecione meu endereço',className:'c-after-search-valid02 c-after-search-valid03', requireMsg:'CEP é obrigatório' ,length:'8'})        
+
+                            section 
+                                dl
+                                    dd.font-m-normal-12.fonw-w-normal-16 Infelizmente, uma Assistência Técnica Autorizada não foi encontrada no CEP informado.
+                                        br
+                                        +textButton({name: 'Fale conosco', underline:true, wSize: 'small', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+
+                        when 3
+                            section
+                                .c-info-box
+                                    span.font-m-normal-12.font-w-normal-16 O serviço de assistência doméstica está disponível para o seu modelo. A Assistência Técnica Autorizada pode cobrar pelo serviço de reparo de acordo com a política e o modelo de cada produto por perda de garantia (uso indevido). Consulte a política de reparo para obter mais detalhes.
+                                
+                                .c-info-box
+                                    span.font-m-normal-20.font-w-normal-24 Verifique a disponibilidade do serviço no seu endereço:
+
+                                .cs-form
+                                    .cs-form__wrap  
+                                        +csForm_SchInputMuilt({id: 'postalCode', label: 'Digite seu CEP', placeholder: '_____-___', btnName:'Selecione meu endereço',className:'c-after-search-valid02 c-after-search-valid03',requireMsg:'CEP é obrigatório',length:'8'})        
+                            section 
+                                .cs-form
+                                    .cs-form__wrap          
+                                        .cmp-form
+                                            span.font-m-normal-20.font-w-normal-24 Selecione o serviço autorizado #[em.require *]
+                                            //- label.font-label.c-radio-label.font-m-normal-16.font-w-normal-24 Select a repair service center #[em.require *]
+                                            .c-form__box.c-form__radio-box
+                                                .c-form-box
+                                                    +formRadio(`<span class="text-block">Lg Service <em class="distance">Distância: 7.19</em></span><span class="text-block"><span class="text-division">Endereço: AV INTERLAGOS 2564</span><span class="text-division">Cidade: SAO PAULO/SP</span></span><span class="text-block">Telefone: 11 56340590</span><span class="text-block"><span class="text-division">Horário: 00:00 ~ 24:00</span><span class="text-division">Bairro: JARDIM DOS PRADOS</span><span class="text-division">CEP: 04660-004</span></span>`,"sort03", "FT00000001", "FV00000001", )(aria-controls="resultTarget" aria-label="" checked)
+                                                .c-form-box
+                                                    +formRadio(`<span class="text-block">Unimex <em class="distance">Distância: 11.5</em></span><span class="text-block"><span class="text-division">Endereço: RUA NEWTON PRADO 342</span><span class="text-division">Cidade: SAO PAULO/SP</span></span><span class="text-block">Telefone: 11 32248660</span><span class="text-block"><span class="text-division">Horário: 09:00 ~ 18:00</span><span class="text-division">Bairro: BOM RETIRO</span><span class="text-division">CEP: 01127-000</span></span>`,"sort03", "FT00000001", "FV00000002",)(aria-controls="resultTarget" aria-label="")
+                                            .c-warning.c-service-center-required Isso é necessário.
+                                        .cmp-form
+
+                        when 4
+                            section
+                                .c-info-box
+                                    span.font-m-normal-12.font-w-normal-16 O serviço de assistência doméstica está disponível para o seu modelo. A Assistência Técnica Autorizada pode cobrar pelo serviço de reparo de acordo com a política e o modelo de cada produto por perda de garantia (uso indevido). Consulte a política de reparo para obter mais detalhes.
+                                
+                                .c-info-box
+                                    span.font-m-normal-20.font-w-normal-24 Verifique a disponibilidade do serviço no seu endereço:
+
+                                .cs-form
+                                    .cs-form__wrap
+                                        +csForm_SchInputMuilt({id: 'postalCode', label: 'Digite seu CEP', placeholder: '_____-___', btnName:'Selecione meu endereço',className:'c-after-search-valid02 c-after-search-valid03',requireMsg:'CEP é obrigatório',length:'8'})        
+                            section 
+                                .cs-form
+                                    .cs-form__wrap
+                                        .cmp-form
+                                            span.font-m-normal-20.font-w-normal-24 Selecione o serviço autorizado #[em.require *]
+                                            //- label.font-label.c-radio-label.font-m-normal-16.font-w-normal-24 Select a repair service center #[em.require *]
+                                            .c-form__box.c-form__radio-box
+                                                .c-form-box
+                                                    +formRadio(`<span class="text-block">Lg Service <em class="distance">Distância: 7.19</em></span><span class="text-block"><span class="text-division">Endereço: AV INTERLAGOS 2564</span><span class="text-division">Cidade: SAO PAULO/SP</span></span><span class="text-block">Telefone: 11 56340590</span><span class="text-block"><span class="text-division">Horário: 00:00 ~ 24:00</span><span class="text-division">Bairro: JARDIM DOS PRADOS</span><span class="text-division">CEP: 04660-004</span></span>`,"sort03", "FT00000001", "FV00000001", )(aria-controls="resultTarget" aria-label="" checked)
+                                                .c-form-box
+                                                    +formRadio(`<span class="text-block">Unimex <em class="distance">Distância: 11.5</em></span><span class="text-block"><span class="text-division">Endereço: RUA NEWTON PRADO 342</span><span class="text-division">Cidade: SAO PAULO/SP</span></span><span class="text-block">Telefone: 11 32248660</span><span class="text-block"><span class="text-division">Horário: 09:00 ~ 18:00</span><span class="text-division">Bairro: BOM RETIRO</span><span class="text-division">CEP: 01127-000</span></span>`,"sort04", "FT00000001", "FV00000002",)(aria-controls="resultTarget" aria-label="")
+                                            .c-warning.c-service-center-required Isso é necessário.
+                                        .cmp-form
+                                        .cmp-form 
+                                            +csForm_Input({labelHidden:'true',formDefalut:'true',info:'true',type:'date', class:'', id: 'selectDate', label: 'Selecione a data sugerida', placeholder: 'YYYY/MM/DD', infoMsg:'Após a abertura da ordem de serviço a Assistência Autorizada entrará em contato para confirmação e agendamento da visita', requireMsg:'Inputting date is required.' })
+                                        
+                    .c-button-wrap
+                        .button.c-cta
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="c-btn-next")
+            else
+                // block - text contents
+                .c-text-contents.c-accordion__body-text.c-result-wrap
+                        case stepNumber
+                            when 5
+                                .c-result__txtBox.font-m-normal-12.font-w-normal-16 Onsite service : 04/06/2023
+                                    br
+                                    | Technical assistance : World Service
+                                .button.c-cta
+                                    +textButton({name: 'Edit', wSize: 'small', mSize: 'small', buttonStyle: 'default'})(role="button")
+                    
+    mixin packID(faq, stepNumber, controlsId,)
+        .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+            .c-accordion__head
+                // block - text contents
+                // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+                //- .c-accordion__head-text.c-text-contents.c-step-active
+                .c-accordion__head-text.c-text-contents
+                    span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true")
+                        span.c-accordion__step
+                        span.c-accordion__head-flag.font-m-normal-16.font-w-semibold-20
+                +trigger(controlsId)
+            // This area is accordion content. Please include only this area during development.
+            .c-accordion__body(id=`${controlsId}` class=`step3`)
+                +contentsBody3(stepNumber)
+    mixin contentsBody3(stepNumber)
+        if (stepNumber != 5)
+            // block - text contents
+            .c-text-contents.c-accordion__body-text
+                case stepNumber
+                    when 1
+                        section
+                            .c-info-box
+                                span.font-m-normal-12.font-w-normal-16 Layanan ini menjadwalkan kunjungan ke tempat tinggal atau kantor pelanggan - dengan teknisi LG. Kami akan menghubungi Anda melalui informasi yang Anda sampaikan di bawah
+                            
+                            .c-info-box
+                                span.font-m-normal-20.font-w-normal-24 Cek Ketersediaan Layanan Perbaikan LG
+
+                            .cs-form
+                                .cs-form__wrap    
+                                    +csForm_SchInputMuilt({id: 'postalCode', label: 'Masukkan Kode Pos', placeholder: '_____', btnName:'Pilih alamat saya',className:'c-after-search-valid01 c-after-search-valid',requireMsg:'Kode Pos diperlukan',invalidMsg:' asukkan Kode Pos tidak valid'})
+                    when 2
+                        section
+                            .c-info-box
+                                span.font-m-normal-12.font-w-normal-16 Layanan ini menjadwalkan kunjungan ke tempat tinggal atau kantor pelanggan - dengan teknisi LG. Kami akan menghubungi Anda melalui informasi yang Anda sampaikan di bawah
+                            
+                            .c-info-box
+                                span.font-m-normal-20.font-w-normal-24 Cek Ketersediaan Layanan Perbaikan LG
+
+                            .cs-form
+                                .cs-form__wrap          
+                                    +csForm_SchInputMuilt({id: 'postalCode', label: 'Masukkan Kode Pos', placeholder: '_____', btnName:'Pilih alamat saya',className:'c-after-search-valid01 c-after-search-valid',requireMsg:'Kode Pos diperlukan',invalidMsg:' asukkan Kode Pos tidak valid'})
+                            .c-form__wrap-info-msg
+                                p.font-m-normal-12.font-w-normal-16 Mohon maaf,
+                                p.font-m-normal-12.font-w-normal-16 produk yang Anda pilih 
+                                    span.c-color-red GC-A207BPJ 
+                                    | tidak termasuk pada layanan Permintaan Perbaikan untuk saat ini
+                                p.font-m-normal-12.font-w-normal-16 Namun demikian, Anda dapat langsung hubungi kami 
+                                    span.c-color-red 14010 
+                                    | untuk mendapatkan dukungan yang diperlukan
+                            .cs-from.cs-form__chk    
+                                +formCheckbox('Proceed to request repair service', '*', "name", "val1", "privacyPolicyCheck", count="false" , false)
+                                .c-warning.c-privacyPolicy-checked Wajib diisi​
+                    when 3
+                        section
+                            .c-info-box
+                                span.font-m-normal-12.font-w-normal-16 Layanan ini menjadwalkan kunjungan ke tempat tinggal atau kantor pelanggan - dengan teknisi LG. Kami akan menghubungi Anda melalui informasi yang Anda sampaikan di bawah
+
+
+                            .c-info-box
+                                span.font-m-normal-20.font-w-normal-24 Cek Ketersediaan Layanan Perbaikan LG
+
+                            .cs-form
+                                .cs-form__wrap  
+                                    +csForm_SchInputMuilt({id: 'postalCode', label: 'Masukkan Kode Pos', placeholder: '_____', btnName:'Pilih alamat saya',className:'c-after-search-valid01 c-after-search-valid',requireMsg:'Kode Pos diperlukan',invalidMsg:' asukkan Kode Pos tidak valid.'})
+                        section 
+                            dl
+                                dt.font-m-normal-20.font-w-normal-24 Pilih Tanggal &amp; Waktu Pemesanan
+                                dd.font-m-normal-12.fonw-w-normal-16 Layanan kunjungan oleh Teknisi LG tersedia di area anda
+                            .cs-form
+                                .cs-form__wrap
+                                    .cmp-form#reservationDate
+                                        +csForm_Select({id: 'reservationDate', label: 'Tanggal Reservasi', require: 'true', requireMsg: 'Tanggal Reservasi diperlukan', value_01: 'Reservation date', value_02: 'Reservation date-2' ,info: 'true', infoMsg:'Silahkan pilih tanggal dan waktu yang sesuai bagi Anda untuk layanan perbaikan'})
+                                        //- .c-info-msg.font-m-normal-16.font-w-normal-16 Silahkan pilih tanggal dan waktu yang sesuai bagi Anda untuk layanan perbaikan
+                                    .cmp-form#scheduleTime
+                                        +csForm_Select({id: 'scheduleTime', label: 'Jadwal', require: 'true', requireMsg: 'Jadwal diperlukan', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+                    when 4
+                        section
+                            .c-info-box
+                                span.font-m-normal-12.font-w-normal-16 Layanan ini menjadwalkan kunjungan ke tempat tinggal atau kantor pelanggan - dengan teknisi LG. Kami akan menghubungi Anda melalui informasi yang Anda sampaikan di bawah
+                            
+                            .c-info-box
+                                span.font-m-normal-20.font-w-normal-24 Cek Ketersediaan Layanan Perbaikan LG
+
+                            .cs-form
+                                .cs-form__wrap  
+                                    +csForm_SchInputMuilt({id: 'postalCode', label: 'Masukkan Kode Pos', placeholder: '_____', btnName:'Pilih alamat saya',className:'c-after-search-valid01 c-after-search-valid',requireMsg:'Kode Pos diperlukan',invalidMsg:' asukkan Kode Pos tidak valid.'})
+                        section 
+                            dl
+                                dt.font-m-normal-20.font-w-normal-24 Pilih Tanggal &amp; Waktu Pemesanan
+                                dd.font-m-normal-12.fonw-w-normal-16 Layanan kunjungan oleh Teknisi LG tersedia di area anda
+                            .cs-form
+                                .cs-form__wrap
+                                    .cmp-form#reservationDate
+                                        +csForm_Select({className:'reservation-date', id: 'reservationDate', label: 'Reservation date', require: 'true', requireMsg: 'Reservation date is required.', value_01: 'Reservation date', value_02: 'Reservation date-2' , class:"c-responsavel-valid", info: 'true', infoMsg:" Please select a date and time that is convenient for you for the repair service"})
+                                    .cmp-form#scheduleTime
+                                        +csForm_Select({className:'scheduleTime' ,id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.​', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+
+                        section 
+                            .cs-form
+                                .cs-form__wrap          
+                                    .cmp-form
+                                        .c-info-box
+                                            span.font-m-normal-20.font-w-normal-24 Pilih service center untuk Perbaikan #[em.require *]
+                                        //- label.font-label.c-radio-label.font-m-normal-16.font-w-normal-24 Select a repair service center #[em.require *]
+                                        .c-form__box.c-form__radio-box
+                                            .c-form-box
+                                                +formRadio('SKN/1/0 SKN/1/1/50/2 Phone: null LGEID JKT SVC',"sort05", "FT00000005", "FV00000005", )(aria-controls="resultTarget" aria-label="")
+                                            .c-form-box
+                                                +formRadio("Apartement Green Bay Tower A Lantai LG no 9. penjaringan Jakarta Utara Phone: 021-70966997 UD PODOMORO TEKNIK","sort05", "FT00000005", "FV00000006",)(aria-controls="resultTarget" aria-label="")
+                                        .c-warning.c-service-center-required Wajib diisi
+                                    .cmp-form                          
+                .c-button-wrap
+                    .button.c-cta
+                        +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="c-btn-next")
+
+        else
+            // block - text contents
+            .c-text-contents.c-accordion__body-text.c-result-wrap
+                case stepNumber
+                    when 5
+                        .c-result__txtBox.font-m-normal-12.font-w-normal-16 Onsite service : 04/06/2023 16:01 ~ 17:00
+                        .button.c-cta
+                            +textButton({name: 'Edit', wSize: 'small', mSize: 'small', buttonStyle: 'default'})(role="button")
+
+    .guide-text-type North America (CA_EN, CA_FR)
+    .guide-text-option Step 1
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packNorthAmerica(faq, 1, controlsId)
+    
+    .guide-text-option Step1 - No available service
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packNorthAmerica(faq, 2, controlsId)
+
+    .guide-text-option Step 2
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packNorthAmerica(faq, 3, controlsId)
+
+    
+    .guide-text-option Step 3
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packNorthAmerica(faq, 4, controlsId)
+
+    .guide-text-option Step 4
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packNorthAmerica(faq, 5, controlsId)
+
+    .guide-text-option Step 5
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packNorthAmerica(faq, 6, controlsId)
+
+    .guide-text-option Complete
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packNorthAmerica(faq, 7, controlsId)
+
+    .guide-text-option Complete - No preffered date 
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packNorthAmerica(faq, 8, controlsId)
+    
+
+    .guide-text-type America (BR)
+    .guide-text-option Step 1
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packBR(faq, 1, controlsId)
+    
+    .guide-text-option Step 2 - Zip code not found
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packBR(faq, 2, controlsId)
+
+    
+    .guide-text-option Step 3
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packBR(faq, 3, controlsId)
+    .guide-text-option Step 4
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packBR(faq, 4, controlsId)
+
+    .guide-text-option Complete
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packBR(faq, 5, controlsId)
+
+
+    .guide-text-type ASIA - ID
+    .guide-text-option Step 1
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packID(faq, 1, controlsId)
+    
+    .guide-text-option Step1 - Postal code not searchable
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packID(faq, 2, controlsId)
+
+    .guide-text-option Step 2
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packID(faq, 3, controlsId)
+
+    
+    .guide-text-option Step 3
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packID(faq, 4, controlsId)
+
+    .guide-text-option Complete
+    .c-wrapper.CS0123.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0123__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        +packID(faq, 5, controlsId)

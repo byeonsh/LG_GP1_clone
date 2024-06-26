@@ -1,0 +1,175 @@
+@charset "UTF-8";
+
+@use '../../scss/abstract/' as *;
+
+$component: '.ST0002';
+
+#{$component} {
+  max-width: 100%;
+  z-index: $stacking-floor;
+  background-color: $white;
+  > .component > .cmp-container {
+    @include container($design-grid-full, false);
+    margin: 0 auto;
+  }
+  // [Start] LGCOMMON-2788
+  overflow: visible;
+  min-height: rem(62px);
+  @include screen(custom, rem($tablet-pro-p + 1), min) {
+    min-height: rem(98px);
+  }
+  // [End] LGCOMMON-2788
+
+  // block : tabs
+  .c-tabs {
+    display: flex;
+    @include screen(custom, rem($tablet-pro-p), max) {
+      flex-direction: column-reverse;
+    }
+    &.with-btn {
+      justify-content: flex-end;
+      @include screen(custom, rem($tablet-pro-p + 1), min) {
+        gap: min(rem($margin50px), $margin50px / $design-grid-full * 100%);
+        align-items: center;
+      }
+      .c-tabs__extra {
+        @include screen(custom, rem($tablet-pro-p), max) {
+          padding-right: rem($block-margin-m);
+        }
+      }
+    }
+    &__list {
+      flex: 1;
+      overflow: hidden;
+      @include reset-list-style;
+      @include list(nowrap);
+      @include screen(custom, rem($tablet-pro-p), max) {
+        display: none;
+        flex-direction: column;
+        @include inset-padding-hz;
+        &.active {
+          display: block;
+          // [Start] LGCOMMON-2788
+          @include screen(custom, rem($tablet-pro-p), max) {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            z-index: 10;
+          }
+          // [End] LGCOMMON-2788
+          + .c-tabs__extra {
+            border-bottom: rem($border1) solid $mid-gray1;
+          }
+        }
+      }
+    }
+    &__item {
+      position: relative;
+      display: flex;
+      flex: 1;
+      align-items: center;
+      padding: rem($padding16px 0);
+      color: $gray3;
+      outline-offset: rem($border2 * -1);
+      text-underline-offset: rem($border2);
+      @include screen(custom, rem($tablet-pro-p + 1), min) {
+        justify-content: center;
+        height: rem($height96px);
+        padding: rem(0 $padding10px);
+      }
+      @include screen(custom, rem($tablet-pro-p), max) {
+        &:not(:first-child) {
+          border-top: rem($border1) solid $light-gray3;
+        }
+      }
+      &.active {
+        color: $black;
+        @include screen(custom, rem($tablet-pro-p + 1), min) {
+          &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: rem($border4);
+            background-color: $active-red;
+          }
+        }
+      }
+    }
+    &__extra {
+      display: flex;
+      align-items: center;
+      @include screen(custom, rem($tablet-pro-p), max) {
+        display: flex;
+        justify-content: flex-end;
+        height: rem($height60px);
+        padding-left: rem($block-margin-m);
+      }
+      @include screen(custom, rem($tablet-pro-p + 1), min) {
+        justify-content: center;
+        height: rem($height96px);
+        padding-top: 0;
+        padding-bottom: 0;
+        @include screen(custom, rem($design-grid-full + $block-margin-w * 2), max) {
+          padding-right: rem($block-margin-w);
+        }
+      }
+    }
+
+    &__drop {
+      display: flex;
+      flex: 1;
+      justify-content: space-between;
+      @include screen(custom, rem($tablet-pro-p + 1), min) {
+        display: none;
+      }
+      .c-tabs__btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: rem($width60px);
+        height: rem($height60px);
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+        background: none;
+        &:before {
+          display: block;
+          content: '';
+          width: rem($icon12px);
+          height: rem($icon7px);
+          background : {
+            position: 100% center;
+            size: 100%;
+            repeat: no-repeat;
+            image: url($icon-arrow-gray3-down-12-7);
+          }
+        }
+        &.active {
+          &:before {
+            transform: rotate($degree180);
+          }
+        }
+      }
+    }
+    &__current {
+      display: flex;
+      align-items: center;
+      text-align: left;
+      color: $black;
+      @include screen(custom, rem($tablet-pro-p + 1), min) {
+        display: none;
+      }
+    }
+    .c-button {
+      @include screen(custom, rem($tablet-pro-p), max) {
+        min-width: rem($min-width80px);
+        height: rem($height36px);
+        padding: rem(0 $padding16px);
+        font-size: rem(14px);
+      }
+    }
+  }
+}

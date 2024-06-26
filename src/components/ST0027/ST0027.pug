@@ -1,0 +1,370 @@
+extends ../_common/_layout.pug
+include ../_common/_carousel.pug
+include ../_common/_image.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "ST0027"
+    - var componentName = "Key Benefit Summary"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [ 
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'BG Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'bg-default', 'remove' : 'bg-white, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-white', 'remove' : 'bg-default, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-lightgray', 'remove' : 'bg-default, bg-white, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-darkgray', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-black', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-darkgray'},
+                                ]
+                            },
+                        ],
+                        '.c-summary-box--overlay .c-summary-box__item' : [
+                            {
+                                'name' : 'Text Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-white', 'remove' : 'font-black'},
+                                    {'toggle' : false, 'add' : 'font-black', 'remove' : 'font-white'}
+                                ]
+                            },
+                            {
+                                'name' : 'gradient',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'c-summary-box__item--gradient'},
+                                ]
+                            }
+                        ],
+                        '.c-summary-box--overlay .c-text-contents' : [
+                            {
+                                'name' : 'Vertical Option',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'pos-top', 'remove' : 'pos-middle, pos-bottom'},
+                                    {'toggle' : false, 'add' : 'pos-middle', 'remove' : 'pos-top, pos-bottom'},
+                                    {'toggle' : false, 'add' : 'pos-bottom', 'remove' : 'pos-middle, pos-top'},
+                                ],
+                            },
+                            {
+                                'name' : 'Horizon Option',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-text-left', 'remove' : 'align-text-center, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-center', 'remove' : 'align-text-left, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-right', 'remove' : 'align-text-left, align-text-center'},
+                                ]
+                            },
+                        ],
+                    };
+
+    mixin printLazyPicture2(img1, img2, max="768", min="769", alt="picture")
+        //- 상위에 .image 클래스를 추가해야합니다. (주로 .c-image)
+        .cmp-image.fit-content(data-cmp-data-layer='')
+            picture
+                source(media=`(max-width: ${max}px)`, srcset=img1)
+                source(media=`(min-width: ${min}px)`, srcset=img2)
+                img.cmp-image__image.c-image__img(src=img1, alt=alt, loading="lazy")&attributes(attributes)
+
+    mixin summary-item(data, length, overlay)
+        - var webLarge = {title: "font-w-light-36", bodycopy: "font-w-normal-16"}
+        - var webMedium = {title: "font-w-light-36", bodycopy: "font-w-normal-16"}
+        - var webSmall = {title: "font-w-light-36", bodycopy: "font-w-normal-16"}
+        - var mobileMedium = {title: "font-m-light-24", bodycopy: "font-m-normal-16"}
+        - var mobileSmall = {title: "font-m-light-24", bodycopy: "font-m-normal-16"}
+        - var webFontSet = (overlay !== true && length === 2 ? {...webLarge} : "") || (overlay === true && length === 2 ? {...webMedium} : "") || (length === 3 ? {...webMedium} : "" || length >= 4 ? {...webSmall} : "");
+
+        each set, idx in data
+            .cmp-carousel__item.swiper-slide.c-carousel__item.c-summary-box__item(class=`${length === 2 ? "c-summary-box__item--large" : ""} ${overlay ? "font-black" : ""}` data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                - var mobileFontSet = idx === 0 && (length % 2) !== 0 ? {...mobileMedium} : {...mobileSmall}
+
+                // blcok : image
+                .c-image
+                    if(set.type === "2")
+                        +printLazyPicture2(`${set.mobileImageUrl}`, `${set.webImageUrl}`)
+                    else
+                        +printLazyPicture(`${set.mobileImageUrl}`, `${set.webImageUrl}`)
+
+                // block : text contents
+                .c-text-contents(class=`${overlay ? "pos-bottom align-text-left" : ""}`)
+                    case set.icon
+                        when true 
+                            .c-image
+                                .cmp-image(data-cmp-data-layer='')
+                                    img.c-image__img(src=`${set.iconUrl}`, alt='', loading="lazy")
+                        default
+                            .title.c-text-contents__headline
+                                p.cmp-title(class=`${webFontSet.title} ${mobileFontSet.title}` data-cmp-data-layer="")=set.title
+
+                    case overlay
+                        when true
+                            .text.c-text-contents__subcopy
+                                p.cmp-text(class=`${webFontSet.bodycopy} ${mobileFontSet.bodycopy}` data-cmp-data-layer="")=set.bodycopy
+                        default
+                            .text.c-text-contents__bodycopy
+                                p.cmp-text(class=`${webFontSet.bodycopy} ${mobileFontSet.bodycopy}` data-cmp-data-layer="")=set.bodycopy
+
+    mixin summary-carousel(data)
+        - var overlay = data.overlay ? "c-summary-box--overlay" : ""
+        - var headlineOption = {label: 'Lorem ipsum dolor sit amet', font: 'font-w-light-56 font-m-light-28', headingTag: 'h2', ...data.headline}
+        - var oddContent = (data.array.length % 2) !== 0 ? "c-summary-box--odd" : "";
+
+        +component-title-area({
+            headline : {
+                style : `${headlineOption.font}`,
+                level : headlineOption.headingTag,
+                text : `${headlineOption.label}`
+            }
+        })(class="c-region-header--vacate-side")
+        //- // block : text contents
+        //- .c-text-contents.align-text-center
+        //-     .title.c-text-contents__headline
+        //-         +headline(`${headlineOption.font}`, headlineOption.headingTag, `${headlineOption.label}`)
+
+        // block : summary box
+        .carousel.panelcontainer.c-summary-box(class=`${overlay} ${oddContent}`)
+            .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                .cmp-carousel__content.swiper-wrapper
+                    +summary-item(data.array, data.array.length, data.overlay)
+
+                .c-carousel__handler
+                    .cmp-carousel__actions
+                        +carouselBtn({type:"pagination", direction:"prev"})
+                    +carouselPagination
+                    .cmp-carousel__actions
+                        +carouselBtn({type:"pagination", direction:"next"})
+
+    // Component Markup
+    //- Type1. Below the image
+    //- Option1. content 2
+    .guide-text-type Type1. Below the image
+    .guide-text-option Option1. content 2
+    .c-wrapper.ST0027.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container 
+                +summary-carousel({
+                    array: [
+                        {
+                            title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit etiam eu turpis molestie",
+                            bodycopy: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin...", 
+                            webImageUrl: "https://via.placeholder.com/708x340/999999/333333/?text=flexiblex340",
+                            mobileImageUrl: "https://via.placeholder.com/708x150/999999/333333/?text=flexiblex150",
+                        },
+                        {
+                            title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit etiam eu turpis molestie", 
+                            bodycopy: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin...", 
+                            webImageUrl: "../../assets/image/qr-cn-uwechat.svg",
+                            mobileImageUrl: "../../assets/image/qr-cn-uwechat.svg",
+                            type: "2"
+                        },
+                    ]
+                })
+
+    //- Option1. content 3
+    .guide-text-option Option2. content 3
+    .c-wrapper.ST0027.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container 
+                +summary-carousel({
+                    array: [
+                        {
+                            title: "Premium in Compact", 
+                            bodycopy: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec...", 
+                            webImageUrl: "https://via.placeholder.com/708x340/999999/333333/?text=flexiblex340",
+                            mobileImageUrl: "https://via.placeholder.com/708x150/999999/333333/?text=flexiblex150",
+                        },
+                        {
+                            title: "Premium in Compact",
+                            bodycopy: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec...", 
+                            webImageUrl: "https://via.placeholder.com/708x340/999999/333333/?text=flexiblex340",
+                            mobileImageUrl: "https://via.placeholder.com/708x150/999999/333333/?text=flexiblex150",
+                        },
+                        {
+                            title: "Premium in Compact",
+                            bodycopy: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec...", 
+                            webImageUrl: "https://via.placeholder.com/708x340/999999/333333/?text=flexiblex340",
+                            mobileImageUrl: "https://via.placeholder.com/708x150/999999/333333/?text=flexiblex150",
+                        },
+                    ]
+                })
+
+    //- Option3. content more than 4
+    .guide-text-option Option3. content more than 4
+    .c-wrapper.ST0027.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container 
+                +summary-carousel({
+                    array: [
+                        {
+                            title: "Premium in Compact",
+                            bodycopy: "The refrigerator you choose needs to fit in your kitchen's alcove, so make sure you check its size", 
+                            webImageUrl: "https://via.placeholder.com/708x340/999999/333333/?text=flexiblex340",
+                            mobileImageUrl: "https://via.placeholder.com/708x150/999999/333333/?text=flexiblex150",
+                        },
+                        {
+                            title: "Premium in Compact",
+                            bodycopy: "The refrigerator you choose needs to fit in your kitchen's alcove, so make sure you check its size", 
+                            webImageUrl: "https://via.placeholder.com/708x340/999999/333333/?text=flexiblex340",
+                            mobileImageUrl: "https://via.placeholder.com/708x150/999999/333333/?text=flexiblex150",
+                        },
+                        {
+                            title: "Premium in Compact",
+                            bodycopy: "The refrigerator you choose needs to fit in your kitchen's alcove, so make sure you check its size", 
+                            icon: true, 
+                            webImageUrl: "https://via.placeholder.com/708x340/999999/333333/?text=flexiblex340",
+                            mobileImageUrl: "https://via.placeholder.com/708x150/999999/333333/?text=flexiblex150",
+                            iconUrl: "https://via.placeholder.com/48x48/999999/333333",
+                        },
+                        {
+                            title: "Premium in Compact",
+                            bodycopy: "The refrigerator you choose needs to fit in your kitchen's alcove, so make sure you check its size", 
+                            icon: true, 
+                            webImageUrl: "https://via.placeholder.com/708x340/999999/333333/?text=flexiblex340",
+                            mobileImageUrl: "https://via.placeholder.com/708x150/999999/333333/?text=flexiblex150",
+                            iconUrl: "https://via.placeholder.com/48x48/999999/333333",
+                        },
+                        {
+                            title: "Premium in Compact",
+                            bodycopy: "The refrigerator you choose needs to fit in your kitchen's alcove, so make sure you check its size", 
+                            webImageUrl: "https://via.placeholder.com/708x340/999999/333333/?text=flexiblex340",
+                            mobileImageUrl: "https://via.placeholder.com/708x150/999999/333333/?text=flexiblex150",
+                        },
+                        {
+                            title: "Premium in Compact",
+                            bodycopy: "The refrigerator you choose needs to fit in your kitchen's alcove, so make sure you check its size", 
+                            webImageUrl: "https://via.placeholder.com/708x340/999999/333333/?text=flexiblex340",
+                            mobileImageUrl: "https://via.placeholder.com/708x150/999999/333333/?text=flexiblex150",
+                        },
+                    ]
+                })
+
+    // Component Markup
+    //- Type2. Image overlay
+    //- Option1. content 2
+    .guide-text-type Type2. Image overlay
+    .guide-text-option Option1. content 2
+    .c-wrapper.ST0027.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container 
+                +summary-carousel({
+                    overlay: true,
+                    array: [
+                        {
+                            title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit etiam eu turpis molestie", 
+                            bodycopy: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut...", 
+                            webImageUrl: "https://via.placeholder.com/708x480/999999/cccccc/?text=flexiblex480",
+                            mobileImageUrl: "https://via.placeholder.com/708x240/999999/cccccc/?text=flexiblex240",
+                        },
+                        {
+                            title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit etiam eu turpis molestie", 
+                            bodycopy: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut...", 
+                            webImageUrl: "https://via.placeholder.com/708x480/999999/cccccc/?text=flexiblex480",
+                            mobileImageUrl: "https://via.placeholder.com/708x240/999999/cccccc/?text=flexiblex240",
+                        },
+                    ]
+                })
+
+    //- Option2. content 3
+    .guide-text-option Option2. content 3
+    .c-wrapper.ST0027.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container 
+                +summary-carousel({
+                    overlay: true,
+                    array: [
+                        {
+                            title: "Premium in Compact", 
+                            bodycopy: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec...", 
+                            webImageUrl: "https://via.placeholder.com/708x480/999999/cccccc/?text=flexiblex480",
+                            mobileImageUrl: "https://via.placeholder.com/708x240/999999/cccccc/?text=flexiblex240",
+                        },
+                        {
+                            title: "Premium in Compact", 
+                            bodycopy: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec...", 
+                            webImageUrl: "https://via.placeholder.com/708x480/999999/cccccc/?text=flexiblex480",
+                            mobileImageUrl: "https://via.placeholder.com/708x240/999999/cccccc/?text=flexiblex240",
+                        },
+                        {
+                            title: "Premium in Compact", 
+                            bodycopy: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec...", 
+                            webImageUrl: "https://via.placeholder.com/708x480/999999/cccccc/?text=flexiblex480",
+                            mobileImageUrl: "https://via.placeholder.com/708x240/999999/cccccc/?text=flexiblex240",
+                        },
+                    ]
+                })
+
+    //- Option3. content more than 5
+    .guide-text-option Option3. content more than 4
+    .c-wrapper.ST0027.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container 
+                +summary-carousel({
+                    overlay: true,
+                    array: [
+                        {
+                            title: "Premium in Compact", 
+                            bodycopy: "The refrigerator you choose needs to fit in your kitchen's alcove, so make sure...", 
+                            webImageUrl: "https://via.placeholder.com/708x480/999999/cccccc/?text=flexiblex480",
+                            mobileImageUrl: "https://via.placeholder.com/708x240/999999/cccccc/?text=flexiblex240",
+                        },
+                        {
+                            title: "Premium in Compact", 
+                            bodycopy: "The refrigerator you choose needs to fit in your kitchen's alcove, so make sure...", 
+                            webImageUrl: "https://via.placeholder.com/708x480/999999/cccccc/?text=flexiblex480",
+                            mobileImageUrl: "https://via.placeholder.com/708x240/999999/cccccc/?text=flexiblex240",
+                        },
+                        {
+                            title: "Premium in Compact", 
+                            bodycopy: "The refrigerator you choose needs to fit in your kitchen's alcove, so make sure...", 
+                            webImageUrl: "https://via.placeholder.com/708x480/999999/cccccc/?text=flexiblex480",
+                            mobileImageUrl: "https://via.placeholder.com/708x240/999999/cccccc/?text=flexiblex240",
+                        },
+                        {
+                            title: "Premium in Compact", 
+                            bodycopy: "The refrigerator you choose needs to fit in your kitchen's alcove, so make sure...", 
+                            webImageUrl: "https://via.placeholder.com/708x480/999999/cccccc/?text=flexiblex480",
+                            mobileImageUrl: "https://via.placeholder.com/708x240/999999/cccccc/?text=flexiblex240",
+                        },
+                        {
+                            title: "Premium in Compact", 
+                            bodycopy: "The refrigerator you choose needs to fit in your kitchen's alcove, so make sure...", 
+                            webImageUrl: "https://via.placeholder.com/708x480/999999/cccccc/?text=flexiblex480",
+                            mobileImageUrl: "https://via.placeholder.com/708x240/999999/cccccc/?text=flexiblex240",
+                        },
+                    ]
+                })

@@ -1,0 +1,249 @@
+include ./CT0303-inc.pug
+
+mixin CT0303(option=false, country=false)
+    .CT0303
+        if(option === "before")
+            .buy-checkout__item.before
+                +checkoutStep({
+                    title:"Payment",
+                    current:"3",
+                    total:"3",
+                    type: ""
+                })
+
+        if(option === "complete") 
+            .buy-checkout__item.buy-checkout__item--coupon.buy-checkout__item--complete
+                +checkoutStep({
+                    title:"Payment",
+                    current:"3",
+                    total:"3",
+                    type: "checked",
+                })         
+
+        if(option === "default")
+            .buy-checkout__item.buy-checkout__item--payment
+                +checkoutStep({
+                    title:"Payment",
+                    current:"3",
+                    total:"3",
+                    type: "active"
+                })
+                .c-checkout-step03.c-checkout-step03-active
+                    ul.c-checkout-step03-payment
+                        case country
+                            when 'it'
+                                +paymentBox([
+                                    {
+                                        type:"creditCard",
+                                        title:"Carta di Credito",
+                                        terms: [
+                                            {
+                                                type: 'form',
+                                                formList: ["prestando il consenso l'utente conferma di avere più di 18 anni.", `cliccando su "Effettua Ordine" si procederà alla conferma della proposta d'ordine e si verrà reindirizzati alla pagina gestita dal nostro partner per il pagamento online. ATTENZIONE: Ordine con obbligo di pagamento.`],
+                                                noMargin: true
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        type:"payPal",
+                                        title:"PayPal",
+                                        terms: [
+                                            {
+                                                type: 'form',
+                                                formList: ["prestando il consenso l'utente conferma di avere più di 18 anni.", `cliccando su "Effettua Ordine" si procederà alla conferma della proposta d'ordine e si verrà reindirizzati alla pagina gestita dal nostro partner per il pagamento online. ATTENZIONE: Ordine con obbligo di pagamento.`],
+                                                noMargin: true
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        type:"findomestic",
+                                        title:"Finanziamento LG con Findomestic",
+                                        lists: [
+                                            {
+                                                title: 'Finanziamento 20 Mesi',
+                                                cost: '€214.80',
+                                                rata: '€214.80',
+                                                buyCost: '€2 147.98',
+                                                tan: '0%',
+                                                taeg: '0%',
+                                                totalCost: '€2 147.98'
+                                            },
+                                            {
+                                                title: 'Finanziamento 30 Mesi',
+                                                cost: '€71.60',
+                                                rata: '€71.60',
+                                                buyCost: '€2 147.98',
+                                                tan: '0%',
+                                                taeg: '0%',
+                                                totalCost: '€2 147.98'
+                                            },
+                                            {
+                                                title: 'Finanziamento 40 Mesi',
+                                                cost: '€53.70',
+                                                rata: '€53.70',
+                                                buyCost: '€2 147.98',
+                                                tan: '0%',
+                                                taeg: '0%',
+                                                totalCost: '€2 147.98'
+                                            }
+                                        ],
+                                    },
+                                    {
+                                        type:"myBank",
+                                        title:"Bonifico immediato MyBank",
+                                        terms: [
+                                            {
+                                                type: 'form',
+                                                formList: ["prestando il consenso l'utente conferma di avere più di 18 anni.", `cliccando su "Effettua Ordine" si procederà alla conferma della proposta d'ordine e si verrà reindirizzati alla pagina gestita dal nostro partner per il pagamento online. ATTENZIONE: Ordine con obbligo di pagamento.`],
+                                                noMargin: true
+                                            }
+                                        ]
+                                    },
+                                ], country)                       
+                            default 
+                                +paymentBox([
+                                    {
+                                        type:"creditCard",
+                                        title:"Credit Card",
+                                    },
+                                    {
+                                        type:"payPal",
+                                        title:"PayPal",
+                                        fillIcon:true,
+                                    },
+                                    {
+                                        type:"klarna",
+                                        title:"Klarna",
+                                    }
+                                ], country)
+
+            .buy-checkout__item.buy-checkout__item--payment.buy-checkout__item--complete(style="display: none;")
+                +checkoutStep({
+                    title:"Payment",
+                    current:"3",
+                    total:"3",
+                    type: "checked"
+                })
+                case country
+                    when 'it'
+                        +paymentComplete([
+                            {
+                                src: 'icon-payment-credit-card-it-181-20',
+                                type: 'creditCard',
+                                title: 'Carta di Credito',
+                                isBetween: true,
+                            },
+                            {
+                                src: 'icon-payment-paypal-15-17',
+                                type: 'payPal',
+                                title: 'PayPal',
+                                isBetween: true,
+                            },
+                            {
+                                src: 'icon-payment-findomestic-it-60-20',
+                                type: 'findomestic',
+                                title: 'Finanziamento LG con Findomestic',
+                                isBetween: true,
+                            },
+                            {
+                                src: 'icon-payment-mybank-it-35-20',
+                                type: 'myBank',
+                                title: 'Bonifico immediato MyBank',
+                                isBetween: true,
+                                contents: [
+                                    {
+                                        type: 'form',
+                                        formText: `<span>Ho letto e compreso la Politica sulla privacy e la Politica sui cookie. <span class="unline-red"><a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Leggi di più</span></a></span></span>`,
+                                        formVal: `${country}Val1`,
+                                        formId: `${country}EmaliId1`
+                                    },
+                                    {
+                                        type: 'form',
+                                        formText: `<span>Accetto i Termini d’uso <span class="unline-red"><a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Leggi di più</span></a></span></span>`,
+                                        formVal: `${country}Val2`,
+                                        formId: `${country}EmaliId2`
+                                    },
+                                    {
+                                        type: 'form',
+                                        formText: `<span>Ricezione di messaggi di marketing (opzionale)<br>
+                                                Acconsento ad essere contattato da LGE e dai suoi affiliati in merito alle ultime novità e alle offerte speciali tramite e-mail, SMS, notifica push, telefonata, siti di social media e/o altre forme di messaggi elettronici. Posso cambiare idea in qualsiasi momento seguendo le istruzioni fornite mediante ogni canale di comunicazione, incluso, ma non solo, l'e-mail e in conformità con <span><a class="font-underline">l’Informativa sulla privacy</a></span> di LGE.</span>`,
+                                        formVal: `${country}Val3`,
+                                        formId: `${country}EmaliId3`
+                                    },
+                                ]
+                            },
+                        ])
+                    default
+                        +paymentComplete([
+                            {
+                                src: 'icon-mylg-visa-31-23',
+                                type: 'creditCard',
+                                title: 'VISA Xxxxxxxxx6995',
+                                date: '05/24',
+                                isBetween: false,
+                                contents: [
+                                    {
+                                        type: 'form',
+                                        formText: `<span class="unline-red">I accept <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Digital River's terms and conditions of sales.</span></a></span>`,
+                                        formVal: 'val01',
+                                        formId: 'emaliId1'
+                                    },
+                                    {
+                                        type: 'form',
+                                        formText: `<span class="unline-red">Receipt of marketing messages(Optional) <br/> I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text"> Privacy Policy. </span></a></span>`,
+                                        formVal: 'val02',
+                                        formId: 'emaliId2'
+                                    }
+                                ]
+                            },
+                            {
+                                src: 'icon-payment-paypal-74-20',
+                                type: 'payPal',
+                                title: 'Buy now and pay later with pay in 3',
+                                isBetween: false,
+                                contents: [
+                                    {
+                                        type: 'paypalList'
+                                    },
+                                    {
+                                        type: 'form',
+                                        formText: `<span class="unline-red">I accept <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Digital River's terms and conditions of sales.</span></a></span>`,
+                                        formVal: 'val03',
+                                        formId: 'emaliId3'
+                                    },
+                                    {
+                                        type: 'form',
+                                        formText: `<span class="unline-red">Receipt of marketing messages(Optional) <br/> I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text"> Privacy Policy. </span></a></span>`,
+                                        formVal: 'val04',
+                                        formId: 'emaliId4'
+                                    }
+                                ]
+                            },
+                            {
+                                src: 'icon-payment-klarna-54-20',
+                                type: 'klarna',
+                                title: 'Buy now, pay later!',
+                                isBetween: false,
+                                contents: [
+                                    {
+                                        type: 'form',
+                                        formText: `<span class="unline-red">I accept <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Digital River's terms and conditions of sales.</span></a></span>`,
+                                        formVal: 'val05',
+                                        formId: 'emaliId5'
+                                    },
+                                    {
+                                        type: 'form',
+                                        formText: `<span class="unline-red">Receipt of marketing messages(Optional) <br/> I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text"> Privacy Policy. </span></a></span>`,
+                                        formVal: 'val06',
+                                        formId: 'emaliId6'
+                                    },
+                                    {
+                                        type: 'form',
+                                        formText: `<span class="unline-red">By proceeding, you will be presented with payment options provided by Klarna. By continuing, I accept the terms of the <a class="cmp-button c-button c-button--text-underline red" href="https://cdn.klarna.com/1.0/shared/content/legal/terms/0/en_gb/user" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Klarna Shopping Service</span></a> and confirm that I have read the <a class="cmp-button c-button c-button--text-underline red" href="https://cdn.klarna.com/1.0/shared/content/legal/terms/0/en_gb/privacy" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Privacy Notice</span></a> and the <a class="cmp-button c-button c-button--text-underline red" href="https://cdn.klarna.com/1.0/shared/content/legal/terms/0/en_gb/cookie_purchase" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Cookie Notice. *</span></a></span>`,
+                                        formVal: 'val07',
+                                        formId: 'emaliId7'
+                                    }
+                                ]
+                            }
+                            
+                        ])

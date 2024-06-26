@@ -1,0 +1,261 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_pop-msg.pug
+include ../_common/_toast.pug
+
+block meta 
+    - var componentId = "ML000S"
+    - var componentName = "Shipping addresses, Billing addresses"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css") 
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? "my-warn" : ""}`
+        .c-input-item(class=`${data.active ? "active" : ""}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? "my-info" : ""}`)= data.label
+                    if data.required
+                        em.c-required *
+                            span.sr-only Required fields
+            if data.required && !data.button && !data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value required)&attributes(attributes)
+            else if data.readonly && data.required
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value readonly required)&attributes(attributes)
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value disabled required)&attributes(attributes)
+            else if data.button
+                if data.validation
+                    .input-button__container.input-button__container--validation
+                        .my-button-validation
+                            if data.disabled
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config disabled required)&attributes(attributes)
+                            else 
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config required)&attributes(attributes)
+                            +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                        .button.c-cta.button-full
+                            +defaultButton({name: data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: false})(class="js-pop-open", href="#findAddress")
+                else
+                    .input-button__container
+                        if data.disabled
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config disabled required)&attributes(attributes)
+                        else 
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config required)&attributes(attributes)
+                        .button.c-cta.button-full
+                            +defaultButton({name: data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: false})(class="js-pop-open", href="#findAddress")
+            else 
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? "my-form__search" : ""}`,)&attributes(attributes)
+            if !data.validation
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin ML000S
+    .c-wrapper.ML000S
+        .component
+            .fluid-container
+                .my-component.my-page-title
+                    .c-text-contents.my-component__title-section
+                        .c-text-contents__headline
+                                +headline('font-w-light-56 font-m-light-28', "h2", "Shipping Addresses, Billing Addresses")
+                .my-component__wrap.border-only-web
+                    .my-component
+                        p.my-form-required.font-w-normal-16.font-m-normal-12
+                            em.c-required * 
+                                span.sr-only Required fields
+                            | Required fields
+                        .my-formbox
+                            +myInputForm([
+                                {
+                                    type:"text",
+                                    label:"First Name",
+                                    id:"FirstName",
+                                    required:true,
+                                    placeholder:"First Name",
+                                },
+                                {
+                                    type:"text",
+                                    label:"First Name",
+                                    id:"FirstNameValue",
+                                    required:true,
+                                    placeholder:"First Name",
+                                    value:"Robert",
+                                    warning: ["First Name is required."]
+                                },
+                                {
+                                    type:"text",
+                                    label:"Last Name",
+                                    id:"LastName",
+                                    required:true,
+                                    placeholder:"Last Name",
+                                },
+                                {
+                                    type:"text",
+                                    label:"Last Name",
+                                    id:"LastNameValue",
+                                    required:true,
+                                    placeholder:"Last Name",
+                                    value:"Surrency",
+                                    warning: ["Last name is required."]
+                                },
+                                {
+                                    type:"tel",
+                                    label:"Mobile Number",
+                                    id:"MobileNumber",
+                                    required:true,
+                                    placeholder:"Mobile Number",
+                                },
+                                {
+                                    type:"tel",
+                                    label:"Mobile Number",
+                                    id:"MobileNumberValue",
+                                    required:true,
+                                    value:"123-4567-8910",
+                                    placeholder:"Mobile Number",
+                                    warning: ["Enter up to 10 digits only."]
+                                },
+                                {
+                                    type:"tel",
+                                    label:"Mobile Number",
+                                    id:"MobileNumberWarn",
+                                    required:true,
+                                    placeholder:"Mobile Number",
+                                    warning: ["Enter up to 10 digits only."]
+                                },
+                                {
+                                    type:"text",
+                                    label:"VAT Number (Optional)",
+                                    id:"VATNumber",
+                                    required:false,
+                                    placeholder:"VAT Number",
+                                },
+                                {
+                                    type:"text",
+                                    label:"Postcode",
+                                    id:"postCode",
+                                    required:true,
+                                    placeholder:"Enter ZIP Code",
+                                    button: "Find Address",
+                                },
+                                {
+                                    type:"text",
+                                    label:"Postcode",
+                                    id:"postCodeValue",
+                                    required:true,
+                                    placeholder:"Enter ZIP Code",
+                                    button: "Find Address",
+                                    value:"EC4A 4A",
+                                    warning: ["Post code is required. This postcode is not valid."]
+                                },
+                                {
+                                    type:"text",
+                                    label:"Street Address",
+                                    id:"streetAddress",
+                                    readonly:true,
+                                    required: true,
+                                    placeholder:"Street Address",
+                                },
+                                {
+                                    type:"text",
+                                    label:"City",
+                                    id:"city",
+                                    required:true,
+                                    readonly:true,
+                                    placeholder:"City",
+                                },
+                                {
+                                    type:"text",
+                                    label:"Country",
+                                    id:"country",
+                                    readonly:true,
+                                    required: true,
+                                    placeholder:"United Kingdom",
+                                },
+                                {
+                                    type:"text",
+                                    label:"County",
+                                    id:"County",
+                                    readonly:false,
+                                    required: false,
+                                    placeholder:"County",
+                                },
+                                {
+                                    type:"text",
+                                    label:"Company (Optional)",
+                                    id:"Company",
+                                    required:false,
+                                    placeholder:"Company Name",
+                                    check: ["Set as the default shipping address", "Set as the default billing address"],
+                                },
+                            ])
+                            +toastPopup([
+                                {
+                                    type: "warning",
+                                    text: "It's the default shipping address",
+                                    remove: true
+                                },
+                                {
+                                    type: "warning",
+                                    text: "It's the default billing address",
+                                    remove: true
+                                }
+                            ])
+                    
+                        .button.c-cta.my-button
+                            // case 1. default btn
+                            +defaultButton({name: "Cancel", wSize: "large", mSize: "medium", buttonStyle: 'default'})
+                            +defaultButton({name: "Save", wSize: "large", mSize: "medium", buttonStyle: 'highlight'})
+                            // case 2. disabled btn
+                            // <a class="cmp-button c-button c-button--default highlight m-medium w-large" href="#" data-cmp-data-layer="" disabled="disabled" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type=""><span class="cmp-button__text c-button__text">Save</span></a>
+
+block content
+    // Component Markup
+    +ML000S
+
+block modal
+    +pop-msg-standard({id : `findAddress`, headline:"Find address", size:"full", headerBorder: false, classes:"buy-find-address"})
+        .buy-find-address__form
+            +formRadio("Savills,57 Buckingham Gate, ,London","name", "val1", "radioId1")
+            +formRadio("Flat 1-6, 57 Buckingham Gate, ,London","name", "val2", "radioId2")
+            +formRadio("58 Buckingham Gate, ,London","name", "val3", "radioId3")
+            +formRadio("Cathy Pacific, Swire House, 59 Buckingham Gate, ,London","name", "val4", "radioId4")
+            +formRadio("Savills,57 Buckingham Gate, ,London","name", "val5", "radioId5")
+        .button.c-cta
+            +defaultButton({name: 'Save', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})

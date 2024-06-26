@@ -1,0 +1,369 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_forms.pug
+include ../_common/_toast.pug
+
+block meta 
+    - var componentId = "ML000E"
+    - var componentName = "Create New Return"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin myReturnInfoEdit
+    .my-return-info__edit
+        +myInputForm([
+            {
+                type:"text",
+                label:"Postcode",
+                id:"postCode",
+                required:false,
+                value: "EC4A 4A",
+                placeholder:"Enter ZIP code",
+                button: "FIND ADDRESS",
+            },
+            {
+                type:"text",
+                label:"Street address",
+                id:"streetAddress",
+                required:false,
+                value:"25B, Farringdon Street",
+                readonly : true,
+            },
+            {
+                type:"text",
+                label:"City",
+                id:"city",
+                required:false,
+                value:"London",
+                readonly : true,
+            },
+            {
+                type:"text",
+                label:"Country",
+                id:"country",
+                required:false,
+                value:"United Kingdom",
+                readonly : true,
+            },
+            {
+                type:"tel",
+                label:"Contact mobile number",
+                id:"mobileNumber2",
+                required:false,
+                value:"123-456-7890",
+            },
+            {
+                type:"email",
+                label:"Contact email address",
+                id:"email2",
+                required:false,
+                value:"robertsurrency@gmail.com",
+            }
+        ])
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? "my-warn" : ""}`
+    //- - console.log(params)
+    .my-return-info__item
+        if data.type === "file"
+            +myFile({attachments: data.attachments, option: data.option, label: data.label, id:data.id, fileName:data.fileName})
+        else if data.type === "select"
+            +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected, disabled: data.isDisabled, required})
+        else
+            .c-input-item(class=`${data.active ? "active" : ""}`)
+                if data.label
+                    label.font-w-normal-24.font-m-normal-16(for= data.id class=`${data.info ? "my-info" : ""}`)= data.label
+                if data.required && !data.button && !data.disabled && !data.readonly
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value required)&attributes(attributes)
+                else if data.readonly && data.required
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value readonly required)&attributes(attributes)
+                else if data.readonly
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value readonly)&attributes(attributes)
+                else if data.disabled
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value disabled)&attributes(attributes)
+                else if data.type === "textarea"
+                    if data.limit
+                        .my-textarea__container
+                            textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class="my-textarea--limit")&attributes(attributes)
+                            .my-count
+                                span.font-w-normal-14.font-m-normal-12 0 / !{data.limit} character
+                    else 
+                        textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder)&attributes(attributes)
+                else if data.button
+                    if data.validation
+                        .input-button__container.input-button__container--validation
+                            .my-button-validation
+                                if data.disabled
+                                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config disabled required)&attributes(attributes)
+                                else 
+                                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config required)&attributes(attributes)
+                                +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                            .button.button-full
+                                +linkButton({name: data.button, roleButton:"true"})
+                    else
+                        .input-button__container
+                            if data.disabled
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config disabled required)&attributes(attributes)
+                            else 
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config required)&attributes(attributes)
+                            .button.button-full
+                                +linkButton({name: data.button, roleButton:"true"})
+                else 
+                    if data.active
+                        input(type="text" id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value)&attributes(attributes)
+                        if data.type === "password"
+                            button(type="button" class="my-form__eye")
+                                span.sr-only show password
+                        else if data.search 
+                            button(type="button" class="my-form__search__icon")
+                                span.sr-only search
+                    else
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? "my-form__search" : ""}`,)&attributes(attributes)
+                        if data.type === "password"
+                            button(type="button" class="my-form__eye")
+                                span.sr-only show password
+                        else if data.search 
+                            button(type="button" class="my-form__search__icon")
+                                span.sr-only search
+            if !data.validation 
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, warning: data.warning})
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-16.font-m-normal-14!= infoText
+    // [Start] 2023-04-25 : ADD - warning case
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    // [End] 2023-04-25 : ADD - warning case
+
+mixin myReturnInfo(title, desc, editBtn=false, edit=false, params)
+    - let data = { ...params }
+    if title
+        .c-text-contents
+            .text.c-text-contents__title
+                .cmp-text.font-w-semibold-24(class=`${edit ? "font-m-semibold-14" : "font-m-semibold-16"}`)= title
+            if desc
+                .text.c-text-contents__bodycopy
+                    .cmp-text.font-w-normal-16.font-m-normal-14 !{desc}
+    if edit
+        +myReturnInfoEdit
+    each set in data
+        +myFormText(set)
+
+mixin myFile({attachments= false, option=true, label="", id="", fileName=false})
+    .my-formFile
+        if !option
+            span.my-formFile__title Upload image
+        else 
+            span.my-formFile__title Upload image (Optional)
+        .my-formFile__upload
+            // [Start] 2023-04-25 : UPDATE - attachments case
+            if attachments
+                .my-formFile__preview
+                    each file in fileName
+                        .my-formFile__preview-item
+                            p
+                                span= file
+                            button.my-formFile__preview__btn-delete(type="button")
+                                span.sr-only delete
+            // [End] 2023-04-25 : UPDATE - attachments case
+            .my-formFile__inner
+                input.file-input.file.sr-only(type="file" name="file-input" id= id multiple)
+                label.c-not-required(for=id)
+                    // [Start] 2023-04-25 : UPDATE - word (Browse -> Upload)
+                    span.my-formFile__btn.my-formFile__btn-upload Upload
+                    // [End] 2023-04-25 : UPDATE - word (Browse -> Upload)
+
+        .my-formFile__msg.font-m-normal-14i.font-w-normal-14 File must be less than 10MB. Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip
+
+mixin mySelect({optionVal=false, warning=false, label="", id="", infoText= false, placeholder="", warn=false, selected, disabled, required})
+    .c-search-box__form(class=`${warning ? "my-warn" : ""}`)
+        if disabled
+            +formSelect(label, id, required, placeholder, false)(disabled)
+                if optionVal
+                    - for(var i=0; i < optionVal.length; i++)
+                        if selected === i + 1
+                            option(value="" selected)= optionVal[i]
+                        else
+                            option(value="")= optionVal[i]
+        else 
+            +formSelect(label, id, required, placeholder, false)
+                if optionVal
+                    - for(var i=0; i < optionVal.length; i++)
+                        if selected === i + 1
+                            option(value="" selected)= optionVal[i]
+                        else
+                            option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText})
+
+mixin myOption({id="", desc="", optionName="", nameId, value,})
+    .c-sibling-option.c-sibling-option--no-gap
+        input.c-sibling-option__input.sr-only(type="radio" id=`${id}` name=`processor`, checked=checked, value=`${value}`)
+        .c-sibling-option__detail
+            .c-sibling-option__primary-detail
+                label(for=`${id}` aria-labelledby=`${nameId}`)
+                .c-sibling-option__definition
+                    .text.c-sibling-option__name(id=`${nameId}`)
+                        span.cmp-text.font-w-semibold-18.font-m-semibold-14(data-cmp-text-layer)= optionName
+                        
+                .c-sibling-option__desc
+                    .text
+                        span.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-text-layer)= desc
+            if block 
+                block
+
+mixin myOptionList(data)
+    .my-option-list
+        .c-sibling-option-box.c-sibling-option-box--layout-half.my-return__type__option
+            .c-sibling-option-box__contents
+                if data[0].type === "single"
+                    .c-sibling-option-box__options.c-sibling-option--single
+                        each set in data
+                            +myOption(set)
+                else
+                    .c-sibling-option-box__options
+                        each set in data
+                            +myOption(set)
+
+mixin myReturnDetailHeadbox(params)
+    - let data = { ...params }
+    .my-return-detail__headbox
+        .my-return-detail__txtbox
+            .my-return-detail__desc
+                each set in data.desc
+                    .my-return-detail__desc-item
+                        span.font-w-normal-16.font-m-normal-14.my-return-detail__title !{set.descTitle} 
+                        span.font-w-semibold-16.font-m-semibold-14.my-return-detail__num !{set.descText}                
+
+//-[only RO_CN] - disclaimer text add
+mixin myDisclaimerMsg(option=false)
+    if(option === "cn")
+        .my-component.my-summary-area.my-return-disclaimer
+            .my-return-disclaimer__txtbox
+                .text
+                    span.font-w-normal-16.font-m-normal-12 在本商城购买的商品，可依相关法律法规申请七天无理由退货。非商品质量问题而由买家发起的退货行为，反向运费由买家承担。
+
+
+mixin ML000E
+    .c-wrapper.ML000E
+        .component
+            .fluid-container
+                .my-component.my-page-title
+                    .c-text-contents.my-component__title-section
+                        .c-text-contents__headline
+                            +headline("font-w-light-56 font-m-light-28", 'h3', "Create New Exchange")
+                .my-component--maximum
+                    .my-return-detail__headbox--wrap
+                        +myReturnDetailHeadbox({
+                            desc : [
+                                {descTitle:'Order no.', descText:'113000007166'},
+                                {descTitle:'Customer name', descText:'Robert Surrency'},
+                            ],
+                        })
+                .my-component.my-summary-area
+                    .my-summary-area__secondary
+                        .font-w-normal-32.font-m-normal-20 Exchange Information
+                        .my-return-info__container
+                            .my-return-info
+                                +myInputForm([
+                                    {
+                                        type:"text",
+                                        label:"Exchange pickup address",
+                                        id:"streetAddress",
+                                        value:"25B, Farringdon Street, London, Unite…",
+                                        readonly: true,
+                                    },
+                                    {
+                                        type:"tel",
+                                        label:"Phone number",
+                                        id:"mobileNumber2",
+                                        value:"123-456-7890",
+                                    },
+                                    {
+                                        type:"email",
+                                        label:"Contact email address",
+                                        id:"email2",
+                                        value:"robertsurrency@gmail.com",
+                                    }
+                                ])
+
+                    .my-summary-area__secondary
+                        .font-w-normal-32.font-m-normal-20 Exchange Item Information
+                        .my-return-info__container
+                            .my-return-info
+                                +myReturnInfo("LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)", "", false, false, [
+                                    {
+                                        type: "select",
+                                        required: true,
+                                        optionVal: ["Choose your option", "Choose your option", "Choose your option"],
+                                        label: "Item status",
+                                        id: "itemCondition-pick-up",
+                                        placeholder: "Choose your option"
+                                    },
+                                    {
+                                        type: "select",
+                                        required: true,
+                                        optionVal: ["Choose your option", "Choose your option", "Choose your option"],
+                                        label: "Exchange Reason",
+                                        id: "reasonForReturn-pick-up",
+                                        placeholder: "Choose your option"
+                                    },
+                                    {
+                                        type: "select",
+                                        required: true,
+                                        optionVal: ["Choose your option", "Choose your option", "Choose your option"],
+                                        label: "Quantity To Exchange",
+                                        id: "quantityToReturn-pick-up",
+                                        placeholder: "Choose your option",
+                                        infoText: ["Remaining quantity : 0"]
+                                    },
+                                    {
+                                        type:"file",
+                                        label: "upload-add-on",
+                                        id: "upload-add-on",
+                                        fileName: ['Image.jpg'],
+                                        attachments: true
+                                    },
+                                ])
+                                .my-return-info__item
+                                    +formTextarea("text", "Reason to exchange details (Optional)", "Message", false, "Please explain your issue or question")(minLength="20", maxlength="1000 Character")
+
+                //- .my-component.my-summary-area.my-toastPopup
+                //-     +toastPopup([
+                //-         {   type:"error", 
+                //-             remove: true, 
+                //-             text: 'Sorry, your reqeust cannot be made. Please check later.',
+                //-         }
+                //-     ])
+                .my-component
+                    .button.c-cta
+                        +defaultButton({name: 'Cancel', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                        +defaultButton({name: 'Submit', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(disabled)
+
+block content
+    // Component Markup
+    +ML000E

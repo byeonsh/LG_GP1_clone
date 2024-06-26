@@ -1,0 +1,224 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_video.pug
+include ../_common/_hero-banner.pug
+include ../_common/_spec-info.pug
+include ../_common/_cs-form.pug
+
+block meta 
+    - var componentId = "CS0063"
+    - var componentName = "Right to Repair_Registration_Inquiry"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    mixin formCheckbox(label, linkLabel, name, val, id, count = "false", disabled = false, link=true)
+        .c-checkbox-item
+            label.checkbox(for=`${id}`)
+                if(disabled)
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="", disabled="disabled")&attributes(attributes)
+                else 
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="")&attributes(attributes)
+
+                if(label)
+                    span.label.font-m-normal-12.font-w-normal-20= label 
+                        a(href="daum.net").link.font-m-normal-12.font-w-normal-20= linkLabel
+                        -if(count >= 0 & count != "false") // for filter
+                            sup.count= count 
+                else 
+                    if block 
+                        span.label
+                            block   
+
+    // Component Markup
+    .guide-text-type Right to Repair_Registration_Inquiry
+    
+    // Component Markup
+    // 20230321 markup change                
+    .c-wrapper.CS0063.type-text
+        .component.type-form
+            .CS0063__container
+                .container.responsivegrid
+                    .c-model-content-wrap
+                        .c-cs-header
+                            // block : text-contents
+                            .c-text-contents
+                                .title.c-text-contents__headline 
+                                    +headline("font-w-light-56 font-m-light-28", h2, "About your enquiry")
+                        .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                    .c-container__inner     
+                        .cs-form
+                            .cs-form__wrap
+                                .cmp-form
+                                    +csForm_Input({id: 'Subject', label: 'Subject', type:"text", placeholder:"Type a subject", formDefalut: 'true', requireMsg: 'Subject is required.', invalidMsg: "This subject is invalid.", class: "textInput__nome" })
+                                .cmp-form
+                                    label(for="certificate").font-m-normal-16.font-w-normal-24 Business registration certificate of customer
+                                    .c-btn-upload
+                                        #preview
+                                            p   File Name.jpeg
+                                                button.file-remove(type="button" aria-label="") X
+                                            p   File Name.jpeg
+                                                button.file-remove(type="button" aria-label="") X
+                                            p   File Name.jpeg
+                                                button.file-remove(type="button" aria-label="") X
+                                        .c-btn-upload__inner 
+                                            div
+                                                label.c-not-required(for='file-input')
+                                                    .btn-upload.font-m-normal-14i.font-w-normal-14i(role="button" data-link-name) Upload
+                                                input#file-input.file(type='file' name='file-input' readonly="readonly" aria-label="" multiple)
+                                            .c-file-msg.font-m-normal-12.font-w-normal-16 File must be less than 10MB.<br>Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip
+                                    .c-warning.c-certificate-required Business registration certificate of customer is required.
+                                .cmp-form
+                                    label(for="insurance").font-m-normal-16.font-w-normal-24 Liability insurance #[em.require *]#[span.sr-only Required Field]
+                                    .c-btn-upload
+                                        #preview
+                                            p   File Name.jpeg
+                                                button.file-remove(type="button" aria-label="") X
+                                        .c-btn-upload__inner 
+                                            div
+                                                label.c-not-required(for='file-input')
+                                                    .btn-upload.font-m-normal-14i.font-w-normal-14i(role="button" data-link-name) Upload
+                                                input#file-input.file(type='file' name='file-input' readonly="readonly" aria-label="" multiple)
+                                            .c-file-msg.font-m-normal-12.font-w-normal-16 File must be less than 10MB.<br>Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip
+                                    .c-warning.c-insurance-required Liability insurance is required.
+                                .cmp-form
+                                    +csForm_Textarea({id: 'message', label: 'Message', placeholder:"Please explain your issue or question", require: 'true', requireMsg: 'Message is required.', maxLength: "1000" , class:"c-subject-rquired-valid"})
+                                .cmp-form
+                                .cmp-form
+                                    //- label(for="captcha").font-m-normal-16.font-w-normal-24 Please enter the text shown in the picture or heard the sound. #[em.require *]#[span.sr-only Required Field]
+                                    //- .cs-form__inner.cs-captcha
+                                    //-     .cs-captcha__area
+                                    //-         //Using reCAPTCHA v3
+                                    //-         // captcha 영역입니다. 
+                                    //-     .cs-captcha__input-box 
+                                    //-         .cs-captcha__input
+                                    //-             label(for="pictureText").font-m-normal-16.font-w-normal-24 pictureText #[em.require *]#[span.sr-only Required Field]
+                                    //-             input#pictureText.font-m-normal-16.font-w-normal-20.c-captcha-valid(type="text" required="required" aria-label="" placeholder="Type a picture text")
+                                    //-     .cs-captcha__button 
+                                    //-         button(type="button" aria-label="").cs-captcha__button--sound
+                                    //-         button(type="button" aria-label="").cs-captcha__button--reset
+                                    //- .c-warning.c-captcha-required Picture text is required.
+                                    //- .c-warning.c-captcha-incorrect Picture text is incorrect.
+                            
+                                
+                            .cs-form__chk  
+                                +formCheckbox('I have read and understand the ', 'privacy policy and cookie policy.*', "name", "val1", "privacyPolicyCheck", count="false", false)
+                                .c-warning.c-privacyPolicy-checked Policy agreement is not checked.
+
+                .button.c-cta
+                    +defaultButton({name: 'Submit', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-submit" aria-label="" role="button")
+
+
+    // Component Markup
+    .guide-text-type ES Type
+    
+    // Component Markup
+    // 20230321 markup change                
+    .c-wrapper.CS0063.type-text
+        .component.type-form
+            .CS0063__container
+                .container.responsivegrid
+                    .c-model-content-wrap
+                        .c-cs-header
+                            // block : text-contents
+                            .c-text-contents
+                                .title.c-text-contents__headline 
+                                    +headline("font-w-light-56 font-m-light-28", h2, "About your enquiry")
+                        .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                    .c-container__inner     
+                        .cs-form
+                            .cs-form__wrap
+                                .cmp-form
+                                    +csForm_Input({id: 'Subject', label: 'Subject', type:"text", placeholder:"Type a subject", formDefalut: 'true', requireMsg: 'Subject is required.', invalidMsg: "This subject is invalid.", class: "textInput__nome" })
+                                .cmp-form
+                                    label(for="certificate").font-m-normal-16.font-w-normal-24 Business registration certificate of customer 
+                                    .c-btn-upload
+                                        #preview
+                                            p File Name.jpeg
+                                                button.file-remove(type="button" aria-label="") X
+                                            p File Name.jpeg
+                                                button.file-remove(type="button" aria-label="") X
+                                            p File Name.jpeg
+                                                button.file-remove(type="button" aria-label="") X
+                                        .c-btn-upload__inner 
+                                            div
+                                                label.c-not-required(for='file-input')
+                                                    .btn-upload.font-m-normal-14i.font-w-normal-14i(role="button" data-link-name) Upload
+                                                input#file-input.file(type='file' name='file-input' readonly="readonly" aria-label="" multiple)
+                                            .c-file-msg.font-m-normal-12.font-w-normal-16 File must be less than 10MB.<br>Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip
+                                    .c-warning.c-insurance-required Liability insurance is required.
+                                
+                                .cmp-form
+                                    label(for="certificate").font-m-normal-16.font-w-normal-24 Liability insurance #[em.require *]#[span.sr-only Required Field]
+                                    .c-btn-upload
+                                        #preview
+                                            p   File Name.jpeg
+                                                button.file-remove(type="button" aria-label="") X
+                                            p   File Name.jpeg
+                                                button.file-remove(type="button" aria-label="") X
+                                            p   File Name.jpeg
+                                                button.file-remove(type="button" aria-label="") X
+                                        .c-btn-upload__inner 
+                                            div
+                                                label.c-not-required(for='file-input')
+                                                    .btn-upload.font-m-normal-14i.font-w-normal-14i(role="button" data-link-name) Upload
+                                                input#file-input.file(type='file' name='file-input' readonly="readonly" aria-label="" multiple)
+                                            .c-file-msg.font-m-normal-12.font-w-normal-16 File must be less than 10MB.<br>Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip
+                                    .c-warning.c-insurance-required Liability insurance is required.   
+                                .cmp-form
+                                    +csForm_Textarea({id: 'message', label: 'Message', placeholder:"Please explain your issue or question", require: 'true', requireMsg: 'Message is required.', maxLength: "1000" , class:"c-subject-rquired-valid"})
+
+                            
+                        p.font-m-light-24.font-w-light-36.c-prd-info-tit Basic information on the processing of personal data
+                        .c-prd-info
+                            .c-prd-info__inner 
+                                .c-prd-info__group
+                                    dl
+                                        dt.font-m-normal-16.font-w-normal-20 Responsible
+                                        dd.font-m-normal-16.font-w-normal-20 LG Electronics España SAU (hereinafter, "LGEES").
+                                            br 
+                                            | NIF: A-81304487
+                                            br
+                                            | Address: Calle Chile 1, 28290, Las Rozas, Madrid.
+                                            br
+                                            | Dpo : 
+                                            a(href="javascript:;") lgsupport@sbe-ltd.co.uk
+                                    dl
+                                        dt.font-m-normal-16.font-w-normal-20 Status
+                                        dd.font-m-normal-16.font-w-normal-20 1)Address your query by any of the channels provided by you.
+                                            br
+                                            | 2)If expressly authorized by checking the corresponding box, manage the remittance of commercial communications about LGEES products, services, promotions and events by any electronic, telematic and/or conventional means.
+                                    dl
+                                        dt.font-m-normal-16.font-w-normal-20 Legimation
+                                        dd.font-m-normal-16.font-w-normal-20 1)Consent
+                                            br
+                                            | 2)Consent
+                                    dl 
+                                        dt.font-m-normal-16.font-w-normal-20 Rights
+                                        dd.font-m-normal-16.font-w-normal-20 Access, rectification, deletion, limitation, opposition, portability and revocation of consent.
+                                    dl
+                                        dt.font-m-normal-16.font-w-normal-20 Additional information
+                                        dd.font-m-normal-16.font-w-normal-20 You can consult additional and detailed information about our privacy policy by clicking 
+                                            a(href="javascript:;") here
+                        // 20230601 using recaptcha v3
+                        .cs-form__chk  
+                            +formCheckbox('I have read and understand the ', 'privacy policy and cookie policy.*', "name", "val1", "privacyPolicyCheck02", count="false", false)
+                            .c-warning.c-privacyPolicy-checked Policy agreement is not checked.
+                        .cs-form__chk  
+                            +formCheckbox('I wish to receive commercial communications from LG in accordance with the ', 'privacy policy', "name", "val1", "privacyPolicyCheck03", count="false", false)
+                            
+                .button.c-cta
+                    +defaultButton({name: 'Submit', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-submit" aria-label="" role="button")

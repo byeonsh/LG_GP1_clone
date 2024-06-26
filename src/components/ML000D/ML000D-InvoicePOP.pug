@@ -1,0 +1,116 @@
+extends ../_common/_layout.pug
+include ../_common/_pop-msg.pug
+include ../_common/_forms.pug
+include ../_common/_button.pug
+include ../_common/_cart-price-total.pug
+
+
+block meta 
+    - var componentId = "ML000D"
+    - var componentName = "Order Details"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+mixin myOrderDetail(params)
+    - let data = { ...params }
+    .my-orderDetail
+        ul
+            each set in data
+                li
+                    .c-text-contents__title
+                        span.font-w-normal-16.font-m-normal-12= set.title
+                    .c-text-contents__bodycopy
+                        span.font-w-normal-24.font-m-normal-16 !{set.bodycopy}
+
+mixin myOrderItemInfo(params)
+    - let data = {...params}
+    .order-item-warp
+        .order-item
+            .order-item__image
+                .image.c-image
+                    +printLazyImage("https://via.placeholder.com/100x100/999999/333333")
+            .order-item__info-text
+                .order-item__code 
+                    .c-text-contents
+                        .c-text-contents__bodycopy
+                            span.font-w-normal-16.font-m-normal-12 !{data.code} 
+                .order-item__name 
+                    .c-text-contents
+                        .c-text-contents__bodycopy
+                            span.font-w-normal-20.font-m-normal-16 !{data.name}
+
+block content
+    .button.c-cta
+        .guide-text-option Invoice Popup
+        +defaultButton({name:"JP", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})(href="#popInvioce_test_JP", class="js-pop-open")
+
+block modal
+    // Pop-up to invoice - JP
+    +pop-msg-standard({id : `popInvioce_test_JP`, headline:"Invoice #113000001522", classes : 'ML000D__modal-container ML000D__modal-container--invoice', size: "large"})
+        .c-pop-msg__contents
+            .ML000D__modal-container--invoice__container
+                .ML000D__modal-container--invoice__box
+                    // Top Area : Title, LGEJP information - [JP] only
+                    .invoice__topBox
+                        p.invoice__topBox--title 注文明細書兼領収書
+                        .invoice__topBox--info
+                            .info-address
+                                strong(class="font-w-normal-16 font-m-normal-14 tit") LG Electronics Japan 株式会社
+                                p(class="font-w-normal-16 font-m-normal-14") 東京都中央区京橋2-1-3 京橋トラストタワー15F
+                            .info-reg-number
+                                strong(class="font-w-normal-14 font-m-normal-12 tit") 登録番号
+                                p(class="font-w-normal-16 font-m-normal-14") T8010401005580
+                    +myOrderItemInfo({code:"OLED55C24LA", name:"LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)"})
+                        +headline("font-w-semibold-46 font-m-semibold-26", h3, "Invoice")
+                        +headline("font-w-semibold-46 font-m-semibold-26", h3, "#113000001522")
+                    +myOrderDetail([
+                        {title:"SKU", bodycopy:"65NAN0906NA"},
+                        {title:"Price", bodycopy:"£2,199.99"},
+                        {title:"Qty Invoiced", bodycopy:"1"},
+                        {title:"Subtotal (Tax included)", bodycopy:"£2,199.99"}
+                    ])
+                    +myOrderItemInfo({code:"OLED55C24LA", name:"LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)"})
+                        +headline("font-w-semibold-46 font-m-semibold-26", h3, "Invoice")
+                        +headline("font-w-semibold-46 font-m-semibold-26", h3, "#113000001522")
+                    +myOrderDetail([
+                        {title:"SKU", bodycopy:"65NAN0906NA"},
+                        {title:"Price", bodycopy:"£2,199.99"},
+                        {title:"Qty Invoiced", bodycopy:"1"},
+                        {title:"Subtotal (Tax included)", bodycopy:"£2,199.99"}
+                    ])
+                    // Bottom Area : Name, Registered date - [JP] only
+                    .invoice__bottomBox
+                        .invoice__bottomBox--info
+                            .info-name
+                                strong(class="font-w-normal-16 font-m-normal-12 tit") 氏名
+                                p(class="font-w-normal-24 font-m-normal-16") Last name First name
+                            .info-date
+                                strong(class="font-w-normal-16 font-m-normal-12 tit") 購入日
+                                p(class="font-w-normal-24 font-m-normal-16") 20XX年X月X日
+                +cartPriceTotal([
+                    {
+                        isStickyBottom: false,
+                        isMobileBottomFixed: false,
+                        useToggleFoldBtn: false,
+                        taxInclude:true,
+                        discount: true,
+                        delivery: true,
+                        service: true,
+                    },
+                ])
+        .button.c-pop-msg__button-wrap
+            // [Start] 2023-04-25 : UPDATE - Print Invoice, 2023-11-13 : Update - download invoice
+            +defaultButton({name: 'Print Invoice', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})(class="print js-print" href="#" data-css-url="../../main.css,../../dev.css,./ML000D.css" role="print")
+            // Download Invoice - [FR] only
+            +defaultButton({name: 'Download Invoice', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})
+            // Download Invoice - [FR] only
+            // [End] 2023-04-25 : UPDATE - Print Invoice, 2023-11-13 : Update - download invoice

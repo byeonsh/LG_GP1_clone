@@ -1,0 +1,187 @@
+extends ../_common/_layout.pug
+include ../_common/_image.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_carousel.pug
+include ../_common/_product-list.pug
+include ../_common/_pagination.pug
+include ../_common/_pop-msg.pug
+
+block meta 
+    - var componentId = "PD0018"
+    - var componentName = "Flagship Product List"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                          '.c-text-contents__bodycopy' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            }
+                        ],
+                    };
+    mixin printTab(div, num, selected)
+        if selected
+            li.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0", data-cmp-hook-tabs="tab", aria-selected="true")
+                if block
+                    block
+        else 
+            li.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1", data-cmp-hook-tabs="tab", aria-selected="false")
+                if block
+                    block
+    mixin printTabPanel(div, num, selected)
+        if selected 
+            .cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+        else 
+            .cmp-tabs__tabpanel(id=`tabs-1-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-1-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+    
+    mixin product_name(sku, name)
+        .c-product-item__model-display-name.c-text-contents
+            .text.c-text-contents__eyebrow.sku
+                .cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="") 
+                    p
+                        span= sku
+            // GA4
+            a.text.c-text-contents__subcopy(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                .cmp-text.font-w-normal-24.font-m-normal-20(data-cmp-data-layer="") 
+                    p= name
+    mixin title_contents
+        .c-text-contents
+            .text.c-text-contents__eyebrow.font-w-normal-16.font-m-normal-14
+                .cmp-text(data-cmp-data-layer="") 
+                    p Encounter LG SIGNATURE
+            .title.c-text-contents__headline
+                +headline("font-w-light-56 font-m-light-28", pass, "Definitive Products")
+            .text.c-text-contents__bodycopy.font-w-normal-20.font-m-normal-12
+                .cmp-text(data-cmp-data-layer="") 
+                    p Uncompromising performance, breathtaking beauty
+                    
+    mixin menu_carousel(num)
+        if (num > 6)
+            .carousel.panelcontainer.c-menu-carousel
+                // block : carousel
+                .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                    .cmp-carousel__content.swiper-wrapper
+                        - for (var i = 0 ; i < num; i++)
+                            .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                                button(class="list-btn")= `Menu Name ${i}`
+                .c-menu-carousel__handler
+                    button.cmp-carousel__actions.c-menu-carousel__action.c-menu-carousel__action--prev.js-carousel-prev
+                        span.cmp-carousel__action-text.sr-only Prev Slide
+                    button.cmp-carousel__actions.c-menu-carousel__action.c-menu-carousel__action--next.js-carousel-next
+                        span.cmp-carousel__action-text.sr-only Next Slide
+        else
+            .c-menu-list
+                - for (var i = 0 ; i < num; i++)
+                        .c-menu-list__item
+                            button(class="list-btn")= `Menu Name ${i}`
+    mixin product_item
+        .cmp-carousel__item.swiper-slide.c-carousel__item.c-product-list__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+            .c-text-contents
+                .title.c-text-contents__headline
+                    +headline("font-w-light-36 font-m-light-24", "h3", "OLED TV W8")
+            // GA4
+            .c-product-item(data-pim-category1="" data-pim-category2="" data-pim-category3="" data-pim-category4="" data-pim-sku="" data-pim-model-name="" data-pim-model-year="" data-pim-flag="" data-pim-modeltype="" data-shop-stock-status="" data-shop-msrp="" data-shop-price="")
+                .c-product-item__top-container
+                    .c-product-item__visual-image
+                        // GA4
+                        a.image.c-image(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                            +printLazyImage("https://via.placeholder.com/450x450/999999/000000")
+                .c-product-item__bottom-container
+                    +product_name("GSJV70PZTF", "5.2 cu. ft. Large Smart wi-fi Enabled Front Load Washer")
+                    // RO only UK,AT,PL energy-saving
+                    .c-product-item__energy-saving(style="max-width:222px;height:66px;background:#fafafa;line-height:66px;text-align:center;overflow:hidden") Energy Saving Banner Area
+                    //- +product_rating("A", 'MD07546559', specsheet=true, false)
+                    +product_rating("A", 'MD07546559', specsheet=true, false, false, false, true, false, gradeBlock2=true)
+                    // RO only FR
+                    .c-product-item__repair
+                        a.c-product-item__repair--click(href="#" target="_blank" role="button" rel="noopener noreferrer" data-link-name="")
+                            //- RO - dev request one image
+                            //- +printLazyPicture(`../../assets/image/icon-repair-index-fr-71-44.png`, '../../assets/image/icon-repair-index-fr-76-47.png')
+                            .cmp-image(data-cmp-data-layer="")
+                                img.cmp-image__image.c-image__img(src="../../assets/image/icon-repair-index-fr-76-47.png" alt="")
+                            span.cmp-text Repairability index
+                    +product_price({promotion:"VIP Price", soldOut: true, limited:true, membership:'£1,866.98', discount: "20% off", onlyPurchase: true, installment:false, ehf: false, cashDiscount:true, lowPrice30Days:true,priceFontStyle:"font-w-normal-32 font-m-light-28",subPriceFontStyle:"font-w-normal-16 font-m-normal-12", soldOutFontStyle:"font-w-normal-32 font-m-normal-20"}).
+                    +product_cta({soldOut: true, outOfStock: false, plInfoTxt: true})
+    mixin view_carousel
+        .c-view-carousel.c-view-carousel--carousel
+            .carousel.panelcontainer
+                // block - carousel
+                .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                    .cmp-carousel__content.swiper-wrapper
+                        - for(var j = 0; j <= 4; j++)
+                            +product_item
+                    .c-carousel__handler
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"prev"})
+                        +carouselPagination
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"next"})
+
+    mixin container(num)
+        .c-container
+            +menu_carousel(num)     
+            .tabs.panelcontainer
+                .cmp-tabs(data-cmp-data-layer="", data-placeholder-text="false")
+                    .cmp-tabs__inner
+                        ul.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                            - for (var i = 0; i < num; i++)
+                                +printTab(1, i, false)
+                                    div= `Menu Name ${i}`
+                        - for (var i = 0; i < num; i++)
+                            +printTabPanel(1, i, false)
+                                +view_carousel
+                                
+        
+    // Component Markup
+    .guide-wrap(style="padding-bottom:100px")
+        .guide-text-type Type1. Spec Sheet
+        .c-wrapper.PD0018.margin-top.margin-bottom.bg-default
+            .component  
+                .cmp-container
+                    +title_contents
+                    +container(10)

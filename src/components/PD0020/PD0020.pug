@@ -1,0 +1,140 @@
+extends ../_common/_layout.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_forms.pug
+include ../_common/_button.pug
+include ../_common/_product-list.pug
+include ../_common/_pagination.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "PD0020"
+    - var componentName = "Add-on Bundle"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+
+    // Component Markup
+
+    mixin product_item(id, name)
+        // GA4
+        .c-product-item(data-pim-category1="" data-pim-category2="" data-pim-category3="" data-pim-category4="" data-pim-sku="" data-pim-model-name="" data-pim-model-year="" data-pim-flag="" data-pim-modelType="" data-shop-stock-status="" data-shop-msrp="" data-shop-price="")
+            +formCheckbox(false, `pdpPackageItem${id}`, `${name}`, `pdpPackageItem${id}`, count="false", false)
+                strong.sr-only= `${name} Select`
+            .c-product-item__top-container
+                .c-product-item__visual-image
+                    // GA4
+                    a.image.c-image(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        +printLazyImage("https://via.placeholder.com/350x350/999999/000000")
+            .c-product-item__bottom-container
+                +product_name(`${name}`, "5.2 cu. ft. Large Smart wi-fi Enabled Front Load Washer", {headline:"font-w-normal-24 font-m-normal-20", sku:"font-w-normal-16 font-m-normal-12"})
+                +product_price({promotion: "Black Friday Promotion", installment:false, discount: "20% off", priceFontStyle:"font-w-normal-32 font-m-light-28",subPriceFontStyle:"font-w-normal-16 font-m-normal-12"})
+
+    mixin packageItem(id, name)
+        .c-product-directly.c-medium-size
+            .c-product-directly-item
+                +product_item(id, name)
+
+    //- mixin product_item(id, name)
+    //-     +productCard({
+    //-         flag: false, 
+    //-         compare: false,
+    //-         wishlist: false,
+    //-         modelid: 'MD07258328',
+    //-         sku: name,
+    //-         ufn: '5.2 cu. ft. Large Smart wi-fi Enabled Front Load Washer',
+    //-         grade: false,
+    //-         review: false,
+    //-         type:false,
+    //-         groups:false,
+    //-         youreko: false,
+    //-         signature: false,
+    //-         thinq: false,
+    //-         soldOut: false,
+    //-         outOfStock: false,
+    //-         discontinued: false,
+    //-         promotion: "Black Friday Promotion",
+    //-         limited: false,
+    //-         vip: false,
+    //-         installment: false,
+    //-         membership: false,
+    //-         hiddenCta: true,
+    //-         packageSelect: id,
+    //-     })
+
+    //- mixin packageItem(id, name)
+    //-     .c-product-directly
+    //-         .c-product-directly-item
+    //-             +product_item(id, name)
+
+    .c-wrapper.PD0020.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +component-title-area({
+                    alignment : "",
+                    headline : {
+                        text : "Buy Together and Save",
+                    },
+                })(class="c-region-header--vacate-side")
+                .carousel.panelcontainer
+                    // block : c-package-list
+                    .cmp-carousel.swiper.c-carousel.c-package-list(data-cmp-data-layer="")
+                        .cmp-carousel__content.swiper-wrapper
+                            .cmp-carousel__item.swiper-slide
+                                +packageItem(1, "GSJV70PZTF")
+                            .cmp-carousel__item.swiper-slide
+                                +packageItem(2, "GSJV70PZTF")
+                            .cmp-carousel__item.swiper-slide
+                                +packageItem(3, "GSJV70PZTF")
+                            .cmp-carousel__item.swiper-slide
+                                +packageItem(4, "GSJV70PZTF")
+                        //- handler
+                        .c-carousel__handler
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"prev"})
+                            +carouselPagination({isUnder:true})
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"next"})
+                
+                .c-product-total
+                    .c-product-total__left
+                        p.font-w-normal-16.font-m-normal-16.c-product-total__title 1 Selected Items
+                        p.font-w-normal-32.font-m-light-28.c-product-total__price $1,129.00
+                    .c-product-total__right
+                        +defaultButton({name: 'Add Selected To Cart', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="c-product-total__button")

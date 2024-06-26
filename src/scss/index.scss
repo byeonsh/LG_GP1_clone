@@ -1,0 +1,393 @@
+@charset 'UTF-8';
+// module
+@use 'base/normalize';
+@use 'base/font-face';
+@use 'abstract/' as *;
+@use 'modules/' as *;
+@use 'vendors/swiper' as *;
+// 2024.06.26 UI guide build
+body {
+  padding: 0;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: $font-regular;
+  line-height: 1.5;
+  color: $black;
+  text-align: left;
+  background-color: $warm-gray;
+  -webkit-font-smoothing: antialiased;
+}
+
+html,
+body {
+  scroll-behavior: smooth;
+}
+
+b {
+  font-weight: $font-bold;
+}
+
+// focus
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: rem(2px) solid currentcolor;
+  outline-offset: rem(1px);
+}
+
+button {
+  color: inherit;
+}
+
+input[type='text'],
+input[type='number'],
+input[type='tel'],
+input[type='password'],
+input[type='email'],
+select,
+textarea {
+  &:focus-visible {
+    outline-offset: 0;
+  }
+}
+
+@supports not selector(:focus-visible) {
+  // Fallback for browsers without :focus-visible support
+  :focus {
+    outline: rem(2px) solid currentcolor;
+    outline-offset: 0;
+  }
+}
+
+a {
+  text-decoration: none;
+  &:hover,
+  &:active,
+  &:focus {
+    text-decoration: underline;
+  }
+}
+
+li {
+  list-style-position: inside;
+}
+
+.c-text-contents a:not(.c-button) {
+  color: inherit;
+  &.font-red {
+    color: $active-red;
+  }
+}
+
+.font-bold {
+  &,
+  * {
+    font-weight: bold !important;
+  }
+}
+
+// ------------------
+// reusable classname
+// ------------------
+.hidden {
+  display: none !important;
+}
+
+.d-block {
+  display: block !important;
+}
+
+.mobile-only {
+  @include screen(web) {
+    display: none !important;
+  }
+}
+
+.desktop-only {
+  @include screen(mobile) {
+    display: none !important;
+  }
+}
+
+.disable-scroll {
+  overflow: hidden;
+}
+
+.sr-only {
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  color: $white;
+  background-color: rgb(0 0 0);
+}
+
+.c-wrapper {
+  position: relative;
+  overflow: hidden;
+  // border-top: rem($border1) solid $mid-gray1;
+  &.no-crop {
+    overflow: initial;
+  }
+  // (Exceptions: template titles, product summary, etc.)
+  &.margin-top {
+    padding-top: rem($component-margin-m);
+    @include screen(web) {
+      padding-top: rem($component-margin-w);
+    }
+    &.border-top {
+      border-top: rem($border1) solid $mid-gray1;
+    }
+  }
+  .border-top {
+    border-top: rem($border1) solid $mid-gray1;
+  }
+  &.margin-bottom {
+    padding-bottom: rem($component-margin-m);
+    @include screen(web) {
+      padding-bottom: rem($component-margin-w);
+    }
+  }
+}
+
+.component {
+  position: relative;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  // max-width: rem($maximum);
+}
+
+.js-print {
+  @media print {
+    display: none !important;
+  }
+}
+
+// Simple product loader indicator
+.loader {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: $white;
+  opacity: 0.7;
+  z-index: 2;
+}
+
+.customScroll {
+  scrollbar-width: auto;
+  &::-webkit-scrollbar {
+    width: rem(4px);
+    height: rem(4px);
+  }
+  &::-webkit-scrollbar-track {
+    background-color: $light-gray1;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: $mid-gray1;
+  }
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: $mid-gray2;
+  }
+  &::-webkit-scrollbar-track,
+  &::-webkit-scrollbar-thumb {
+    border-radius: rem(2px);
+  }
+  @include screen(mobile) {
+    .device-mo & {
+      scrollbar-width: thin;
+    }
+  }
+}
+
+// inside-component
+// .inside-component {
+//     width: 100%;
+//     height: 100%;
+//     position: absolute;
+//     top: 0;
+//     bottom: 0;
+//     left: 0;
+//     right: 0;
+//     .c-wrapper {
+//         height: 100%;
+//         max-width: none;
+//         margin-left: 0;
+//         margin-right: 0;
+//         .component {
+//             width: auto;
+//             margin-left: 0;
+//             margin-right: 0;
+//         }
+//     }
+// }
+// --- selector는 모두 mixin 안으로 넣어 주세요.
+// --- 각 컴포넌트 scss에서 include 해서 중복코드 만들면 안됩니다.
+// [vendors/swiper]
+@include swiper;
+// [modules/align] component align
+@include align((left, right, center));
+// [modules/align] text align
+@include align((left, right, center), text);
+// [modules/button]
+@include button;
+// [modules/link]
+@include link;
+// [modules/text-contents]
+@include text-contents;
+// [modules/cta]
+@include cta;
+// [modules/image]
+@include image;
+// [modules/icon]
+@include icon;
+// [modules/media]
+@include media;
+// [modules/font]
+@include font-family; // - font family
+@include font-variation; // - font color, weight, style option
+@include font-set; // - font size & line-height
+// [modules/position]
+@include district-variation;
+@include sticky;
+// [modules/floating-contents] use background contents : image, video...
+@include floating-contents;
+// [modules/carousel]
+@include carousel;
+@include carousel-controls;
+// [modules/scrollbar]
+@include scrollbar;
+// [modules/theme]
+@include theme;
+@include lgness;
+// [modules/countdown]
+@include countdown;
+// [modules/pagination]
+@include pagination;
+// [modules/hero-banner]
+@include hero-banner;
+@include hero-banner-type-variation;
+// [modules/spec-info]
+@include spec-info;
+// [modules/table]
+@include table;
+// [modules/tooltip]
+@include tooltip;
+// [modules/pop-msg]
+@include pop-msg; // update - 2023.12.4
+@include pop-msg-form;
+@include pop-msg-case; // update - 2024.5.8
+// [modules/product-list]
+@include product-common;
+// @include product-list;
+@include product-card;
+@include feature-list;
+@include product-siblings;
+@include product-directly;
+// [modules/promotion]
+@include promotion-card;
+@include promotion-notice;
+@include promotion-detail;
+// [modules/accordion]
+@include accordion;
+// [modules/border]
+@include item-border;
+// [modules/tabs]
+@include tabs;
+// [modules/forms]
+@include forms;
+@include post-forms;
+@include form-waring-msg;
+@include form-valid-msg;
+@include required-marking;
+@include captcha;
+// [modules/filter]
+@include filter;
+// [modules/no-data]
+@include no-data;
+// [modules/roll-selector]
+@include roll-selector;
+// [modules/resource]
+@include resources;
+// [modules/brand-detail]
+@include brand-detail;
+// [modules/category-filter]
+@include category-filter;
+// [modules/category-select-list]
+@include category-select-list;
+// [modules/search-box]
+@include search-box; // c-text-only, c-no-title, body (--double, --multi)
+// [modules/map-search]
+@include map-search-box;
+@include map-default;
+@include map-pin; // is-active, is-black
+@include map-tooltip;
+@include map-search-contents; // is-search, is-hide, is-direction
+@include map-direction-search;
+@include map-direction-result;
+@include map-pin-text;
+@include map-place-tooltip;
+// [modules/search-combobox]
+@include search-combobox;
+// [modules/eprivacy]
+@include eprivacy;
+// [modules/error-page]
+@include error-page;
+// [modules/find-a-dealer]
+@include find-a-dealer;
+// [modules/common-static]
+@include common-static;
+// [modules/attached-file]
+@include attached-file;
+// [modules/summary-gallery]
+@include summary-gallery;
+// [modules/specs]
+@include specs;
+@include lgness-specs;
+// [modules/title-area]
+@include title-area;
+// [modules/toast]
+@include toast;
+// [modules/cart,checkout order total]
+@include cart-price-total;
+@include order-summary;
+// [modules/inquiry]
+@include inquiryList;
+// [modules/link-banner]
+@include link-banner;
+// [modules/mylg common]
+@include my-component;
+// [modules/rolling-banner]
+@include rolling-banner;
+// [modules/message-box]
+@include message-box;
+// color chips
+@include color-chips;
+// [modules/support product category select]
+@include cs-product-category-select;
+// [modules/support select model]
+@include cs-select-model;
+// [modules/loading]
+@include loading;
+// [modules/cs form]
+@include cs-form;
+// [modules/pay-icons]
+@include pay-icons;
+// [modules/summary-information]
+@include find-a-store;
+// [modules/find-a-store]
+.PD0003,
+.CT0100 {
+  @include summary-information;
+}

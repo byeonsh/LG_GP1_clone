@@ -1,0 +1,217 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_forms.pug
+include ../_common/_brand-detail.pug
+include ../_common/_product-list.pug
+include ../_common/_pagination.pug
+
+block meta 
+    - var componentId = "PD0016"
+    - var componentName = "Where To Buy"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+    <meta name="ps-account" content="1698">
+    <meta name="ps-config" content="59d4fb4e369c750034b61c08">
+    <meta name="ps-country" content="CA">
+    <meta name="ps-language" content="en">
+
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+
+    include ./PD0016-inc.pug
+    
+    - var headlineStyle = "font-w-light-56 font-m-light-28"
+    - var noDataTitleStyle = "font-w-normal-24 font-m-normal-20"
+    - var noDataDescStyle = "font-w-normal-16 font-m-normal-16"
+
+    .guide-text-type LG.com
+    .guide-text-option Default
+    +PD0016('DEFAULT')
+
+    .guide-text-option Offline (when data exists)
+    +PD0016('OFFLINEDATA')
+    
+    //- No results 
+    .guide-text-option No results
+    +PD0016('OFFLINENODATA')
+    
+    //- Get Directions
+    .guide-text-option Get Directions
+    +PD0016('GETDIRECTION')
+
+    //- Get Directions_Suggested Routes
+    .guide-text-option Get Directions_Suggested Routes
+    +PD0016('GETDIRECTION/SUGGESTED')
+
+
+    .guide-text-type Online - 3rd party
+    .guide-text-option Channel Advisor (Ajax / Jsonp) : 
+        a(href="https://www.lg.com/uk/tvs/lg-oled77c26ld#pdp_where" target="_blank" style="color: white; text-decoration: underline;") UK 
+        | , AU, SG, TH, VN, ES, PT
+
+    mixin online-shop
+        .c-online-shop
+            .c-text-contents
+                .c-text-contents__headline
+                    +headline(headlineStyle, "h2", "Find Online")
+            .c-online-shop-list
+                - for (var x = 0; x < 10; x++)
+                    +onlineListItem('#', true, true)
+            .button.align-text-center.c-online-shop-bottom
+                +textButton({
+                    name: 'More', 
+                    wSize: 'medium', 
+                    mSize: 'small', 
+                    buttonStyle: 'down', 
+                    isButton: true
+                })
+    //- 2023-05-19 PDP Stock List 
+    mixin online-shop2
+        .c-online-shop
+            .c-text-contents
+                .c-text-contents__headline
+                    +headline(headlineStyle, "h2", "Find Online")
+            .c-online-shop-list
+                - for (var x = 0; x < 10; x++)
+                    +onlineListItem2('#', true, true, true, 'Currently Unavailable', false)
+            .button.align-text-center.c-online-shop-bottom
+                +textButton({
+                    name: 'More', 
+                    wSize: 'medium', 
+                    mSize: 'small', 
+                    buttonStyle: 'down', 
+                    isButton: true
+                })
+    .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+        .component
+            .cmp-container
+                // UK (Ajax / Jsonp)
+                // https://plrss-data.where-to-buy.co/feeds/plrss/v1/MD07562298?type=jsonp&authorizationToken=Z58QH8nvuxDQlHRDCC7M4XE+jWA21a0F2r4Pg2srfawK7ss8vy90wRAHr1IJ6qQuwrSx8fbLol+PL3lRyLFPi1MeE5gJMmZB7JV/jrQ7egA=&tag=brandsite
+                //- block : shop
+                +online-shop
+                
+    //- .guide-text-option Hatch (ajax / jsonp) :
+    //-     a(href="https://www.lg.com/ua/washing-machines/lg-f2v5hs9b#pdp_where" target="_blank" style="color: white; text-decoration: underline;") UA
+    //- .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+    //-     .component
+    //-         .cmp-container
+    //-             //- block : shop
+    //-             +online-shop
+                
+    //- .guide-text-option Intellibrand  (Ajax / Json) : 
+    //-     a(href="https://www.lg.com/br/tvs/lg-oled48c2psa#pdp_where" target="_blank" style="color: white; text-decoration: underline;") BR
+    //- .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+    //-     .component
+    //-         .cmp-container
+    //-             // BR (Ajax / Json)
+    //-             // https://www.lg.com/br/mkt/ajax/findonline/retrieveWtbList?modelName=OLED48C2PSA&amp;modelId=MD07557551&amp;componentId=GPC0102
+    //-             //- block : shop
+    //-             +online-shop
+
+    .guide-text-option Intellibrand(재고여부 체크 가능) : 
+        a(href="https://www.lg.com/br/tvs/lg-oled48c2psa#pdp_where" target="_blank" style="color: white; text-decoration: underline;") BR
+    .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+        .component
+            .cmp-container
+                // BR (Ajax / Json)
+                // https://www.lg.com/br/mkt/ajax/findonline/retrieveWtbList?modelName=OLED48C2PSA&amp;modelId=MD07557551&amp;componentId=GPC0102
+                //- block : shop
+                +online-shop2
+                    
+    .guide-text-option Solotodo (iframe) : CL
+    .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+        .component
+            .cmp-container
+                .c-box-3rd-party
+                    iframe.js-iframe-load(data-src="https://www.lg-donde-comprar.cl/lg_wtb/widget/?modelName=27ART10AKPL" width="100%" height="640" frameborder="0" title="Find Online")
+                
+    .guide-text-option Commerce Connector (js) : DE
+    .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+        .component
+            .cmp-container
+                .c-box-3rd-party
+                    <script type="text/javascript" src="https://fi-v2.global.commerce-connector.com/cc.js" data-token="92f54963fc39a9d87c2253186808ea61" id="cci-widget" data-locale="de-DE" data-displaylanguage="de" data-widgetid="qXxA3xEob3_b91771a0-9474-11ea-b016-77418ff4a60143" data-ean="8806091612151" data-subid="he_general_shop_selection" data-trackingid="OLED83G29LA" data-eventgtm="true">
+                    </script>
+                    
+    //- .guide-text-option Etailing (iframe) : PE
+    //- .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+    //-     .component
+    //-         .cmp-container
+    //-             .c-box-3rd-party
+    //-                 iframe.js-iframe-load(data-src="https://assets.etailing-la.com/lg/pe/getData.php?etailingcode=MD07537242&etailingname=OLED83C1PSA&etailingnamesuffix=OLED83C1PSA.AWF&etailingcat=TVS" width="100%" height="600" frameborder="0" title="Find Online")
+                    
+    //- .guide-text-option Etailing (iframe) : 
+    //-     a(href="https://www.lg.com/ar/lavarropas/lg-WD15EGS6#pdp_where" target="_blank" style="color: white; text-decoration: underline;") AR
+    //- .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+    //-     .component
+    //-         .cmp-container
+    //-             .c-box-3rd-party
+    //-                 iframe.js-iframe-load(data-src="https://assets.etailing-la.com/lg/ar/getData.php?etailingcode=MD06026836&etailingname=WD15EGS6&etailingnamesuffix=WD15EGS6.ASSPEAR&etailingcat=Todos%20los%20Lavarropas" width="100%" height="600" frameborder="0" title="Find Online")
+
+    .guide-text-type Online & Offline - 3rd party
+    .guide-text-option Price Spider (js) : 
+        a(href="https://www.lg.com/ca_en/refrigerators/lg-LFCC22426S" target="_blank" style="color: white; text-decoration: underline;") CA_EN
+        | , CA_FR
+    .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+        .component
+            .cmp-container
+                .c-box-3rd-party
+                    // In order for pricespider js to work, the following meta must be added to the header.
+                    // <meta name="ps-account" content="1698">
+                    // <meta name="ps-config" content="59d4fb4e369c750034b61c08">
+                    // <meta name="ps-country" content="CA">
+                    // <meta name="ps-language" content="en">
+                    .ps-widget(ps-sku="LFCC22426S")
+                    .js-eprivacy-load-inline(data-url="//cdn.pricespider.com/1/lib/ps-widget.js")
+                    
+    .guide-text-option Commerce Connector (js) : FR
+    .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+        .component
+            .cmp-container
+                .c-box-3rd-party
+                    <div class="js-commerce-connector" data-src="https://fi.global.commerce-connector.com/js/cc_fi-min.js" data-token="187cf9fb2663a3fbaa59137fe0b0e39a7f4c2931" data-trigger="load" data-country="FR" data-language="fr" data-displaylanguage="fr" data-ean="8806091372901" data-listtype="container" data-online-shopname="true" data-online-productavl="true" data-header="false" data-local-search-placeholder="" data-deliverydisplayrule="P>=0&amp;LDisponible&amp;C#7c7c7c" data-footer-background-color="transparent" data-footer-color="#6b6b6b" data-variant-selectiontype="none" data-channel-online-text="Me faire livrer" data-channel-local-text="Retirer en magasin" data-channel="local,online" data-geodetection="cta" data-containerborder="false" data-local-shopname="true" data-local-productavl="true" data-local-deeplink="false" data-filteropen="true" data-filterstatus="true" data-highlightcolor="#A50034" data-style=".ccLb-storeList>li{min-height:0;}#ccLb-footer-link{text-decoration: underline !important;}#ccLb-footer *{font-size:14px;line-height:20px;color:#6b6b6b;}#ccLb a{color:#6b6b6b;}#ccLb-inner{box-shadow:none;}#ccLb-nav{padding-left:0;}#ccLb-nav{border-bottom:1px solid #e4e4e4;padding:0;}#ccLb-nav li{color:#6b6b6b!important;padding:12px 20px;font-size:16px;line-height:18px;margin:0;text-transform:uppercase;font-weight:bold;}#ccLb-nav li.ccLb-active{color:#000!important;border-bottom:3px solid #a50034!important;}#ccLb-nav li:hover{border-bottom:0;}.ccLb-icons > .ccLb-buyNow > .ccLb-buyNow-content a{background: 0 0!important;color: #6b6b6b!important;border-color: #6b6b6b!important;display: inline-block !important;border-radius: 3px;border: 1px solid transparent;font-style: normal;font-size: 14px;line-height: 24px;text-align: center;vertical-align: middle;white-space: normal;padding:4px 20px 5px;}.ccLb-icons > .ccLb-buyNow > .ccLb-buyNow-content svg {display:none !important;}@media screen and (max-width: 830px) {#ccLb-filters-top{padding:0;}#ccLb .ccLb-icons>div{font-size:14px !important;line-height:20px;}.ccLb-storeList>li{padding:18px 0;}#ccLb .ccLb-icons>.ccLb-buyNow{width:auto;float:right;}#ccLb .ccLb-icons .ccLb-icon-separator{display:none;}#ccLb .ccLb-icons>.ccLb-stock{width:auto;float:none;}#ccLb-online .ccLb-store img{width:100px;}#ccLb-online .ccLb-store{width:100px;height:54px;}#ccLb-online .ccLb-store>div{margin:0;}#ccLb .ccLb-icons .ccLb-stock-content svg{margin:0;padding:0;display:inline;vertical-align:middle;margin-right:5px;}#ccLb .ccLb-icons span{display:inline;}.ccLb-icons > .ccLb-buyNow > .ccLb-buyNow-content a{padding:4px 10px 5px;}#ccLb-online .ccLb-icons {width:calc(100% - 100px)}#ccLb-nav li{padding:12px 2px;height:45px;font-size:14px;}#ccLb .ccLb-icons .ccLb-buyNow-content{padding-top:5px;}#ccLb-footer{padding-left:0;}}@media screen and (max-width: 400px) {}">
+                    </div>
+                    
+    .guide-text-option etale (iframe) : IT
+    .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+        .component
+            .cmp-container
+                .c-box-3rd-party
+                    iframe.js-iframe-load(data-src="https://where-to-buy.co/widgets/core/BuyOnlineBuyLocal/index.html?pid=12027156&amp;model=55LX1Q6LA.API" width="100%" height="1090" frameborder="0" title="Dove Acquistare")

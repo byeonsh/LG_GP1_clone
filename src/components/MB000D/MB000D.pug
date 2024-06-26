@@ -1,0 +1,1106 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_toast.pug
+include ../_common/_pop-msg.pug
+include ../../components/CT000E/CT502-inc.pug
+include ../../components/MB000D/MB000D-inc.pug
+
+block meta 
+    - var componentId = "MB000D"
+    - var componentName = "Member Create Account"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href="../../components/CT000E/CT502.css")
+    link(rel="stylesheet" href=componentId+".css")
+    style(type="text/css").
+        .guide {
+            z-index:5;
+        }
+
+block scripts
+    script(src=componentId+".js" type="module")
+    //- recaptcha
+    script(src="https://www.google.com/recaptcha/api.js?render=explicit&onload=onRecaptchaLoadCallback" async)
+    
+    script(type='text/javascript').
+        onRecaptchaLoadCallback = function(){
+            var clientId = grecaptcha.render('security-box', {
+                'sitekey': '6Le3NdgaAAAAAK8TXN0_DHQfP-FtiHoGCdiK1QQT',
+                'badge': 'inline',
+                'size': 'invisible',
+            });
+            grecaptcha.ready(function() {
+                grecaptcha.execute(clientId, {action: 'homepage'})
+                .then(function(token) {
+                    // token
+                    document.getElementById('g-recaptcha').value = token;
+                });
+            });
+        }
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond, type})
+    if warningFirst
+       div(role='list')
+            - for(var i=0; i < warningFirst.length; i++)
+                div(role='listitem')
+                    +invalid-warning(warningFirst[i], `validate-w-${type}-${i}`)
+    if correct
+        div(role='list')
+            - for(var i=0; i < correct.length; i++)
+                div(role='listitem')
+                    +valid-msg(correct[i], `validate-c-${type}-${i}`)
+    if infoText
+        div.my-input__info 
+            p.font-w-normal-16.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i], `validate-w-${type}-${i}`)
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        div.my-input__info 
+            p.font-w-normal-14.font-m-normal-14 !{infoTextSecond}
+
+
+mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected, required= false, validate= id})
+    .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+        +formSelect(label, id, placeholder, required)(aria-describedby=`validate-${validate}-connection-error`)
+            if optionVal
+                - for(var i=0; i < optionVal.length; i++)
+                    if selected === i + 1
+                        option(value="" selected)= optionVal[i]
+                    else
+                        option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText, type: id})
+
+mixin myCaptcha({label, id, placeholder, warning= false, required= false})
+    .c-input-item
+        .my-captcha
+            .my-captcha__container
+                label.font-w-normal-16.font-m-normal-14(for=`${id}`)= label
+                    if required
+                        em.c-required *
+                            span.sr-only Required fields
+                #security-box.my-captcha__area
+
+mixin myVerify(params)
+    - let data = {...params}
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                if data.required
+                    em.c-required *
+                        span.sr-only Required fields
+            if data.validation
+                .input-button__container.input-button__container--validation
+                    .my-button-validation
+                        .my-verify__inner
+                            input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}` value= data.value, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+                            .my-verify__box
+                                span.my-verify__time.font-m-normal-16.font-w-normal-16(id="verify-time" role="timer" aria-live="polite" aria-atomic="false")= data.time
+                                +iconButton({name:'Extand Verification Time', color:'black', type:'icon', class:'extand', otherClass:''})(aria-describedby="verify-time")
+                        +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst, type: data.type})
+                    .button.c-cta
+                        +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', isButton:true})
+
+            else
+                .input-button__container
+                    .my-verify__inner
+                        input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}` value= data.value, aria-describedby=`validate-${data.type}`)&attributes(attributes)
+                        .my-verify__box
+                            span.my-verify__time.font-m-normal-16.font-w-normal-16(id="verify-time" role="timer" aria-live="polite" aria-atomic="false")= data.time
+                            +iconButton({name:'Extand Verification Time', color:'black', type:'icon', class:'extand', otherClass:''})(aria-describedby="verify-time")
+                    .button.c-cta
+                        +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', isButton:true})(aria-describedby=`validate-${data.type}-connection-error`)
+
+            if !data.validation
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst, type: data.type})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, type: data.type})
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst ? 'my-warn' : ''}`
+    if data.type === 'verify'
+        +myVerify(params)
+    //- 2023-05-24 Date of Birth
+    else if data.type === 'birth'
+        +myBirth(params)
+    else if data.type === 'birth1'
+        +myBirth1(params)
+    else if data.type === 'birth2'
+        +myBirth2(params)
+    //- 2023-05-24
+    else if data.type === 'select'
+        +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required})
+    else if data.type === 'captcha'
+        +myCaptcha({label: data.label, id: data.id, placeholder: data.placeholder, warning: data.warning, required: data.required})
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}${data.hasCountryTelLabel ? "c-input-item--tel" : ""}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                    if data.required
+                        em.c-required *
+                            span.sr-only Required fields
+            if data.required && !data.button && data.type !== "password"
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+                //- [Start] 2023-05-24
+                if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                //- [End] 2023-05-24
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+            else if data.type === 'textarea'
+                if data.limit
+                    .my-textarea__container
+                        textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class='my-textarea--limit')&attributes(attributes)
+                        .my-count
+                            span.font-w-normal-14.font-m-normal-12 0 / !{data.limit} byte
+                else 
+                    textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder)&attributes(attributes)
+            else if data.button
+                if data.validation
+                    .input-button__container.input-button__container--validation
+                        .my-button-validation
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+                            +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst, type: data.type})
+                        each item in data.button
+                            .button.c-cta.button-full
+                                +defaultButton({name:item, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                else
+                    .input-button__container
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+                        // [Start] 2023-05-03 : ADD - email form case
+                        each item in data.button
+                            .button.c-cta.button-full
+                                +defaultButton({name:item, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                        // [End] 2023-05-03 : ADD - email form case
+            else if data.hasCountryTelLabel === true
+                .c-input-item
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+                    .my-form-number.font-w-normal-16.font-m-normal-16=data.countryTelLabel
+            else 
+                if data.active
+                    input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value, required, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                    else if data.search 
+                        button(type='button' class='my-form__search__icon')
+                            span.sr-only search
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config} ${data.search ? 'my-form__search' : ''}`, required, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                    else if data.search 
+                        button(type='button' class='my-form__search__icon')
+                            span.sr-only search
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst, type: data.type})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, type: data.type})
+                
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li(class=`${set.type == "birth" || set.type == "birth1" || set.type == "birth2" ? "my-input__input-type-birth" : ""}`)
+                    +myFormText(set)
+mixin formCheckbox(label, name, val, id, count = "false", disabled = false, required)
+    .c-checkbox-item&attributes(attributes)
+        label.checkbox(for=`${id}`)
+            if(disabled)
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, disabled="disabled")&attributes(attributes)
+            else 
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`)&attributes(attributes)
+            if(label)
+                span.label= label
+                    -if(count >= 0 & count != "false") // for filter
+                        sup.count= count 
+                    if required
+                        em.c-required *
+                            span.sr-only Required fields
+            else 
+                if block 
+                    span.label
+                        block
+mixin MB000D
+    .c-wrapper.MB000D.margin-bottom
+        .component
+            .fluid-container
+                .my-component
+                    .c-text-contents
+                        .title.c-text-contents__headline
+                            // [Start] 2023-04-26 : Update Text
+                            +headline('font-w-light-56 font-m-light-28', "h2", "Join us")
+                            // [End] 2023-04-26 : Update Text
+                // [Start] 2023-05-17 : Add CT502
+                .my-component__wrap.CT502
+                    +CT502("sign up")
+                // [End] 2023-05-17 : Add CT502
+                .my-component
+                    // [Start] 2023-05-03 : REMOVE- email form case
+                        .my-formbox
+                            +myInputForm([
+                                {
+                                    type:"email",
+                                    label:"Email",
+                                    id:"emailButton",
+                                    required: false,
+                                    placeholder:"Your email",
+                                    infoText: 'Your email address is the account identifier and cannot be changed once registered.<br class="br--pc">Please note it is case sensitive.',
+                                },
+                            ])
+                        .button.c-cta.my-button
+                            +defaultButton({name:"Resend Email", wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                            +defaultButton({name:"Go to Inbox", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+                    // [End] 2023-05-03 : REMOVE- email form case
+                    // [Start] 2023-05-03 : ADDED - Required fields
+                    p.my-form-required.font-w-normal-16.font-m-normal-12
+                        em.c-required * 
+                            span.sr-only Required fields
+                        | Required fields 
+                    // [End] 2023-05-03 : ADDED - Required fields
+                    .my-formbox
+                        // [Start] 2023-06-02 : Fixed - Text
+                        // [Start] 2023-05-17 : UPDATE - password validation text
+                        +myInputForm([
+                            {
+                                type:"email",
+                                label:"Email",
+                                id:"email",
+                                required:true,
+                                placeholder:"Your email",
+                                infoText: 'Your email address is the account identifier and cannot be changed once registered.<br class="br--pc">Please note it is case sensitive.',
+                                button: ['Resend email', 'Go to inbox'],
+                            },
+                            {
+                                type:"email",
+                                label:"Email",
+                                id:"email",
+                                required:true,
+                                placeholder:"Your email",
+                                infoText: 'Your email address is the account identifier and cannot be changed once registered.<br class="br--pc">Please note it is case sensitive.',
+                                button: ['Resend email'],
+                            },
+                            {
+                                type: "email",
+                                label: "Email",
+                                id: "email",
+                                required: true,
+                                placeholder: "Your email",
+                                infoText: 'Your email address is the account identifier and cannot be changed once registered.<br class="br--pc">Please note it is case sensitive.',
+                                button: ['Send'],
+                            },
+                            {
+                                type:"email",
+                                label:"Email",
+                                id:"emailWarn",
+                                required:true,
+                                placeholder:"Your email",
+                                warningFirst: ['Email already exists. Please try again.', 'The account is being used abroad. Please enter a different account.', 'Email account address invalid.', 'Email account is required.'],
+                                infoText: 'Your email address is the account identifier and cannot be changed once registered.<br class="br--pc">Please note it is case sensitive.',
+                                button: ['Send'],
+                            },
+                            {
+                                type:"email",
+                                label:"Email",
+                                id:"emailWarn",
+                                required:true,
+                                placeholder:"Your Email",
+                                infoText: 'Please note: Your account can only be created with lowercase letters (e.g. "a" instead of "A").',
+                                button: ['Duplicate check'],
+                            },
+                            {
+                                type:"verify",
+                                label: 'Verification code',
+                                id:"verify",
+                                required:true,
+                                placeholder: 'Verification code',
+                                time: '10:00',
+                                infoText: "We have sent an activation code to Your email address. If you cannot find this email in your inbox, don't forget to check your junk folder.",
+                                button: ['Verify'],
+                            },
+                            {
+                                type:"verify",
+                                label: 'Verification code',
+                                id:"verifyCorrect",
+                                required:true,
+                                placeholder: 'Verification code',
+                                time: '10:00',
+                                correct: ['Your email address has been confirmed.'],
+                                infoText: "We have sent an activation code to Your email address. If you cannot find this email in your inbox, don't forget to check your junk folder.",
+                                button: ['Verify'],
+                            },
+                            {
+                                type:"text",
+                                label:"First name",
+                                id:"firstName",
+                                required:true,
+                                placeholder:"First name",
+                            },
+                            {
+                                type:"text",
+                                label:"Last name",
+                                id:"lastName",
+                                required:true,
+                                placeholder:"Last name",
+                            },
+                            {   
+                                type: 'select',
+                                optionVal: ['Select', 'Select', 'Select'],
+                                label: 'Country',
+                                id: 'country',
+                                required:true,
+                                infoText: 'You cannot change your country after sign up.',
+                            },
+                            {
+                                type:"text",
+                                label:"Mobile number",
+                                id:"mobilNumber",
+                                required:true,
+                                placeholder:"Mobile number",
+                                infoText: "Please input your phone number without spaces.",
+                            },
+                            {
+                                type:"password",
+                                label:"Password",
+                                id:"password",
+                                required:true,
+                                placeholder:"Your password",
+                            },
+                            {
+                                type:"password",
+                                label:"Password",
+                                id:"passwordWarn",
+                                required:true,
+                                placeholder:"Your password",
+                                warningFirst: ['Can not identical to the user ID.', 'Password violates the password generation rule.', 'The password must be at least 8 characters.', 'The total length of password digit should be less than or equal to 100 digits.', 'You cannot use same character more than 3 times.', 'Password contains invalid special character.'],
+                                correct: ['8-100 characters only.', 'At least 3 types of character need to be included : upper and lower case letter, number, and special character.', "It can't be identical to the user ID."],
+                            },
+                            {
+                                type:"password",
+                                label:"Confirm password",
+                                id:"confirmPassword",
+                                required:true,
+                                placeholder:"Confirm password",
+                            },
+                            {
+                                type:"password",
+                                label:"Confirm password",
+                                id:"confirmPasswordWarn",
+                                required:true,
+                                placeholder:"Confirm password",
+                                warningFirst: ['Password and confirm password do not match.'],
+                            },
+                            {
+                                type:"text",
+                                label:"Nick name",
+                                id:"nickName",
+                                required:false,
+                                placeholder:"Nick name",
+                            },
+                            {
+                                type:"text",
+                                label:"First name",
+                                id:"firstName",
+                                required:true,
+                                placeholder:"First name",
+                            },
+                            {
+                                type:"text",
+                                label:"Last name",
+                                id:"lastName",
+                                required:true,
+                                placeholder:"Last name",
+                            },                            
+                            {
+                                type:"text",
+                                label:"Reference",
+                                id:"reference",
+                                required:false,
+                                placeholder:"Reference(optional)",
+                            },
+                            {   
+                                type: 'select',
+                                optionVal: ['Select', 'Select', 'Select'],
+                                label: 'Country',
+                                id: 'country',
+                                required:true,
+                                infoText: 'You cannot change your country after sign up.',
+                            },
+                            {
+                                type:"text",
+                                label:"Mobile number",
+                                id:"mobilNumber",
+                                required:true,
+                                placeholder:"Mobile number",
+                                infoText: "Please input phone number without space.",
+                            },                            
+                            {
+                                type:"text",
+                                label:"Telephone number",
+                                id:"telephoneNumber",
+                                required:false,
+                                placeholder:"Telephone number",
+                                infoText: "Please input phone number without space.",
+                            },
+                            {
+                                type:"birth",
+                                label:"Date of Birth",
+                                id:"month",
+                                id1:"day",
+                                id2:"year",                                                                  
+                                optionVal: ['Month', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                                required:false,
+                                placeholder:"Month",
+                                placeholder1:"Day",
+                                placeholder2:"Year",
+                                validation:true,
+                                warning:['Month is incorrect.'],
+                                warning1:['Day is incorrect.'],
+                                warning2:['Year is incorrect.'],
+                            },
+                            {
+                                type:"birth1",
+                                label:"Date of Birth",
+                                id:"month",
+                                id1:"day",
+                                id2:"year",                                                                  
+                                optionVal: ['Month', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                                required:false,
+                                placeholder:"Month",
+                                placeholder1:"Day",
+                                placeholder2:"Year",
+                                warning3:['We use your date of birth to verify your identity if you forget your email address. We also use it to make sure you can use services with age restrictions.'],
+                            },
+                            {
+                                type:"birth2",
+                                label:"Date of Birth",
+                                id:"month",
+                                id1:"day",
+                                id2:"year",                                                                
+                                optionVal: ['Month', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                                required:false,
+                                placeholder:"Month",
+                                placeholder1:"Day",
+                                placeholder2:"Year",
+                                infoText: "We use your date of birth to verify your identity if you forget your email address. We also use it to make sure you can use services with age restrictions.",
+                            },
+                            {
+                                type:"text",
+                                label:"Address",
+                                id:"address",
+                                required:true,
+                                placeholder:"Address",
+                            },  
+                            {
+                                type:"text",
+                                label:"City",
+                                id:"city",
+                                required:true,
+                                placeholder:"City",
+                            },                             
+                            {
+                                type:"text",
+                                label:"State",
+                                id:"state",
+                                required:true,
+                                placeholder:"State",
+                            },                             
+                            {
+                                type:"text",
+                                label:"Postcode",
+                                id:"postcode",
+                                required:true,
+                                placeholder:"Postcode",
+                                infoText:"Please input post code (eg, 2123)",
+                            },                             
+                        ])
+                        //- 2023-05-26 BASIC INFORMATION ON THE PROCESSING OF PERSONAL DATA
+                        //- 2023-12-28 INFORMACIÓN BÁSICA SOBRE TRATAMIENTO DE DATOS PERSONALES
+                        .c-info__type
+                            .c-info__wrapper
+                                .c-cs-header
+                                    .c-text-contents
+                                        .c-text-contents__headline2
+                                            +headline('font-w-normal-20 font-m-normal-16',"h3",'INFORMACIÓN BÁSICA SOBRE TRATAMIENTO DE DATOS PERSONALES')
+                                .c-cs-header
+                                    .c-text-contents
+                                        .c-text-contents__headline
+                                            +headline('font-w-normal-20 font-m-normal-16',"h3",'Responsable')
+                                ul.c-info_list.ty2.font-m-normal-14.font-w-normal-16 
+                                    li 
+                                        b.font-semibold LG Electronics España S.A.U. 
+                                        | (en adelante, « LGEES »).
+                                        br
+                                        | Address : Calle Chile 1, 28290, Las Rozas, Madrid.
+                                        br
+                                        br
+                                        b.font-semibold LG Electronics Inc. 
+                                        | (en adelante « LGE »)
+                                        br
+                                        | LG Twin tower, 128 Yeoui—daero, Yeongdeungpo-gu, Seoul, Republic of Korea
+                                        br
+                                        br
+                                        | DPO contact details : 
+                                        a.font-underline(href="mailTo:dpo-eu@lge.com") dpo-eu@lge.com
+                                .c-cs-header
+                                    .c-text-contents
+                                        .c-text-contents__headline
+                                            +headline('font-w-normal-20 font-m-normal-16',"h3",'Finalidades')
+                                style
+                                    | .MB000D .my-formbox .c-info_list {padding: 0 0 0 1.8rem;}
+                                    | .MB000D .my-formbox .c-info_list li {padding-left: 0; list-style: outside;}
+                                ul.c-info_list.font-m-normal-14.font-w-normal-16
+                                    li Proporcionarle nuestros servicios, así como las características específicas por las que opte al utilizar nuestros servicios, lo que puede requerir la personalización del contenido de nuestros Servicios.
+                                    li Llevar a cabo la autenticación o verificación de su identidad para que pueda utilizar algunos de nuestros servicios.
+                                    li En caso aplicable, Gestionar los pedidos de productos y/o servicios realizados a través de los Servicios, incluyendo el pago y la entrega de nuestros productos y/o productos de terceros que compre a través de nuestros servicios, así como gestionar sus derechos relativos a la garantía sobre los productos y/o servicios contratados por usted u otros derechos que ostenta en virtud de la relación contractual con usted.
+                                    li Facilitar instalaciones y registros, solución a problemas técnicos, prestación de servicios de atención al cliente y envío de información necesaria o transaccional relacionada con los servicios contratados por usted.
+                                    li Llevar a cabo actividades de marketing directo (cuando no se requiera legalmente la obtención de consentimiento expreso), incluyendo el envío de comunicaciones de marketing por correo electrónico, llamadas telefónicas, correos, mensajes de texto, canales de redes sociales o notificaciones push a través de nuestras aplicaciones móviles, presentándole anuncios en línea tanto en nuestros servicios como en sitios web de terceros, creando perfiles de marketing y personalizando las recomendaciones y el contenido de marketing que nosotros y otros le presentamos, y ejecutando promociones, concursos y sorteos de premios. Tenga en cuenta que tiene derecho a oponerse en cualquier momento al tratamiento de sus datos para esta finalidad – véase la sección “Sus elecciones” a continuación.
+                                    li Mejorar nuestros servicios y atención al cliente, incluso buscando sus opiniones y realizando encuestas e investigaciones de mercado, realizando análisis de datos sobre el uso de nuestros servicios, analizando los comportamientos de los clientes, creando patrones y perfiles de uso de los clientes para identificar tendencias de usuarios regionales y globales, y optimizar nuestra oferta a los clientes a nivel global;
+                                    li Gestionar de manera eficaz la relación con nuestros clientes, incluyendo las comunicaciones que puedan surgir con usted, así como la gestión de sus consultas.
+                                    li Proteger nuestras operaciones comerciales, así como identificar y prevenir el fraude u otras actividades ilegales o prohibidas conforme a nuestras Condiciones de uso
+                                    li Proteger la seguridad, disponibilidad e integridad de nuestros servicios y sistemas de información, incluso mediante el uso de mecanismos de autenticación y otras medidas de seguridad, la monitorización de nuestros sistemas en busca de amenazas de seguridad, el mantenimiento de las copias de seguridad, la anonimización de datos y la realización de servicios de mantenimiento del sistema.
+                                    li Accionar nuestros derechos legales, así como proteger la seguridad de los usuarios finales, incluyendo mediante la gestión de reclamaciones, la obtención de asesoramiento jurídico y la interposición, ejercicio o defensa de demandas legales relacionadas con nosotros u otras empresas de nuestro grupo y nuestros Servicios;
+                                    li Mejorar su experiencia de usuario, incluso brindándole funcionalidades hechas a medida, como una función de autocompletar, una función de búsqueda rápida basada en sus páginas web más visitadas y contenido adicional adaptado a sus intereses;
+                                    li Gestionar de manera efectiva nuestro negocio, incluso mediante la generación de informes y el análisis del rendimiento de nuestros servicios (mediante el uso de información agregada), la auditoría de nuestros procesos comerciales y el uso de estadísticas para tomar decisiones comerciales informadas.
+                                    li Remitirle comunicaciones de mercadotecnia (cuando así lo exija la ley o cuando preferimos utilizar el consentimiento como base legitimadora). En caso de haberlo autorizado expresamente, gestionar el envío de comunicaciones comerciales sobre productos, servicios, promociones, eventos y/o noticias de LGEES, a través de los medios electrónicos, telemáticos o convencionales facilitados por usted, así como a través de las redes sociales (por ejemplo, Facebook o Instagram) con las que usted cuente.
+                                    li Cuando se requiera legamente el consentimiento expreso, facilitarle o permitir facilitarle recomendaciones y anuncios personalizados de contenido, productos y servicios que nosotros u otros entendemos que se pueden ajustar a sus intereses, mediante el análisis de información relacionada con su uso de los Servicios combinado con diversa información que usted proporcionada por otros medios, para los fines estipulados en esta Política de privacidad. Esto puede implicar la remisión de comunicaciones comerciales a través de distintos canales, incluyendo el correo electrónico, a través de la cuenta de LG, en nuestros sitios web o en plataformas de terceros (incluidas las redes sociales).
+                                    li En caso de que el Usuario nos otorgue su consentimiento expresamente marcando la casilla correspondiente, elaborar un perfil basado en la información obtenida por fuentes propias, esto es, de sus acciones como usuario registrado en cualquiera de los sitios web titularidad de LGEES, así como del resto de acciones que usted realice ante LGEES y aquella obtenida por fuentes de terceros, esto es, de acciones que usted realice ante terceras entidades (ya sean entidades pertenecientes el Grupo LG Electronics, o terceras entidades independientes con las que podamos tener algún tipo de colaboración). Dicha elaboración de perfiles se realiza con el objeto de llevar estadísticas que nos ayude a mejorar nuestros productos y servicios que más interés puedan despertar, así como, en caso de que el interesado haya autorizado expresamente la recepción de comunicaciones comerciales, personalizar las mismas según dicho perfil.
+                                    li Cumplir con nuestros requerimientos y/u obligaciones legales en virtud de la normativa que pueda resultar de aplicación (por ejemplo, obligaciones fiscales y contables, obligaciones relacionadas con la seguridad del producto, garantías y protección del consumidor).
+                                    li Cumplir con las órdenes y citaciones judiciales, así como responder a los requerimientos legalmente vinculantes del Gobierno, los Cuerpos y Fuerzas de Seguridad del Estado, las Autoridades Públicas y/o las Autoridades Reguladoras o Competentes.
+                                    li Otras finalidades que requieran su consentimiento expreso.
+                                .c-cs-header
+                                    .c-text-contents
+                                        .c-text-contents__headline
+                                            +headline('font-w-normal-20 font-m-normal-16',"h3",'Derechos')
+                                ul.c-info_list.ty2.font-m-normal-14.font-w-normal-16
+                                    li Acceso, recitificación, oposición, supresión, portabilidad y revocación del consentimiento.
+                                .c-cs-header
+                                    .c-text-contents
+                                        .c-text-contents__headline
+                                            +headline('font-w-normal-20 font-m-normal-16',"h3",'Información adicional')
+                                ul.c-info_list.ty2.font-m-normal-14.font-w-normal-16 
+                                    li Para obtener información más detallada, por favor diríjase a la 
+                                        a.font-underline(href="https://www.lg.com/es/privacy" target="_blank") Política de Privacidad.
+
+                        +myInputForm([
+                            {
+                                type:"captcha",
+                                label:"Security text",
+                                id:"captcha",
+                                required:true,
+                                placeholder:"Type the characters",
+                                warningFirst: ['Picture text is incorrect'],
+                            }
+                        ])
+                        // [End] 2023-05-17 : UPDATE - password validation text
+                        // [End] 2023-06-02 : Fixed - Text
+                        .my-check
+                            // [Start] 2023-06-02 : Fixed - Text
+                            .button
+                                +formCheckbox('I am 18 years old or older.', "name", "val1", `checkId1`, count="false", disabled = false, required = true)
+                            // [End] 2023-06-02 : Fixed - Text
+                            .button.custom-item
+                                +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                    span I agree with the terms of use.
+                                        em.c-required *
+                                                span.sr-only Required fields
+                                        // [Start] 2023-05-03 : UPDATE- email form case
+                                        +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more', href:"/uk/lge-terms/",})(target='_blank')
+                                        // [End] 2023-05-03 : UPDATE- email form case
+                            .button.custom-item
+                                +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                    span I agree with the terms of use.
+                                        //- em.c-required *
+                                        //-         span.sr-only Required fields
+                                        // [Start] 2023-05-03 : UPDATE- email form case
+                                        +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more', href:"/uk/lge-terms/",})(target='_blank')
+                                        // [End] 2023-05-03 : UPDATE- email form case
+                            .button.custom-item
+                                +formCheckbox('', "name", "val1", `checkId3`, count="false")
+                                    span I have read and understand the privacy policy and cookie policy.
+                                        em.c-required *
+                                                span.sr-only Required fields
+                                        // [Start] 2023-05-03 : UPDATE- email form case
+                                        +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more', href:"/uk/privacy/",})(target='_blank')
+                                        // [End] 2023-05-03 : UPDATE- email form case
+                            .button.custom-item
+                                +formCheckbox('', "name", "val1", `checkId3`, count="false")
+                                    span I have read and understand the privacy policy and cookie policy.
+                                        //- em.c-required *
+                                        //-         span.sr-only Required fields
+                                        // [Start] 2023-05-03 : UPDATE- email form case
+                                        +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more', href:"/uk/privacy/",})(target='_blank')
+                                        // [End] 2023-05-03 : UPDATE- email form case
+                            .button
+                                +formCheckbox('Receipt of marketing messages (optional)', "name", "val1", `checkId4`, count="false")
+                            div.my-check--receipt-text I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE 
+                                // [Start] 2023-05-03 : UPDATE- email form case
+                                +linkButton({type: 'text', color: 'black', underline: true, name: 'Privacy policy.', href:"/uk/privacy?tabType=empMktPolicy/",})(target='_blank')
+                                // [End] 2023-05-03 : UPDATE- email form case
+                        // [End] 2023-05-17 : UPDATE - password validation text                        
+                    //- 2023-05-24 *LG Electronics Inc.
+                    .c-text-cont
+                        .text.c-text-cont__disclaimer 
+                            .cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+                                | *LG Electronics Inc. – LG Twin tower, 128 Yeoui—daero, Yeongdeungpo-gu, Seoul, Republic of Korea
+                                br
+                                | **LG Electronics Canada, Inc. – 20 Norelco Drive, North York, Ontario M9L 2X6, Canada. 
+                                // GA4
+                                a.font-underline(href="#" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") www.lg.com/ca_en   
+                    .button.c-cta.my-button
+                        +defaultButton({name:"Cancel", wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                        +defaultButton({name:"Join us", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="toastBtn")
+                    // [Start] 2023-07-03 : UPDATE-added normal type
+                    .guide-text-option Create Account : New Sign up (B2C, B2B)
+                    .my-formbox
+                        +myInputForm([
+                            {
+                                type:"email",
+                                label:"Email",
+                                id:"email",
+                                required:true,
+                                placeholder:"Your email",
+                                warningFirst: ['The account is being used abroad. Please enter a different account.', 'Invalid email account', 'Email already exists. Please try again.', 'The account is being used abroad. Please enter a different account.', 'Email account address invalid.', 'Email account is required.'],
+                                infoText: 'Please note: Your account can only be created with lowercase letters (e.g. "a" instead of "A").',
+                                button: ['Duplicate check'],
+                            },
+                            {
+                                type:"email",
+                                label:"",
+                                id:"email",
+                                required:true,
+                                placeholder:"User@email.com",
+                                warningFirst: ['Email already exists. Please log in or try again.'],
+                                infoText: 'Please note: Your account can only be created with lowercase letters (e.g. "a" instead of "A").',
+                                button: ['Duplicate check', 'Proceed to sign-in'],
+                            },
+                            {
+                                type: "email",
+                                label: "",
+                                id: "email",
+                                required: true,
+                                placeholder: "User2@email.com",
+                                warningFirst: ['Email already exists. Please log in or try again.'],
+                                infoText: 'Your email address has been confirmed. <br/> Please note: Your account can only be created with lowercase letters (e.g. "a" instead of "A").',
+                                button: ['Duplicate check'],
+                            },
+                            {
+                                type: "email",
+                                label: "",
+                                id: "email",
+                                required: true,
+                                placeholder: "User2@email.com",
+                                warningFirst: ['Email already exists. Please log in or try again.'],
+                                infoText: 'Please note: Your account can only be created with lowercase letters (e.g. "a" instead of "A").',
+                                button: ['Proceed to Login'],
+                            },
+                            {
+                                type: "email",
+                                label: "",
+                                id: "email",
+                                required: true,
+                                placeholder: "User2@email.com",
+                                infoText: 'Your email address has been confirmed. <br/>Your email address is the account identifier and cannot be changed once registered. Please note it is case sensitive.',
+                            },                            
+                            {
+                                type:"email",
+                                label:"email",
+                                id:"email",
+                                required:true,
+                                placeholder:"Your email",
+                                button: ['Send']
+                            },   
+                            {
+                                type:"email",
+                                label:"",
+                                id:"email",
+                                required:true,
+                                placeholder:"Your email",
+                                warningFirst: ['Click Resend email button after 1 minute.'],
+                                infoText: 'Verification code is sent to your email address. if you cannot find this email in your inbox, dont forget to check you junk folder.',
+                                button: ['Resend email', 'Go to inbox']
+                            },            
+                            {
+                                type:"verify",
+                                label: 'Verification code',
+                                id:"verify",
+                                required:true,
+                                placeholder: 'Verification code',
+                                time: '10:00',
+                                warningFirst: ["Verification code is Invaild."],
+                                correct: ['Your email address has been confirmed.'],
+                                button: ['confirm']
+                            },                                                                                                
+                            {
+                                type:"password",
+                                label:"Password",
+                                id:"passwordWarn",
+                                required:true,
+                                placeholder:"Your password",
+                                warningFirst: ['Can not identical to the user ID.', 'Password violates the password generation rule.', 'The password must be at least 8 characters.', 'The total length of password digit should be less than or equal to 100 digits.', 'You cannot use same character more than 3 times.', 'Password contains invalid special character.', '8-100 characters only.', 'At least 3 types of character need to be included : upper and lower case letter, number, and special character', "It can't be identical to the user ID or the old password."],
+                                correct: ['8-100 characters only.', 'At least 3 types of character need to be included : upper and lower case letter, number, and special character.', "number, and special character.","It can't be identical to the user ID."],
+                            },
+                            {
+                                type:"password",
+                                label:"Confirm password",
+                                id:"confirmPasswordWarn",
+                                required:true,
+                                placeholder:"Confirm password",
+                                warningFirst: ['Password and confirm password do not match.'],
+                            },
+                            {
+                                type:"text",
+                                label:"First name",
+                                id:"firstName",
+                                required:false,
+                                placeholder:"First name",
+                                warningFirst: ['Please only use letters and spaces in this field.'],
+                            },                         
+                            {
+                                type:"text",
+                                label:"Last name",
+                                id:"lastName",
+                                required:false,
+                                placeholder:"Last name",
+                                warningFirst: ['Please only use letters and spaces in this field.'],
+                            },                       
+                            {
+                                type:"text",
+                                label:"Nick name",
+                                id:"nickName",
+                                required:false,
+                                placeholder:"Nick name",
+                                warningFirst: ['Please only use letters and spaces in this field.'],
+                            },             
+                            {
+                                type:"text",
+                                label:"Mobile number",
+                                id:"mobilNumber",
+                                required:false,
+                                placeholder:"Mobile number",
+                                infoText: "Please input phone number without space.",
+                                warningFirst: ['Not a valid phone number.', 'Enter up to 10 numbers only without space​.'],
+                            },                 
+                            {
+                                type:"text",
+                                label:"Phone number",
+                                id:"phoneNumber",
+                                required:false,
+                                placeholder:"Phone number",
+                                infoText: "Please input phone number without space.",
+                                warningFirst: ['Not a valid phone number.'],
+                            },
+                            {
+                                type:"birth",
+                                label:"Date of Birth",
+                                id:"month",
+                                id1:"day",
+                                id2:"year",                                                                  
+                                optionVal: ['Month', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                                required:false,
+                                placeholder:"Month",
+                                placeholder1:"Day",
+                                placeholder2:"Year",
+                                validation:true,
+                            },
+                            {
+                                type:"birth1",
+                                label:"",
+                                id:"month",
+                                id1:"day",
+                                id2:"year",                                                                  
+                                optionVal: ['Month', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                                required:false,
+                                placeholder:"Month",
+                                placeholder1:"Day",
+                                placeholder2:"Year",
+                            },
+                            {
+                                type:"birth2",
+                                label:"",
+                                id:"month",
+                                id1:"day",
+                                id2:"year",                                                                
+                                optionVal: ['Month', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                                required:false,
+                                placeholder:"Month",
+                                placeholder1:"Day",
+                                placeholder2:"Year",
+                                warning3: ['You must be 14 years or older to create an account', 'You must be 16 years or older to create an account', 'You must be 18 years or older to create an account', 'You must be 20 years or older to create an account', 'You must be 18 years or older to create an account'],
+                                infoTextSecond: "We use your date of birth to verify your identity if you forget your email address. <br/> We also use it to make sure you can use services with age restrictions.",
+                            },
+                            {   
+                                type: 'select',
+                                optionVal: ['Select', 'Select', 'Select'],
+                                label: 'Country',
+                                id: 'country',
+                                required:false,
+                                placeholder:'Select country',
+                                infoText: 'You cannot change your country after sign up.',
+                            },                  
+                            {   
+                                type: 'select',
+                                optionVal: ['Select', 'Select', 'Select'],
+                                label: 'Residence',
+                                id: 'residence',
+                                required:false,
+                                placeholder:'Select',
+                            },                  
+                            {
+                                type:"text",
+                                label:"Promotional code",
+                                id:"promotionalCode",
+                                required:false,
+                                placeholder:"Promotional code",
+                            },
+                            {
+                                type:"text",
+                                label:"Reference",
+                                id:"reference",
+                                required:false,
+                                placeholder:"Reference",
+                            },
+                            {
+                                type:"text",
+                                label:"Recommended dealer",
+                                id:"recommendedDealer",
+                                required:false,
+                                placeholder:"Recommended dealer",
+                            },
+                            {
+                                type:"text",
+                                label:"Recommended channel store",
+                                id:"recommendedDealerStore",
+                                required:false,
+                                placeholder:"Recommended channel store",
+                            },
+                            {
+                                type:"text",
+                                label:"Recommended employee number",
+                                id:"recommendedDealerNumber",
+                                required:false,
+                                placeholder:"Recommended employee number",
+                            },
+                            {
+                                type:"text",
+                                label:"Company name",
+                                id:"companyName",
+                                required:true,
+                                placeholder:"Recommended Dealer",
+                            },
+                            {
+                                type:"text",
+                                label:"Tax code",
+                                id:"taxCode",
+                                required:true,
+                                placeholder:"Promotional code",
+                            },
+                            {   
+                                type: 'select',
+                                optionVal: ['Select', 'Select', 'Select'],
+                                label: 'Business areas',
+                                id: 'businessAreas',
+                                required:true,
+                                placeholder:'Select',
+                            }, 
+                            {   
+                                type: 'select',
+                                optionVal: ['Select', 'Select', 'Select'],
+                                label: 'Province',
+                                id: 'province',
+                                required:true,
+                                placeholder:'Select',
+                            }, 
+                            {   
+                                type: 'select',
+                                optionVal: ['Select', 'Select', 'Select'],
+                                label: 'Business sector (Level 1)',
+                                id: 'businessSectorLv1',
+                                required:true,
+                                placeholder:'Select',
+                            }, 
+                            {   
+                                type: 'select',
+                                optionVal: ['Select', 'Select', 'Select'],
+                                label: 'Business sector (Level 2)',
+                                id: 'businessSectorLv2',
+                                required:true,
+                                placeholder:'Select',
+                            }, 
+                            {   
+                                type: 'select',
+                                optionVal: ['Select', 'Select', 'Select'],
+                                label: 'Customer type',
+                                id: 'customerType',
+                                required:true,
+                                placeholder:'Select',
+                            }, 
+                            {   
+                                type: 'select',
+                                optionVal: ['Select', 'Select', 'Select'],
+                                label: 'Sub-client type',
+                                id: 'subClientType',
+                                required:true,
+                                placeholder:'Select',
+                            }, 
+                            {   
+                                type: 'select',
+                                optionVal: ['Select', 'Select', 'Select'],
+                                label: 'Turn of the company',
+                                id: 'company2',
+                                required:true,
+                                placeholder:'Select',
+                            }, 
+                            {
+                                type:"text",
+                                label:"Work position",
+                                id:"workPosition",
+                                required:true,
+                                placeholder:"Work position",
+                            },
+                            {
+                                type:"text",
+                                label:"GSTIN",
+                                id:"GSTIN",
+                                required:true,
+                                placeholder:"GSTIN",
+                                infoText:["GST ID consists of 15 digits"],
+                            },
+                            {   
+                                type: 'select',
+                                optionVal: ['Select', 'Select', 'Select'],
+                                label: 'Business Area',
+                                id: 'businessArea',
+                                required:true,
+                                placeholder:'Select',
+                            }, 
+                            {
+                                type:"text",
+                                label:"City",
+                                id:"city",
+                                required:true,
+                                placeholder:"City",
+                            }, 
+                            {
+                                type:"tel",
+                                label:"Telephone (has country code)",
+                                id:"telephone1",
+                                placeholder:"Telephone (has country code)",
+                                hasCountryTelLabel:true,
+                                countryTelLabel:"+7",
+                            },
+                        ])
+                        .c-info__type.c-info__type--none-border
+                            .c-info__wrapper
+                                .c-cs-header
+                                    .c-text-contents
+                                        .c-text-contents__headline2
+                                            +headline('font-w-light-36 font-m-light-24',"h3",'BASIC INFORMATION ON THE PROCESSING OF PERSONAL DATA')
+                                .c-cs-header
+                                    .c-text-contents
+                                        .c-text-contents__headline3
+                                            +headline('font-w-normal-24 font-m-normal-16',"h3",'Responsible')
+                                ul.c-info_list.ty2.font-m-normal-14.font-w-normal-16 
+                                    li LG Electronics España S.A.U. (en adelante, « LGEES »).
+                                        br
+                                        | NIF: A-81304487
+                                        br
+                                        | Domicilio : Calle Chile 1, 28290, Las Rozas, Madrid.
+                                .c-cs-header
+                                    .c-text-contents
+                                        .c-text-contents__headline3
+                                            +headline('font-w-normal-24 font-m-normal-16',"h3",'Finalidades')
+                                ul.c-info_list.font-m-normal-14.font-w-normal-16
+                                    li Gestión de la creación de cuenta en LG.com/es, así como de la relación contractual como usuario registrado en dicha página web.
+                                .my-check
+                                    span.font-m-normal-14.font-w-normal-16 Security text
+                                    .button.custom-item
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            span I agree with the Terms of Use.
+                                                +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more', href:"/uk/lge-terms/",})(target='_blank')
+                                    .button.custom-item
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            span I have read and understand the Privacy Policy and Cookie Policy.
+                                                +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more', href:"/uk/lge-terms/",})(target='_blank')
+                                    .button
+                                        +formCheckbox('', "name", "val1", `checkId3`, count="false")
+                                            span Statement on cross-border transfer of data
+                                    .button
+                                        +formCheckbox('Receipt of marketing messages(Optional)', "name", "val1", `checkId4`, count="false")
+                                    div.my-check--receipt-text I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE 
+                                        +linkButton({type: 'text', color: 'black', underline: true, name: 'Privacy Policy.', href:"/uk/privacy?tabType=empMktPolicy/",})(target='_blank')
+                                ul.c-info_list--normal.font-m-normal-14.font-w-normal-16
+                                    li LG Electronics Inc. – LG Twin tower, 128 Yeoui—daero, Yeongdeungpo-gu, Seoul, Republic of Korea
+                                    li You can access both of your sites using different languages through single sign in.
+                        //- +myInputForm([
+                        //-     {
+                        //-         type:"captcha",
+                        //-         label:"Security text",
+                        //-         id:"captcha",
+                        //-         required:true,
+                        //-         placeholder:"Type the characters",
+                        //-         warningFirst: ['Picture text is incorrect'],
+                        //-     }
+                        //- ])
+                    .button.c-cta.my-button
+                        +defaultButton({name:"Cancel", wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                        +defaultButton({name:"Join us", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="toastBtn")
+                    // [End] 2023-07-03 : UPDATE-added normal type
+                +toastPopup([{type:"success", text:"Congratulations on becoming a LG member!", remove: true}])
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-valid, .c-warning' : [
+                            {
+                                'name' : 'Green Check',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'wa-check'},
+                                ]
+                            },
+                        ],
+                    };
+    // Component Markup
+    +MB000D
+
+//- block modal
+//-     .mem-modal(class=componentId)
+//-         +pop-msg-standard({id : `privacyPolicy`, headline:"Privacy Policy"})
+//-             .mem-scroll 
+//-                 .mem-scroll__container 
+//-                    .mem-scroll__item
+//-                         .mem-scroll__title
+//-                             span.font-w-normal-24.font-m-normal-16 Privacy Policy Highlights
+//-                         .mem-scroll__desc
+//-                             p.font-w-normal-16.font-m-normal-16 LG Electronics Inc. (“LGE”),together with its subsidiaries and affiliates (the "LG Group”, “we”, “our” or “us”) respect your privacy. This Privacy Policy applies to the personal information we process through the lg.com website (the “Website”), other websites provided by the LG Group, LG Accounts, our SmartHome services offered via our ThinQ App and the SmartWorld App (collectively, the “Services”). It also applies to any other personal information you provide to your local LG Group member.
+//-                             br 
+//-                             p.font-w-normal-16.font-m-normal-16 For LG Smart TV or Smart Media Product users, please see the separate Smart Media Product Membership Privacy Policy for details of how LGE processes personal information in the course of providing its Smart TV / Media Product service. This Privacy Policy does not apply to the processing covered by the Smart Media Product Membership Privacy Policy, although the LG Group may also use personal information collected via the Smart TV / Media Product service as described in this Privacy Policy, and LGE may use personal information collected via the services as described in the Smart Media Product Membership Privacy Policy. For more information, please refer to Smart Media Product Membership Privacy Policy in Account management menu or LG Account menu from settings of Smart TV/ Media Product.
+//-                     .mem-scroll__item
+//-                         .mem-scroll__title
+//-                             span.font-w-normal-20.font-m-normal-16 Overview Of The Privacy Policy
+//-                         .mem-scroll__desc
+//-                             p.font-w-normal-16.font-m-normal-16
+//-                                 | In this Privacy Policy, we describe the types of personal information we collect through our Services, how we use this information, for how long we keep it and with which parties we share it. We also explain what choices and rights you have in relation to the use of your information, including a right to object to some of the processing we carry out (if provided by applicable law). More information about your rights, and how to exercise them, is set out in the “Your Rights” section. We also provide our contact details, so that you can contact us if you have questions about this Privacy Policy and our privacy practices.
+//-             +formCheckbox('I have read and understand the privacy policy and cookie policy.', "name", "popVal1", `popCheckId1`, count="false", false)
+//-             .button.c-cta
+//-                 +defaultButton({name:"Sign In", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})

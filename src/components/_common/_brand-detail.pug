@@ -1,0 +1,218 @@
+
+//- Brand Infomation Box : in map search result list
+mixin brandMapSearchPdp(params)
+	- var option = {isPin: false, isExport: false, isToggle: false, isStock: false, ...params}
+	.c-brand-detail-list__item
+		+brandDetailItem(
+			{
+				pinActive: option.isPin,
+				pin: '1',
+				brandLogo: {src: 'https://via.placeholder.com/80x28/999999/333333'},
+				brandDistance: '2.2 KM',
+				brandName: 'Paulson’s',
+				brandLink: '#',
+				brandAddr: {address: '1880 Broadway New York, NY 10023, United States', hasExport: option.isExport},
+				code: [
+					{title: 'Pin Code', code: '394510'},
+					{title: 'Std Code', code: '0261'}
+				],
+				contact: [
+					{type: 'phone', number: ['212-246-9734', '212-246-9734']},
+					{type: 'fax', number: '+44 161 999 8888'},
+					{type: 'mail', number: 'abcd@lg.com'}
+				],
+				buttons: [
+					{color: 'black', type: 'box-outlined', name: 'View Online'},
+					{color: 'red', type: 'box', name: 'Get Directions'}
+				],
+				category: {title: 'Open Hour', text: ['Mon - Fri : 8:00 ~ 20:00', 'Sat : 8:00 ~ 7:00', 'Sun : 8:00 ~ 6:00']},
+				toggleProduct: {toggleActive: option.isToggle, title: 'Product Category', text: ['Blu-ray & DVD Players, FridgeBlu-ray & DVD Players', 'Blu-ray & DVD Players, FridgBlu-ray']},
+				stockShow: option.isStock,
+				stock: [
+					{class: 'st-in', text: 'In stock'},
+					{class: 'st-out', text: 'Out of stock'},
+					{class: 'st-onhand', text: '{Onhand} left in stock'}
+				],
+			}
+		)
+mixin brandMapSearchGlobal(params)
+	- var option = {isPin: false, isExport: false, isToggle: false, pin: '1', brandDistance: '2.2 KM', brandName: 'Paulson’s', brandLink: '#', address: '1880 Broadway New York, NY 10023, United States', ...params}
+
+	- var _code = params.code ? params.code : false;
+	- var _contact = params.contact ? params.contact : false;
+	- var _buttons = params.buttons ? params.buttons : false;
+	- var _category = params.category ? params.category : false;
+	- var _toggleProduct = params.toggleProduct ? params.toggleProduct : false;
+	.c-brand-detail-list__item
+		+brandDetailItem(
+			{
+				pinActive: option.isPin,
+				brandLogo: {src: 'https://via.placeholder.com/80x28/999999/333333'},
+				brandLink: '#',
+				brandAddr: {address: option.address, hasExport: option.isExport},
+				pin: option.pin,
+				brandDistance: option.brandDistance,
+				brandName: option.brandName,
+				brandAddr: option.brandAddr,
+				code: option.code,
+				contact: option.contact,
+				buttons: option.buttons,
+				category: option.category,
+				toggleProduct: option.toggleProduct,
+			}
+		)
+
+mixin brandDetailItem($params)
+	//- pinActive: Boolean
+	//- pin: String
+	//- brandLogo: {src: String, alt: String}
+	//- brandDistance: String
+	//- brandName: String
+	//- brandLink: String (Brand name link Use)
+	//- brandAddr: [address: String, hasExport: Boolean]
+	//- code: [{title: String, code: String}]
+	//- contact: [{type: String, number: [String] | String}]
+	//- buttons: [{color: String, type: String, name: String}]
+	//- category: [title: String, Text: {String}]
+	//- toggleProduct: [toggleActive: boolean, title: String, Text: {String}]
+	
+	- var pinActive = $params.pinActive ? 'pin-is__active' : ''
+
+	//- block : c-brand-detail
+	.c-brand-detail(class=`${pinActive}`)
+		//- element : .c-brand-detail__contents
+		.c-brand-detail__contents
+			if $params.pin
+				+brand-item-pin($params.pin)
+			//- element : .c-brand-detail-location
+			.c-brand-detail-location
+				//- title
+				.c-brand-detail__title
+					+brand-item-logo($params.brandLogo)
+					if $params.brandDistance
+						p.c-brand-detail__title-distance= $params.brandDistance
+				//- info
+				.c-brand-detail__info
+					if $params.brandLink
+						// GA4
+						a.c-brand-detail__info-name(href=`${$params.brandLink}` data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")= $params.brandName
+					else
+						p.c-brand-detail__info-name= $params.brandName
+					if $params.brandAddr
+						+brand-item-address($params.brandAddr)
+					if $params.code
+						+brand-item-code($params.code)
+				if $params.contact
+					+brand-item-contact($params.contact)
+				if $params.category
+					+brand-item-category($params.category)
+				if $params.buttons
+					+brand-item-button($params.buttons)
+				if $params.stockShow
+					+brand-item-stock($params.stock)
+		if $params.toggleProduct
+			+brand-item-product($params.toggleProduct)
+
+
+mixin brand-item-logo(params)
+	- var option  = {src: '', alt: 'picture', ...params}
+	.image.c-image.c-brand-detail__title-image
+		.cmp-image(data-cmp-data-layer='')
+			img.cmp-image__image.c-image__img(src=`${option.src}`, alt=`${option.alt}`, loading="lazy")
+
+mixin brand-item-pin(param)
+	//- element : .c-brand-detail__pin
+	.c-brand-detail__pin
+		if param == 'blank'
+			.c-map__pin
+		else 
+			.c-map__pin= param
+
+mixin brand-item-address(params)
+	div.c-brand-detail__info-address
+		p= params.address
+		if (params.hasExport)
+			.c-brand-detail__info-export
+				button(type="button" data-cmp-data-layer="")
+					span.sr-only Export
+
+mixin brand-item-code(params)
+	- var count = params.length
+
+	p.c-brand-detail__info-code
+		- for (var x = 0; x < count; x++)
+			strong.c-brand-detail-divider= params[x].title
+			span= params[x].code
+
+
+mixin brand-item-contact(params)
+	- var count = params.length
+
+	//- contact
+	.c-brand-detail__contact
+		
+		- for (var x = 0; x < count; x++)
+			- var cls = `c-brand-detail__contact-${params[x].type}`
+			- var numbers = params[x].number;
+			
+			p(class=`${cls}`)
+				if params[x].type == 'phone'
+					each number in numbers
+						span.c-brand-detail-divider= number
+				else if params[x].type == 'mail'
+					// GA4 - added role
+					a.c-brand-detail-divider(href=`mailto:${numbers}` role="button")= numbers
+				else
+					span.c-brand-detail-divider= numbers
+	
+
+mixin brand-item-button(params)
+	- var count = params.length
+	//- button
+	.c-brand-detail__button
+		- for (var x = 0; x < count; x++)
+			- var buttonConfig = {name : params[x].name, wSize : "small", mSize : "small"}
+
+			if params[x].name === "View Online"
+				+defaultButton({
+					...buttonConfig, 
+					buttonStyle : "default",
+					isButton : false
+				})
+			else if params[x].name === "Get Directions"
+				+defaultButton({
+					...buttonConfig, 
+					buttonStyle : "highlight",
+					isButton : true
+				})
+
+mixin brand-item-stock(params)
+	- var count = params.length
+	
+	.c-brand-detail__stock
+		- for (var x = 0; x < count; x++)
+			p.store-status(class=params[x].class)
+				span= params[x].text
+
+mixin brand-item-category(params)
+	- var options = {titleStyle : "font-w-normal-16 font-m-normal-14", ...params} 
+	//- - var bodyStyle = "font-w-normal-14 font-m-normal-14"
+
+	//- category
+	.c-brand-detail__category
+		strong(class=options.titleStyle)= options.title
+		each bodycopy in options.text
+			p= bodycopy
+
+mixin brand-item-product(params)
+	- var isActive = params.toggleActive ? 'is-active' : ''
+	//- element : .c-brand-detail__product
+	.c-brand-detail__product(class=`${isActive}`)
+		//- toggle
+		button.c-brand-detail__product-toggle(type="button" aria-expanded="false")
+			span.sr-only toggle
+
+		+brand-item-category({
+			...params,
+			titleStyle : "font-w-normal-16 font-m-normal-16", 
+		})

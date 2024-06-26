@@ -1,0 +1,80 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_pop-msg.pug
+include ../_common/_toast.pug
+
+block meta 
+    - var componentId = "ML00AB"
+    - var componentName = "Tax Info"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css") 
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    // Component Markup
+    div(class=`c-wrapper ${componentId}`)
+        .component
+            .fluid-container
+                .my-component.my-page-title
+                    .c-text-contents.my-component__title-section
+                        .c-text-contents__headline
+                            +headline("font-w-light-56 font-m-light-36", "h2", "Tax Info")
+                .my-component__wrap.border-only-web
+                    .layout-container
+                        .container-hat.align-end
+                            em.required-fields 
+                                span Required fields
+                        .contents-box
+                            h3.box-title Tax Info
+                                em.c-required *
+                                    span.sr-only Required fields
+                            .info-boxfield
+                                +formRadio("Personal","name1", "billingData11", "billingData11", "check-shaped")
+                                .sub-input-field.hide
+                                    +formText("text", "Fiscal Code", "test1", true, "Fiscal Code")
+                            .info-boxfield
+                                +formRadio("Company","name1", "billingData12", "billingData12", "check-shaped")
+                                .sub-input-field.hide
+                                    +formText("text", "Business name", "test2", true, "Business name")
+                                    +formText("text", "VAT number", "test3", true, "VAT number")
+                                    .input-box-container
+                                        span.box-label SDI/PEC
+                                            em.c-required *
+                                                span.sr-only Required fields
+                                        .complex-input
+                                            +formRadio("SDI","SDIPEC", "SDI", "SDI")
+                                            +formText("text", "SDI", "infoSDI", false, "SDI")(disabled)
+                                            +invalid-warning
+                                        .complex-input
+                                            +formRadio("PEC","SDIPEC", "PEC", "PEC")
+                                            +formText("text", "PEC", "infoPEC", false, "PEC")(disabled)
+                                            +invalid-warning
+                            .bottom-container
+                                +formCheckbox('save as default tax', "checkboxname", "val2", "checkId2", count="false", false)
+                            +toastPopup([
+                                  {
+                                      type: "warning",
+                                      text: "It's the default shipping address",
+                                      remove: true
+                                  }
+                              ])
+
+                    // Case. Save button Disabled
+                    .button-container.align-center
+                        +defaultButton({name: 'Cancel', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})
+                        +defaultButton({name: 'Save', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: false})(disabled)
+
+                    // Case. Save button Activated
+                    .button-container.align-center
+                        +defaultButton({name: 'Cancel', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})
+                        +defaultButton({name: 'Save', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: false})
+block modal

@@ -1,0 +1,305 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_pagination.pug
+include ../_common/_carousel.pug
+include ../_common/_forms.pug
+include ../_common/_my-component.pug
+include ../_common/_link-banner.pug
+include ../_common/_toast.pug
+include ../_common/_pop-msg.pug
+
+block meta 
+    - var componentId = "ML000H"
+    - var componentName = "My Product"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+mixin myPrintTab(div, num, selected)
+    if selected
+        li.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0" data-cmp-hook-tabs="tab" aria-selected="true")
+            if block
+                block
+    else 
+        li.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1" data-cmp-hook-tabs="tab" aria-selected="false")
+            if block
+                block
+
+mixin myPrintTabPanel(div, num, selected)
+    if selected 
+        .cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+            if block
+                block
+    else 
+        .cmp-tabs__tabpanel(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+            if block
+                block
+
+mixin myOrderItem(params)
+    .my-orderlist
+        ul.my-orderlist__box
+            each set in params
+                li
+                    .my-orderlist__item
+                            .my-orderlist__img
+                                .image.c-image
+                                    +printLazyImage("https://www.lg.com/uk/images/tvs/md07546594/gallery/GT1.jpg")
+                            .my-orderlist__txt
+                                .c-text-contents
+                                    // tag heading tag
+                                    if set.modelName
+                                        .c-text-contents__model
+                                            // [Start] 2023-05-11 : UPDATE - badge
+                                            span.font-w-normal-16.font-m-normal-12= set.modelName 
+                                            // [End] 2023-05-11 : UPDATE - badge
+                                    if set.eyebrow
+                                        .c-text-contents__eyebrow
+                                            span.font-w-normal-14.font-m-normal-12.font-red= set.eyebrow
+                                    if set.title
+                                        .c-text-contents__title
+                                            span.font-w-normal-20.font-m-normal-16= set.title
+                                    if set.warranty
+                                        .my-productlist__check.my-productlist__check--warranty
+                                            span.font-w-normal-14.font-m-normal-12 !{set.warranty}
+                                    if set.update
+                                        .my-productlist__check.my-productlist__check--update
+                                            span.font-w-semibold-14.font-m-semibold-12= set.update
+                                            span.font-w-normal-14.font-m-normal-12 software & drivers
+                                    if (set.detailBtn || set.registrationBtn)
+                                        .my-orderlist__btn
+                                            .button.c-cta
+                                                if set.detailBtn
+                                                    +linkButton({type:"text", icon:true, color:"black", name:"View Detail"})
+                                                if set.registrationBtn
+                                                    +linkButton({type:"text", icon:true, color:"black", name:"ThinQ Registration"})
+        if params.length >= 5
+            +pagination
+            
+mixin guideMsgArea(params)
+    - let data = {...params}
+    .guide-msg-area
+        .c-text-contents.align-text-left
+            .c-text-contents__bodycopy
+                p.font-w-normal-24.font-m-normal-16= data.msg
+    
+mixin myInputForm(params)
+    .my-input
+        ul
+            each set in params
+                - let data = {...set}
+                li
+                    .my-com__sort-box-text
+                    .c-search-box__form(class=`${data.warning ? 'my-warn' : ''}`)
+                        +formSelect(data.label='', data.id, data.placeholder, false)
+                            if data.optionVal
+                                - for(var i=0; i < data.optionVal.length; i++)
+                                    if data.selected === i + 1
+                                        option(value="" data.selected)= data.optionVal[i]
+                                    else
+                                        option(value="")= data.optionVal[i]
+
+//-[Start] 2024-01-24 : Add ThinQ Banner & ThinQ Registration (Popup)
+mixin thinkQBaner(params)
+    .ml-event__zone
+        p.font-w-bold-12.font-m-bold-12 You have connected product(s) with ThinQ. 
+            +linkButton({href:"#ThinqRegistrationPopUp", color:"black", type:"text", class:"js-pop-open", name:"Link with LG.com with a one click.", roleButton:"true"})
+        button.clone-self
+
+mixin image
+        // block : image
+        .image.thinkq-image
+            +printLazyPicture('https://via.placeholder.com/48x48/000/333/?text=48x48', 'https://via.placeholder.com/160x160/000/333/?text=160x160')   
+
+            if block
+                block
+
+mixin categoryItem3(params)
+    .cmp-carousel__item.swiper-slide(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+        // block : text contents
+        // Text align options default : center
+        // option : target (_blank or _self)
+        div.c-text-contents
+            .c-prd
+                .c-prd__top
+                    +image                        
+                    .c-prd-info__text.font-m-normal-20.font-w-normal-20 LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)
+                .c-prd-info.c-prd-info__type-grid
+                    .c-prd-info__inner 
+                        dl 
+                            dt.font-m-normal-12.font-w-normal-16 Serial number
+                            dd.font-m-normal-12.font-w-normal-16 503PWJFRFFEES068
+                        dl
+                            dt.font-m-normal-12.font-w-normal-16 Purchase date
+                            dd.font-m-normal-12.font-w-normal-16 22/09/28
+        if block
+            block
+
+mixin carouselPaginationUI 
+        // 23.02.14 modified markup - added ".c-carousel__handler--dial", ".c-carousel__handler--away-from-carousel"
+        .c-carousel__handler.c-carousel__handler--dial.c-carousel__handler--away-from-carousel
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"prev"})
+            +carouselPagination
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"next"})
+        
+//-[End] 2024-01-24 : Add ThinQ Banner & ThinQ Registration (Popup)
+
+mixin ML000H(option = '')
+    if option == 'myProductsList'
+        .c-wrapper.ML000H
+            .component
+                .fluid-container
+                    +myComponentSubMenu({
+                        title:"My Products",
+                        subMenu:['Menu 1', 'Menu 2', 'Menu 3']
+                    })
+                    .my-component
+                        // [Start] 2024-01-24 : Delete List Tab & Add ThinQ Banner & ThinQ Registration (Popup)
+                        +thinkQBaner
+                        .my-com__sort-box 
+                            +myInputForm([
+                                {
+                                    type: 'select',
+                                    optionVal: ['Latest', 'Oldest', 'Latest'],
+                                    id: 'select1',
+                                }
+                            ])
+                        +myOrderItem([
+                            {
+                                eyebrow:"ThinQ Registration Is Required",
+                                title:"LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                detailBtn:true,
+                            },
+                            {
+                                eyebrow:"ThinQ Registration Is Required",
+                                title:"LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                detailBtn:true,
+                            },
+                            {
+                                eyebrow:"ThinQ Registration Is Required",
+                                title:"LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                detailBtn:true,
+                            },
+                            {
+                                eyebrow:"Registered with ThinQ",
+                                modelName:"THINQ",
+                                title:"WiFi Connected 10.5kg Washing Machine",
+                                detailBtn:true,
+                            },
+                            {
+                                eyebrow:"Expires soon",
+                                modelName:"THINQ",
+                                title:"WiFi Connected 10.5kg Washing Machine",
+                                detailBtn:true,
+                            },
+                        ]) 
+                        // [End] 2024-01-24 : Delete List Tab & Add ThinQ Banner & ThinQ Registration (Popup)
+                    .my-component__wrap
+                        .my-component
+                            +linkBanner({
+                                type:false,
+                                mobileTextAlignLeft:true,
+                                bgColor:"transparent",
+                                title:[{
+                                    text:"Have a new product?",
+                                }],
+                                desc:[{
+                                    text:"Register your product and maintain your LG products with parts and accessories.",
+                                    font:"font-w-normal-24 font-m-normal-16"
+                                }], 
+                                button:[{
+                                    size:"large",
+                                    sizeMobile:"medium",
+                                    name: "Register Your Product​",
+                                    buttonStyle: 'highlight',
+                                    isButton: false
+                                }],
+                            })
+
+    if option == 'noData'
+        .c-wrapper.ML000H
+            .component
+                .fluid-container
+                    +myComponentSubMenu({
+                        title:"My Products",
+                        subMenu:['Menu 1', 'Menu 2', 'Menu 3']
+                    })
+                    .my-component.only-mobile
+                        .guide-msg-area__container
+                            +guideMsgArea({msg:"View your registered products and check the ThinQ linked."})
+                    .my-component--maximum
+                        .my-component__wrap
+                            .my-component
+                                .guid-text 
+                                    .guid-text__container
+                                        .font-w-normal-24.font-m-normal-16 There is no ThinQ unregistered product.
+                    .my-component__wrap
+                        .my-component
+                            +linkBanner({
+                                type:false,
+                                mobileTextAlignLeft:true,
+                                bgColor:"transparent",
+                                title:[{
+                                    text:"Have a new product?",
+                                }],
+                                desc:[{
+                                    text:"Register your product and maintain your LG products with parts and accessories.",
+                                    font:"font-w-normal-24 font-m-normal-16"
+                                }], 
+                                button:[{
+                                    size:"large",
+                                    sizeMobile:"medium",
+                                    name: "Register Your Product​",
+                                    buttonStyle: 'highlight',
+                                    isButton: false
+                                }],
+                            })
+
+block content
+    // Component Markup
+    .guide-text-type My Products list
+    +ML000H('myProductsList')
+
+    .guide-text-type No data
+    +ML000H('noData')
+//-[Start] 2024-01-24 : Add ThinQ Banner & ThinQ Registration (Popup) & 
+block modal
+    .ML000H
+        +pop-msg-standard({id : "ThinqRegistrationPopUp", headline:"ThinQ Registration" , headLineStyle: "font-w-light-56 font-m-light-28", size: "large"})
+            .c-pop-msg__contents
+                .type-home.thinkq-popup
+                    .c-modal__box
+                        .c-modal__content
+                            .c-result.font-m-normal-12.font-w-normal-16
+                                        span.c-result__number 4
+                                        | products      
+                            .c-modal__content-scroll-box 
+                                .carousel.panelcontainer
+                                    // block : swiper-category
+                                    .cmp-carousel.swiper.c-carousel.c-carousel--category(data-cmp-data-layer="")
+                                        .cmp-carousel__content.swiper-wrapper
+                                            - for (var x = 0; x < 5; x++)
+                                                +categoryItem3
+                                        +carouselPaginationUI
+                .c-pop-msg__borderbottom
+                    .c-modal__bottom 
+                        .button.c-cta       
+                            +defaultButton({name: 'Register', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})(disabled)
+            +toastPopup([
+                {   type:"success", 
+                    remove: true, 
+                    text: 'Registration Successful!',
+                }
+            ])
+//-[End] 2024-01-24 : Add ThinQ Banner & ThinQ Registration (Popup)

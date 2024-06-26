@@ -1,0 +1,527 @@
+include ../_common/_image.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_roll-selector.pug
+include ../_common/_pagination.pug
+include ../_common/_hero-banner.pug
+include ../_common/_button.pug
+
+
+mixin PR0004
+	mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+		if warningFirst
+			- for(var i=0; i < warningFirst.length; i++)
+				+invalid-warning(warningFirst[i])
+		if correct
+			- for(var i=0; i < correct.length; i++)
+				+valid-msg(correct[i])
+		if infoText
+			ul.my-input__info 
+				li.font-w-normal-16.font-m-normal-14!= infoText
+		if warning !==  []
+			- for(var i=0; i < warning.length; i++)
+				+invalid-warning(warning[i])
+		if check
+			- for(var i=0; i < check.length; i++)
+				+formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+		if infoTextSecond
+			ul.my-input__info 
+				li.font-w-normal-14.font-m-normal-14 !{infoTextSecond}
+				
+	mixin basket-product-item
+		button.c-package-deal-item__delete(type="button")
+			span.sr-only Delete this item
+		// GA4
+		a.c-package-deal-item__link(href="#" data-pim-category1="" data-pim-category2="" data-pim-category3="" data-pim-category4="" data-pim-sku="" data-pim-model-name="" data-pim-model-year="" data-pim-flag="" data-pim-modeltype="" data-shop-stock-status="" data-shop-msrp="" data-shop-pbp-coupon="" data-shop-pbp-coupon-dc="" data-shop-price="")
+			.c-package-deal-item__information
+				.c-package-deal-item__image
+					.image.c-image
+						+printLazyImage('https://via.placeholder.com/64x64/999999/333333')
+				.c-package-deal-item__basic-information
+					.text.c-package-deal-item__model-display-name
+						span.cmp-text(data-cmp-data-layer="") American Fridge Freezer 635L Water &amp; Ice Dispenser American Fridge Freezer 635L Water &amp; Ice Dispenser American Fridge Freezer 635L Water &amp; Ice Dispenser
+					.text.c-package-deal-item__price
+						span.cmp-text(data-cmp-data-layer="") £600.00
+
+	mixin package-deal-item(params)
+		- var mainCopy = "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ea"
+		- var discount = "Get 15% OFF"
+		- var description = "Lorem ipsum dolor sit amet consectetur adipisicing."
+		- var buttonConfig = {name: 'Add a Product', wSize: 'medium', mSize: 'small', buttonStyle: 'right white', isButton: true}
+		- var options = {type : "", mainCopy, discount, description, afterProduct : null, ...params}
+
+		.c-package-deal-item(class={"c-package-deal-item--product" : options.type == "product"})&attributes(attributes)
+			case options.type
+				when "notice discount"
+					.c-package-deal-item__container
+						.text.c-package-deal-item__text.c-package-deal-item__text--emphasis
+							strong.cmp-text(data-cmp-data-layer="")= options.discount
+						.text.c-package-deal-item__text.c-package-deal-item__text--description
+							span.cmp-text(data-cmp-data-layer="")= options.description
+						if options.afterProduct
+							+textButton(buttonConfig)
+
+				//- first item with type of "default image"
+				when "default image"
+					.c-package-deal-item__container(style="background-image:url(https://via.placeholder.com/320x160/646464/000?text='')")
+						+textButton({...buttonConfig, wSize: 'large'})
+
+				//- first item with type of "default text"
+				when "default text"
+					.c-package-deal-item__container
+						.text.c-package-deal-item__text.c-package-deal-item__text--main
+							.cmp-text(data-cmp-data-layer="")= options.mainCopy
+						+textButton(buttonConfig)
+
+				default
+					.c-package-deal-item__container
+						+basket-product-item
+
+	mixin package-basket(params)
+		- var options = {itemList : [{}, {}, {}, {}], ...params}
+
+		//- Remove 'is-opened' class.
+		.c-package-deal-basket(id="PR0004_basket")&attributes(attributes)
+			.c-package-deal-basket__container
+				.c-package-deal-basket__top-edge
+					//- Changed aria-expanded="false" to default.
+					button.c-package-deal-basket__toggle-button.js-toggle-area-button(type="button" data-comp-data-layer="" aria-expanded="false" aria-controls="PR0004_basket")
+						span.sr-only.collapse Collapse
+						span.sr-only.expand Expand
+
+
+				//- product container
+				.c-package-deal-basket__product-container
+					// use on web
+					.carousel.panelcontainer.c-package-deal-basket__carousel
+						// block : carousel
+						.cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+							.cmp-carousel__content.swiper-wrapper
+								each set in options.itemList
+									.cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+										+package-deal-item(set)
+
+						.cmp-carousel__actions(class="c-package-deal-basket__actions")
+							button.cmp-carousel__action.cmp-carousel__action--previous(type="button" class=`c-package-deal-basket__action c-package-deal-basket__action--prev js-carousel-prev` data-cmp-hook-carousel="previous")
+								span.cmp-carousel__action-text.sr-only Previous Slide
+							button.cmp-carousel__action.cmp-carousel__action--next(type="button" class=`c-package-deal-basket__action c-package-deal-basket__action--next js-carousel-next` data-cmp-hook-carousel="next")
+								span.cmp-carousel__action-text.sr-only Next Slide
+
+					// use on mobile
+					.c-package-deal-basket__list(role="list")
+						each set in options.itemList
+							+package-deal-item(set)(role="listitem")
+
+				//- indicator
+				.c-package-deal-basket__indicator
+					//- left/top
+					.c-package-deal-basket__indicator-area.c-package-deal-basket__indicator-area--primary
+						//- discount summary
+						.c-package-deal-basket__discount-summary
+							.text.c-package-deal-basket__indicator-text(id="PR0004SelectedItemCount")
+								span.cmp-text(data-cmp-data-layer="") Item selected(2)
+							.text.c-package-deal-basket__applied-discount
+								span.cmp-text(data-cmp-data-layer="") 15% off
+					//- right/bottom
+					.c-package-deal-basket__indicator-area
+						//- price
+						.c-price
+							span.c-price__purchase £1,499.99
+							del.c-price-previous £2,199.98
+							span.c-price__discount
+								span Save
+								span £699.99
+						//- button
+						.c-package-deal-basket__btns
+							+defaultButton({name: 'Checkout', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+								span.c-button__text.cmp-button__text(aria-describedby="PR0004SelectedItemCount")
+									span Checkout
+									span.c-package-deal-basket__product-count (2)
+							// disabled case - when selected count is zero
+								<button class="cmp-button c-button c-button--default highlight m-small w-medium" type="button" data-cmp-data-layer="" data-link-name="checkout" disabled><span class="c-button__text cmp-button__text" aria-describedby="PR0004SelectedItemCount"><span>Checkout</span></span></button>
+
+	mixin promotion-banner
+		// block - title banner
+		.c-title-banner.font-white
+			.c-title-banner__container
+				// block - floating contents
+				.c-floating-contents
+					.c-floating-contents__floor
+						// block - image
+						.c-image
+							- var web = "https://via.placeholder.com/1920x650/000/333"
+							- var mobile = "https://via.placeholder.com/768x1200/000/333"
+							+printLazyPicture(mobile, web)
+
+					.c-floating-contents__floating
+						.c-title-banner__main-contents
+							// block - text contents
+							.c-text-contents
+								.title.c-text-contents__headline
+									.cmp-title.font-w-light-80.font-m-light-36(data-cmp-data-layer="")
+										h2.cmp-title__text Lorem ipsum dolor sit.
+								.text.c-text-contents__date.js-date-range(data-start-date="16 August 2022 17:30:00" data-end-date="15 December 2023 23:59:59")
+									span.cmp-text(data-cmp-data-layer="") 16/08/2022 - 15/12/2023
+								.text.c-text-contents__bodycopy
+									p.cmp-text(data-cmp-data-layer="") Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+								.button.c-cta
+									+defaultButton({name: 'Terms & Conditions', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+
+	mixin package-deal-list(params)
+		- var options = {...params}
+		.c-promotion-package
+			ul.c-product-list.c-promotion-package__list
+				each set in options.productData
+					li.c-product-list__item.c-promotion-package__item
+						+productCard(set)
+
+			// use on web by device check
+			.c-promotion-package__more
+				+pagination
+
+	mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected, required= false, correct= false})
+		.c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+			+formSelect(label, id, placeholder, required)
+				if optionVal
+					- for(var i=0; i < optionVal.length; i++)
+						if selected === i + 1
+							option(value="" selected)= optionVal[i]
+						else
+							option(value="")= optionVal[i]
+			if warning || infoText || correct
+				+myMsg({warning: warning, infoText: infoText, correct: correct})
+
+	mixin myCaptcha({label, id, placeholder, warning= false, required= false})
+		.c-input-item
+			.my-captcha
+				.my-captcha__container
+					label.font-w-normal-16.font-m-normal-14(for=`${id}`)= label
+						if required
+							em.c-required *
+								span.sr-only Required fields
+					#security-box.my-captcha__area
+
+	mixin myVerify(params)
+		- let data = {...params}
+			.c-input-item(class=`${data.active ? 'active' : ''}`)
+				label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+					if data.required
+						em.c-required *
+							span.sr-only Required fields
+				if data.validation
+					.input-button__container.input-button__container--validation
+						.my-button-validation
+							.my-verify__inner
+								input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}` value= data.value)&attributes(attributes)
+								span.my-verify__time.font-m-normal-16.font-w-normal-16= data.time
+							+myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+						.button.c-cta
+							+defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+
+				else
+					.input-button__container
+						.my-verify__inner
+							input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}` value= data.value)&attributes(attributes)
+							span.my-verify__time.font-m-normal-16.font-w-normal-16= data.time
+						.button.c-cta
+							+defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+
+				if !data.validation
+					+myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+				else
+					+myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+	mixin myFormText(params)
+		- let data = {...params}
+		- let config = `${data.warning || data.warningFirst ? 'my-warn' : ''}`
+		if data.type === 'verify'
+			+myVerify(params)
+		//- 2023-05-24 Date of Birth
+		else if data.type === 'birth'
+			+myBirth(params)
+		else if data.type === 'birth1'
+			+myBirth1(params)
+		else if data.type === 'birth2'
+			+myBirth2(params)
+		//- 2023-05-24
+		else if data.type === 'select'
+			+mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required, correct: data.correct})
+		else if data.type === 'captcha'
+			+myCaptcha({label: data.label, id: data.id, placeholder: data.placeholder, warning: data.warning, required: data.required})
+		else
+			.c-input-item(class=`${data.active ? 'active' : ''}`)
+				if data.label
+					label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+						if data.required
+							em.c-required *
+								span.sr-only Required fields
+				if data.required && !data.button && data.type !== "password"
+					input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+					//- [Start] 2023-05-24
+					if data.type === 'password'
+							button(type='button' class='my-form__eye')
+								span.sr-only show password
+					//- [End] 2023-05-24
+				else if data.readonly
+					input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+				else if data.disabled
+					input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+				else if data.type === 'textarea'
+					if data.limit
+						.my-textarea__container
+							textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class='my-textarea--limit')&attributes(attributes)
+							.my-count
+								span.font-w-normal-14.font-m-normal-12 0 / !{data.limit} byte
+					else 
+						textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder)&attributes(attributes)
+				else if data.button
+					if data.validation
+						.input-button__container.input-button__container--validation
+							.my-button-validation
+								input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required)&attributes(attributes)
+								+myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+							each item in data.button
+								.button.c-cta.button-full
+									+defaultButton({name:item, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+					else
+						.input-button__container
+							input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required)&attributes(attributes)
+							// [Start] 2023-05-03 : ADD - email form case
+							each item in data.button
+								.button.c-cta.button-full
+									+defaultButton({name:item, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+							// [End] 2023-05-03 : ADD - email form case
+				else 
+					if data.active
+						input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value, required)&attributes(attributes)
+						if data.type === 'password'
+							button(type='button' class='my-form__eye')
+								span.sr-only show password
+						else if data.search 
+							button(type='button' class='my-form__search__icon')
+								span.sr-only search
+					else
+						input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config} ${data.search ? 'my-form__search' : ''}`, required)&attributes(attributes)
+						if data.type === 'password'
+							button(type='button' class='my-form__eye')
+								span.sr-only show password
+						else if data.search 
+							button(type='button' class='my-form__search__icon')
+								span.sr-only search
+			if !data.validation 
+				+myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+			else
+				+myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+					
+	mixin myInputForm(data, validation = false)
+		.my-input
+			ul
+				each set in data
+					li(class=`${set.type == "birth" || set.type == "birth1" || set.type == "birth2" ? "my-input__input-type-birth" : ""}`)
+						+myFormText(set)
+			if validation.correct
+				+myMsg({correct: validation.correct})
+			if validation.warning
+				+myMsg({warning: validation.warning})
+	mixin formCheckbox(label, name, val, id, count = "false", disabled = false, required)
+		.c-checkbox-item&attributes(attributes)
+			label.checkbox(for=`${id}`)
+				if(disabled)
+					input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, disabled="disabled")&attributes(attributes)
+				else 
+					input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`)&attributes(attributes)
+				if(label)
+					span.label= label
+						-if(count >= 0 & count != "false") // for filter
+							sup.count= count 
+						if required
+							em.c-required *
+								span.sr-only Required fields
+				else 
+					if block 
+						span.label
+							block
+
+
+	// Component Markup
+	.c-wrapper.PR0004.width-wide.margin-top.margin-bottom
+		.component.no-filter
+			.cmp-container
+				// banner
+				+promotion-banner
+
+				.availableProduct
+					div.infoText 
+						p Start check with your available product in your area
+					div.flex
+						div.inputsArea
+							+myInputForm([
+								{   
+									type: 'select',
+									optionVal: ['Region'],
+									id: 'Region',
+									required:false,
+									placeholder:"Enter Region",
+								},
+								{   
+									type: 'select',
+									optionVal: ['Comuna'],
+									id: 'Comuna',
+									placeholder:"Enter Comuna",
+									required:false,
+								},
+							],
+							{
+								correct: ['We have stock in your area'],
+								warning: ['Delivery is unavabilable in your area.'],
+							})
+
+							//- +formText("text", "Enter Pincode", "product-pincode-01", false, "Enter Pincode", false, true)
+							//- // block :cta
+						.button.c-cta
+							+defaultButton({name:'Check', wSize:'medium', mSize: 'medium', buttonStyle : "default", isButton: true})
+				
+				.availableProduct
+					div.infoText 
+						p Start check with your available product in your area
+					div.flex.inputTextType
+						div.inputsArea
+							+myInputForm([
+								{   
+									type: 'text',
+									id: 'Pincode',
+									required:false,
+									placeholder:"Enter Pincode",
+								},
+							],
+							{
+								correct: ['We have stock in your area'],
+								warning: ['Delivery is unavabilable in your area.'],
+							})
+						.button.c-cta
+							+defaultButton({name:'Check', wSize:'medium', mSize: 'medium', buttonStyle : "default", isButton: true})
+						 
+				
+
+				// category selector
+				- var nameFontStyle = "font-w-semibold-16 font-m-normal-14i font-semibold"
+				- var descFontStyle = "font-w-normal-14 font-m-normal-14"
+				- var useAnchor = false
+				- var useActiveImage = true
+				.c-floating-wrap.can-sticky.bg-default
+					+roll-selector([
+						{useDualImage: true, useActiveImage, name:"All",  nameFontStyle},
+						{useDualImage: true, name:"TVs", nameFontStyle },
+						{useDualImage: true, name:"Fridge Freezers", nameFontStyle },
+						{useDualImage: true, name:"Washing Machine", nameFontStyle },
+						{useDualImage: true, name:"Washing Machine", nameFontStyle },
+						{useDualImage: true, name:"Washing Machine", nameFontStyle },
+						{useDualImage: true, name:"Washing Machine", nameFontStyle },
+						{useDualImage: true, name:"Washing Machine", nameFontStyle },
+					], useAnchor)
+
+				// product list
+				- var baseOptions = {imageUrl:'https://via.placeholder.com/350x350/999999/000000', packageDeal : true, compare : false,wishlist : false,grade : "a",review : true,type:false,groups:null,signature : false,thinq : false,youreko : true,noprice : false,writeAReview : false,campaignArea : false,keyfeature : false, retailer : false,promotion: false,limited: false,membership: '£1,866.98',vip: false,installment: false,soldOut: false}
+				+package-deal-list({
+					productData :[
+						{
+							...baseOptions,
+							flag: ['New','Pre Order'],
+							outOfStock: false,
+							sku:'GSJV70PZTF',
+							ufn:'LG Soundbar SQC1',
+							gradeIs:true,
+							grade: 'a',
+							repair: true,
+							Ab: true,
+							lumpsum: true,
+							plInfoTxt: true,
+							ehf: false,
+							gradeBlock2:true,
+						},
+						{
+							...baseOptions,
+							flag : false,
+							outOfStock: false,
+							sku:'GSJV70PZTF',
+							ufn:'LG Soundbar SQC1',
+						},
+						{
+							...baseOptions,
+							flag : ['New'],
+							packageDealMsg : "pressed add",
+							outOfStock: false,
+							sku:'65ART90E6QA',
+							ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+						},
+						{
+							...baseOptions,
+							flag : ['New','Time Deal'],
+							packageDealMsg : "pressed add",
+							outOfStock: false,
+							sku:'65ART90E6QA',
+							ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+						},
+						{
+							...baseOptions,
+							flag : false,
+							outOfStock: false,
+							sku:'GSJV70PZTF',
+							ufn:'LG Soundbar SQC1_111',
+							unavailable: true,
+						},
+						{
+							...baseOptions,
+							flag : ['New','Time Deal'],
+							outOfStock: false,
+							sku:'GSJV70PZTF',
+							ufn:'LG Soundbar SQC1_222',
+							unavailable: true,
+						},
+						{
+							...baseOptions,
+							flag : ['Redemption','Coupon'],
+							outOfStock: true,
+							sku:'GSJV70PZTF',
+							ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+						},
+						{
+							...baseOptions,
+							flag : ['New','Redemption'],
+							outOfStock: false,
+							sku:'55LX1Q6LA',
+							ufn:'LG Object Collection-Pose 55 inch 4K OLED',
+						},
+						{
+							...baseOptions,
+							flag : ['Bundle','Time Deal'],
+							outOfStock: false,
+							sku:'GSJV70PZTF',
+							ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+						},
+						{
+							...baseOptions,
+							flag : ['New','Black Friday'],
+							outOfStock: false,
+							sku:'GSJV70PZTF',
+							ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+						},
+						{
+							...baseOptions,
+							flag : ['Holiday Special'],
+							outOfStock: false,
+							sku:'GSJV70PZTF',
+							ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+						},
+					]
+				})
+
+				// sticky container
+				+package-basket({itemList : [
+					{type : "default text"},
+					{type : "default image"},
+					{type : "product"},
+					{type : "product"},
+					{afterProduct : true, type : "notice discount", discount : "Get 20% OFF", description : "When you buy 3 selected Home Appliances"},
+					{type : "notice discount", discount : "Get 30% OFF", description : "When you buy 4 selected Home Appliances"},
+				]})

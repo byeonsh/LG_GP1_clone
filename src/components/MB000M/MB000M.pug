@@ -1,0 +1,155 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_forms.pug
+include ../_common/_pop-msg.pug
+
+block meta 
+    - var componentId = "MB000M"
+    - var componentName = "Verify Student member group"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+//- Member
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+    .c-input-item(class=`${data.active ? 'active' : ''}`)
+        if data.label
+            label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+        if data.required
+            input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+        else if data.readonly
+            input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+        else if data.disabled
+            input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+        else 
+            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`, aria-describedby='error-email')&attributes(attributes)
+                
+    if !data.validation 
+        +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+    else
+        +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+mixin MB000M
+    .guide-text-option Option : Student member group
+    .MB000M
+        .my-component__wrap
+            .my-component.no-crop
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        +headline('font-w-light-56 font-m-light-28', "h2", "Verify Student member group")
+        .my-component
+            .my-checkInfo
+                .my-checkInfo__title
+                    span.font-w-light-56.font-m-light-28 Almost complete to sign in
+                .my-checkInfo__list
+                    p.my-checkInfo__item
+                        span.font-w-normal-24.font-m-normal-16 we need simple check in order to validate your eligibility for the Student Offers Program.
+                    p.my-checkInfo__item
+                        span.font-w-normal-24.font-m-normal-16 Please click the submit button to get the link for verifying. And go to inbox in your email.
+                    p.my-checkInfo__item.margin-top
+                        span.font-w-normal-24.font-m-normal-16 In case you turned back to this page because of no received mail, please check your spam box.
+        .my-component.margin-bottom
+            .my-formbox
+                +myInputForm([
+                    {
+                        type:"email", 
+                        label:"Email address", 
+                        id:"email",
+                        required:false,
+                        placeholder:"hieverybody@th-ab.de",
+                    },
+                    {
+                        type:"email", 
+                        label:"Email address", 
+                        id:"email",
+                        required:false,
+                        placeholder:"hieverybody@th-ab.de",
+                        warning: ['Email account is required.', 'Email address invalid.', 'Email address is not registered.'],
+                    },
+                ])
+            .button.c-cta.my-button.my-button__full
+                +defaultButton({name: "Cancel", wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                +defaultButton({name: "Submit", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+    .guide-text-option Option : Employee member group
+    .MB000M
+        .my-component__wrap
+            .my-component.no-crop
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        +headline('font-w-light-56 font-m-light-28', "h2", "Verify Employee member group")
+        .my-component
+            .my-checkInfo
+                .my-checkInfo__title
+                    span.font-w-light-56.font-m-light-28 Almost complete to sign in
+                .my-checkInfo__list
+                    p.my-checkInfo__item
+                        span.font-w-normal-24.font-m-normal-16 we need simple check in order to validate your eligibility for the Employee Offers Program.
+                    p.my-checkInfo__item
+                        span.font-w-normal-24.font-m-normal-16 Please click the submit button to get the link for verifying. And go to inbox in your email.
+                    p.my-checkInfo__item.margin-top
+                        span.font-w-normal-24.font-m-normal-16 In case you turned back to this page because of no received mail, please check your spam box.
+        .my-component.margin-bottom
+            .my-formbox
+                +myInputForm([
+                    {
+                        type:"email", 
+                        label:"Email address", 
+                        id:"email",
+                        required:false,
+                        placeholder:"hieverybody@th-ab.de",
+                    },
+                    {
+                        type:"email", 
+                        label:"Email address", 
+                        id:"email",
+                        required:false,
+                        placeholder:"hieverybody@th-ab.de",
+                        warning: ['Email account is required.', 'Email address invalid.', 'Email address is not registered.'],
+                    },
+                ])
+            .button.c-cta.my-button.my-button__full
+                +defaultButton({name: "Cancel", wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                +defaultButton({name: "Submit", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+                    
+block content
+    // Component Markup
+    .c-wrapper
+        .component
+            .fluid-container
+                +MB000M

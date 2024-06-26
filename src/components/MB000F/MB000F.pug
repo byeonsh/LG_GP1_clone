@@ -1,0 +1,158 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_forms.pug
+
+block meta 
+    - var componentId = "MB000F"
+    - var componentName = "Member Block & Resend message"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- recaptcha
+    script(src="https://www.google.com/recaptcha/api.js?render=explicit&onload=onRecaptchaLoadCallback" async)
+    
+    script(type='text/javascript').
+        onRecaptchaLoadCallback = function(){
+            var clientId = grecaptcha.render('security-box', {
+                'sitekey': '6Le3NdgaAAAAAK8TXN0_DHQfP-FtiHoGCdiK1QQT',
+                'badge': 'inline',
+                'size': 'invisible',
+            });
+
+            grecaptcha.ready(function() {
+                grecaptcha.execute(clientId, {
+                    action: 'homepage'
+                })
+                .then(function(token) {
+                    // token
+                    document.getElementById('g-recaptcha').value = token;
+                });
+            });
+        }
+//- Member
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin myCaptcha({label, id, placeholder, warning= false})
+    .c-input-item
+        .my-captcha
+            .my-captcha__container
+                label.font-w-semibold-16.font-m-semibold-14(for=`${id}`)= label
+                .my-captcha__area
+                    .my-captcha__box
+                    .my-captcha__btnbox
+                        button.sr-only(type='button' class='my-captcha__button my-captcha__button--reload')
+                            span.sr-only refresh
+                        button.sr-only(type='button' class='my-captcha__button my-captcha__button--play')
+                            span.sr-only
+                input(type='text' id=`${id}`, placeholder=`${placeholder}` class=`${warning ? 'my-warn' : ''}`)&attributes(attributes)
+    +myMsg({warning: warning})
+
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+    if data.type === 'captcha'
+        +myCaptcha({label: data.label, id: data.id, placeholder: data.placeholder, warning: data.warning})
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+            if data.required
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+            else 
+                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+                    
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin MB000F
+    .MB000F
+        .my-component__wrap
+            .my-component
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        +headline('font-w-light-56 font-m-light-28', "h2", "My LG Account")
+        .my-component
+            .my-account-msg
+                .c-text-contents.my-account-msg__container
+                    .title.c-text-contents__headline.font-w-light-56.font-m-light-28
+                        .cmp-title(class=class1 data-cmp-data-layer="")
+                            h2.cmp-title__text Your account has been locked.
+                    .text.c-text-contents__bodycopy.font-w-normal-24.font-m-normal-16 
+                        p.cmp-text(data-cmp-data-layer="") You have entered your password incorrectly five times in a row. 
+                            br
+                            | To unlock your account, please reset your password by entering your email.
+        .my-component                            
+            .my-formbox
+                +myInputForm([
+                    {
+                        type:"email",
+                        label:"Email",
+                        id:"email",
+                        required:false,
+                        placeholder:"Email",
+                    },
+                    {
+                        type:"email",
+                        label:"Email",
+                        id:"email",
+                        required:false,
+                        placeholder:"Email",
+                        warning: ['Email account is required.', 'Email address invalid.', 'Email address is not registered.'],
+                    },
+                ])
+                
+                .my-signInform__text
+                    span.font-w-normal-16.font-m-normal-14 Security Text
+                    #security-box.security-box
+
+            .button.c-cta.my-button.my-button__full
+                +defaultButton({name: "Cancel", wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                +defaultButton({name: "Submit", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+                
+block content
+    // Component Markup
+    .c-wrapper
+        .component
+            .fluid-container
+                +MB000F

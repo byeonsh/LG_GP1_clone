@@ -1,0 +1,278 @@
+extends ../_common/_layout.pug
+include ../_common/_index.pug
+
+block meta 
+    - var componentId = "PD0053"
+    - var componentName = "Image with layer popup"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                        '.c-feature-list .c-text-contents__bodycopy' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            },
+                        ],
+                        '.c-feature-list__item' : [
+                            {
+                                'name' : 'Text Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-text-left', 'remove' : 'align-text-center, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-center', 'remove' : 'align-text-left, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-right', 'remove' : 'align-text-left, align-text-center'},
+                                ]
+                            },
+                        ],
+                    };
+
+    mixin featureTextContents
+        // block - text contents
+        .c-text-contents
+            .text.c-text-contents__eyebrow
+                span.cmp-text.font-w-normal-20.font-m-normal-14(data-cmp-data-layer="") Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
+            .title.c-text-contents__headline
+                h2.cmp-title.font-w-light-36.font-m-light-24(data-cmp-data-layer="") Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+            .text.c-text-contents__bodycopy
+                p.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
+
+    mixin featureList
+        .c-feature-list
+            .carousel.panelcontainer
+                .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                    .cmp-carousel__content.swiper-wrapper
+                            +featureItem(false, "box")
+                            +featureItem(true, "box")
+                            +featureItem(true, "text")
+                    .c-carousel__handler
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"prev"})
+                        +carouselPagination
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"next"})
+
+    mixin featureItem($video = false, $button)
+        .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+            // block - hero banner
+            .c-feature-list__item
+                .c-feature-list__item--top
+                    .image.c-image
+                        +printLazyImage('https://via.placeholder.com/464x300/999999/333333')
+                    +featureTextContents
+                .c-feature-list__item--bottom
+                    if $button
+                        if($button == "text")
+                            .button
+                                +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                        else if($button == "box")
+                            .button
+                                +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+                    if $video
+                        .button.c-media(data-media="dynamic")
+                            +video-action-button("brightcove")(class="black w-size24 m-size24")
+                                span.font-w-normal-16.font-m-normal-14 Watch the Full Movie
+
+    mixin interactiveTemplate
+        template
+            .c-interactive-images__popup(id="*pid*" role="dialog", aria-modal="true" aria-labelledby="*pid*-headline")
+                .c-interactive-images__popup-dialog
+                    button.button.c-interactive-images__popup-close(type="button", aria-controls="*pid*", data-cmp-data-layer="")
+                        span.cmp-button__text.sr-only close
+                    .c-image
+                        <picture>
+                            <source media="(max-width: 768px)" srcset="*img-m*">
+                            <source media="(min-width: 769px)" srcset="*img-w*">
+                            <img class="cmp-image__image c-image__img" src="*img-m*" alt="*title*" loading="lazy">
+                        </picture>
+                    .c-text-contents
+                        .title.c-text-contents__headline(id="*pid*-headline")
+                            .cmp-title.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="")
+                                strong *title*
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="") *description*
+                        .button *cta*
+
+    mixin interactiveImages(num)
+        if(num == 2) 
+            // GA4 - added json key for tagging
+            .c-interactive-images(data-modal-info=`{
+                "data":[
+                    {
+                        "pid": "product1",
+                        "img-w":"https://via.placeholder.com/100x100/777777/333333",
+                        "img-m":"https://via.placeholder.com/80x80/777777/333333",
+                        "title":"Electric Stacked Laundry Center 1",
+                        "description":"Choose the speed 14 cycle for when you're in a hurry",
+                        "cta-name": "Learn More",
+                        "cta-url": "#",
+                        "cta-target": "_blank",
+                        "position-w": {
+                            "left" : "10%",
+                            "top": "50%"
+                        },
+                        "position-m": {
+                            "left" : "20%",
+                            "top": "30%"
+                        },
+                        "link-name": "learn_more",
+                        "link-destination": "",
+                        "link-menu": "",
+                        "link-page-type": ""
+                    },
+                    {
+                        "pid": "product2",
+                        "img-w":"https://via.placeholder.com/100x100/777777/333333",
+                        "img-m":"https://via.placeholder.com/80x80/777777/333333",
+                        "title":"Electric Stacked Laundry Center 2",
+                        "description":"AI Direct Drive™|Choose the speed 14 cycle for when you're in a hurry",
+                        "cta-name": "Learn More",
+                        "cta-url": "#",
+                        "cta-target": "_blank",
+                        "position-w": {
+                            "left" : "90%",
+                            "top": "20%"
+                        },
+                        "position-m": {
+                            "left" : "50%",
+                            "top": "70%"
+                        },
+                        "link-name": "learn_more",
+                        "link-destination": "",
+                        "link-menu": "",
+                        "link-page-type": ""
+                    },
+                    {
+                        "pid": "product3",
+                        "img-w":"https://via.placeholder.com/100x100/777777/333333",
+                        "img-m":"https://via.placeholder.com/80x80/777777/333333",
+                        "title":"Electric Stacked Laundry Center 3",
+                        "description":"AI Direct Drive™|Choose the speed 14 cycle for when you're in a hurry",
+                        "cta-name": "Learn More",
+                        "cta-url": "#",
+                        "cta-target": "_blank",
+                        "position-w": {
+                            "left" : "50%",
+                            "top": "70%"
+                        },
+                        "position-m": {
+                            "left" : "50%",
+                            "top": "90%"
+                        },
+                        "link-name": "learn_more",
+                        "link-destination": "",
+                        "link-menu": "",
+                        "link-page-type": ""
+                    }
+                ]
+            }`)
+                .c-interactive-images__visual.image.c-image
+                    +printLazyPicture(`https://via.placeholder.com/720x1120/777777/333333`, `https://via.placeholder.com/1440x600/777777/333333`)
+                    .c-interactive-images__hotspot-area
+                        button.c-interactive-images__hotspot.cmp-button.dark-theme(type="button", id="product1-button", aria-controls="product1")
+                            span.sr-only Open
+                        button.c-interactive-images__hotspot.cmp-button(type="button", id="product2-button", aria-controls="product2")
+                            span.sr-only Open
+                        button.c-interactive-images__hotspot.cmp-button(type="button", id="product3-button", aria-controls="product3")
+                            span.sr-only Open
+        else 
+            .c-interactive-images(data-modal-info=`{
+                "data":[
+                    {
+                        "pid": "product4",
+                        "img-w":"https://via.placeholder.com/100x100/777777/333333",
+                        "img-m":"https://via.placeholder.com/80x80/777777/333333",
+                        "title":"Electric Stacked Laundry Center 3",
+                        "description":"AI Direct Drive™|Choose the speed 14 cycle for when you're in a hurry",
+                        "cta-name": "Learn More",
+                        "cta-url": "#",
+                        "cta-target": "_blank",
+                        "position-w": {
+                            "left" : "80%",
+                            "top": "20%"
+                        },
+                        "position-m": {
+                            "left" : "50%",
+                            "top": "90%"
+                        },
+                        "link-name": "learn_more",
+                        "link-destination": "",
+                        "link-menu": "",
+                        "link-page-type": ""
+                    }
+                ]
+            }`)
+                .c-interactive-images__visual.image.c-image
+                    +printLazyPicture(`https://via.placeholder.com/720x1120/777777/333333`, `https://via.placeholder.com/1440x600/777777/333333`)
+                    .c-interactive-images__hotspot-area
+                        button.c-interactive-images__hotspot.cmp-button(type="button",  id="product4-button", aria-controls="product4")
+                            span.sr-only Open
+
+    // Type 1. Swiper
+    .guide-text-option Option1. Popup Left
+    .c-wrapper.PD0053.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +component-title-area({
+                    alignment:"",
+                    headline : {
+                        text : "Washing Machine",
+                    }
+                })(class="c-region-header--vacate-side")
+                +interactiveTemplate
+                +interactiveImages(2)
+                +featureList
+
+    .guide-text-option Option2. Popup Right
+    .c-wrapper.PD0053.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +component-title-area({
+                    alignment:"",
+                    headline : {
+                        text : "Washing Machine",
+                    }
+                })(class="c-region-header--vacate-side")
+                +interactiveTemplate
+                +interactiveImages(1)       
+                +featureList

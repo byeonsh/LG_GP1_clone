@@ -1,0 +1,26 @@
+mixin toastPopup(params, aria)
+    - let data = {...params}
+        if aria
+            // WAI aria ADD
+            div(role="alert" aria-live="assertive" aria-atomic="true" class="toast-aria")
+                ul.toast-popup(id=`${aria}`)
+                    each set in data
+                        li.toast-popup__item(class=`toast-popup__item--${set.type}`)
+                            .toast-popup__container
+                                i.toast-popup__icon(class=`toast-popup__icon--${set.type}`)
+                                    span.sr-only= set.type
+                                .toast-popup__title(id="aria-label") !{set.text}
+                            if set.remove
+                                button(type='button' class='toast-popup__remove' aria-labelledby="aria-label")
+                                    span.sr-only remove
+        else
+            ul.toast-popup
+                each set in data
+                    li.toast-popup__item(class=`toast-popup__item--${set.type}`)
+                        .toast-popup__container
+                            i.toast-popup__icon(class=`toast-popup__icon--${set.type}`)
+                                span.sr-only= set.type
+                            .toast-popup__title !{set.text}
+                        if set.remove
+                            button(type='button' class='toast-popup__remove')
+                                span.sr-only remove

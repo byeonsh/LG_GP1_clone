@@ -1,0 +1,300 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_headline.pug
+include ../_common/_sns-list.pug
+include ../_common/_video.pug
+include ../_common/_hero-banner.pug
+include ../_common/_spec-info.pug
+include ../_common/_pop-msg.pug
+block meta 
+    - var componentId = "GN0007"
+    - var ST0001 = "ST0001"
+    - var componentName = "Press & Media (Detail)"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+    link(rel="stylesheet", href=`../${ST0001}/${ST0001}`+".css")
+
+block scripts
+    //script(src=componentId+".js" type="module")
+    //script(src=`../${ST0001}/${ST0001}`+".js" type="module")
+
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-al.html" data-link-url="") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                 script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                        '.c-detail-content__img': [
+                            {
+                                'name' : 'BG Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'bg-white', 'remove' : 'bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-lightgray', 'remove' : 'bg-white, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-darkgray', 'remove' : 'bg-white, bg-lightgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-black', 'remove' : 'bg-white, bg-lightgray, bg-darkgray'},
+                                ]
+                            },
+                        ],
+                    }
+    
+    mixin image(size1, size2)
+        // block : image
+        .image.c-image
+            +printLazyPicture(`https://via.placeholder.com/${size1}/999999/333333`, `https://via.placeholder.com/${size2}/999999/333333`)
+            if block
+                block
+    mixin exImage
+        // block : image
+        .image.c-image
+            +printLazyPicture(`../../assets/image/exImg.svg`)
+            if block
+                block
+
+    mixin video-contents(size1, size2, videoType)
+        // Display only when video is registered
+        // block : media contents
+        .c-media-contents
+            // Video case
+            +image(size1, size2)
+                +floating-video(videoType)
+
+    mixin resourceList(typeList)
+        ul.downloadList.c-resources__item
+            each data, index in typeList
+                li
+                    a(href="#" role="download")
+                        .downloadList__item
+                            .c-resources__item--extension(class=`c-resources__item--extension-${data}`)
+                                span.sr-only=`extension : ${data}`
+                            if index == 0
+                                = `Download Title is overflowing.${data}`
+                            else
+                                = `Download Title.${data}`
+                        .c-resources__item--download-button.c-resources__item--download-button--icon
+                            .c-icon-button.c-icon-button--download
+                                span.sr-only Download
+    mixin multimedia-download        
+        .c-doc-date.c-text-contents__date
+            span.cmp-date.doc.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") LG Story
+            span.cmp-date.date.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") 31/03/2022
+            
+        .c-sns-share.c-print-area
+            .c-tooltip.c-downloadList
+                .button
+                    //- +iconButton({type:"link",comment:false,color:"black",class:"download",name:"Download"})
+                    +iconButton({type:"button", color:"black",class:"download", otherClass:"c-tooltip__button", name:"Download", ariaControls:"download", expanded:"false"})
+                .c-tooltip__container.top-right(id="download")
+                    .c-tooltip__contents
+                        //- download resource list
+                        //- +resourceList(["jpg", "jpg", "pdf", "pdf", "dwg", "zip", "txt"])
+                        +resourceList(["pdf", "pdf", "dwg", "zip", "txt"])
+                //- block : tooltip
+            .c-tooltip.c-snsList
+                .button
+                    +iconButton({type:"button",color:"black",class:"share",otherClass:"c-tooltip__button", name:"Share", ariaControls:"snsShare", expanded:"false"})
+                    
+                .c-tooltip__container.top-right(id="snsShare")
+                    // 2022-11-04
+                    .c-tooltip__contents
+                        // sns list
+                        +snsList
+                        
+    .guide-text-type Press Detail Guide
+    .c-wrapper.margin-top.margin-bottom.align-center(class=componentId)
+        //- block : ST0003 
+        .component
+            .cmp-container.align-center
+                //- block : text-contents
+                .c-detail-area
+                    .c-text-contents
+                        .title.c-text-contents__headline
+                            // 2022-11-18 change the default font size
+                            h2.cmp-title.font-w-semibold-56.font-m-semibold-28(data-cmp-data-layer="") LG's 2023 soundbars offer premium audio and ai features with sustainable designs
+                            p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") Max row 2 Sub title Seoul is shining brighter than ever in September thanks to the inspiring artworks brought to life by LG OLED. Sub Title Seoul is shining brighter than ever in September.
+                        .contents.c-text-contents__contentsline
+                            +multimedia-download
+                           
+                .c-detail-area-contents.c-text-contents
+                    .c-part.c-detail-content__type02
+                        p.parag.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") LONDON, Apr. 6, 2021 — LG Electronics (LG) is commencing the worldwide rollout of the 2021 LG Soundbar lineup, with new models delivering a more premium audio experience, versatility and convenient control while upping the ante with eco-consciousness designs and packaging. The new lineup offers high-quality audio, easy connectivity, smart functionality and stylish aesthetics with a modern look that are designed to complement LG's stunning TVs and works well with any décor.
+                    
+                    .c-part.c-detail-content__type02
+                        .c-detail-content__img.bg-white
+                            +image('310x163', '952x500')
+                            //- img(style="opacity:0" src="https://via.placeholder.com/952x538/ffffff0/000000", alt="World Economic Forum Recognizes LG for Innovative Digital Transformation of Its Home Appliance Manufacturing Facility in South Korea")
+                    
+                    .c-part.c-detail-content__type03
+                        .c-detail-content__txt
+                            .title.c-text-contents__title.font-w-normal-32.font-m-normal-20
+                                h4.cmp-title(data-cmp-data-layer="") About LG Electronics Home Entertainment Company
+                            .text.c-text-contents__bodycopy
+                                p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") The LG Home Entertainment Company is an industry leader in televisions and audio-video systems and a globally recognised innovator for its leadership in OLED TVs which is revolutionising the premium TV category. LG is committed to improving customers' lives with innovative home entertainment products led by award-winning OLED TVs and QNED Mini LED TVs featuring Quantum Dot NanoCell technology and sound solutions developed in partnership with Meridian Audio. For more news on LG, visit www.LGnewsroom.com.
+                        .c-detail-content__txt
+                            .title.c-text-contents__title.font-w-normal-32.font-m-normal-20
+                                h4.cmp-title(data-cmp-data-layer="") About LG Electronics Home Entertainment Company
+                            .text.c-text-contents__bodycopy
+                                p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") The LG Home Entertainment Company is an industry leader in televisions and audio-video systems and a globally recognised innovator for its leadership in OLED TVs which is revolutionising the premium TV category. LG is committed to improving customers' lives with innovative home entertainment products led by award-winning OLED TVs and QNED Mini LED TVs featuring Quantum Dot NanoCell technology and sound solutions developed in partnership with Meridian Audio. For more news on LG, visit www.LGnewsroom.com.
+                                p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") When it comes to performance, LG's 2021 soundbars inherit all the strengths of their predecessors with many of the new models featuring Meridian Audio tuning and Meridian technology, when in Music Mode for an exceptionally authentic listening experience. A new feature, Meridian Horizon technology, is the result of LG's long-term partnership with Meridian Audio.2 This innovation up-mixes two channel stereo content into immersive, multichannel audio to provide audiences with a truly immersive listening experience regardless of their position or location in the room.
+                        .c-detail-content__txt
+                            .sub-title.c-text-contents__sub-title.font-w-normal-32.font-m-normal-20
+                                h5.cmp-sub-title(data-cmp-data-layer="") LG's sophisticated AI features further elevate the user experience.
+                            .text.c-text-contents__bodycopy
+                                p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") AI Room Calibration offers optimal sound in any environment, using spatial awareness technology to measure a room's dimensions then customising the soundbar's audio settings in accordance with the specific characteristics of the space. AI Sound Pro uses adaptive sound control to automatically adjust frequency range and sound field extension, depending on which genre of content the user is watching: news, music or cinema.
+                
+                // hash       
+                .c-detail-hash
+                    +defaultButton({name: '#tag name', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: true})
+                    +defaultButton({name: '#innovative', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: true})
+                    +defaultButton({name: '#Smart TV', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: true})
+                    +defaultButton({name: '#TV', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: true})
+                // pagination
+                .c-pagination.c-control-link
+                    ul
+                        li 
+                            span.to.to-prev Previous
+                            .to-contents
+                                .prev-contents
+                                    a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") LG Showcases Real-Life Benefits Of Lg Home At Innofest Europe 2019
+                                    span.to-date 31/03/2022
+                        li 
+                            span.to.to-next Next
+                            .to-contents
+                                .next-contents
+                                    a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Tax Strategy For The Year Ending 31 Dec 2021
+                                    span.to-date 31/03/2022
+                // back-to-list
+                .button.c-cta.c-back-to-list
+                    .c-back-to-list-box
+                        +defaultButton({name: 'Back to List', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+    
+    .guide-text-type Press Detail Contants
+    .c-wrapper.margin-top.margin-bottom.align-center(class=componentId)
+        // type-announcement
+        .component
+            .cmp-container.align-center
+                //- block : text-contents
+                .c-detail-area
+                    .c-text-contents
+                        .title.c-text-contents__headline
+                            // 2022-11-18 change the default font size
+                            h2.cmp-title.font-w-semibold-56.font-m-semibold-28(data-cmp-data-layer="") LG's 2023 soundbars offer premium audio and ai features with sustainable designs
+                            p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") Max row 2 Sub title Seoul is shining brighter than ever in September thanks to the inspiring artworks brought to life by LG OLED. Sub Title Seoul is shining brighter than ever in September.
+                        .contents.c-text-contents__contentsline
+                            +multimedia-download
+
+                .c-detail-area-contents.c-text-contents 
+                    .c-part.c-detail-content__type01
+                        .c-detail-content__img.bg-white
+                            +exImage
+                        .c-detail-content__txt.text.c-text-contents__subcopy 
+                            p.cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="") World Economic Forum Recognizes LG for Innovative Digital Transformation of Its Home Appliance Manufacturing Facility in South Korea
+                    .c-part.c-detail-content.text.c-text-contents__bodycopy
+                        p.parag.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") LONDON, Apr. 6, 2021 — LG Electronics (LG) is commencing the worldwide rollout of the 2021 LG Soundbar lineup, with new models delivering a more premium audio experience, versatility and convenient control while upping the ante with eco-consciousness designs and packaging. The new lineup offers high-quality audio, easy connectivity, smart functionality and stylish aesthetics with a modern look that are designed to complement LG's stunning TVs and works well with any décor.
+                        p.parag.cmp-text(data-cmp-data-layer="").font-w-normal-24.font-m-normal-16 New for this year, the company's soundbars allow users to take advantage of LG TV's AI Sound Pro feature. Audio from the TV is played through the soundbar via TV Sound Mode Share, delivering the superior audio processing power of AI Sound Pro on the more capable speakers of the new soundbars. LG's soundbars now offer all of the same sound modes as its latest TVs, allowing users to easily switch between the soundbar and the TV using the TV remote.
+                        p.parag.cmp-text(data-cmp-data-layer="").font-w-normal-24.font-m-normal-16 The 2021 lineup is compatible with multiple voice assistants including Google Assistant, Amazon Alexa and Siri. 1 Now it's easier than ever to control devices and play one's favourite music from compatible device and services. And with support for Apple AirPlay 2 , customers can stream, control, and share their favourite music and other content directly from their iPhone, iPad, or Mac.
+                    .c-part.c-detail-content__type02
+                        .c-detail-content__img.bg-white
+                            +image('310x163', '952x500')
+                    .c-part.c-detail-content__type03
+                        .c-detail-content__txt
+                            .title.c-text-contents__title.font-w-normal-32.font-m-normal-20
+                                h4.cmp-title(data-cmp-data-layer="") About LG Electronics Home Entertainment Company
+                            .text.c-text-contents__bodycopy
+                                p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") The LG Home Entertainment Company is an industry leader in televisions and audio-video systems and a globally recognised innovator for its leadership in OLED TVs which is revolutionising the premium TV category. LG is committed to improving customers' lives with innovative home entertainment products led by award-winning OLED TVs and QNED Mini LED TVs featuring Quantum Dot NanoCell technology and sound solutions developed in partnership with Meridian Audio. For more news on LG, visit www.LGnewsroom.com.
+                        .c-detail-content__txt
+                            .title.c-text-contents__title.font-w-normal-32.font-m-normal-20
+                                h4.cmp-title(data-cmp-data-layer="") About LG Electronics Home Entertainment Company
+                            .text.c-text-contents__bodycopy
+                                p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") The LG Home Entertainment Company is an industry leader in televisions and audio-video systems and a globally recognised innovator for its leadership in OLED TVs which is revolutionising the premium TV category. LG is committed to improving customers' lives with innovative home entertainment products led by award-winning OLED TVs and QNED Mini LED TVs featuring Quantum Dot NanoCell technology and sound solutions developed in partnership with Meridian Audio. For more news on LG, visit www.LGnewsroom.com.
+                                p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") When it comes to performance, LG's 2021 soundbars inherit all the strengths of their predecessors with many of the new models featuring Meridian Audio tuning and Meridian technology, when in Music Mode for an exceptionally authentic listening experience. A new feature, Meridian Horizon technology, is the result of LG's long-term partnership with Meridian Audio.2 This innovation up-mixes two channel stereo content into immersive, multichannel audio to provide audiences with a truly immersive listening experience regardless of their position or location in the room.
+                        .c-detail-content__txt
+                            .sub-title.c-text-contents__sub-title.font-w-normal-32.font-m-normal-20
+                                h5.cmp-sub-title(data-cmp-data-layer="") LG's sophisticated AI features further elevate the user experience.
+                            .text.c-text-contents__bodycopy
+                                p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") AI Room Calibration offers optimal sound in any environment, using spatial awareness technology to measure a room's dimensions then customising the soundbar's audio settings in accordance with the specific characteristics of the space. AI Sound Pro uses adaptive sound control to automatically adjust frequency range and sound field extension, depending on which genre of content the user is watching: news, music or cinema.
+                    .c-part.c-detail-content__type04
+                        ul.c-detail-content-lists.list.c-text-contents__list
+                            li.cmp-list.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") Models SP11RA, SP9YA, SP8YA are compatible with multiple voice assistants.
+                                .list-detail-contents.font-w-normal-16.font-m-normal-14 The LG Home Entertainment Company is an industry leader in televisions and audio-video systems and a globally recognised innovator for its leadership in OLED TVs which is revolutionising the premium TV category.
+                            li.cmp-list.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") Models SP11RA, SP9YA, SP8YA, SP7Y, SPD7Y feature Meridian Horizon.
+                            li.cmp-list.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") Model SP7Y uses jersey fabric made from PET bottles.
+                            li.cmp-list.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") Models SP11RA, SP9YA, SP8YA, SP7Y are certified as Eco Products by SGS.
+                    .c-part.c-detail-content
+                        .c-detail-content__img.bg-white
+                            +image('310x163', '952x500')
+                        .c-detail-content__txt.text.c-text-contents__bodycopy
+                            p.parag.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") Many of the new models are Hi-Res Audio certified, insuring lossless playback at 24bit/96kHz with all the vibrancy and nuance of the original studio recording. Upgraded user convenience and easy connectivity are built into the 2021 LG Soundbar lineup with HDMI eARC support enabling a higher bitrate, high resolution content and uncompressed Dolby Atmos® audio with just one cable, while USB playback and Bluetooth streaming offer more convenient ways for users to enjoy their favourite audio content on the latest models.
+                    .c-part.c-detail-content__type05
+                        .c-detail-content__video
+                            +video-contents('310x175', '952x538', 'brightcove')
+                    .c-part.c-detail-content__type06
+                        .c-detail-content__informaion
+                            ul.c-info-list.list.c-text-contents__list
+                                li.cmp-lis.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") Media Contacts:
+                                li.cmp-lis.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") LG-One UK
+                                li.cmp-lis.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") Ellie Wallis
+                                li.cmp-lis.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") #[a(href="mailto:Wallis@lg-one.com" role="button") Ellie.Wallis@lg-one.com]
+                                li.cmp-lis.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") 
+                                    span +44 207 413 3449
+                    // iframe
+                    style.
+                        .iframe-type1 {width: 100%; max-width: 1440px; margin: 0 auto; height:300px;}
+                        .iframe-type1 iframe {width:100%; height: 100%; background-color: #f1d0b1;}
+                    .iframe-type1
+                        iframe(name='mainFrame' width='100%' height='100%' src='' frameborder='0')
+
+                // hash                        
+                .c-detail-hash
+                    +defaultButton({name: '#tag name', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: true})
+                    +defaultButton({name: '#innovative', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: true})
+                    +defaultButton({name: '#Smart TV', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: true})
+                    +defaultButton({name: '#TV', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: true})
+                
+                // pagination
+                .c-pagination.c-control-link
+                    ul
+                        li 
+                            span.to.to-prev Previous
+                            .to-contents
+                                .prev-contents
+                                    a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") LG Showcases Real-Life Benefits Of Lg Home At Innofest Europe 2019
+                                    span.to-date 31/03/2022
+                        li 
+                            span.to.to-next Next
+                            .to-contents
+                                .next-contents
+                                    a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Tax Strategy For The Year Ending 31 Dec 2021
+                                    span.to-date 31/03/2022
+                
+                //back-to-list
+                .button.c-cta.c-back-to-list
+                    .c-back-to-list-box
+                        +defaultButton({name: 'Back to List', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})

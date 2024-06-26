@@ -1,0 +1,165 @@
+extends ../_common/_layout.pug
+include ../_common/_image.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_carousel.pug
+include ../_common/_video.pug
+
+block meta 
+    - var componentId = "ST0049"
+    - var componentName = "Block Image"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'BG Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'bg-default', 'remove' : 'bg-white, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-white', 'remove' : 'bg-default, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-lightgray', 'remove' : 'bg-default, bg-white, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-darkgray', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-black', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-darkgray'},
+                                ]
+                            },
+                        ],
+                        '.c-hero-side .c-text-contents' : [
+                            {
+                                'name' : 'Text Align (Desktop Only)',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-text-left', 'remove' : 'align-text-center, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-center', 'remove' : 'align-text-left, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-right', 'remove' : 'align-text-left, align-text-center'},
+                                ]
+                            }
+                        ],
+                        '.c-text-contents__disclaimer' : [
+                            {
+                                'name' : 'Text Align (Desktop Only)',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-text-left', 'remove' : 'align-text-center, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-center', 'remove' : 'align-text-left, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-right', 'remove' : 'align-text-left, align-text-center'},
+                                ]
+                            },
+                        ],
+                        '.c-text-contents__bodycopy, .c-text-contents__disclaimer' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            }
+                        ],
+                    };
+    mixin printLazyImage2(img, alt="picture")
+        //- 상위에 .image 클래스를 추가해야합니다. (주로 .c-image)
+        .cmp-image.fit-content(data-cmp-data-layer='')
+            img.cmp-image__image.c-image__img(src=img, alt=alt, loading="lazy")&attributes(attributes) 
+    mixin block-image2(size)
+        // block : image
+        .image.c-image
+            +printLazyImage2(`../../assets/image/qr-cn-uwechat.svg`)
+            if block 
+                block  
+
+    mixin block-image(size)
+        // block : image
+        .image.c-image
+            +printLazyImage(`https://via.placeholder.com/${size}/999999/333333`)
+            if block 
+                block
+    mixin block-image-contents(size, useVideo)
+        +block-image(size)
+            if useVideo
+                // Display only when video is registered            
+                // block : media 
+                //- +floating-video
+    mixin block-image-contents2(size, useVideo)
+        +block-image2(size)
+            if useVideo
+                // Display only when video is registered            
+                // block : media 
+                //- +floating-video
+
+    mixin block-text-contents(params)
+        // block : text-contents
+        .c-text-contents
+            .title.c-text-contents__headline
+                +headline('font-w-light-56 font-m-light-28')
+            .text.c-text-contents__bodycopy
+                .cmp-text(class='font-w-normal-24 font-m-normal-16' data-cmp-data-layer="") 
+                    p Body text can be up to 350 characters. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla
+            // block :cta 
+            .button.c-cta
+                +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+            .button.c-cta
+                +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+
+    mixin block-disclaimer-contents
+        .c-text-contents
+            .text.c-text-contents__disclaimer
+                .cmp-text.font-w-normal-14i.font-m-normal-14i(data-cmp-data-layer="")
+                    p Disclaimer text can be up to 100 characters. Lorem ipsum dolor sit amet, consectetuer adipiscing.
+
+    // Component Markup
+    .c-wrapper.ST0049.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                .carousel.panelcontainer
+                    .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                        .cmp-carousel__content.swiper-wrapper
+                            .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                                    .c-hero-side
+                                        +block-image-contents2('240x180', flag)
+                                        +block-text-contents
+                            each flag in [true, false, false]
+                                .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                                    .c-hero-side
+                                        +block-image-contents('240x180', flag)
+                                        +block-text-contents
+                        .c-carousel__handler
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"prev"})
+                            +carouselPagination
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"next"})
+                +block-disclaimer-contents

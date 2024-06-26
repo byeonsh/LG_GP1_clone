@@ -1,0 +1,238 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+
+block meta 
+    - var componentId = "CS0088"
+    - var componentName = "Parts list"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js") 
+    script(src=componentId+".js" type="module")
+
+block content
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+
+    mixin searchBar(params)
+        //- options : title, placeholder, infoText
+        - let options = {title: `Search by refrigerator model`, placeholder: `Please type model number`, infoText: undefined, ...params}
+        .searchbar
+            p.font-m-normal-16.font-w-normal-24 #{options.title}
+            #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                .searchBar__searchInner
+                    form.searchBar__form(autocomplete='off' _lpchecked='1' action='')
+                        span.fieldIcons__root
+                            span.fieldIcons__input
+                                input#textInput__input.textInput__input.field__input.font-m-normal-16.font-w-normal-20(type="text" name='search_query' value='' role='searchbox' aria-label="Search" placeholder=`${options.placeholder}`)
+                                button(type="button").c-button-delete delete button
+                            button(type="button" title="search" aria-label="" aria-describedby="").fieldIcons__before.c-hidden-mo
+                                span.icon__root
+                                    span.sr-only Search
+                        p.message__root
+                        .searchBar__SearchAutocompleteWrapper
+            if options.infoText
+                p.searchBar__infoText.font-m-normal-12.font-w-normal-16 #{options.infoText}
+
+    mixin noSearchResult(title, subText)
+        .c-no-result 
+            .c-no-result__wrap
+                span.c-no-result__icon 
+                p.font-m-normal-16.font-w-normal-20 #{title}
+                p.c-no-result__subtext.font-m-normal-12.font-w-normal-16 #{subText}
+
+    mixin searchResultTitle(product, productCode)
+        .c-search-result__title.font-m-normal-20.font-w-light-36 
+            a(href="" role="button" data-link-name)
+                .c-btn-arrow
+            div
+                | #{product} for 
+                span #{productCode}
+
+    mixin searchResultInfo(product, modelNumber, partNumber, infoText= `*If your part is not in stock, parts distributors are listed at parts & accessories.`)
+        .c-search-result__info 
+            .c-product__image
+                +printLazyPicture('https://via.placeholder.com/300x300/ccc/eee/?text=300xFlexible', 'https://via.placeholder.com/300x300/ccc/eee/?text=300xFlexible')
+
+                //- img(src="https://placeimg.com/300/300/nature/grayscale", alt="alt text", loading="lazy")
+            .c-product__info.font-m-normal-16.font-w-normal-20
+                dl
+                    dt #{product} model
+                    dd #{modelNumber}
+                dl
+                    dt Part number
+                    dd #{partNumber}
+                .c-button.c-cta
+                    +defaultButton({name: 'Buy now', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+                p.font-m-normal-12.font-w-normal-16 #{infoText}
+
+    mixin searchResultLink(modelNumber, product, productCategory)
+        .c-search-result__link
+            a(href="" role="button" data-link-name)
+                p.font-m-normal-20.font-w-light-36 
+                    | Need help installing your 
+                    span #{modelNumber}
+                    | ?
+                p Visit our help library article #{product} installation - #{productCategory}.
+                .c-btn-arrow
+
+    mixin searchResultBox(params)
+        //- params : Object type
+        //- options : product, productCode, modelNumber, partNumber, infoText, productCategory
+        - let options = {infoText: `*If your part is not in stock, parts distributors are listed at parts & accessories.`, ...params}
+        .c-search-result__box
+            +searchResultTitle(options.product, options.productCode)
+            +searchResultInfo(options.product, options.modelNumber, options.partNumber, options.infoText)
+            +searchResultLink(options.modelNumber, options.product.toLowerCase(), options.productCategory)
+
+    mixin tableContent(t)
+        if t == 1
+            td text
+        else if t == 2
+            td
+                // GA4
+                a(href='#' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") A Lorem ipsum dolor sit amet, consectetur cras amet.
+        else if t == 3
+            td
+                img(src="https://placeimg.com/150/150/nature/grayscale", alt="alt text", loading="lazy")
+        else 
+            td
+                // GA4
+                a(href='#' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 
+                    img(src="https://placeimg.com/150/150/nature/grayscale", alt="alt text", loading="lazy")
+
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                        ]
+                    };
+
+    
+
+    .guide-text-type search bar
+    .guide-text-option Type 1
+    .c-wrapper.CS0088.type-text
+        .component.type-box
+            .CS0088__container
+                +searchBar({title: `Search by refrigerator model`, placeholder: `Please type model number`, infoText: `*Results are limited to 10. If your model doesn't appear, try to type more characters of your model. Search by refrigerator model.`})
+                //- 230906 mixin edit
+                //- .searchbar
+                //-     p.font-m-normal-16.font-w-normal-24 Search by refrigerator model
+                //-     #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                //-         .searchBar__searchInner
+                //-             form.searchBar__form(autocomplete='off' _lpchecked='1' action='')
+                //-                 span.fieldIcons__root
+                //-                     span.fieldIcons__input
+                //-                         label(for="textInput__input").sr-only Search
+                //-                         input#textInput__input.textInput__input.field__input.font-m-normal-16.font-w-normal-20(type="text" name='search_query' value='' role='searchbox' aria-label="" placeholder='Please type model number')
+                //-                         button(type="button").c-button-delete delete button
+                //-                     button(type="button" title="search" aria-label="" aria-describedby="").fieldIcons__before.c-hidden-mo
+                //-                         span.icon__root
+                //-                             span.sr-only Search
+                //-                 p.message__root
+                //-                 .searchBar__SearchAutocompleteWrapper
+                //-     p.searchBar__infoText.font-m-normal-12.font-w-normal-16 *Results are limited to 10. If your model doesn't appear, try to type more characters of your model. Search by refrigerator model.
+
+                +noSearchResult(`No results`, `TIP : try entering another keyword`)
+                //- .c-no-result 
+                //-     .c-no-result__wrap
+                //-         span.c-no-result__icon 
+                //-         p.font-m-normal-16.font-w-normal-20 No results
+                //-         p.c-no-result__subtext.font-m-normal-12.font-w-normal-16 TIP : try entering another keyword
+
+
+    //  search result product. 
+    .guide-text-type box 
+    .c-wrapper.CS0088.type-text
+        .component.type-box
+            .CS0088__container
+                +searchResultBox({product: `Water filter`, productCode: `LFX25974SW`, modelNumber: `LT500P`, partNumber: `5231JA2002A` , productCategory: `refrigerator` })
+                //- .c-search-result__box 
+                //-     .c-search-result__title.font-m-normal-20.font-w-light-36 
+                //-         a(href="" role="button" data-link-name)
+                //-             .c-btn-arrow
+                        
+                //-         div
+                //-             | Water filter for 
+                //-             span LFX25974SW
+                //-     .c-search-result__info 
+                //-         .c-product__image
+                //-             +printLazyPicture('https://via.placeholder.com/300x300/ccc/eee/?text=300xFlexible', 'https://via.placeholder.com/300x300/ccc/eee/?text=300xFlexible')
+
+                //-             //- img(src="https://placeimg.com/300/300/nature/grayscale", alt="alt text", loading="lazy")
+                //-         .c-product__info.font-m-normal-16.font-w-normal-20
+                //-             dl
+                //-                 dt Water filter model
+                //-                 dd LT500P
+                //-             dl
+                //-                 dt Part number
+                //-                 dd 5231JA2002A
+                //-             .c-button.c-cta
+                //-                 +defaultButton({name: 'Buy now', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+                //-             p.font-m-normal-12.font-w-normal-16 *If your part is not in stock, parts distributors are listed at parts &amp; accessories.
+                //-     .c-search-result__link
+                //-         a(href="" role="button" data-link-name)
+                //-             p.font-m-normal-20.font-w-light-36 
+                //-                 | Need help installing your 
+                //-                 span LT500P
+                //-                 | ?
+                //-             p Visit our help library article water filter installation - refrigerator.
+                //-             .c-btn-arrow
+                        
+
+    //  search result table. 
+    .guide-text-type table
+    .c-wrapper.CS0088
+        .component
+            .cmp-container
+                .c-table.align-text-center
+                    table
+                        caption Table Caption
+                        thead
+                            tr
+                                th(scope='col') A
+                                th(scope='col') B
+                                th(scope='col') C
+                        tbody
+                            // Depending on the input data, text or images are output. There may or may not be a link.
+                            tr 
+                                +tableContent(1)
+                                +tableContent(1)
+                                +tableContent(1)
+                            tr
+                                +tableContent(1)
+                                +tableContent(1)
+                                +tableContent(1)
+                            tr
+                                +tableContent(1)
+                                +tableContent(1)
+                                +tableContent(1)
+                            tr
+                                +tableContent(1)
+                                +tableContent(1)
+                                +tableContent(1)

@@ -1,0 +1,805 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_cs-product-category-select.pug
+include ../_common/_cs-form.pug
+
+block meta 
+    - var componentId = "CS0065"
+    - var componentName = "CS Email Us_Privacy"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    include ../CS0000/CS-inc.pug
+
+    mixin formCheckbox2_1(label, name, val, id, count = "false", disabled = false, link=true)
+        .c-checkbox-item
+            label.checkbox(for=`${id}`)
+                if(disabled)
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="", disabled="disabled")&attributes(attributes)
+                else
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="")&attributes(attributes)
+
+                if(label)
+                    span.label.font-m-normal-14.font-w-normal-16= label
+                else
+                    if block
+                        span.label
+                            block
+
+    -
+        const prdCategoryName = [
+            {
+                'prdName':'TV/Audio/Video',
+                'img':'../../assets/icon/icon-tv-audio-video-80-80_normal.svg',
+            },
+            {
+                'prdName':'Appliances',
+                'img': '../../assets/icon/icon-appliances-80-80_normal.svg',
+            },
+            {
+                'prdName':'Computer products',
+                'img': '../../assets/icon/icon-computer-80-80_normal.svg',
+            },
+            {
+                'prdName':'Mobile & Tablets',
+                'img': '../../assets/icon/icon-mo-tablet-80-80_normal.svg',
+            },
+            {
+                'prdName':'Information display',
+                'img': '../../assets/icon/icon-display-80-80_normal.svg',
+            },
+            {
+                'prdName':'Air conditioning system',
+                'img': '../../assets/icon/icon-aircon-80-80_normal.svg',
+            },
+        ]
+
+    // When using separate gallery component
+    mixin galleryItem(type)
+        case type
+            when 1
+                .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item" tabindex="0")
+                    .c-prd-register
+                        .c-prd-register__prdinfo
+                            +printLazyPicture('https://via.placeholder.com/80x80/ccc/000/?text=80x80', 'https://via.placeholder.com/132x132/ccc/000/?text=132x132')
+                            .c-prd-register__prdtxt
+                                p.font-m-normal-12.font-w-normal-16 Your registed product
+                                .c-prd-tit.font-m-normal-20.font-w-normal-20 LG NANO76 70inch 4K SMART NANOCELL TV (70NANO766QA)
+                                .button.c-cta
+                                    // role="link" before login, role="dialog" after login
+                                    +defaultButton({name: 'Choose to inquiry', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: "none"})
+
+            when 2
+                .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item" tabindex="0")
+                    .c-prd-register
+                        .c-prd-register__prdinfo
+                            +printLazyPicture('https://via.placeholder.com/80x80/ccc/000/?text=80x80', 'https://via.placeholder.com/132x132/ccc/000/?text=132x132')
+                            .c-prd-register__prdtxt
+                                p.font-m-normal-12.font-w-normal-16 Your registed product
+                                .c-prd-tit.font-m-normal-20.font-w-normal-20 LG NANO76 70inch 4K SMART NANOCELL TV (70NANO766QA)
+                                .button.c-cta
+                                    +defaultButton({name: 'Choose to inquiry', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: "none"})
+
+            // 20230531 When the area is a link
+            when 3
+                .cmp-carousel__item.swiper-slide.c-carousel__item.emptyCard.c-hidden-mo(data-cmp-data-layer="" data-cmp-hook-carousel="item" tabindex="0")
+                    // Insert emptycard when data is less than 3 (added class .emptyCard)
+                    .c-prd-register
+                        a.c-prd-register__to-list(href="#" aria-label="Go to product registration page" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 
+            when 4 
+                .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item" tabindex="0")
+                    .c-prd-register
+                        .c-prd-register__prdinfo
+                            +printLazyPicture('https://via.placeholder.com/80x80/ccc/000/?text=80x80', 'https://via.placeholder.com/132x132/ccc/000/?text=132x132')
+                            .c-prd-register__prdtxt
+                                p.font-m-normal-12.font-w-normal-16 Register products with ThinQ
+                                .c-prd-tit.font-m-normal-20.font-w-normal-20 LG NANO76 70inch 4K SMART NANOCELL TV (70NANO766QA)
+                                .button.c-cta
+                                    +button({color:"black", name: "QUICK REGISTERATION", class:'toastOpen'})(aria-describedby="toastOpen")
+            // 20230531 When the area is not a link
+            when 5
+                .cmp-carousel__item.swiper-slide.c-carousel__item.emptyCard.c-hidden-mo(data-cmp-data-layer="" data-cmp-hook-carousel="item" tabindex="0")
+                    // Insert emptycard when data is less than 3 (added class .emptyCard)
+                    .c-prd-register
+                        p.c-prd-register__to-list   
+
+        if block
+            block
+
+    mixin carouselPaginationUI 
+        // 23.02.14 modified markup - added ".c-carousel__handler--dial", ".c-carousel__handler--away-from-carousel"
+        .c-carousel__handler.c-carousel__handler--dial.c-carousel__handler--away-from-carousel
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"prev"})
+            +carouselPagination
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"next"})
+    
+    mixin formCheckbox(label, name, val, id, count = "false", disabled = false, link=true)
+        .c-checkbox-item
+            label.checkbox(for=`${id}`)
+                if(disabled)
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="", disabled="disabled")&attributes(attributes)
+                else 
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="")&attributes(attributes)
+
+                if(label)
+                    span.label.font-m-normal-12.font-w-normal-20= label 
+                else 
+                    if block 
+                        span.label
+                            block   
+
+    // Component Markup
+    .guide-text-type Non-login - before category selection(default)
+    // Component Markup
+    .c-wrapper.CS0065
+        .component.type-accordion
+            .CS0065__container
+                .c-accordion__body
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline
+                                +headline('font-w-light-56 font-m-light-28',h2,'Find my product')
+                    P.searchBar__infoMsg.font-m-normal-14.font-w-normal-20 * After entering the model number, please select the product from the search result. (Enter key does not work)
+                    
+                    .searchbar
+                        #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                            .searchBar__searchInner
+                                form.searchBar__form(autocomplete='off' _lpchecked='1' action='')
+                                    span.fieldIcons__root
+                                        span.fieldIcons__input
+                                            input#textInput__input.textInput__input.field__input.font-m-normal-16.font-w-normal-20(type="text" name='search_query' value='' role='searchbox' aria-label="Search" placeholder='Please type model number')
+                                            button(type="button").c-button-delete delete button
+                                        //- button(type="button" title="search" aria-label="" aria-describedby="").fieldIcons__before.c-hidden-mo
+                                        //-     span.icon__root
+                                        //-         span.sr-only Search
+                                    p.message__root
+                                    .searchBar__SearchAutocompleteWrapper
+
+                        .c-model-contents
+                            a(tabindex="0" class="c-modal-open find-number font-m-normal-14 font-w-normal-16" aria-label="" aria-controls="CS0027" role="dialog") How to find my model number?
+                    
+                    .c-text-contents.c-accordion__body-text
+                        +productCategorySelect({type:"page"})
+                        .c-tabs__desc.font-m-normal-14.font-w-normal-16 *Includes business-only products.
+
+                        
+                        //.button.c-cta.c-btn__next 
+                            +defaultButton({name: 'Next', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: "none"})
+    .c-wrapper.CS0065.type-border
+        .component.type-form 
+            .CS0065__container
+                .c-model-content-wrap
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", h2, "About you")
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                .container
+                    .cs-form 
+                        .cs-form__wrap 
+                            // select case - country
+                            .cmp-form
+                                +csForm_Select({id: 'contry', label: 'Country', require: 'true', requireMsg: 'Country is required.', value_01: 'Type your country', value_02: 'Type your country' , class:"c-sdate-valid"})
+                            .cmp-form
+                            // input case - country
+                            //.cmp-form
+                                label(for="contry").c-select-label.font-m-normal-16.font-w-normal-24 Country #[em.require *]#[span.sr-only Required Field]
+                                input#contry.font-m-normal-16.font-w-normal-20.c-country-valid(type="text" required="required" aria-label="" placeholder="Type your country")
+                                .c-warning.c-country-required Country is required.
+                            //- .cmp-form
+                            //-     label(for="telephone").font-m-normal-16.font-w-normal-24 Telephone #[em.require *]#[span.sr-only Required Field]
+                            //-     input#telephone.font-m-normal-16.font-w-normal-24.c-telephone-valid(type="text" required="required" aria-label="" placeholder="Type number only")
+                            //-     .c-warning.c-telephone-required Telephone number is required.
+                            //-     .c-warning.c-telephone-incorrect Telephone number invalid.
+                            //-     .c-file-msg.font-m-normal-16.font-w-normal-16 Please input phone number without space.   
+                            .cmp-form
+                                +csForm_Input({id: 'firstName', label: 'First name', type:"text", formDefalut: 'true', requireMsg: 'First name is required.', invalidMsg: "First name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your first name" }).
+                            .cmp-form
+                                +csForm_Input({id: 'lastName', label: 'Last name', type:"text", formDefalut: 'true', requireMsg: 'Last name is required.', invalidMsg: "Last name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your last name" })
+                            .cmp-form
+                                +csForm_Input({id: 'email', label: 'Email', type:"text", formDefalut: 'true', requireMsg: 'Email address is required.', invalidMsg: "Email address is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address" })
+                            .cmp-form
+                                +csForm_Input({id: 'confirmEmail', label: 'Confirm email', type:"text", formDefalut: 'true', requireMsg: 'Confirm email account is required.', invalidMsg: "Confirm email account is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address again" })
+                            .cmp-form
+                                +csForm_Input({id: 'phoneNumber1', label: 'Telephone (has country code)', info:'true', type:"text", placeholder:"Telephone (has country code)", class:"c-subject-rquired-valid", hasCountryTelLabel: 'true', countryTelLabel: '+7' })
+                            .cmp-form
+
+    .guide-text-option Non-Login - After selecting a category
+    .c-wrapper.CS0065
+        .component.type-accordion
+            .CS0065__container
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline 
+                            +headline("font-w-light-56 font-m-light-28", h2, "Find my product")
+                .c-accordion__body
+                    .breadcrumb
+                        .breadcrumb__wrap
+                            p.cmp-breadcrumb__tit.font-w-normal-14i.font-m-normal-14i Product reselect : 
+                            nav.cmp-breadcrumb.c-breadcrumb.swiper(data-cmp-data-layer="" aria-label="breadcrumb")
+
+                                ol.cmp-breadcrumb__list.c-breadcrumb__list.font-m-normal-14i.font-w-normal-14i.swiper-wrapper
+                                    +bcItem2({text:"Appliances"})
+                                    +bcItem2({text:"Fridge freezers"})
+                                    +bcItem2({text:"American style"})
+                                    +bcItem2({text:"GSXV90MCDE", current:true})
+                        .c-selected-model-Num 
+                            +printLazyPicture('https://via.placeholder.com/40x40/fff/000/?text=40x40', 'https://via.placeholder.com/64x64/fff/000/?text=64x64')
+                            .c-selected-model-Info 
+                                .font-m-normal-12.font-w-normal-16 Searched product
+                                .c-serialNum.font-m-normal-12.font-w-normal-16 GSXV90MCDE
+                                .c-prdName.font-m-normal-20.font-w-normal-24 InstaView Door-in-Door
+                                .c-warrantyInfo.font-m-normal-14.font-w-normal-16 Warranty info
+                                    span.c-hidden-mo :
+                                    br.c-hidden-pc
+                                    span Labor 12 months | Parts 12 months
+                        button(type="button" aria-label="" role="button").c-btn-close 
+                            img(src="../../assets/icon/icon-close-black-12-12.svg")
+    .c-wrapper.CS0065.type-border
+        .component.type-form
+            .CS0065__container
+                .c-model-content-wrap
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", h2, "About you")
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                .container
+                    .cs-form 
+                        .cs-form__wrap 
+                            // select case - country
+                            .cmp-form
+                                +csForm_Select({id: 'contry', label: 'Country', require: 'true', requireMsg: 'Country is required.', value_01: 'Type your country', value_02: 'Type your country' , class:"c-sdate-valid"})
+                            .cmp-form
+                            // input case - country
+                            //.cmp-form
+                                label(for="contry").c-select-label.font-m-normal-16.font-w-normal-24 Country #[em.require *]#[span.sr-only Required Field]
+                                input#contry.font-m-normal-16.font-w-normal-20.c-country-valid(type="text" required="required" aria-label="" placeholder="Type your country")
+                                .c-warning.c-country-required Country is required.
+                            //- .cmp-form
+                            //-     label(for="telephone").font-m-normal-16.font-w-normal-24 Telephone #[em.require *]#[span.sr-only Required Field]
+                            //-     input#telephone.font-m-normal-16.font-w-normal-24.c-telephone-valid(type="text" required="required" aria-label="" placeholder="Type number only")
+                            //-     .c-warning.c-telephone-required Telephone number is required.
+                            //-     .c-warning.c-telephone-incorrect Telephone number invalid.
+                            //-     .c-file-msg.font-m-normal-16.font-w-normal-16 Please input phone number without space.  
+                            .cmp-form
+                                +csForm_Input({id: 'firstName', label: 'First name', type:"text", formDefalut: 'true', requireMsg: 'First name is required.', invalidMsg: "First name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your first name" }).
+                            .cmp-form
+                                +csForm_Input({id: 'lastName', label: 'Last name', type:"text", formDefalut: 'true', requireMsg: 'Last name is required.', invalidMsg: "Last name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your last name" })
+
+                            .cmp-form
+                                +csForm_Input({id: 'email', label: 'Email', type:"text", formDefalut: 'true', requireMsg: 'Email address is required.', invalidMsg: "Email address is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address" })
+                            .cmp-form
+                                +csForm_Input({id: 'confirmEmail', label: 'Confirm email', type:"text", formDefalut: 'true', requireMsg: 'Confirm email account is required.', invalidMsg: "Confirm email account is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address again" })
+                            .cmp-form
+
+    .guide-text-option If there is a registered product when logging in
+    .c-wrapper.CS0065
+        .component.type-card__slide.type-card__slide--select.full
+            .CS0065__container
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline 
+                            +headline("font-w-light-56 font-m-light-28", h2, "Find my product")
+                // button class added .c-viewMore-btn
+                //- .button.c-cta.c-viewMore-btn
+                //-     +linkButton({type:"text", icon:true, name:'Select another registered product'})(data-link-destination="" role="dialog" data-link-name href="http://daum.net")
+                
+                .carousel.panelcontainer
+                    // block - carousel
+                    .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="" role="group")
+                        .cmp-carousel__content.swiper-wrapper
+                            +galleryItem(1)
+                            +galleryItem(1)
+                            +galleryItem(1)
+                            +galleryItem(1)
+                        +carouselPaginationUI
+                        // button class added .c-viewMore-btn
+                        .button.c-cta.c-viewMore-btn
+                            +textButton({type:"text", icon:true, mSize:'small', wSize:'medium', name:'Select another registered product'})(data-link-destination="" role="dialog" data-link-name href="http://daum.net")
+                P.searchBar__infoMsg.font-m-normal-14.font-w-normal-20 * After entering the model number, please select the product from the search result. (Enter key does not work)
+                .searchbar
+                    #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                        .searchBar__searchInner
+                            form.searchBar__form(autocomplete='off' _lpchecked='1' action='')
+                                span.fieldIcons__root
+                                    span.fieldIcons__input
+                                        input#textInput__input.textInput__input.field__input.font-m-normal-16.font-w-normal-20(type="text" name='search_query' value='' role='searchbox' aria-label="Search" placeholder='Please type model number')
+                                        button(type="button").c-button-delete delete button
+                                    //- button(type="button" title="search" aria-label="" aria-describedby="").fieldIcons__before.c-hidden-mo
+                                    //-     span.icon__root
+                                    //-         span.sr-only Search
+                                p.message__root
+                                .searchBar__SearchAutocompleteWrapper
+                    .c-model-contents
+                        a(tabindex="0" class="c-modal-open find-number font-m-normal-14 font-w-normal-16" aria-label="" aria-controls="CS0027" role="dialog") How to find my model number?
+                .c-text-contents.c-accordion__body-text
+                    +productCategorySelect({type:"page"})
+                    .c-tabs__desc.font-m-normal-14.font-w-normal-16 *Includes business-only products.
+
+                    
+        // When there is a registered product when logging in - when selecting a registered product
+        .component.c-selecting__prd 
+            .c-selected-registered-prd 
+                +printLazyPicture('https://via.placeholder.com/48x48/fff/000/?text=48x48', 'https://via.placeholder.com/64x64/fff/000/?text=64x64')
+                .c-selected-model-Info 
+                    .c-active-red.font-m-normal-12.font-w-normal-16 My product
+                    .c-serialNum.font-m-normal-12.font-w-normal-16 GSXV90MCDE
+                    .c-prdName.font-m-normal-20.font-w-normal-24 InstaView Door-in-Door
+                    .c-warrantyInfo.font-m-normal-14.font-w-normal-16 Warranty info
+                        span.c-hidden-mo :
+                        br.c-hidden-pc
+                        span Labor 12 months | Parts 12 months
+                button(type="button" aria-label="" role="button").c-btn-close 
+                    img(src="../../assets/icon/icon-close-black-12-12.svg")
+    .c-wrapper.CS0065.type-border
+        .component.type-form
+            .CS0065__container
+                .c-model-content-wrap
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", h2, "About you")
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                .container
+                    .cs-form 
+                        .cs-form__wrap 
+                            // select case - country
+                            .cmp-form
+                                +csForm_Select({id: 'contry', label: 'Country', require: 'true', requireMsg: 'Country is required.', value_01: 'Type your country', value_02: 'Type your country' , class:"c-sdate-valid"})
+                            .cmp-form
+                            // input case - country
+                            //.cmp-form
+                                label(for="contry").c-select-label.font-m-normal-16.font-w-normal-24 Country #[em.require *]#[span.sr-only Required Field]
+                                input#contry.font-m-normal-16.font-w-normal-20.c-country-valid(type="text" required="required" aria-label="" placeholder="Type your country")
+                                .c-warning.c-country-required Country is required.
+                            //- .cmp-form
+                            //-     label(for="telephone").font-m-normal-16.font-w-normal-24 Telephone #[em.require *]#[span.sr-only Required Field]
+                            //-     input#telephone.font-m-normal-14.font-w-normal-24.c-telephone-valid(type="text" required="required" aria-label="" placeholder="Type number only")
+                            //-     .c-warning.c-telephone-required Telephone number is required.
+                            //-     .c-warning.c-telephone-incorrect Telephone number invalid.
+                            //-     .c-file-msg.font-m-normal-16.font-w-normal-16 Please input phone number without space. 
+                            .cmp-form
+                                +csForm_Input({id: 'firstName', label: 'First name', type:"text", formDefalut: 'true', requireMsg: 'First name is required.', invalidMsg: "First name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your first name" }).
+                            .cmp-form
+                                +csForm_Input({id: 'lastName', label: 'Last name', type:"text", formDefalut: 'true', requireMsg: 'Last name is required.', invalidMsg: "Last name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your last name" })
+                            .cmp-form
+                                +csForm_Input({id: 'email', label: 'Email', type:"text", formDefalut: 'true', requireMsg: 'Email address is required.', invalidMsg: "Email address is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address" })
+                            .cmp-form
+                                +csForm_Input({id: 'confirmEmail', label: 'Confirm email', type:"text", formDefalut: 'true', requireMsg: 'Confirm email account is required.', invalidMsg: "Confirm email account is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address again" })
+                            .cmp-form
+
+
+    .guide-text-option JP
+    .c-wrapper.CS0065.type-border
+        .component.type-form
+            .CS0065__container
+                .c-model-content-wrap
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", h2, "About you")
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                .container
+                    .cs-form 
+                        .cs-form__wrap
+                            .cmp-form
+                                +csForm_Input({id: 'firstName', label: 'First name', type:"text", formDefalut: 'true', requireMsg: 'First name is required.', invalidMsg: "First name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your first name" })
+                            .cmp-form
+                                +csForm_Input({id: 'lastName', label: 'Last name', type:"text", formDefalut: 'true', requireMsg: 'Last name is required.', invalidMsg: "Last name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your last name" })
+                            .cmp-form
+                                +csForm_Input({id: 'email', label: 'Email', type:"text", formDefalut: 'true', requireMsg: 'Email address is required.', invalidMsg: "Email address is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address" })
+                            .cmp-form
+                                +csForm_Input({id: 'confirmEmail', label: 'Confirm email', type:"text", formDefalut: 'true', requireMsg: 'Confirm email account is required.', invalidMsg: "Confirm email account is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address again" })
+                                //- .c-warning.c-confirmEmail-notmatch Email and Confirm email do not match.
+                            .cmp-form
+                                label(for="contry").c-select-label.font-m-normal-16.font-w-normal-24 Country #[em.require *]#[span.sr-only Required Field]
+                                input#contry.font-m-normal-16.font-w-normal-20.c-country-valid(type="text" required="required" aria-label="" value="日本" disabled="disabled")
+                            .cmp-form
+                                +csForm_Input({id: 'postCode', label: 'Post code', type:"text", placeholder:"Type your post code" })
+                            .cmp-form
+                                +csForm_Input({id: 'prefectures', label: 'Prefectures', type:"text", placeholder:"Type your prefectures" })
+                            .cmp-form
+                                +csForm_Input({id: 'address1', label: 'Address 1 [City]', type:"text", placeholder:"Type your address" })
+                            .cmp-form
+                                +csForm_Input({id: 'address2', label: 'Address 2 [street/street/number]', type:"text", placeholder:"Type your address" })
+                            .cmp-form
+                                +csForm_Input({id: 'contactPhoneNumber', label: 'Contact phone number', type:"text", info:'true',formDefalut:"true", infoMsg:'Please input phone number without space. ', placeholder:"Please enter the number only" , requireMsg: 'Contact phone number is required.', invalidMsg: "Contact phone number is invalid.", class:"c-subject-rquired-valid", placeholder:"Please enter the number only" })                            
+                            .cmp-form
+                                +csForm_Input({id: 'phoneNumber', label: 'Phone number(if you have other contact information)', info:'true', infoMsg:'Please input phone number without space. ', type:"text", placeholder:"Please enter the number only" })
+                            .cmp-form
+    .guide-text-option CA
+    .c-wrapper.CS0065.type-border
+        .component.type-form
+            .CS0065__container
+                .c-model-content-wrap
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", h2, "About you")
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                .container
+                    .cs-form 
+                        .cs-form__wrap
+                            .cmp-form
+                                label(for="contry").c-select-label.font-m-normal-16.font-w-normal-24 Country #[em.require *]#[span.sr-only Required Field]
+                                input#contry.font-m-normal-16.font-w-normal-20.c-country-valid(type="text" required="required" aria-label="" value="Canada" disabled="disabled")
+                            .cmp-form
+                                +csForm_Input({id: 'mobilePhone', label: 'Mobile phone', type:"text", formDefalut: 'true', requireMsg: 'Mobile phone is required.', invalidMsg: "Mobile phone is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your mobile phone number" })
+                            .cmp-form
+                                +csForm_Input({id: 'firstName', label: 'First name', type:"text", formDefalut: 'true', requireMsg: 'First name is required.', invalidMsg: "First name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your first name" })
+                            .cmp-form
+                                +csForm_Input({id: 'lastName', label: 'Last name', type:"text", formDefalut: 'true', requireMsg: 'Last name is required.', invalidMsg: "Last name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your last name" })
+                            .cmp-form
+                                +csForm_Input({id: 'email', label: 'Email', type:"text", formDefalut: 'true', requireMsg: 'Email address is required.', invalidMsg: "Email address is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address" })
+                            .cmp-form
+                                +csForm_Input({id: 'confirmEmail', label: 'Confirm email', type:"text", formDefalut: 'true', requireMsg: 'Confirm email account is required.', invalidMsg: "Confirm email account is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address again" })
+                                .c-warning.c-confirmEmail-notmatch Email and confirm email do not match.
+                            .cmp-form
+                            
+
+    .guide-text-option ES
+    .c-wrapper.CS0065.type-border
+        .component.type-form
+            .CS0065__container
+                .c-model-content-wrap
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", h2, "About you")
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                .container
+                    .cs-form 
+                        .cs-form__wrap
+                            .cmp-form
+                                +csForm_Input({id: 'name', label: 'Name', type:"text", formDefalut: 'true', requireMsg: 'name is required.', invalidMsg: "name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your name" })
+                            .cmp-form
+                                +csForm_Input({id: 'lastName', label: 'Last name', type:"text", formDefalut: 'true', requireMsg: 'Last name is required.', invalidMsg: "Last name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your last name" })
+                            .cmp-form
+                                +csForm_Input({id: 'email', label: 'Email', type:"text", formDefalut: 'true', requireMsg: 'Email address is required.', invalidMsg: "Email address is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address" })
+                            .cmp-form
+                                +csForm_Input({id: 'confirmEmail', label: 'Confirm email', type:"text", formDefalut: 'true', requireMsg: 'Confirm email account is required.', invalidMsg: "Confirm email account is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address again" })
+                                .c-warning.c-confirmEmail-notmatch Email and confirm email do not match.
+                            .cmp-form
+                                label(for="contry").c-select-label.font-m-normal-16.font-w-normal-24 Country #[em.require *]#[span.sr-only Required Field]
+                                input#contry.font-m-normal-16.font-w-normal-20.c-country-valid(type="text" required="required" aria-label="" value="Spain" disabled="disabled")
+                            .cmp-form
+                                +csForm_Input({id: 'mobilePhone', label: 'Phone number', type:"text", formDefalut: 'true', requireMsg: 'Phone number is required.', invalidMsg: "Phone number is invalid.", class:"c-subject-rquired-valid", placeholder:"Please enter only numbers" })
+                                //- .c-file-msg.font-m-normal-16.font-w-normal-16 Please input phone number without space. 
+                            //- .cmp-form
+                                //- +csForm_Input({id: 'contactPhoneNumber', label: 'Phone number',formDefalut: 'true', info:'true', infoMsg:'Please input phone number without space. ', type:"text", placeholder:"Please enter the number only" , requireMsg: 'Contact phone number is required.', invalidMsg: "Contact phone number is invalid.",class:"c-subject-rquired-valid",placeholder:"Please enter the number only" })  
+                            .cmp-form
+
+    .guide-text-option BR
+    .c-wrapper.CS0065.type-border
+        .component.type-form
+            .CS0065__container
+                .c-model-content-wrap
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", h2, "About you")
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                .container
+                    .cs-form 
+                        .cs-form__wrap
+                            .cmp-form
+                                +csForm_Input({id: 'firstName', label: 'First name', type:"text", formDefalut: 'true', requireMsg: 'First name is required.', invalidMsg: "First name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your first name" })
+                            .cmp-form
+                                +csForm_Input({id: 'lastName', label: 'Last name', type:"text", formDefalut: 'true', requireMsg: 'Last name is required.', invalidMsg: "Last name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your last name" })
+                            .cmp-form
+                                +csForm_Input({id: 'email', label: 'Email', type:"text", formDefalut: 'true', requireMsg: 'Email address is required.', invalidMsg: "Email address is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address" })
+                            .cmp-form
+                                +csForm_Input({id: 'confirmEmail', label: 'Confirm email', type:"text", formDefalut: 'true', requireMsg: 'Confirm email account is required.', invalidMsg: "Confirm email account is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address again" })
+                                .c-warning.c-confirmEmail-notmatch Email and confirm email do not match.
+                            .cmp-form
+                                +csForm_Input({id: 'cpf', label: 'CPF', type:"text", placeholder:"Type your CPF" })
+                            .cmp-form
+                                +csForm_Input({id: 'zipCode', label: 'ZIP code', type:"text", placeholder:"Type your ZIP code" ,info:'true',infoMsg:'Please enter your 8 digit ZIP code. We will get your address automatically from the post office base. ' })
+                            .cmp-form
+                                +csForm_Input({id: 'address', label: 'Address', type:"text", placeholder:"Type your address" })
+                            .cmp-form
+                                +csForm_Input({id: 'city', label: 'City', type:"text", placeholder:"Type your city" })
+                            .cmp-form
+                                +csForm_Input({id: 'state', label: 'State', type:"text", placeholder:"Type your state" })
+                            .cmp-form
+                                +csForm_Input({id: 'phoneNumber', label: 'Phone number', type:"text", formDefalut: 'true', requireMsg: 'Phone number is required.', invalidMsg: "Phone number is invalid.", class:"c-subject-rquired-valid", placeholder:"(__)_____-____" })
+                            .cmp-form
+                                +csForm_Input({id: 'cellPhone', label: 'Cell phone', type:"text", placeholder:"(__)_____-____",info:'true',infoMsg:'If necessary, we will also contact you by phone.' ,formDefalut:'true'})
+                            .cmp-form
+
+    .guide-text-option CO
+    .c-wrapper.CS0065.type-border
+        .component.type-form
+            .CS0065__container
+                .c-model-content-wrap
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", h2, "About you")
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                .container
+                    .cs-form 
+                        .cs-form__wrap
+                            .cmp-form
+                                +csForm_Input({id: 'firstName', label: 'First name', type:"text", formDefalut: 'true', requireMsg: 'First name is required.', invalidMsg: "First name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your first name" })
+                            .cmp-form
+                                +csForm_Input({id: 'lastName', label: 'Last name', type:"text", formDefalut: 'true', requireMsg: 'Last name is required.', invalidMsg: "Last name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your last name" })
+                            .cmp-form
+                                +csForm_Select({id: 'region', label: 'Region', formDefalut: 'true', requireMsg: 'region is required.', value_01: 'Select your region', value_02: 'Select your region-2' , class:"c-sdate-valid"})
+                            .cmp-form
+                                +csForm_Select({id: 'department', label: 'Department', formDefalut: 'true', requireMsg: 'department is required.', value_01: 'Select your department', value_02: 'Select your department-2' , class:"c-sdate-valid"})
+                            .cmp-form
+                                +csForm_Select({id: 'findOrderBy', label: 'Find order by', formDefalut: 'true', requireMsg: 'Find order by is required.', value_01: 'Select your City / Town', value_02: 'Select your City / Town-2' , class:"c-sdate-valid"})
+                            .cmp-form
+                                +csForm_Input({id: 'email', label: 'Email', type:"text", formDefalut: 'true', requireMsg: 'Email address is required.', invalidMsg: "Email address is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address" })
+                            .cmp-form
+                                +csForm_Input({id: 'confirmEmail', label: 'Confirm email', type:"text", formDefalut: 'true', requireMsg: 'Confirm email account is required.', invalidMsg: "Confirm email account is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address again" })
+                                .c-warning.c-confirmEmail-notmatch Email and confirm email do not match.
+                            .cmp-form
+                                +csForm_Input({id: 'phoneNumber', label: 'Phone number', type:"text", formDefalut: 'true', requireMsg: 'Phone number is required.', invalidMsg: "Phone number is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your phone number" })                                
+                            .cmp-form
+                                +csForm_Input({id: 'mobilePhone', label: 'Mobile phone', type:"text", placeholder:"Type your mobile phone" })
+                            .cmp-form
+                                label(for="contry").c-select-label.font-m-normal-16.font-w-normal-24 Country #[em.require *]#[span.sr-only Required Field]
+                                input#contry.font-m-normal-16.font-w-normal-20.c-country-valid(type="text" required="required" aria-label="" value="Colombia" disabled="disabled")
+                            .cmp-form
+                            
+                            
+
+    .guide-text-option NL
+    .c-wrapper.CS0065.type-border
+        .component.type-form
+            .CS0065__container
+                .c-model-content-wrap
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", h2, "Over jou")
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                .container
+                    .cs-form 
+                        .cs-form__wrap
+                            .cmp-form
+                                +csForm_Input({id: 'voornaam', label: 'Voornaam', type:"text", formDefalut: 'true', requireMsg: 'Voornaam is verplicht.​', invalidMsg: "First name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your first name" })
+                            .cmp-form
+                                +csForm_Input({id: 'lastName', label: 'Last name', type:"text", formDefalut: 'true', requireMsg: 'Achternaam is verplicht.​', invalidMsg: "Last name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your last name" })
+                            .cmp-form
+                                +csForm_Input({id: 'email', label: 'E-mail', type:"text", formDefalut: 'true', requireMsg: 'Email is verplicht.​', invalidMsg: "E-mailadres ongeldig", class:"c-subject-rquired-valid", placeholder:"Type your email address" })
+                            .cmp-form
+                                +csForm_Input({id: 'confirmEmail', label: 'Bevestig e-mail', type:"text", formDefalut: 'true', requireMsg: 'Email is verplicht.​', invalidMsg: "E-mailadres ongeldig", class:"c-subject-rquired-valid", placeholder:"Type your email address again"})
+                            .cmp-form
+                                +csForm_Input({id: 'address', label: 'Adres', type:"text", placeholder:"Type your address" })
+                            .cmp-form
+                                +csForm_Input({id: 'woonplaats', label: 'Woonplaats', type:"text", placeholder:"Type your state" })
+                            .cmp-form
+                                +csForm_Select({id: 'department', label: 'Residentie', formDefalut: 'true', requireMsg: 'department is required.', value_01: 'België', value_02: 'Nederland' , class:"c-sdate-valid"})
+                            .cmp-form
+                                +csForm_Input({id: 'postCode', label: 'Postcode', type:"text", placeholder:"Type your state", info:'true', infoMsg:'Voer de postcode in zonder spaties.' })
+                                //- .c-file-msg.font-m-normal-16.font-w-normal-16 
+                            .cmp-form
+                                +csForm_Input({id: 'phoneNumber', label: 'Telefoonnummer', type:"text", formDefalut: 'true', requireMsg: 'Valid Telephone number is required.', invalidMsg: "Telefoonnummer is verplicht.", class:"c-subject-rquired-valid", placeholder:"Voer alleen het nummer in" , info:"true", infoMsg:'Voer een telefoonnummer in zonder spatie.'})                                
+                                //- .c-file-msg.font-m-normal-16.font-w-normal-16 
+                                +formCheckbox2_1("This is a mobile phone number", "name", "val6", "checkId6", count="false", false)
+                            .cmp-form
+                                +csForm_Input({id: 'mobilePhone', label: 'Mobiele Telefoon', type:"text", placeholder:"Voer alleen het nummer in" , info:'true', infoMsg:'Voer een telefoonnummer in zonder spatie.'})
+                            .cmp-form
+
+
+    .guide-text-option AT
+    .c-wrapper.CS0065.type-border
+        .component.type-form
+            .CS0065__container
+                .c-model-content-wrap
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", h2, "About you")
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                .container
+                    .cs-form 
+                        .cs-form__wrap
+                            .cmp-form
+                                +csForm_Input({id: 'firstName', label: 'First name', type:"text", formDefalut: 'true', requireMsg: 'First name is required.', invalidMsg: "First name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your first name" })
+                            .cmp-form
+                                +csForm_Input({id: 'lastName', label: 'Last name', type:"text", formDefalut: 'true', requireMsg: 'Last name is required.', invalidMsg: "Last name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your last name" })
+                            .cmp-form
+                                +csForm_Input({id: 'email', label: 'Email', type:"text", formDefalut: 'true', requireMsg: 'Email address is required.', invalidMsg: "Email address is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address" })
+                            .cmp-form
+                                +csForm_Input({id: 'confirmEmail', label: 'Confirm email', type:"text", formDefalut: 'true', requireMsg: 'Confirm email account is required.', invalidMsg: "Confirm email account is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address again" })
+                                .c-warning.c-confirmEmail-notmatch Email and confirm email do not match.
+                            .cmp-form
+                                +csForm_Input({id: 'address', label: 'Address', type:"text", placeholder:"Type your address" })
+                            .cmp-form
+                                +csForm_Input({id: 'residence', label: 'Residence', type:"text", placeholder:"Type your residence" })
+                        .cs-form__wrap
+                            .cmp-form.half
+                                .cmp-form__half
+                                    +csForm_Input({id: 'postCode', label: 'Post code', type:"text", formDefalut: 'true', requireMsg: 'Post code is required.', invalidMsg: "Post code is invalid.", class:"c-subject-rquired-valid", placeholder:"XXXX" })                                
+                                .cmp-form__half
+                                    +csForm_Input({id: 'mobilePhone', label: 'Phone number', type:"text", formDefalut: 'true', requireMsg: 'Phone number is required.', invalidMsg: "Phone number is invalid.", class:"c-subject-rquired-valid", placeholder:"Type only number", info:'true', infoMsg:' Please input phone number without space.' })
+                                    //- .c-file-msg.font-m-normal-16.font-w-normal-16 Please input phone number without space.
+                            .cmp-form
+                                label(for="contry").c-select-label.font-m-normal-16.font-w-normal-24 Country #[em.require *]#[span.sr-only Required Field]
+                                input#contry.font-m-normal-16.font-w-normal-20.c-country-valid(type="text" required="required" aria-label="" value="Österreich" disabled="disabled")
+
+
+
+    .guide-text-option BE_FR
+    .c-wrapper.CS0065.type-border
+        .component.type-form
+            .CS0065__container
+                .c-model-content-wrap
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", h2, "About you")
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                .container
+                    .cs-form 
+                        .cs-form__wrap
+                            .cmp-form
+                                +csForm_Input({id: 'firstName', label: 'First name', type:"text", formDefalut: 'true', requireMsg: 'First name is required.', invalidMsg: "First name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your first name" })
+                            .cmp-form
+                                +csForm_Input({id: 'lastName', label: 'Last name', type:"text", formDefalut: 'true', requireMsg: 'Last name is required.', invalidMsg: "Last name is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your last name" })
+                            .cmp-form
+                                +csForm_Input({id: 'email', label: 'Email', type:"text", formDefalut: 'true', requireMsg: 'Email address is required.', invalidMsg: "Email address is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address" })
+                            .cmp-form
+                                +csForm_Input({id: 'confirmEmail', label: 'Confirm email', type:"text", formDefalut: 'true', requireMsg: 'Confirm email account is required.', invalidMsg: "Confirm email account is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address again" })
+                                .c-warning.c-confirmEmail-notmatch Email and confirm email do not match.
+                            .cmp-form
+                                +csForm_Select({id: 'country', label: 'Country', formDefalut: 'true', requireMsg: 'Country is required.', value_01: 'belgium', value_02: 'Nederland' , class:"c-sdate-valid"})
+                            .cmp-form
+                                +csForm_Input({id: 'phoneNumber', label: 'Telephone number', info:'true', infoMsg: 'Veuillez entrer le numéro de téléphone sans espace.​', type:"text", formDefalut: 'true', requireMsg: 'Telephone number is required.', class:"c-subject-rquired-valid", placeholder:"Type only number" })                                
+                            .cmp-form
+                                +csForm_Input({id: 'mobilePhone', label: 'Mobile phone', type:"text", placeholder:"Type only number" , info:'true', infoMsg:' Veuillez entrer le numéro de téléphone sans espace.​'})
+                            .cmp-form
+
+    .guide-text-option [PE] Libro de Reclamaciones Virtua
+    .c-wrapper.CS0065.type-border
+        .component.type-form
+            .CS0065__container
+                .c-model-content-wrap
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", h2, "1. Identificación del consumidor reclamante")
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Campos requeridos
+                .container
+                    .c-info-date-msg.font-m-normal-14.font-w-normal-16 Fecha de Creación : 18/10/2023
+
+                    .cs-form 
+                        .cs-form__wrap
+                            .cmp-form
+                                +csForm_Input({id: 'firstName', label: 'Nombres', type:"text", formDefalut: 'true', requireMsg: 'Se requiere Nombres.',class:"c-subject-rquired-valid", placeholder:"Type your first name" })
+                            .cmp-form
+                                +csForm_Input({id: 'lastName', label: 'Apellidos', type:"text", formDefalut: 'true', requireMsg: 'Se requiere Apellidos.',  class:"c-subject-rquired-valid", placeholder:"Type your last name" })
+                            .cmp-form
+                                +csForm_Select({require: 'true',id: 'phoneNumber', label: 'Departamento', info:'false', requireMsg: 'Se requiere Departamento.', value_01: 'Escribe tu Departamento', value_02: 'Nederland' , infoMsg: 'Veuillez entrer le numéro de téléphone sans espace.​', type:"text", formDefalut: 'true',  class:"c-subject-rquired-valid", placeholder:"Type only number" })                                                            
+                            .cmp-form
+                                +csForm_Select({require: 'true',id: 'phoneNumber', label: 'Provincia', info:'false', requireMsg: 'Se requiere Provincia.', value_01: 'Escribe tu Provincia', value_02: 'Nederland' , infoMsg: 'Veuillez entrer le numéro de téléphone sans espace.​', type:"text", formDefalut: 'true', class:"c-subject-rquired-valid", placeholder:"Type only number" })                                                            
+                            .cmp-form
+                                +csForm_Select({require: 'true',id: 'phoneNumber', label: 'Distrito', info:'false', requireMsg: 'Se requiere Distrito.', value_01: 'Escribe tu Distrito', value_02: 'Nederland' , infoMsg: 'Veuillez entrer le numéro de téléphone sans espace.​', type:"text", formDefalut: 'true', class:"c-subject-rquired-valid", placeholder:"Type only number" })                                                            
+                            .cmp-form
+                                +csForm_Input({id: 'phoneNumber', label: 'Dirección', info:'false', requireMsg: 'Se requiere Dirección', infoMsg: 'Veuillez entrer le numéro de téléphone sans espace.​', type:"text", formDefalut: 'true', class:"c-subject-rquired-valid", placeholder:"Escribe tu Dirección" })                                
+                            .cmp-form
+                                +csForm_Input({id: 'phoneNumber', label: 'Email', info:'false', requireMsg: 'Se requiere cuenta de correo electrónico.', infoMsg: 'Veuillez entrer le numéro de téléphone sans espace.​', type:"text", formDefalut: 'true', class:"c-subject-rquired-valid", placeholder:"Escribe tu email" })                                
+                            .cmp-form
+                                +csForm_Input({id: 'firstName', label: 'Confirmar email', type:"text", formDefalut: 'true', requireMsg: 'Se requiere cuenta de correo electrónico.',  class:"c-subject-rquired-valid", placeholder:"Type your first name" })
+                            .cmp-form
+                                +csForm_Input({id: 'lastName', label: 'Teléfono móvil', type:"text", formDefalut: 'true', info:'true', infoMsg: "Por favor, ingrese el número de teléfono sin espacios.", requireMsg: 'Se requiere Teléfono móvil.',class:"c-subject-rquired-valid", placeholder:"Escribe tu Confirmar email" })
+                            .cmp-form
+                                +csForm_Input({id: 'email', label: 'Otro Tceléfono (Opcional)', type:"text", info:'true', infoMsg: "Por favor, ingrese el número de teléfono sin espacios.", formDefalut: 'false', requireMsg: 'Se requiere Departamento.',  class:"c-subject-rquired-valid", placeholder:"Por favor ingrese solo el número" , })
+                            .cmp-form
+                                +csForm_Select({require: 'true',id: 'phoneNumber', label: 'Tipo de documento', info:'false', requireMsg: 'Se requiere Tipo de documento.', value_01: 'Selecciona el tipo de documento', value_02: 'Nederland' , infoMsg: 'Veuillez entrer le numéro de téléphone sans espace.​', type:"text", formDefalut: 'true', class:"c-subject-rquired-valid", placeholder:"Type only number" })                                                            
+                            .cmp-form
+                                +csForm_Input({id: 'phoneNumber', label: 'Número de documento', info:'false', requireMsg: 'Se requiere Número de documento.', infoMsg: 'Veuillez entrer le numéro de téléphone sans espace.​', type:"text", formDefalut: 'true', class:"c-subject-rquired-valid", placeholder:"Escribe tu Dirección" })                                
+                            .cmp-form
+                                +csForm_Select({require: 'true',id: 'phoneNumber', label: '¿Eres mayor de edad?', info:'false', requireMsg: 'Se requiere Selecciona una opción.', value_01: 'Selecciona una opción', value_02: 'Nederland' , infoMsg: 'Veuillez entrer le numéro de téléphone sans espace.​', type:"text", formDefalut: 'true', class:"c-subject-rquired-valid", placeholder:"Type only number" })                                
+                            .cmp-form
+                                +csForm_Input({id: 'phoneNumber', label: 'Razón Social (En caso el reclamante sea persona jurídica)', info:'true', infoMsg: 'Ingrese la información solicitada en caso seleccione RUC​', type:"text",placeholder:"" })                                
+    
+    .guide-text-option [PE] Libro de Reclamaciones Virtua - Minors
+    .c-wrapper.CS0065.type-border
+        .component.type-form
+            .CS0065__container
+                .c-model-content-wrap
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", h2, "Identificación de los padres o representante legal")
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Campos requeridos
+                .container
+                    .cs-form 
+                        .cs-form__wrap
+                            .cmp-form
+                                +csForm_Input({id: 'firstName', label: 'Nombre completo del Adulto ', type:"text", formDefalut: 'true', requireMsg: 'Se requiere Nombre completo del Adulto.',class:"c-subject-rquired-valid", placeholder:"Escribe tu Nombres" })
+                            .cmp-form
+                                +csForm_Input({id: 'firstName', label: 'Documento de Identidad del Adulto', type:"text", formDefalut: 'true', requireMsg: 'Se requiere Documento de Identidad del Adulto.',class:"c-subject-rquired-valid", placeholder:"Por favor escribe Documento de Identidad" })
+                            .cmp-form
+                                +csForm_Input({id: 'firstName', label: 'Teléfono del Adulto', type:"text", formDefalut: 'true', requireMsg: 'Se requiere Teléfono del Adulto.',class:"c-subject-rquired-valid", placeholder:"Por favor ingrese solo el número",invalidMsg: "Teléfono del Adulto inválido." })
+                            .cmp-form
+                                +csForm_Input({id: 'firstName', label: 'Email del Adulto', type:"text", formDefalut: 'true', requireMsg: 'Se requiere Email del Adulto.',class:"c-subject-rquired-valid", placeholder:"Escribe tu email" ,invalidMsg: "Email del Adulto inválido."})
+    
+    .guide-text-option FR
+    .c-wrapper.CS0065.type-border
+        .component.type-form
+            .CS0065__container
+                .c-model-content-wrap
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", h2, "A propos de vous")
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Champs obligatoires
+                .container
+                    .cs-form 
+                        .cs-form__wrap
+                            .cmp-form
+                                +csForm_Input({id: 'firstName', label: 'Prénom', type:"text", formDefalut: 'true', requireMsg: 'Le prénom est requis.',class:"c-subject-rquired-valid", placeholder:"" })
+                            .cmp-form
+                                +csForm_Input({id: 'lastName', label: 'Nom', type:"text", formDefalut: 'true', requireMsg: 'Le nom est requis.',class:"c-subject-rquired-valid", placeholder:"" })
+                            .cmp-form
+                                +csForm_Select({id: 'gender', label: 'Genre', require: 'true', requireMsg: 'Gender is required.', value_01: 'Sélectionnez le sexe', value_02: 'Mme', value_03: 'Mlle',value_04: 'M', class:"c-sdate-valid"})
+                            .cmp-form
+                                +csForm_Input({id: 'country', label: 'Pays', type:"text", formDefalut: 'true', requireMsg: '',class:"c-subject-rquired-valid", placeholder:"France",invalidMsg: "" })
+                            .cmp-form
+                                +csForm_Input({id: 'phoneNumber', label: 'Numéro de téléphone', info:'true', infoMsg: 'Veuillez entrer le numéro de téléphone sans espace.', type:"text", formDefalut: 'true', requireMsg: 'Le numéro de téléphone est requis.', class:"c-subject-rquired-valid", placeholder:"Veuillez entrer le numéro seulement" })                                
+                            .cmp-form
+                                +csForm_Input({id: 'mobilePhone', label: 'Numéro de téléphone mobile', type:"text", placeholder:"Veuillez entrer le numéro seulement" , info:'true', infoMsg:'Veuillez entrer le numéro de téléphone sans espace.'})
+                            .cmp-form
+                                +csForm_Input({id: 'email', label: 'Email', type:"text", formDefalut: 'true', requireMsg: 'Email requis',class:"c-subject-rquired-valid", placeholder:"" ,invalidMsg: "Adresse Email invalide"})
+                            .cmp-form
+                                +csForm_Input({id: 'conformmail', label: 'Confirmer Email', type:"text", formDefalut: 'true', requireMsg: 'Email requis',class:"c-subject-rquired-valid", placeholder:"" ,invalidMsg: "Adresse Email invalide"})
+
+    .guide-text-option IN - MD OFFICE
+    .c-wrapper.CS0065
+        .component.type-form
+            .CS0065__container
+                .container
+                    .cs-form 
+                        .cs-form__wrap
+                            .cmp-form
+                                +csForm_Input({id: 'Service Request No', label: 'Service request No', type:"text", placeholder:"Enter 15digit RNP number (RNP2XXXXXXXXX)", formDefalut: 'true', requireMsg: 'Service request is required.', invalidMsg: "This service request is invalid.", class: "c-subject-rquired-valid" })
+                            .cmp-form
+                                +csForm_Input({id: 'Name', formDefalut: 'true',label: 'Name', type:"text", placeholder:"Type your name",  requireMsg: 'Name is required.' ,class:'c-subject-rquired-valid' })
+                            .cmp-form
+                                +csForm_Input({id: 'email', formDefalut: 'true', label: 'Email', type:"text", placeholder:"Type your email address", formDefalut: 'true', requireMsg: 'Email address is required.', invalidMsg: "Email address is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your email address" })
+                            .cmp-form
+                                +csForm_Input({id: 'mobilePhone', formDefalut: 'true', label: 'Mobile Phone', type:"text", placeholder:"Type your Mobile Phone number", info:'true', infoMsg:'Please input phone number without space.', requireMsg: 'Confirm phone number is required.', invalidMsg: "Confirm Phone number invalid." ,class:'c-subject-rquired-valid' })                                    
+                            .cmp-form
+                                +csForm_Select({id: 'state', require: 'true',label: 'State', formDefalut: 'true', requireMsg: 'State is required.', value_01: 'Type your state', value_02: 'Type your state-2' , class:"c-sdate-valid"})                                
+                            .cmp-form
+                                +csForm_Input({id: 'city', label: 'City', formDefalut: 'true', type:"text", formDefalut: 'true', requireMsg: 'City is required.', invalidMsg: "City is invalid.", class:"c-subject-rquired-valid", placeholder:"Type your city" })

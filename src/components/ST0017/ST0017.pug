@@ -1,0 +1,157 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_video.pug
+
+block meta 
+    - var componentId = "ST0017"
+    - var componentName = "Large or 2 Small Image"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js" type="module")
+
+block content
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-left', 'remove' : 'align-center, align-right'},
+                                    {'toggle' : false, 'add' : 'align-center', 'remove' : 'align-left, align-right'},
+                                    {'toggle' : false, 'add' : 'align-right', 'remove' : 'align-left, align-center'},
+                                ]
+                            },
+                        ],
+                        '.c-text-contents__bodycopy' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            }
+                        ],
+                    };
+
+    // Component Markup
+
+    mixin text-contents(params) 
+        - var option={size:'large', ...params}
+        // block : text-contents
+        .c-text-contents
+            .text.c-text-contents__bodycopy
+                .cmp-text(class='font-w-normal-24 font-m-normal-16' data-cmp-data-layer="") 
+                    p Body text can be up to 350 characters. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla
+            if(option.size == 'large')
+                // block :cta
+                .button.c-cta
+                    +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                    +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+                .button.c-cta
+                    +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                    +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+    mixin image
+        // block : image
+        .image.c-image
+            +printLazyImage(`https://via.placeholder.com/991x661/999999/333333`)
+            if block
+                block
+
+    mixin video-contents(params)
+        - var option={videoType:'', disclaimer:false, ...params}
+        // Display only when video is registered
+        // block : media contents
+        .c-media-contents
+            // Video case
+            +image
+                +floating-video(option.videoType)
+                if option.disclaimer
+                    .text.c-media__titlecopy
+                        .cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="") 
+                            p Lorem ipsum dolor sit amet, consectetur adipiscing elit u
+                        if block
+                            block
+
+    mixin img-contents
+        // block : media contents
+        // option : target (_blank or _self)
+        // GA4
+        a.c-media-contents(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+            // Image case
+            +image
+    
+    mixin video-item(size)
+        li.c-list__item
+            +video-contents({videoType:'brightcove', disclaimer:true})
+            +text-contents({size:`${size}`})
+    mixin img-item(size)
+        li.c-list__item
+            +img-contents
+            +text-contents({size:`${size}`})
+    mixin small-item
+        li.c-list__item
+            // block : list small
+            ul.c-list.small
+                +img-item('small')
+                +img-item('small')
+
+    .guide-text-option Option. Large Image double-ended
+    .c-wrapper.ST0017.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                // block : list large
+                ul.c-list.large
+                    +video-item('large')
+                    +video-item('large')
+
+    .guide-text-option Option. Large Image Left Side
+    .c-wrapper.ST0017.margin-top.margin-bottom.bg-default
+        .component.side
+            .cmp-container.large-align-left
+                // block : list large
+                ul.c-list.large
+                    +video-item('large')
+                    +small-item
+
+    .guide-text-option Option. Large Image Right Side
+    .c-wrapper.ST0017.margin-top.margin-bottom.bg-default
+        .component.side
+            .cmp-container.large-align-right
+                // block : list large
+                ul.c-list.large
+                    +video-item('large')
+                    +small-item

@@ -1,0 +1,76 @@
+mixin pop-msg-header(params)
+    - var option = {headerBorder : true, ...params}
+    - var dialogHeadline = option.headline || "Dialog Headline"
+    - var dialogDescription = option.headerDescription || "Dialog Description"
+    - var headerBorder = option.headerBorder ? '' : 'c-pop-msg__header--no-border'
+    - var headerMargin = option.headerMargin ? `c-pop-msg__header--margin-${option.headerMargin}` : ''
+
+    .c-pop-msg__header(class=`${headerBorder} ${headerMargin}`)&attributes(attributes)
+        // block - text contents
+        .c-text-contents
+            .title.c-text-contents__headline(id=`${dialogLabelId}`)
+                // 22.11.11 - moved font classname here 
+                h2.cmp-title.font-w-light-56.font-m-light-28(data-cmp-data-layer="")= dialogHeadline
+                p.cmp-title-description(data-cmp-data-layer="")= dialogDescription
+
+mixin pop-msg-layout(params)
+    - var option={id:`popMsg${new Date().getTime()}`, ...params}
+    - var dialogId = option.id
+    - var dialogLabelId = `${option.id}`
+    - var dialogSize = option.size || "medium"
+    - var useHeadline = option.headline != null && 0 < option.headline.length
+    - var isOpen = option.isActive ? 'active' : '';
+
+    // block - pop-msg ( dialog )
+    .c-pop-msg(class=`AL0020__modal ${dialogSize} ${isOpen} ` id=`${dialogId}` role="dialog" aria-modal="true" aria-labelledby=`${dialogLabelId}`)
+        .c-pop-msg__container
+            if useHeadline
+                //- header
+                +pop-msg-header(params)
+            //- contents
+            if block
+                block
+            //- close button
+            .button.c-pop-msg__close.c-pop-msg__close--on-top
+                button.cmp-button.c-pop-msg__close-button.js-pop-close(type="button", aria-controls=`${dialogId}` data-cmp-data-layer="")
+                    span.cmp-button__text.sr-only close
+        .c-pop-msg__dimmed
+
+mixin pop-msg-standard(params)
+    +pop-msg-layout(params)
+        block  
+mixin AL0020(params=false)
+    +pop-msg-standard({id : `AL0020`, size: "full", headline:"BIANCA LEE-CHANG", headerDescription: "LGEEH, European Marketing Comm. Group", headerBorder: false, isActive: params})
+        .c-pop-msg__contents--careerPopup.c-pop-msg__contents--box
+            .c-pop-msg-contents-wrap
+                .c-text-contents.c-pop-msg-contents-wrap__introduce
+                    .c-pop-msg-contents-wrap__introduce--img
+                        img(src="https://via.placeholder.com/558x418" alt="")
+                    .title.c-text-contents__title.c-pop-msg-contents-wrap__introduce--pr
+                        p.cmp-text.font-w-semibold-28.font-m-semibold-22(data-cmp-data-layer="") "I coordinate PR activities and provide support and strategic operation plans to PR Managers in 14 different countries—seeing first hand how LG demonstrates great innovation and growth throughout the world."
+                .c-pop-msg-contents-wrap__qna
+                    dl.c-text-contents
+                        dt.c-text-contents__title
+                            p.cmp-text.c-pop-msg-contents-wrap__qna--q(data-cmp-data-layer="") Q. Please introduce yourself.
+                        dd.c-text-contents__bodycopy
+                            p.cmp-text.c-pop-msg-contents-wrap__qna--a(data-cmp-data-layer="") A. My name is Bianca Lee-Chang. I am a European PR Specialist and work at LG's European Headquarters, based in the UK.
+                        dt.c-text-contents__title
+                            p.cmp-text.c-pop-msg-contents-wrap__qna--q(data-cmp-data-layer="") Q. Would you please describe your job?
+                        dd.c-text-contents__bodycopy
+                            p.cmp-text.c-pop-msg-contents-wrap__qna--a(data-cmp-data-layer="") A. My role involves coordinating PR activities across our 14 European subsidiaries, providing support and strategic operation plans to all local PR Managers.
+                        dt.c-text-contents__title
+                            p.cmp-text.c-pop-msg-contents-wrap__qna--q(data-cmp-data-layer="") Q. Please tell us about the subsidiary you’re affiliated with.
+                        dd.c-text-contents__bodycopy
+                            p.cmp-text.c-pop-msg-contents-wrap__qna--a(data-cmp-data-layer="") A. I work with all four of LG's product divisions, and am based in the European Headquarters because it’s the umbrella organization for all 14 European offices.
+                        dt.c-text-contents__title
+                            p.cmp-text.c-pop-msg-contents-wrap__qna--q(data-cmp-data-layer="") Q. What were the primary reasons for selecting LG Electronics as your company of choice?
+                        dd.c-text-contents__bodycopy
+                            p.cmp-text.c-pop-msg-contents-wrap__qna--a(data-cmp-data-layer="") A. I was attracted to LG because it’s a developing company that has grown a great deal over the past five years—and continues to show great innovation and growth throughout the world.
+                        dt.c-text-contents__title
+                            p.cmp-text.c-pop-msg-contents-wrap__qna--q(data-cmp-data-layer="") Q. What were the primary reasons for selecting LG Electronics as your company of choice?
+                        dd.c-text-contents__bodycopy
+                            p.cmp-text.c-pop-msg-contents-wrap__qna--a(data-cmp-data-layer="") A. I was attracted to LG because it’s a developing company that has grown a great deal over the past five years—and continues to show great innovation and growth throughout the world.
+                        dt.c-text-contents__title
+                            p.cmp-text.c-pop-msg-contents-wrap__qna--q(data-cmp-data-layer="") Q. During your time at LG Electronics, what has been most rewarding?
+                        dd.c-text-contents__bodycopy
+                            p.cmp-text.c-pop-msg-contents-wrap__qna--a(data-cmp-data-layer="") A.I have only been at LG for three months so far, so I haven't got my teeth into any big projects yet. I'm sure this will change over the coming months, though.

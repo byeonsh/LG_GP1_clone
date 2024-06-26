@@ -1,0 +1,124 @@
+extends ../_common/_layout.pug
+include ../_common/_index.pug
+
+block meta 
+    - var componentId = "PR0003"
+    - var componentName = "Recommended Article"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pr.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        'body' : [
+                            {
+                                'name' : 'Dark Theme',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'dark-theme'},
+                                ]
+                            }
+                        ],
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'BG Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'bg-default', 'remove' : 'bg-white, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-white', 'remove' : 'bg-default, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-lightgray', 'remove' : 'bg-default, bg-white, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-darkgray', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-black', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-darkgray'},
+                                ]
+                            },
+                        ],
+                    };
+
+    mixin articleList
+        .c-article-list
+            .carousel.panelcontainer
+                .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                    .cmp-carousel__content.swiper-wrapper
+                        - for (var i = 0; i < 5; i++)
+                            +articleItem(i)
+                    .c-carousel__handler
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"prev"})
+                        +carouselPagination
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"next"})
+
+    mixin articleItem(idx)
+        .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+            // block - hero banner
+            .c-article-list__item
+                .c-article-list__item--top
+                    .image.c-image
+                        +printLazyImage('https://via.placeholder.com/960x600/999999/333333')
+                    //- If you want the image to be BG, you can use the code below.
+                    //- .image.c-image(style="background-image:url('https://via.placeholder.com/960x600/999999/333333')")
+                    // block - text contents
+                    .c-text-contents
+                        .text.c-text-contents__eyebrow
+                            +textButton({name: 'Up & Coming', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                            //- p.cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="") Helpful Hints
+                        .title.c-text-contents__headline
+                            h3.cmp-text.font-w-light-36.font-m-light-24(data-cmp-data-layer="") Knock twice, see inside! The all new LG InstaView Door-in-Door™
+                        if idx > 0
+                            .text.c-text-contents__bodycopy
+                                p.cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="") The LG InstaView Door-in-Door™ refrigerator will save you the hassle of opening the door every time you want to peek inside. Now, just knock twice, and see inside!
+                        .c-text-contents__info
+                            span.font-w-normal-16.font-m-normal-14= `Dec.12, 2022`
+                .c-article-list__item--bottom
+                    // block cta 
+                    .button.c-cta
+                        if idx === 0 || idx % 3 === 0
+                            +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                        else if idx === 1 || idx % 3 === 1
+                            +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+                        else
+                            +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+
+    // Component Markup
+    .guide-text-type Type. Experience 
+    .c-wrapper.PR0003.margin-top.margin-bottom.border-top.bg-default
+        .component
+            .cmp-container
+                +component-title-area({
+                    alignment:"",
+                    headline : {
+                        text : "Recommended Article",
+                    }
+                })(class="c-region-header--vacate-side")
+
+                +articleList

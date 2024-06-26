@@ -1,0 +1,1004 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_pop-msg.pug
+
+block meta 
+    - var componentId = "ML000O"
+    - var componentName = "Personal Information"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-16.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected, required, disabled})
+    .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+        +myFormSelect(label, id, placeholder, required, disabled)
+            if optionVal
+                - for(var i=0; i < optionVal.length; i++)
+                    if selected === i + 1
+                        option(value="" selected)= optionVal[i]
+                    else
+                        option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText})
+            
+mixin myFormSelect(label, id, placeholder, required, disabled)
+    .c-select-item
+        if label != ''
+            label.font-w-normal-16.font-m-normal-14(for=`${id}` class={'sr-only' : labelSrOnly})= label
+                if(required) 
+                    +required-text-sr
+        //- Bad value true for attribute required on element input.
+        if required && disbled
+            select(id=`${id}`, title=`${title}`, required="required" disabled="disabled")&attributes(attributes)
+                if block
+                    block
+        else if disabled
+            select(id=`${id}`, title=`${title}`, disabled="disabled")&attributes(attributes)
+                if block
+                    block       
+        else if required
+            select(id=`${id}`, title=`${title}`, required="required")&attributes(attributes)
+                if block
+                    block
+        else
+            select(id=`${id}`, title=`${title}`)&attributes(attributes)
+                if block
+                    block
+
+//- mixin inquiryDetailPack(params)
+//-     - let data = {...params}
+//-     .my-infoBox__accordion
+//-         .c-accordion.js-accordion
+//-             .c-accordion__box.js-accordion-handle-target.c-accordion__box--expand
+//-                 .c-accordion__head
+//-                     // block - text contents
+//-                     .c-accordion__head-text.c-text-contents
+//-                         span.font-w-normal-32.font-m-normal-20.font-semibold(aria-hidden="true") !{data.title}
+//-                     +trigger(params)
+//-                 .c-accordion__body(id=`${data.controlsId}`)
+//-                     if block
+//-                         block
+mixin trigger(params)
+    - let data = {...params}
+    .button
+        button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="true" aria-controls=`${data.controlsId}` class=`${data.controlsId}`)
+            span.c-accordion__button-text.expand.sr-only Expand
+            span.c-accordion__button-text.collapse.sr-only Collapse
+
+mixin myFormRadio(params)
+    - let data = {...params}
+    .c-form__box.c-form__radio-box
+        each set in data
+            .c-form-box
+                .c-radio-item
+                    label.radio(for=`${set.id}`)
+                        input(type="radio" name=`${set.name}`, value=`${set.val}`, id=`${set.id}`)&attributes(attributes)
+                        span.label= set.label                 
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? "my-warn" : ""}`
+        //- 2023-05-24 Date of Birth
+        if data.type === 'birth'
+            +myBirth(params)
+            if data.isRadio 
+                .c-form__box.c-form__radio-box
+                    .c-form-box
+                        +formRadio("Natural Person","sort", "Natural Person", "Natural Person", "NaturalPerson")(aria-label="" checked)
+                    .c-form-box
+                        +formRadio("Legal Entity","sort", "Legal Entity", "Legal Entity", "LegalEntity")(aria-label="")
+        else if data.type === 'birth1'
+            +myBirth1(params)
+        else if data.type === 'birth2'
+            +myBirth2(params)
+        else if data.type === 'select'
+            .c-input-item(class=`${data.active ? "active" : ""}`)
+                +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required:data.required, disabled: data.disabled})
+        else if data.type === 'radio'
+            +myFormRadio(params)
+        else
+            .c-input-item(class=`${data.active ? "active" : ""}`)
+                if data.label
+                    label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? "my-info" : ""}`)= data.label
+                        if data.required
+                            em.c-required *
+                                span.sr-only Required fields
+                if data.required && !data.button && !data.readonly && !data.disabled
+                    if data.format
+                        input(type= data.type id= data.id class="input-format" data-format= data.dataformat placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value)&attributes(attributes)
+                    else
+                        input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value required)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                else if data.readonly && data.required &&!data.button
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value readonly required)&attributes(attributes)
+                else if data.readonly && !data.button
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value readonly)&attributes(attributes)
+                else if data.disabled && data.required && !data.button
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value disabled required)&attributes(attributes)
+                else if data.disabled && !data.button
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value disabled)&attributes(attributes)
+                else if data.button
+                    if data.validation
+                        .input-button__container.input-button__container--validation
+                            .my-button-validation
+                                if data.readonly
+                                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config readonly required)&attributes(attributes)
+                                else if data.disabled
+                                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config disabled required)&attributes(attributes)
+                                else 
+                                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config required)&attributes(attributes)
+                                +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                            .button.c-cta.button-full
+                                +defaultButton({name: data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: false})(class="js-pop-open", href="#findAddress")
+                    else
+                        .input-button__container
+                            if data.readonly
+                                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config readonly required)&attributes(attributes)                           
+                            else if data.disabled
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config disabled required)&attributes(attributes)
+                            else 
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config required)&attributes(attributes)
+                            .button.c-cta.button-full
+                                +defaultButton({name: data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: false})(class="js-pop-open", href="#findAddress")
+                else if data.format
+                    input(type= data.type id= data.id class="input-format" data-format= data.dataformat placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value)&attributes(attributes)
+                else 
+                    if data.active
+                        input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value)&attributes(attributes)
+                        if data.type === 'password'
+                            button(type='button' class='my-form__eye')
+                                span.sr-only show password
+                        else if data.search 
+                            button(type='button' class='my-form__search__icon')
+                                span.sr-only search
+                    else
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+                        if data.type === 'password'
+                            button(type='button' class='my-form__eye')
+                                span.sr-only show password
+                        else if data.search 
+                            button(type='button' class='my-form__search__icon')
+                                span.sr-only search
+            if !data.validation
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+//- mixin myFormText(params)
+//-     - let data = {...params}
+//-     - let config = `${data.warning || data.warningFirst ? 'my-warn' : ''}`
+//-     if data.type === 'select'
+//-         +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected})
+//-     else
+//-         .c-input-item(class=`${data.active ? 'active' : ''}`)
+//-             if data.label
+//-                 label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+//-                 input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+//-                 if data.type === 'password'
+//-                     button(type='button' class='my-form__eye')
+//-                         span.sr-only show password
+//-         if !data.validation 
+//-             +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+//-         else
+//-             +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+//- 2023-05-24 Date of Birth (mm/dd/yyyy)
+mixin myBirth(params)
+    - let data = {...params}
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                if data.required
+                    em.c-required *
+                        span.sr-only Required fields
+            if data.validation
+                .my-birth__container.my-birth__container--validation
+                    .my-birth-validation
+                        .my-birth__inner
+                            +mySelect({optionVal: data.optionVal, warning: data.warning, id: data.id, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required})
+                    .my-birth-validation
+                        .my-birth__inner
+                            input(type='text' id= data.id1 placeholder= data.placeholder1 data-placeholder= data.placeholder1 class=`${data.warning1 || data.warningFirst1 && !data.correct1 ? 'my-warn' : ''}` value= data.value1)&attributes(attributes)
+                        +myMsg({correct: data.correct1, warning: data.warning1, check: data.check1, warningFirst: data.warningFirst1}) 
+                    .my-birth-validation
+                        .my-birth__inner
+                            input(type='text' id= data.id2 placeholder= data.placeholder2 data-placeholder= data.placeholder2 class=`${data.warning2 || data.warningFirst2 && !data.correct2 ? 'my-warn' : ''}` value= data.value2)&attributes(attributes)                        
+                        +myMsg({correct: data.correct2, warning: data.warning2, check: data.check2, warningFirst: data.warningFirst2})    
+            else
+                .my-birth__container
+                    .my-birth__inner
+                        +mySelect({optionVal: data.optionVal, warning: data.warning, id: data.id, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required})
+                    .my-birth__inner
+                        input(type='text' id= data.id1 placeholder= data.placeholder1 data-placeholder= data.placeholder1 class=`${data.warning1 || data.warningFirst1 && !data.correct1 ? 'my-warn' : ''}` value= data.value1)&attributes(attributes)
+                    .my-birth__inner
+                        input(type='text' id= data.id2 placeholder= data.placeholder2 data-placeholder= data.placeholder2 class=`${data.warning2 || data.warningFirst2 && !data.correct2 ? 'my-warn' : ''}` value= data.value2)&attributes(attributes)
+            if !data.validation
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct3, warning: data.warning3, check: data.check3, warningFirst: data.warningFirst3})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+mixin myBirth1(params)
+    - let data = {...params}
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                if data.required
+                    em.c-required *
+                        //- span.sr-only Required fields
+            if data.validation
+                .my-birth__container.my-birth__container--validation
+                    .my-birth-validation
+                        .my-birth__inner
+                            input(type='text' id= data.id1 placeholder= data.placeholder1 data-placeholder= data.placeholder1 class=`${data.warning1 || data.warningFirst1 && !data.correct1 ? 'my-warn' : ''}` value= data.value1)&attributes(attributes)
+                        +myMsg({correct: data.correct1, warning: data.warning1, check: data.check1, warningFirst: data.warningFirst1}) 
+                    .my-birth-validation
+                        .my-birth__inner
+                            +mySelect({optionVal: data.optionVal, warning: data.warning, id: data.id, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required})                    
+                    .my-birth-validation
+                        .my-birth__inner
+                            input(type='text' id= data.id2 placeholder= data.placeholder2 data-placeholder= data.placeholder2 class=`${data.warning2 || data.warningFirst2 && !data.correct2 ? 'my-warn' : ''}` value= data.value2)&attributes(attributes)                        
+                        +myMsg({correct: data.correct2, warning: data.warning2, check: data.check2, warningFirst: data.warningFirst2})    
+            else
+                .my-birth__container
+                    .my-birth__inner
+                        input(type='text' id= data.id1 placeholder= data.placeholder1 data-placeholder= data.placeholder1 class=`${data.warning1 || data.warningFirst1 && !data.correct1 ? 'my-warn' : ''}` value= data.value1)&attributes(attributes)
+                    .my-birth__inner
+                        +mySelect({optionVal: data.optionVal, warning: data.warning, id: data.id, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required})                    
+                    .my-birth__inner
+                        input(type='text' id= data.id2 placeholder= data.placeholder2 data-placeholder= data.placeholder2 class=`${data.warning2 || data.warningFirst2 && !data.correct2 ? 'my-warn' : ''}` value= data.value2)&attributes(attributes)
+            if !data.validation
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct3, warning: data.warning3, check: data.check3, warningFirst: data.warningFirst3})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+//- 2023-05-24 Date of Birth (yyyy/mm/dd)
+mixin myBirth2(params)
+    - let data = {...params}
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                if data.required
+                    em.c-required *
+                        span.sr-only Required fields
+            if data.validation
+                .my-birth__container.my-birth__container--validation
+                    .my-birth-validation
+                        .my-birth__inner
+                            input(type='text' id= data.id2 placeholder= data.placeholder2 data-placeholder= data.placeholder2 class=`${data.warning2 || data.warningFirst2 && !data.correct2 ? 'my-warn' : ''}` value= data.value2)&attributes(attributes)                        
+                        +myMsg({correct: data.correct2, warning: data.warning2, check: data.check2, warningFirst: data.warningFirst2})   
+                    .my-birth-validation
+                        .my-birth__inner
+                            +mySelect({optionVal: data.optionVal, warning: data.warning, id: data.id, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required})
+                    .my-birth-validation
+                        .my-birth__inner
+                            input(type='text' id= data.id1 placeholder= data.placeholder1 data-placeholder= data.placeholder1 class=`${data.warning1 || data.warningFirst1 && !data.correct1 ? 'my-warn' : ''}` value= data.value1)&attributes(attributes)
+                        +myMsg({correct: data.correct1, warning: data.warning1, check: data.check1, warningFirst: data.warningFirst1})                      
+            else
+                .my-birth__container
+                    .my-birth__inner
+                        input(type='text' id= data.id2 placeholder= data.placeholder2 data-placeholder= data.placeholder2 class=`${data.warning2 || data.warningFirst2 && !data.correct2 ? 'my-warn' : ''}` value= data.value2)&attributes(attributes)
+                    .my-birth__inner
+                        +mySelect({optionVal: data.optionVal, warning: data.warning, id: data.id, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required})
+                    .my-birth__inner
+                        input(type='text' id= data.id1 placeholder= data.placeholder1 data-placeholder= data.placeholder1 class=`${data.warning1 || data.warningFirst1 && !data.correct1 ? 'my-warn' : ''}` value= data.value1)&attributes(attributes)                   
+            if !data.validation
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct3, warning: data.warning3, check: data.check3, warningFirst: data.warningFirst3})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+mixin myAccountLinkedLoginList(params)
+    - let data = {...params}
+    .my-linkedlogin
+        ul.my-linkedlogin__list
+            each set in data
+                li
+                    a.my-linkedlogin__item(href='#' role="button" title=`${set.apps}` data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        .my-linkedlogin__container
+                            span(class=`my-linkedlogin__ico my-linkedlogin__ico--${set.ico}`)= set.apps
+                            .my-linkedlogin__desc(class=`${set.link ? 'my-linkedlogin__desc--linked' : '' }`)
+                                .my-linkedlogin__link
+                                    span.font-w-normal-16.font-m-semibold-14 !{set.link ? 'Disconnect' : 'Connect'}
+                        span.sr-only= set.apps
+mixin ML000O
+    .c-wrapper.ML000O
+        .component
+            .fluid-container
+                .my-component__wrap
+                    .my-component
+                        .c-text-contents
+                            .title.c-text-contents__headline.font-w-light-56.font-m-light-28
+                                +headline('font-w-light-56 font-m-light-28', "h2", "Profile")
+                            //- .text.c-text-contents__bodycopy.font-w-normal-24.font-m-normal-16
+                            //-     p.cmp-text(data-cmp-data-layer="") Update your personal information to get personalized service and latest product information.
+                .my-component.my-edit-profile
+                    p.my-form-required.font-w-normal-16.font-m-normal-12
+                        em.c-required * 
+                            span.sr-only Required fields
+                        | Required fields                
+                    //- p.my-edit-profile-text.font-w-normal-12.font-m-normal-12 Update your personal information to get personalized service and latest product information.
+                    .my-edit-profile__title Second email address
+                    .my-edit-profile__box
+                        +formCheckbox('I want to receive the result of repair and inquiry to the other email address.', "name", "val1", `checkId3`, count="false")
+                        .my-formbox
+                            +myInputForm([
+                                {
+                                    type:"text",
+                                    label:"Other email address to receive info",
+                                    id:"otherEmailAddress",
+                                    required:true,
+                                    value:"efgh5678@gmail.com",
+                                    infoText: ["Receive a variety of news on LG Electronics by this email from now on."],
+                                    placeholder:"Email address",
+                                },
+                            ])
+                .my-component
+                    .my-edit-profile__title Social Media Account
+                    .my-edit-profile__box
+                        +myAccountLinkedLoginList([
+                            {
+                                href:"#",
+                                ico:"apple",
+                                apps:"Apple", 
+                                link:false,
+                            },
+                            {
+                                href:"#",
+                                ico:"amazon",
+                                apps:"Amazon", 
+                                link:true,
+                            },
+                            {
+                                href:"#",
+                                ico:"google", 
+                                apps:"Google", 
+                                link:false,
+                            },
+                            {
+                                href:"#",
+                                ico:"facebook",
+                                apps:"Facebook", 
+                                link:true,
+                            },
+                        ])
+                        .my-edit-profile__desc.font-w-normal-16.font-m-normal-14 Your privacy is of great importance to us. Please read our 
+                            a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").font-red Privacy Policy
+                            | .
+                .my-component.my-topBorder
+                    //- .my-edit-profile__title Personal Information
+                    //- +inquiryDetailPack({
+                    //-     controlsId:"id1",
+                    //-     title:"Personal Information",
+                    //- })
+                    .my-edit-profile__title Personal Information
+                    .my-edit-profile__box
+                        .my-formbox
+                            +myInputForm([
+                                {
+                                    type:"text",
+                                    label:"First Name",
+                                    id:"firstNameWarn",
+                                    required:true,
+                                    value:"Robert",
+                                    warning: ["Please only use letters and spaces in this field."],
+                                    placeholder:"First Name",
+                                },
+                                {
+                                    type:"text",
+                                    label:"Last Name",
+                                    id:"lastNameWarn",
+                                    required:true,
+                                    value:"Surrency",
+                                    warning: ["Please only use letters and spaces in this field."],
+                                    placeholder:"Last Name",
+                                },
+                                {
+                                    type:"text",
+                                    label:"Nick name ",
+                                    id:"nickname ",
+                                    required:false,  
+                                    placeholder:"Nick name",
+                                    warning: ["Please only use letters and spaces in this field."],
+                                },
+                                {
+                                    type:"birth1",
+                                    label:"Date of Birth",
+                                    id:"month",
+                                    id1:"day",
+                                    id2:"year",                                                                  
+                                    optionVal: ['Month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December '],
+                                    required:true,
+                                    placeholder:"Month",
+                                    placeholder1:"Day",
+                                    placeholder2:"Year",
+                                    validation:false,
+                                    warningFirst3:['You must be 14 years or older to create an account.','You must be 16 years or older to create an account.','You must be 18 years or older to create an account.','You must be 20 years or older to create an account.'],
+                                    infoText:['We use your date of birth to verify your identity if you forget your email address.', 'We also use it to make sure you can use services with age restrictions.'],
+                                }, 
+                                {
+                                    type:"birth",
+                                    label:"Date of Birth",
+                                    id:"month",
+                                    id1:"day",
+                                    id2:"year",                                                                  
+                                    optionVal: ['Month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December '],
+                                    required:true,
+                                    placeholder:"Month",
+                                    placeholder1:"Day",
+                                    placeholder2:"Year",
+                                    validation:false,
+                                    warningFirst3:['You must be 14 years or older to create an account.','You must be 16 years or older to create an account.','You must be 18 years or older to create an account.','You must be 20 years or older to create an account.'],
+                                    infoText:['We use your date of birth to verify your identity if you forget your email address.', 'We also use it to make sure you can use services with age restrictions.'],
+                                },
+                                {
+                                    type:"birth2",
+                                    label:"Date of Birth",
+                                    id:"month",
+                                    id1:"day",
+                                    id2:"year",                                                                  
+                                    optionVal: ['Month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December '],
+                                    required:true,
+                                    placeholder:"Month",
+                                    placeholder1:"Day",
+                                    placeholder2:"Year",
+                                    validation:false,
+                                    warningFirst3:['You must be 14 years or older to create an account.','You must be 16 years or older to create an account.','You must be 18 years or older to create an account.','You must be 20 years or older to create an account.'],
+                                    infoText:['We use your date of birth to verify your identity if you forget your email address.', 'We also use it to make sure you can use services with age restrictions.'],
+                                }, 
+                                { 
+                                    type:"tel",
+                                    label:"Mobile number",
+                                    id:"mobileNumber",
+                                    required:true,
+                                    placeholder:"Mobile number",
+                                    warningFirst: ["Not a valid phone number."],
+                                    infoText:'Please enter the phone number without spaces.'
+                                },
+                                { 
+                                    type:"tel",
+                                    label:"Telephone number",
+                                    id:"telephoneNumber",
+                                    required:true,
+                                    placeholder:"Phone number",
+                                    warningFirst: ["Not a valid phone number."],
+                                    infoText:'Please enter the phone number without spaces.'
+                                },
+                                {
+                                    type:"select",
+                                    label:"Gender",
+                                    id:"gender",
+                                    optionVal: ['masculine', 'feminine', 'other', 'I prefer not to inform'],
+                                    required:false,
+                                },
+                                { 
+                                    type:"text",
+                                    label:"Unit number",
+                                    id:"unitNumber",
+                                    required:false,
+                                    placeholder:"Unit number"
+                                },
+                                { 
+                                    type:"text",
+                                    label:"Identification number",
+                                    id:"identificationNumber",
+                                    required:false,
+                                    placeholder:"Identification number"
+                                },
+                                { 
+                                    type:"text",
+                                    label:"Number",
+                                    id:"number",
+                                    required:true,
+                                    placeholder:"Number"
+                                }, 
+                                { 
+                                    type:"select",
+                                    label:"Region",
+                                    id:"region",
+                                    optionVal: ['amazon', 'andean', 'Caribbean', 'insular', 'orinoquia', 'peaceful'],
+                                    required:true,
+                                },
+                                {
+                                    type:"select",
+                                    label:"Department",
+                                    id:"department",
+                                    optionVal: ['Department'],
+                                    required:false,
+                                },
+                                { 
+                                    type:"select",
+                                    label:"City/Town",
+                                    id:"cityTown",
+                                    optionVal: ['villamaria'],
+                                    required:true,
+                                },
+                                { 
+                                    type:"text",
+                                    label:"City",
+                                    id:"City",
+                                    required:true,
+                                    placeholder:"City"
+                                }, 
+                                { 
+                                    type:"text",
+                                    label:"County",
+                                    id:"County",
+                                    required:false,
+                                    placeholder:"County"
+                                },
+                                { 
+                                    type:"text",
+                                    label:"State",
+                                    id:"state",
+                                    required:true,
+                                    placeholder:"State",
+                                },                                
+                                { 
+                                    type:"text",
+                                    label:"Area",
+                                    id:"area",
+                                    required:false,
+                                    placeholder:"Area",
+                                },
+                                { 
+                                    type:"text",
+                                    label:"Province",
+                                    id:"province",
+                                    required:true,
+                                    placeholder:"Province",
+                                },
+                                {
+                                    type:"select",
+                                    label:"Residence",
+                                    id:"residence",
+                                    optionVal: ['Residence'],
+                                    required:false,
+                                    disabled:true,
+                                },
+                                { 
+                                    type:"text",
+                                    label:"Country",
+                                    id:"countryNation",
+                                    required:true,
+                                    placeholder:"U.K",
+                                    disabled:true
+                                },
+                                { 
+                                    type:"text",
+                                    label:"Post code",
+                                    id:"postCode",
+                                    required:true,
+                                    infoText: "Please input post code with space (ex, KT3 4ZP)",
+                                    placeholder:"Post code",
+                                },
+                                { 
+                                    type:"text",
+                                    label:"Post code",
+                                    id:"postCode",
+                                    format:true,
+                                    dataformat:"_____-___",
+                                    required:true,
+                                    infoText: "Please input post code with space",
+                                    placeholder:"Post code",
+                                },
+                                { 
+                                    type:"text",
+                                    label:"Post code",
+                                    id:"postcodetextca",
+                                    format:true,
+                                    dataformat:"___ ___",
+                                    required:true,
+                                    infoText: "Please input post code with space",
+                                    placeholder:"Post code",
+                                },
+                                {
+                                    type:"text",
+                                    label:"Address",
+                                    id:"Address",
+                                    required:true,
+                                    placeholder:"Address"
+                                },
+                                {
+                                    type:"text",
+                                    label:"Street address",
+                                    id:"streetAddress",
+                                    required:true,
+                                    placeholder:"Street address",
+                                    disabled: false,
+                                },
+                                { 
+                                    type:"select",
+                                    label:"Profession",
+                                    id:"profession",
+                                    optionVal: ['choose','manager','lawyer','architect','artist','writer','finance','design','entrepreneur','engineer','civil servant','reporter','doctor','professor','advertiser','consultant','other'],
+                                    required:false,
+                                },
+                                { 
+                                    type:"text",
+                                    label:"Complement",
+                                    id:"complement",
+                                    required:false,
+                                    placeholder:"Complement",
+                                },
+                                { 
+                                    type:"text",
+                                    label:"Neighborhood",
+                                    id:"neighborhood ",
+                                    required:true,
+                                    placeholder:"Neighborhood",
+                                },
+                                { 
+                                    type:"select",
+                                    label:"Martial status",
+                                    id:"martialStatus",
+                                    optionVal: ['choose','unmarried','married'],
+                                    required:false,
+                                },
+                                { 
+                                    type:"text",
+                                    label:"PC code (If you do not have a PC Code, you can skip this step.)",
+                                    id:"pcCode",
+                                    required:false,
+                                    placeholder:"PC code",
+                                    infoText: "PC Code can be inquired at the salesperson (for example, TH000001 or THPC0000001).",
+                                },
+                                { 
+                                    type:"select",
+                                    label:"Favorite shopping channel",
+                                    id:"favoriteShoppingChannel",
+                                    optionVal: ['choose'],
+                                    required:false,
+                                },
+                                { 
+                                    type:"select",
+                                    label:"Annual incom",
+                                    id:"annualIncom",
+                                    optionVal: ['choose'],
+                                    required:false,
+                                },
+                                { 
+                                    type:"select",
+                                    label:"Education",
+                                    id:"education",
+                                    optionVal: ['choose'],
+                                    required:false,
+                                },
+                            ])
+                            +myFormRadio([
+                                {
+                                    val: "Natural Person",
+                                    id: "naturalPerson",
+                                    label: "Natural Person",
+                                },
+                                {
+                                    val: "Legal Entity",
+                                    id: "legalEntity",
+                                    label: "Legal Entity",
+                                },
+                            ])
+                            +myInputForm([
+                                {
+                                    type:"text",
+                                    label:"CPF",
+                                    id:"CPF",
+                                    format:true,
+                                    dataformat:"___.___.___-__",
+                                    required:true,  
+                                    placeholder:"CPF",
+                                },                                
+                                {
+                                    type:"text",
+                                    label:"CNPJ",
+                                    id:"CNPJ",
+                                    format:true,
+                                    dataformat:"___.___.___-__",
+                                    required:true,  
+                                    placeholder:"CNPJ",
+                                },
+                                { 
+                                    type:"text",
+                                    label:"State Registration",
+                                    id:"StateRegistration",
+                                    required:true,
+                                    value:"",
+                                    check: ["Free"],
+                                    placeholder:"State Registration",
+                                },
+                            ])
+                .my-component.my-topBorder
+                    .my-edit-profile__title Company Information
+                    .my-edit-profile__box
+                        .my-formbox
+                            p.my-form__info.font-w-normal-16.font-m-normal-16 If you are interesting in LG products or purchasing it for Business site (company, school, hospital, or any public site), please fill your company information out.
+                            +myInputForm([
+                                {
+                                    type:"text",
+                                    label:"Company Name",
+                                    id:"companyName",
+                                    required:false,
+                                    placeholder:"Company Name",
+                                },
+                                {
+                                    type:"text",
+                                    label:"Name",
+                                    id:"name",
+                                    required:false,   
+                                    placeholder:"Name",
+                                },
+                                {
+                                    type:"text",
+                                    label:"First Name",
+                                    id:"firstName",
+                                    required:false,
+                                    placeholder:"First Name",
+                                },
+                                {
+                                    type:"text",
+                                    label:"Last Name",
+                                    id:"lastName",
+                                    required:false,
+                                    placeholder:"Last Name",
+                                },
+                                {
+                                    type:"text",
+                                    label:"Position",
+                                    id:"position",
+                                    required:false,
+                                    placeholder:"Position",
+                                },
+                                {
+                                    type:"text",
+                                    label:"Job title",
+                                    id:"jobTitle",
+                                    required:false,
+                                    placeholder:"Job title",
+                                },
+                                {
+                                    type:"select",
+                                    label:"Work position",
+                                    id:"workPosition",
+                                    optionVal: ['choose','',''],
+                                    required:true,
+                                },
+                                { 
+                                    type:"tel",
+                                    label:"Mobile number",
+                                    id:"MobilecellNumber",
+                                    format:true,
+                                    dataformat:"(__)_____-____",
+                                    required:true,
+                                    placeholder:"Mobile number",
+                                    warningFirst: ["Not a valid phone number."],
+                                    infoText:'Please enter the phone number without spaces.'
+                                },
+                                { 
+                                    type:"tel",
+                                    label:"Mobile number",
+                                    id:"mobileNumber",
+                                    required:false,
+                                    placeholder:"Mobile number",
+                                    warningFirst: ["Not a valid phone number."],
+                                    infoText:'Please input phone number without space.'
+                                },
+                                { 
+                                    type:"tel",
+                                    label:"Commercial Phone",
+                                    id:"commercialPhone",
+                                    format:true,
+                                    dataformat:"(__)_____-____",
+                                    required:false,
+                                    placeholder:"Commercial Phone",
+                                    warningFirst: ["Not a valid phone number."],
+                                    infoText:'Please input phone number without space.'
+                                },
+                                { 
+                                    type:"tel",
+                                    label:"Commercial Phone",
+                                    id:"commercialPhone",
+                                    required:false,
+                                    placeholder:"Commercial Phone",
+                                    warningFirst: ["Not a valid phone number."],
+                                    infoText:'Please input phone number without space.'
+                                },
+                                { 
+                                    type:"email",
+                                    label:"Company email",
+                                    id:"companyEmail",
+                                    required:false,
+                                    warningFirst: ["Invalid email account"],
+                                    placeholder:"Company email",
+                                },
+                                {
+                                    type:"text",
+                                    label:"Company address",
+                                    id:"companyAddress",
+                                    required:false,
+                                    placeholder:"Company address",
+                                },
+                                { 
+                                    type:"text",
+                                    label:"City / Town",
+                                    id:"cityTown",
+                                    required:false,
+                                    placeholder:"City / Town",
+                                },
+                                {
+                                    type:"text",
+                                    label:"County",
+                                    id:"county",
+                                    required: false,
+                                    placeholder:"County",
+                                },
+                                {
+                                    type:"text",
+                                    label:"Country / Nation",
+                                    id:"countryNation",
+                                    optionVal: ['U.K.', 'U.K.', 'U.K.'],                                    
+                                    required:false,
+                                    disabled:false,
+                                    placeholder:"Country / Nation",
+                                },
+                                {
+                                    type:"text",
+                                    label:"State",
+                                    id:"state",
+                                    required: false,
+                                    placeholder:"State",
+                                },
+                                { 
+                                    type:"text",
+                                    label:"Post code",
+                                    id:"postCode",
+                                    format:true,
+                                    dataformat:"_____-___",
+                                    required:false,
+                                    infoText: "Please enter the 8 digit zip code",
+                                    placeholder:"Post code",
+                                },
+                                { 
+                                    type:"text",
+                                    label:"Post code",
+                                    id:"postCode",
+                                    required:false,
+                                    infoText: "Please enter your zip code with spaces (11111 – city)",
+                                    placeholder:"Post code",
+                                },
+                                { 
+                                    type:"text",
+                                    label:"Post code",
+                                    id:"postCode",
+                                    required:false,
+                                    infoText: "Please enter a zip code (eg: 100000)",
+                                    placeholder:"Post code",
+                                },
+                                { 
+                                    type:"text",
+                                    label:"Number / Complement",
+                                    id:"numberComplement",
+                                    required:false,
+                                    placeholder:"Number / Complement",
+                                },
+                                { 
+                                    type:"text",
+                                    label:"Tax code",
+                                    id:"taxCode",
+                                    required:true,
+                                    placeholder:"Tax code",
+                                },
+                                { 
+                                    type:"text",
+                                    label:"GSTIN",
+                                    id:"gstin",
+                                    required:false,
+                                    placeholder:"GSTIN",
+                                    infoText: "GST ID consists of 15 digits",
+                                },
+                                {
+                                    type:"select",
+                                    label:"Business sector(Level 1)",
+                                    id:"businessSector",
+                                    optionVal: ['Business sector(Level 1)', '', ''],                                    
+                                    required:true,
+                                },
+                                {
+                                    type:"select",
+                                    label:"Business sector(Level 2)",
+                                    id:"businessSector",
+                                    optionVal: ['Not Selected', '', ''],                                    
+                                    required:false,
+                                },
+                                { 
+                                    type:"text",
+                                    label:"Company type",
+                                    id:"companyType",
+                                    required:false,
+                                    placeholder:"Company type",
+                                },
+                                {
+                                    type:"select",
+                                    label:"Business area",
+                                    id:"businessArea",
+                                    optionVal: ['Business area', '22', '33'],                                    
+                                    required:false,
+                                },
+                                {
+                                    type:"select",
+                                    label:"Customer type",
+                                    id:"customerType",
+                                    optionVal: ['Customer type', '', ''],                                    
+                                    required:true,
+                                },
+                                {
+                                    type:"select",
+                                    label:"Sub-Client Type",
+                                    id:"subClientType",
+                                    optionVal: ['Not Selected', '', ''],                                    
+                                    required:false,
+                                },
+                                {
+                                    type:"select",
+                                    label:"Turn of the company",
+                                    id:"turnOfTheCompany",
+                                    optionVal: ['Turn of the company', '', ''],                                    
+                                    required:true,
+                                },
+                                {
+                                    type:"password",
+                                    label:"Current Password",
+                                    id:"CurrentPassword",
+                                    required:true,
+                                    placeholder:"Password",
+                                },
+                            ])
+                    .button.c-cta.my-button
+                        //- +defaultButton({name: "CANCEL", size: "large", roleButton:"true"})
+                        +defaultButton({name: "Cancel", wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                        //- +defaultButton({type:"box", size: "large", color:"red", name:"Save", roleButton:"true"})
+                        +defaultButton({name: "Save", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+block content
+    // Component Markup
+    
+    +ML000O
+
+block modal
+    .buy-find-address
+        +pop-msg-standard({id : `findAddress`, headline:"Find address", size:"full"})
+            .buy-find-address__form
+                +formRadio("Savills,57 Buckingham Gate, ,London","name", "val1", "radioId1")
+                +formRadio("Flat 1-6, 57 Buckingham Gate, ,London","name", "val2", "radioId2")
+                +formRadio("58 Buckingham Gate, ,London","name", "val3", "radioId3")
+                +formRadio("Cathy Pacific, Swire House, 59 Buckingham Gate, ,London","name", "val4", "radioId4")
+                +formRadio("Savills,57 Buckingham Gate, ,London","name", "val5", "radioId5")
+            .button.c-cta
+                +defaultButton({type:"box", color:"red", name:'SAVE'})

@@ -1,0 +1,100 @@
+@use '../abstract/' as *;
+
+@mixin accordion {
+  // Recommendation : this element should be have ".js-accordion" selector.
+  .c-accordion {
+    &__group {
+      // use component - pd0048, st0025
+    }
+    &__group-title {
+      // use component - st0025
+    }
+    &__initial {
+      // ...
+    }
+    // Recommendation : this element should be have ".js-accordion-handle-target" selector.
+    &__box {
+      $block: '.c-accordion';
+      // variation
+      // expand
+      &--expand {
+        #{$block}__body {
+          display: block;
+        }
+      }
+      // close
+      &:not(#{$block}__box--expand) {
+        #{$block}__body {
+          display: none;
+        }
+      }
+    }
+    &__head {
+      // ...
+    }
+    &__head-text {
+      // ...
+    }
+    &__body {
+      // ...
+    }
+    &__body-text {
+      // ...
+    }
+    &__body-image {
+      // ...
+    }
+    // Recommendation : this element should be have ".js-accordion-trigger" selector.
+    &__button {
+      $arrow: '&:after';
+      $expand: 'true';
+      $collapse: 'false';
+
+      padding: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      #{$arrow} {
+        content: '';
+        display: block;
+        width: rem($width12px);
+        height: rem($height7px);
+        background : {
+          image: url($icon-arrow-gray3-down-12-7);
+          repeat: no-repeat;
+          size: 100% auto;
+        }
+        @include screen(web) {
+          width: rem($width18px);
+          height: rem($height10px);
+          background-image: url($icon-arrow-gray3-down-18-10);
+        }
+        .c-wrapper.bg-darkgray &,
+        .c-wrapper.bg-black & {
+          background-image: url($icon-arrow-white-down-12-7);
+          @include screen(web) {
+            background-image: url($icon-arrow-white-down-18-10);
+          }
+        }
+      }
+
+      // a11y text dependent aria attribute
+      &[aria-expanded='#{$expand}'] {
+        #{$arrow} {
+          transform: rotateX($degree180);
+        }
+        .expand {
+          display: none;
+        }
+      }
+      &[aria-expanded='#{$collapse}'] {
+        .collapse {
+          display: none;
+        }
+      }
+    }
+    &__button-text {
+      // ...
+    }
+  }
+}

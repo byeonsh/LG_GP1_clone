@@ -1,0 +1,128 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_forms.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+
+block meta 
+    - var componentId = "CM000A"
+    - var componentName = "CS Popup"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+mixin pop-close-button(dailogId)
+    .button.c-pop-msg__close.c-pop-msg__close--on-top
+        button.cmp-button.js-pop-close(type="button", aria-controls=`${dailogId}` data-cmp-data-layer="")
+            span.cmp-button__text.sr-only close
+
+mixin pop-msg-header(params)
+    - var option = {headerBorder : true, headerSrOnly: false, align : "left",  ...params}
+    - var dialogHeadline = option.headline || "Dialog Headline"
+    - var dialogDescription = option.headerDescription || "Dialog Description"
+    - var headerBorder = option.headerBorder ? '' : 'c-pop-msg__header--no-border'
+    - var headerMargin = option.headerMargin ? `c-pop-msg__header--margin-${option.headerMargin}` : ''
+    - var dialogLabelId = `${option.id}-headline`
+    - var headerSrOnly = option.headerSrOnly ? 'sr-only' : ''
+    - var alignClass = option.align
+    .c-pop-msg__header(class=`${headerBorder} ${headerMargin} ${headerSrOnly}` class={[alignClass] : 0 > option.align.indexOf("left")})
+        // block - text contents
+        .c-text-contents
+            .title.c-text-contents__headline(id=`${dialogLabelId}`)
+                // 22.11.11 - moved font classname here
+                strong.cmp-title.font-w-light-36.font-m-light-24(data-cmp-data-layer="")= dialogHeadline
+            if option.headerDescription
+                .text.c-text-contents__bodycopy
+                    span.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")= dialogDescription
+                    
+mixin pop-msg-start-description(text, font)
+    - var fontStyle = font || "font-m-normal-16 font-w-normal-16"
+    // block - text contents
+    .c-pop-msg__start-description&attributes(attributes)
+        .c-text-contents
+            .text.c-text-contents__bodycopy
+                .cmp-text(data-cmp-data-layer="" class=`${fontStyle}`)= text
+
+mixin pop-msg-layout(params)
+    - var option={id:`popMsg${new Date().getTime()}`, ...params}
+    - var dialogId = option.id
+    - var dialogLabelId = `${option.id}-headline`
+    - var dialogSize = option.size || "medium"
+    - var dialogClass = `${dialogSize}`
+    - var useHeadline = option.headline != null && 0 < option.headline.length
+    // block - pop-msg ( dialog )
+    .c-pop-msg(class=`${dialogClass}` class={[option.classes] : !!option.classes} id=`${dialogId}` role="dialog" aria-modal="true" aria-labelledby=useHeadline&&dialogLabelId)
+        .c-pop-msg__container
+            if useHeadline
+                //- header
+                +pop-msg-header(params)
+            //- contents
+            if block
+                block
+            //- close button
+            .button.c-pop-msg__close.c-pop-msg__close--on-top
+                button.cmp-button.c-pop-msg__close-button.js-pop-close(type="button", aria-controls=`${dialogId}` data-cmp-data-layer="")
+                    span.cmp-button__text.sr-only close
+        .c-pop-msg__dimmed
+
+mixin pop-msg-only-message(params)
+    - var option={size: 'small', bodySize:'font-w-normal-16 font-m-normal-16', ...params}
+    +pop-msg-layout(option)
+        .c-pop-msg__contents.fit-header
+            //- insert block - only msg
+            .text.font-black.align-text-center
+                .cmp-text(class=`${option.bodySize}` data-cmp-data-layer='')
+                    p #{option.text}
+
+mixin pop-msg-standard(params)
+    +pop-msg-layout(params)
+        block
+
+//- print layer popup 
+mixin printLayerPopup(popId, params)
+    case popId
+
+        when 'popVipAlert'
+            +pop-msg-standard({id : `popVipAlert`, headline:"Registro Completado", headerBorder: false})
+                .c-pop-msg__contents.fit-header
+                    .c-pop-msg__contents-text
+                        ul.font-w-normal-16.font-m-normal-14
+                            li Ahora puede usar su cuenta LG en el sitio web de LG Electronics.
+                            li Puede obtener beneficios especiales como cliente de LG Business. Para actualizar su cuenta, consulte su correo electrónico.  
+                    // block - pop msg (dialog) form 
+                    - var require = true
+                    - var inLayer = true
+                    form(action="#" method="post").c-pop-msg-form.gray
+                        .c-pop-msg-form__item
+                            +formText("text", "Dirección de correo electrónico", id, false, "user@email.com", inLayer)(readonly="readonly")
+
+                .button.c-pop-msg__button-wrap
+                    //- +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popStockAlert")
+                    +defaultButton({name: 'OK', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+block content
+
+    .guide 
+        .grid-1600 
+        .grid-1440    
+
+    div(style="display: flex; gap: 20px; flex-wrap: wrap; padding: 10px 25px 25px; align-items: center;")
+        .button.c-cta
+            +linkButton({href:"#popVipAlert", type:"box", color:"red", class:"js-pop-open", name:"VIP Alert", roleButton:"true"})
+
+block modal 
+    //- Stock Alert
+    +printLayerPopup('popVipAlert')
+    
+
+    
+    
+                                    

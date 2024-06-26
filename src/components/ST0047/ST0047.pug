@@ -1,0 +1,132 @@
+extends ../_common/_layout.pug
+include ../_common/_image.pug
+include ../_common/_button.pug
+include ../_common/_hero-banner.pug
+
+block meta 
+    - var componentId = "ST0047"
+    - var componentName = "Product Finder Link"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'Width',
+                                'buttons' : [ 
+                                    {'toggle' : false, 'add' : 'width-wide', 'remove' : 'width-narrow, width-content'},
+                                    {'toggle' : false, 'add' : 'width-narrow', 'remove' : 'width-wide, width-content'},
+                                    {'toggle' : false, 'add' : 'width-content', 'remove' : 'width-wide, width-narrow'},
+                                ]
+                            }
+                        ],
+                        '.c-floating-contents__floor' : [
+                            {
+                                'name' : 'Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-left', 'remove' : 'align-center, align-right'},
+                                    {'toggle' : false, 'add' : 'align-center', 'remove' : 'align-left, align-right'},
+                                    {'toggle' : false, 'add' : 'align-right', 'remove' : 'align-left, align-center'},
+                                ]
+                            },
+                            {
+                                'name' : 'Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-white', 'remove' : 'font-black'},
+                                    {'toggle' : false, 'add' : 'font-black', 'remove' : 'font-white'},
+                                ]
+                            }
+                        ],
+                        '.c-text-contents__subcopy .cmp-text' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            }
+                        ]
+                    };
+
+    mixin find-wrap(data)
+        - var option = {ctaType: "box", ctaLabel: "Help me choose", ...data}
+        - var headlineStyle = "font-w-light-56 font-m-light-28"
+        - var bodyStyle = "font-w-normal-24 font-m-normal-16"
+        
+        // block - floating contents
+        .c-floating-contents
+            .c-floating-contents__floor.align-center.pos-middle.font-white
+                // block - text contents
+                .c-text-contents
+
+                    .title.c-text-contents__headline
+                        .cmp-image(data-cmp-data-layer='')
+                            img.c-image__img(src='https://via.placeholder.com/160x160/999999/333333/?text=160x160', alt='', loading="lazy")
+                        .cmp-title(data-cmp-data-layer="" class=headlineStyle)
+                            strong Product finder
+
+                    .text.c-text-contents__subcopy
+                        .cmp-text(data-cmp-data-layer="" class=bodyStyle) 
+                            p Visit the Appliance Finder for help finding your match.
+                    
+                    // block - cta
+                    .c-cta.button
+                        if option.ctaType == "text"
+                            +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})(class="white")
+                        else
+                            +defaultButton({name: option.ctaLabel, wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                
+            .c-floating-contents__floating
+                // block - image
+                .c-image
+                    +printLazyPicture("https://via.placeholder.com/768x210/222/333/?text=768x210", "https://via.placeholder.com/1920x300/222/333/?text=1920x300")
+
+    // Component Markup
+    // Type - CTA button
+    .guide-text-option CTA - button
+    .c-wrapper.ST0047.margin-top.margin-bottom.width-narrow.bg-default
+        .component
+            .cmp-container
+                +find-wrap
+
+    // Type - CTA text link
+    .guide-text-option CTA - text link
+    .c-wrapper.ST0047.margin-top.margin-bottom.width-narrow.bg-default
+        .component
+            .cmp-container
+                // block - floating contents
+                +find-wrap({ctaType: "text"})

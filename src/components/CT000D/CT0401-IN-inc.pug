@@ -1,0 +1,136 @@
+mixin checkoutOrderCoupon(params)
+    - let data = {...params}
+    .c-checkout-ordered__container 
+        .c-checkout-ordered-coupon
+            p.c-checkout-ordered-coupon__title Coupons
+            .c-checkout-ordered-coupon__info 
+                .c-checkout-ordered-coupon__info-coupon= data.coupon
+                .c-checkout-ordered-coupon__info-price
+                    | - 
+                    span.font-semibold
+                        +unitPos(params.unitPos, data.price)
+
+mixin checkoutOrderDelivery(params)
+    - let data = {...params}
+    .c-checkout-ordered__address-item.c-checkout-ordered__address-item--shipping
+        .c-checkout-ordered__address-item__flag-box
+            if data.flag
+                - for(let i = 0; i < data.flag.length; i +=1)
+                    .c-checkout-ordered__address-item__flag
+                        .c-text-contents.align-text-left
+                            .c-text-contents__bodycopy
+                                span.cmp-text.font-w-bold-10.font-m-bold-10= data.flag[i]
+        .c-checkout-ordered__address-item__addr-box
+            .c-text-contents.align-text-left
+                .c-text-contents__bodycopy.cmp-text.font-w-normal-16.font-m-normal-14= data.name
+                .c-text-contents__bodycopy.cmp-text.font-w-normal-20.font-m-normal-16= data.address
+                .c-text-contents__bodycopy.cmp-text.font-w-normal-20.font-m-normal-16= data.postcode
+
+mixin checkoutOrderDeliveryProduct(delivery, date, info, params)
+    - let data = {...params}
+        .c-text-contents.align-text-left.c-checkout-ordered__item--delivery-info
+            .c-checkout-ordered__item--delivery-info__title.font-w-normal-16.font-m-normal-14= delivery
+            if date
+                .c-checkout-ordered__item--delivery-info__date.font-red= date
+            if info
+                .c-checkout-ordered__item--delivery-info__info= info
+        each set in data
+            .c-checkout-ordered__product
+                .c-checkout-ordered__product__image-box
+                    .image.c-image
+                        +printLazyImage(`https://via.placeholder.com/80x80/999999/333333`)
+                .c-checkout-ordered__product__title= set.title
+                    .c-checkout-ordered__product__text-box__desc
+                        .c-checkout-ordered__product__text-box__desc-qty Qty : !{set.qty}
+                        .c-checkout-ordered__product__text-box__desc-price
+                            +unitPos(set.unitPos, set.price)
+                            //- [Start] 2023-09-13 : ADD- Includes $15 EHF fee
+                            if set.includeEHF
+                                span.c-checkout-orderd__product__text-box__desc-price__EHF-fee.font-w-normal-16.font-m-normal-12 !{set.includeEHF}
+                            //- [End] 2023-09-13 : ADD- Includes $15 EHF fee
+
+mixin CT0401(option=false)
+    .c-wrapper.CT0401
+        .component
+            .fluid-container
+                .my-component.buy-summary-area
+                    .buy-summary-area__primary
+                        .buy-summary-area__primary__title.text.c-text-contents__bodycopy
+                            p.cmp-text.font-w-normal-32.font-m-normal-20 Your Order
+                        .c-checkout-ordered-wrap
+                            .c-checkout-ordered
+                                .c-checkout-ordered__item.c-checkout-ordered__item--coupon
+                                    +checkoutOrderCoupon({
+                                        coupon: "10% off Sign-up Welcome Coupon",
+                                        price: "209.99"
+                                    })
+                                .c-checkout-ordered__item.c-checkout-ordered__item--address 
+                                    .c-text-contents.align-text-left.c-checkout-ordered__sub-title
+                                        .title.c-text-contents__bodycopy
+                                            span.cmp-text.font-w-normal-24.font-m-normal-20 Delivery
+                                    .c-checkout-ordered__container 
+                                        +checkoutOrderDelivery({
+                                            flag: ["SHIPPING"],
+                                            name: "Robert Surrency",
+                                            address: "20 Farringdon Street, London, EC4A 4AB, United Kingdom",
+                                            postcode: "123-4567-8910"
+                                        })
+                                    .c-checkout-ordered__container 
+                                        +checkoutOrderDelivery({
+                                            flag: ["BILLING"],
+                                            name: "Robert Kim",
+                                            address: "20 Farringdon Street, London, EC4A 4AB, United Kingdom",
+                                            postcode: "123-4567-8910"
+                                        })
+                                .c-checkout-ordered__item.c-checkout-ordered__item--delivery
+                                    +checkoutOrderDeliveryProduct("Free Shipping", false, "Earliest Delivery Date - Thursday, Novemver 30, 2023", [
+                                        {
+                                            title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                            qty: "1",
+                                            price: "209998",
+                                        },
+                                    ])
+                                .c-checkout-ordered__item.c-checkout-ordered__item--delivery
+                                    +checkoutOrderDeliveryProduct("Free Shipping", false, "Expected Delivery Date - Wednesday, November 29, 2023", [
+                                        {
+                                            title: "LG Styler Steam Clothing Care System® S3BF 3 Hangers - Black",
+                                            qty: "1",
+                                            price: "2099",
+                                        },
+                                    ])
+                                if option === "multi"
+                                    .c-checkout-ordered__item.c-checkout-ordered__item--delivery
+                                        +checkoutOrderDeliveryProduct("Delivery &Disposal & Disconnection", "Thu, Oct 18  07:00~19:00", "The delivery time is different for each shipping company.", [
+                                            {
+                                                title: "LG Styler Steam Clothing Care System® S3BF 3 Hangers - Black",
+                                                qty: "1",
+                                                price: "2,099.98",
+                                                includeEHF: "Includes $15 EHF fee",
+                                            },
+                                        ])
+                                .c-checkout-ordered__item.c-checkout-ordered__item--payment
+                                    .c-text-contents.align-text-left.c-checkout-ordered__sub-title
+                                        .title.c-text-contents__bodycopy
+                                            span.cmp-text.font-w-normal-24.font-m-normal-20 Payment Method
+                                        .c-checkout-ordered__contents.font-w-normal-20.font-m-normal-16 Credit Card
+
+                            .c-cta.button.align-text-center.button__ordered-confirm__details
+                                +defaultButton({name:'View Order Detail', wSize: 'large', mSize: 'small', buttonStyle: 'default', isButton: false})
+                    .buy-summary-area__secondary.buy-secondary-area
+                        .text.c-text-contents__bodycopy.buy-summary-area__secondary__title
+                            p.cmp-text.font-w-normal-32.font-m-normal-20 Order Summary
+                        +cartPriceTotal([
+                            {
+                                unitPosition: 'left',
+                                unitName: '₹',
+                                priceListCustomize : [
+                                    {title:'MRP (Inclusive of all taxes)', price:'146998',},
+                                    {unitName: '-₹', title:'Promotional Discount', price:'29566', emphasis:true,},
+                                    {unitName: '-₹', title:'Discount amount', price:'9900', emphasis:true,},
+                                    {title:'Tax', price:'29566', sub: [{title:'VAT (5%)',price:'25195'},]},
+                                    {title:'Free shipping', price:'2571', sub: [{title:'OLW480B',price:'2142'}, {title:'TONE-UFP8+OLW480B',price:'429',}]},
+                                ],
+                            },
+                        ])
+                        .c-cta.button.align-text-center.button__ordered-confirm__details
+                            +defaultButton({name:'View Order Detail', wSize: 'large', mSize: 'small', buttonStyle: 'default', isButton: false})

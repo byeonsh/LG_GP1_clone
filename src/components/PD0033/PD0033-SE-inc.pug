@@ -1,0 +1,204 @@
+
+//- mixin product-promotion-information
+//-     // block : product-promotion-list
+//-     ul.c-list
+//-         li.c-list__item
+//-             .c-pm-icon.tag-pound-carmine
+//-             .c-list-item__cont
+//-                 .text.c-list-item__text
+//-                     .cmp-text
+//-                         p.font-w-normal-24.font-m-normal-14 Buy now, claim £300 cashback. Click 
+//-                             a.cmp-button.c-button(href="#" target="" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+//-                                 span.cmp-button__text.font-w-normal-24.font-m-normal-14 here for details.
+//-         li.c-list__item
+//-             .c-pm-icon.pre-welcome-coupon-carmine
+//-             .c-list-item__cont
+//-                 .text.c-list-item__text
+//-                     .cmp-text.font-w-normal-24.font-m-normal-14
+//-                         p.font-w-normal-24.font-m-normal-14 FREE delivery, connection &amp; disposal with selected models**Services Include: &gt; FREE unpacking, power connection &amp; base stand installation. UK mainland only.
+mixin PD0033(option=false)
+    mixin tabItem(params)
+        //- - console.log(params)
+        - var option={text:"Anchor Text",  href:"overview", isActive:false,  noTab: false, ...params}
+        if option.noTab === true
+            .promotion
+                .c-tooltip.c-list-item__text
+                    .button(aria-selected=`${option.isActive ? "true" : "false"}`)
+                        +iconButton({type:"tooltip", color:"black", class:"information", otherClass:"c-tooltip__button", name: option.text, expanded:"false"})
+                    .c-tooltip__container.top-right(id="promotion")
+                        .c-tooltip__contents
+                            +product-promotion-information
+            .promotion-mobile
+                a.c-tabs__item(href="#Promotions" role="tab" aria-selected=`${option.isActive ? "true" : "false"}`)&attributes(attributes).js-pop-open.information
+                    span.c-tabs__item-text #{option.text}
+                    //- .button(aria-selected=`${option.isActive ? "true" : "false"}`)
+                    //-     +iconButton({type:"tooltip", color:"black", class:"information", otherClass:"c-tooltip__button js-pop-open", name: 'Promotions', ariaControls:"promotion", expanded:"false"})(href="#Promotions", roleButton="true")
+
+        else
+            a.c-tabs__item(href=`${option.href}` role="tab" aria-selected=`${option.isActive ? "true" : "false"}`)&attributes(attributes)
+                span.c-tabs__item-text #{option.text}
+
+    mixin price-block(params)
+        - var options = {energy: false, labels:false, repair:false, ... params}
+        - var useLink = false
+        - var sku = null 
+        - var mdn = "27.6-inch 16:18 DualUp Monitor with Ergo Stand and  USB Type-C™"
+        - var productNameFontStyle = {headline : "font-w-normal-16 font-m-normal-14"}
+        - var priceConfig = {promotion: '', installment: false, membership: '', soldOut: false, outOfStock: false, priceFontStyle : "font-w-normal-16 font-m-normal-16 font-bold"}
+        
+        // RO SE
+        if(params.se)
+            .c-product-digest-information
+                .c-text-contents
+                    .text.c-text-contents__headline
+                        .cmp-text(data-cmp-data-layer) 
+                            // 2023-01-27 change h1 to p
+                            p LG OLED evo C2 tt” 4K Smart TV
+                //- +product_name(sku, mdn, productNameFontStyle, useLink)
+                //- +product_rating('A', false, rating=false)
+            
+                .price-area
+                    .price-box
+                        .c-price.font-m-normal-16
+                            .c-price__purchase 41,491 kr
+
+                        .product-price.font-m-normal-14i.flex-col
+                            .product-price-row
+                                .c-price
+                                    .c-price__previous 41,491 kr
+                            .product-price-row
+                                .c-price
+                                    .c-price__discount
+                                        span 33% Off
+                        // RO ID
+                        //- .product-price.font-m-normal-14i
+                        //-     .c-price
+                        //-         .c-price__previous à vista 5% off
+                        //-     .c-price
+                        //-         .c-price__discount
+                        //-             span R$ 2.670,00
+                        if options.energy
+                            .c-product-item__download
+                                .c-tooltip
+                                    .button
+                                        if options.labels == true
+                                            a.c-tooltip__button(href="#", target="_blank", rel="noopener noreferrer" role="button" data-link-name="")
+                                                //- +printLazyImage(`../../assets/icon/label-ap-a3.svg`)
+                                                +printLazyPicture('../../assets/icon/icon-energy-grade-a-34-20.png', '../../assets/icon/icon-energy-grade-a-54-32.png')
+                                                span.sr-only= `Energy Grade : a3`
+                                    .c-tooltip__container.hidden
+                                        .c-tooltip__contents
+                                            a(href="#" role="button").font-w-bold-12i.font-m-bold-12i UK
+                                            a(href="#" role="button").font-w-bold-12i.font-m-bold-12i EU
+                                .c-tooltip
+                                    .button
+                                        if options.labels == true
+                                            a.c-tooltip__button(href="#", target="_blank", rel="noopener noreferrer" role="button" data-link-name="")
+                                                +printLazyImage(`../../assets/icon/label-ap-a3.svg`)
+                                                span.sr-only= `Energy Grade : a3`
+                                    .c-tooltip__container.hidden
+                                        .c-tooltip__contents
+                                            a(href="#" role="button").font-w-bold-12i.font-m-bold-12i UK
+                                            a(href="#" role="button").font-w-bold-12i.font-m-bold-12i EU
+                                .c-tooltip
+                                    .button
+                                        button.c-tooltip__button.c-product-item__download--click(type="button" role="button" aria-expanded="false") Product information Sheet
+                                    .c-tooltip__container
+                                        .c-tooltip__contents
+                                            a(href="#" role="button").font-w-bold-12i.font-m-bold-12i WM
+                                            a(href="#" role="button").font-w-bold-12i.font-m-bold-12i WD
+
+                        //- FR - Repairability Index Label
+                        if options.repair
+                            .c-product-item__repair
+                                a.c-product-item__repair--click(href="#" target="_blank" role="button" rel="noopener noreferrer" data-link-name="")
+                                    .cmp-image(data-cmp-data-layer="")
+                                        img.cmp-image__image.c-image__img(src="../../assets/image/icon-repair-index-fr-76-47.png" alt="")
+                                    span.cmp-text Repairability Index
+
+    if(option == 'PDP')
+        .c-wrapper.PD0033.type-pdp.can-sticky.bg-default
+            .component
+                .cmp-container
+                    // block - floating wrap
+                    .c-floating-wrap
+                        //RO id
+                        +price-block({se:true, energy: true, labels:true, repair:false})
+
+                        // block - tabs
+                        .c-tabs
+                            - var label = "If you select menu, the focus move to area providing the selected information in this web page."
+                            // edit font classname - 22/12/30
+                            .c-tabs__list.font-w-normal-20.font-m-semibold-16(role="tablist" aria-label=`${label}`)
+                                +tabItem({text: "Features", href:'#pdp_features', isActive:true})(class="active")
+                                //- +tabItem({text: "In the box", href:'#pdp_box'})
+                                //- +tabItem({text: "Gallery", href:'#pdp_gallery'})
+                                +tabItem({text: "Specs", href:'#pdp_spec'})
+                                //- +tabItem({text: "Compare", href:'#pdp_compare'})
+                                +tabItem({text: "Reviews", href:'#pdp_review'})
+                                //- +tabItem({text: "FAQ", href:'#pdp_faq'})
+                                +tabItem({text: "Support", href:'#pdp_support'})
+                                +tabItem({text: "Where to Buy", href:'#pdp_where'})
+                                +tabItem({text: "Promotions",  noTab: true})
+
+                        .c-tabs__extra
+                            // block - cta
+                            .cta-wrap
+                                // Use the highlight button for moving to PBP, and use the default button for the rest.
+                                // case 1. On sale status
+                                //- +defaultButton({name: 'Buy Now', wSize: 'large', mSize: 'large', buttonStyle: 'highlight', isButton: false})
+                                // <a class="cmp-button c-button c-button--default highlight m-large w-large" href="#" data-link-name="buy_now" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Buy Now</span></a>
+                                // case 2. Out of stock status
+                                +defaultButton({name: 'Recommended product', wSize: 'large', mSize: 'large', buttonStyle: 'default js-pop-open', isButton: false})(href="#popRecommendedProducts" aria-controls="popRecommendedProducts" data-cmp-data-layer="")
+                                +defaultButton({name: 'Get stock alert', wSize: 'large', mSize: 'large', buttonStyle: 'default', isButton: false})
+                    .c-mobile-split-area
+                        // block - bottom sheet
+                        .c-bottom-sheet.c-bottom-sheet--pdp
+                            //RO br
+                            +price-block({se:true, energy: true, labels:true, repair:false})
+                            // 02. When there's two button (Add class 'flex-wrap-twoline')
+                            .cta-wrap.flex-wrap.flex-wrap-twoline
+                                // Use the highlight button for moving to PBP, and use the default button for the rest.
+                                .flex-wrap_inner
+                                    // case 1. On sale status
+                                    //- +defaultButton({name: 'Buy Now', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: false})
+                                    // <a class="cmp-button c-button c-button--default highlight m-medium w-medium" href="#" data-link-name="buy_now" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Buy Now</span></a>
+                                    // case 2. Out of stock status
+                                    +defaultButton({name: 'Recommended product', wSize: 'medium', mSize: 'medium', buttonStyle: 'default js-pop-open', isButton: false})(href="#popRecommendedProducts" aria-controls="popRecommendedProducts" data-cmp-data-layer="")
+                                    +defaultButton({name: 'Get stock alert', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: false})
+                                // for Discontinued Product
+                                // GA4
+                                // <a class="cmp-button c-button c-button--default default m-medium w-medium" href="#" data-cmp-data-layer="" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type=""><span class="cmp-button__text c-button__text">Recommended products</span></a>
+
+    else if(option == 'PLPSINGLE')
+    else
+        .c-wrapper.PD0033.type-plp.bg-default
+            .component.can-sticky
+                .cmp-container
+                
+                    // block - floating wrap
+                    .c-floating-wrap.test
+                        //- block - region header
+                        //- .c-region-header.sr-only
+                        //-     // block - text contents
+                        //-     .c-text-contents
+                        //-         .title.c-text-contents__headline
+                        //-             // 2022-01-13 : The headline is mandatory and is always used as h1. (Used for seo and web accessibility)
+                        //-             h1.cmp-title.font-w-regular-54.font-m-regular-30(data-cmp-data-layer="")
+                        //-                 | 2 Depth Category 
+
+                        - var nameFontStyle = "font-w-semibold-16 font-m-normal-14i font-semibold"
+                        - var descFontStyle = "font-w-normal-14 font-m-normal-14"
+                        - var useAnchor = true
+                        - var useActiveImage = true
+                        // Delete description - 22/12/30
+                        +roll-selector([
+                            {useDualImage: true, name:"All", description:"Lorem ipsum dolor sit amet, consectetur adipiscing elit", nameFontStyle, descFontStyle},
+                            {useDualImage: true, useActiveImage, name:"Multi Door Fridge Freezers Test two line", description:"Lorem ipsum dolor sit amet, consectetur adipiscing elit", nameFontStyle, descFontStyle },
+                            {useDualImage: true, name:"Tall Fridge Freezers", description:"Lorem ipsum dolor sit amet, consectetur adipiscing elit", nameFontStyle, descFontStyle },
+                            {useDualImage: true, name:"Door-in-Door™ Fridge Freezers", description:"Lorem ipsum dolor sit amet, consectetur adipiscing elit", nameFontStyle, descFontStyle },
+                            {useDualImage: true, name:"British Style Fridge Freezers", description:"Lorem ipsum dolor sit amet, consectetur adipiscing elit", nameFontStyle, descFontStyle },
+                            {useDualImage: true, name:"Door-in-Door™ Fridge Freezers", description:"Lorem ipsum dolor sit amet, consectetur adipiscing elit", nameFontStyle, descFontStyle },
+                            {useDualImage: true, name:"Multi Door Fridge Freezers", description:"Lorem ipsum dolor sit amet, consectetur adipiscing elit", nameFontStyle, descFontStyle },
+                            {useDualImage: true, name:"Multi Door Fridge Freezers", description:"Lorem ipsum dolor sit amet, consectetur adipiscing elit", nameFontStyle, descFontStyle },
+                        ], useAnchor)

@@ -1,0 +1,57 @@
+include ./_button.pug
+include ./_image.pug
+include ./_carousel.pug
+include ./_headline.pug
+
+mixin specContents(params)
+	- var option={isSwiper: false, ...params}
+	- var headlineClass = "c-text-contents__headline font-w-light-36 font-m-light-24"
+		.c-text-contents.align-text-left(class=option.isSwiper && "cmp-carousel__item swiper-slide" data-cmp-data-layer=option.isSwiper && "" data-cmp-hook-carousel=option.isSwiper && "item")
+			.cmp-title(class=headlineClass, data-cmp-data-layer="")
+				strong.cmp-title__text 4K OLED
+			.c-text-contents__eyebrow.font-w-normal-16(class=option.isSwiper ? "font-m-normal-14" : "font-m-normal-16") Type
+			.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-12 Lorem ipsum dolor sit amet
+		.c-text-contents.align-text-left(class=option.isSwiper && "cmp-carousel__item swiper-slide" data-cmp-data-layer=option.isSwiper && "" data-cmp-hook-carousel=option.isSwiper && "item")
+			.cmp-title(class=headlineClass, data-cmp-data-layer="")
+				strong.cmp-title__text 3440 X 1440
+			.c-text-contents__eyebrow.font-w-normal-16(class=option.isSwiper ? "font-m-normal-14" : "font-m-normal-16") Resolution
+			.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-12 Lorem ipsum dolor sit amet
+		.c-text-contents.align-text-left(class=option.isSwiper && "cmp-carousel__item swiper-slide" data-cmp-data-layer=option.isSwiper && "" data-cmp-hook-carousel=option.isSwiper && "item")
+			.cmp-title(class=headlineClass, data-cmp-data-layer="")
+				strong.cmp-title__text 240Hz
+			.c-text-contents__eyebrow.font-w-normal-16(class=option.isSwiper ? "font-m-normal-14" : "font-m-normal-16") Rich Bass Speaker
+			.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-12 Lorem ipsum dolor sit amet
+		.c-text-contents.align-text-left(class=option.isSwiper && "cmp-carousel__item swiper-slide" data-cmp-data-layer=option.isSwiper && "" data-cmp-hook-carousel=option.isSwiper && "item")
+			//- block : icon
+			.c-image
+				+printLazyImage('https://via.placeholder.com/330x144/999999/333333')
+			.c-text-contents__eyebrow.font-w-normal-16(class=option.isSwiper ? "font-m-normal-14" : "font-m-normal-16") Rich Bass Speaker
+			.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-12 Lorem ipsum dolor sit amet
+
+//- note - only use this mixin
+mixin spec-info({mobileType = "block", initialClass = "bg-transparent font-black"})
+	// block : spec-info
+	if "swiper" == mobileType 
+		.c-spec-info.swiper-mobile
+			.c-spec-info__container
+				.carousel.panelcontainer
+					// block : carousel
+					.cmp-carousel.c-carousel.c-icon-block-contents.type-b(data-cmp-data-layer="", class=`${initialClass}`)
+						.cmp-carousel__content.swiper-wrapper
+							// slides
+							+specContents({
+								isSwiper: true
+							})
+						// indicator
+						.c-carousel__handler
+							.cmp-carousel__actions
+								+carouselBtn({type:"pagination", direction:"prev"})
+							+carouselPagination
+							.cmp-carousel__actions
+								+carouselBtn({type:"pagination", direction:"next"})
+
+	if "block" == mobileType 
+		.c-spec-info.block-mobile
+			.c-icon-block-contents.type-a(class=`${initialClass}`)
+				// block : text-contents
+				+specContents

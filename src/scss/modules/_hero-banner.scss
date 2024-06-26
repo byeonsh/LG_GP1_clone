@@ -1,0 +1,1229 @@
+@use '../abstract/' as *;
+
+@mixin hero-banner {
+  .c-hero-banner {
+    $block: '.c-hero-banner';
+
+    // fix safari bug --
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    -webkit-transform: translate3d(0, 0, 0);
+    // -- fix safari bug
+
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+
+    // element
+    &__contents {
+      width: 100%;
+      @include screen(mobile) {
+        @include inset-padding-hz(mobile);
+        @include inset-padding-vt(mobile);
+      }
+    }
+    &__animation {
+      // video : animation
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      &:not(.use-mobile) {
+        @include screen(mobile) {
+          display: none;
+        }
+      }
+    }
+    // icon use
+    .c-icon-side {
+      display: none;
+    }
+    // block
+    .c-media {
+      // animation controls
+      &__button {
+        position: relative;
+        z-index: 10;
+      }
+    }
+    .c-text-contents {
+      // ...
+      display: flex;
+      flex-direction: column;
+    }
+    .c-floating-contents {
+      &__floating {
+        $inset: $padding80px;
+
+        @include container($design-full);
+        @include screen(web) {
+          padding: rem($inset) min(rem($inset), calc(100% * $inset / $design-grid-full));
+        }
+        @include screen(tablet) {
+          padding-top: rem($inset * 0.5);
+          padding-bottom: rem($inset * 0.5);
+        }
+      }
+
+      $text-block-wrap: '&__main-contents';
+      $icon-block-wrap: '&__sub-contents';
+      $icon-block: '.ST0020';
+
+      #{$text-block-wrap} {
+        display: flex;
+        width: 100%;
+        height: 100%;
+      }
+      #{$icon-block-wrap} {
+        $bg: '.c-hero-banner__image';
+        $disclaimer: '.c-hero-banner__disclaimer';
+        $cell-bottom-min: rem($height60px * 1.5);
+        $cell-top-min: calc(100% - rem($height60px * 1.5));
+
+        display: grid;
+        grid-template-columns: 100%;
+        grid-template-rows: minmax(auto, 100%) minmax(auto, 0%);
+
+        #{$bg} {
+          grid-area: 1/1/3/2;
+        }
+        #{$icon-block} {
+          grid-area: 1/1/2/2;
+          max-width: none;
+        }
+        #{$disclaimer} {
+          grid-area: 2/1/3/2;
+        }
+
+        // if not child node
+        &:empty {
+          display: none;
+        }
+      }
+      // fix for icon block vertical alignment and padding
+      #{$icon-block} {
+        &.c-wrapper,
+        .component,
+        .cmp-container,
+        .c-spec-info {
+          height: 100%;
+        }
+        .component > .cmp-container {
+          padding-left: 0;
+          padding-right: 0;
+        }
+      }
+    }
+    .c-product-nugget {
+      @include reset-list-style;
+      .c-product-nugget__item {
+        display: flex;
+        flex-direction: column;
+        gap: rem($margin2px);
+        @include screen(web) {
+          flex-direction: row;
+          align-items: center;
+          gap: rem($margin8px);
+        }
+        &:not(:first-child) {
+          margin-top: rem($margin8px);
+          @include screen(web) {
+            margin-top: rem($margin2px);
+          }
+        }
+      }
+    }
+    .c-hero-badge {
+      position: absolute;
+      display: flex;
+      gap: rem($margin8px);
+      top: rem($width30px);
+      left: rem($width30px);
+      @include screen(web) {
+        top: rem($width40px);
+        left: rem($width40px);
+      }
+      span {
+        height: rem($height24px);
+        padding: 0 rem($padding5px);
+        // border: {
+        //     width: rem($border1);
+        //     style: solid;
+        //     radius: rem($radius4);
+        // }
+        line-height: rem($height22px);
+      }
+      &--white span {
+        color: $white;
+        // border-color: $white;
+      }
+      &--black span {
+        color: $gray3;
+        // background-color: $white;
+        // border-color: $gray6;
+      }
+      &--red span {
+        color: $active-red;
+        // background-color: $white;
+        // border-color: $active-red;
+      }
+    }
+
+    // layout : margin
+    $layout: '.c-floating-contents';
+    $image: '.c-image';
+    $text: '.c-text-contents';
+    $cta: '.c-cta';
+    $count: '.c-countdown';
+    $media: '.c-media';
+    $badge: '.c-hero-badge';
+    $carousel: '.c-carousel';
+    $carousel-arrow: '.c-carousel__button';
+    $nugget: '.c-product-nugget';
+    $watch-video-button: '.c-action-button';
+    $text-icon-right-button: '.c-button[class*="-text-icon"]';
+
+    #{$text}__eyebrow + #{$text}__headline {
+      margin-top: rem($margin8px);
+    }
+    #{$text}__headline + #{$text}__bodycopy {
+      margin-top: rem($margin8px);
+    }
+    #{$text}__headline + #{$text}__date {
+      margin-top: rem($margin8px);
+    }
+    #{$text}__date + #{$text}__bodycopy {
+      margin-top: rem($margin8px);
+    }
+
+    * + #{$count} {
+      margin-top: rem($margin8px);
+    }
+    * + #{$count}--promotion {
+      margin-top: rem($margin12px);
+      @include screen(web) {
+        margin-top: rem($margin24px);
+      }
+    }
+    * + #{$count}--big {
+      margin-top: rem($margin12px);
+      @include screen(desktop) {
+        margin-top: rem($margin24px);
+      }
+    }
+    * + #{$cta} {
+      margin-top: rem($margin12px);
+      @include screen(web) {
+        margin-top: rem($margin24px);
+      }
+    }
+    * + #{$nugget} {
+      margin-top: rem($margin12px);
+      @include screen(web) {
+        margin-top: rem($margin24px);
+      }
+    }
+    #{$watch-video-button} {
+      margin-top: rem($margin12px);
+      @include screen(web) {
+        margin-top: rem($margin24px);
+      }
+    }
+    #{$media} {
+      &__controls {
+        margin-bottom: rem($margin24px);
+        gap: rem($margin8px);
+        @include screen(web) {
+          margin-bottom: rem($margin40px);
+        }
+      }
+    }
+
+    #{$text}__bodycopy + #{$text}__bodycopy--timer {
+      margin-top: rem($margin12px);
+      @include screen(web) {
+        margin-top: rem($margin8px);
+      }
+    }
+
+    // modifier
+    &--use-animation {
+      .c-hero-banner__contents {
+        padding-bottom: rem($padding24px + $icon24px + $padding12px);
+        @include screen(web) {
+          padding-bottom: rem($padding24px + $icon32px);
+        }
+        @include screen(desktop) {
+          padding-bottom: rem($padding24px);
+        }
+      }
+    }
+
+    // Option...
+    // 0.use carousel
+    @at-root .c-carousel {
+      .c-hero-banner__contents {
+        padding-bottom: rem($padding24px + $height28px + $padding24px);
+        @include screen(web) {
+          padding-bottom: rem(120px - $padding80px);
+        }
+        @include screen(tablet) {
+          padding-bottom: rem(120px - $padding40px);
+        }
+      }
+
+      $animation-controls: '.c-hero-banner--use-animation .c-media__controls';
+      $animation-slide: '.c-hero-banner--use-animation .c-hero-banner__contents';
+
+      #{$animation-controls} {
+        margin-bottom: rem($margin64px);
+        @include screen(web) {
+          margin-bottom: rem(114px);
+        }
+        @include screen(tablet) {
+          margin-bottom: rem(114px - $padding40px);
+        }
+      }
+      #{$animation-slide} {
+        padding-bottom: rem($padding100px);
+        @include screen(web) {
+          padding-bottom: rem(170px - $padding80px);
+        }
+        @include screen(tablet) {
+          padding-bottom: rem(170px - $padding40px);
+        }
+      }
+    }
+
+    // 1. hero width
+    @at-root .width-wide #{$block} {
+      max-width: rem($maximum);
+    }
+    @at-root .width-narrow #{$block} {
+      max-width: rem($design-full);
+      @include screen(custom, rem($design-full + 1px), min) {
+        @include lgness-radius('default');
+      }
+    }
+    @at-root .width-content #{$block} {
+      max-width: rem($design-grid-full);
+      @include screen(custom, rem($design-grid-full + 1px), min) {
+        @include lgness-radius('default');
+      }
+    }
+
+    // 2. text block : width
+    #{$text} {
+      width: 100%;
+      &.width-wide {
+        @include screen(web) {
+          max-width: rem($text-box-width-md);
+        }
+      }
+      &.width-narrow {
+        @include screen(web) {
+          max-width: rem($text-box-width-sm);
+        }
+      }
+    }
+
+    $main: '.c-floating-contents__main-contents';
+
+    // 3. Text block : vertical
+    &--main-pos-top {
+      #{$main} {
+        /*! rtl:ignore */
+        align-items: flex-start;
+      }
+      .c-floating-contents__floating {
+        bottom: auto;
+      }
+    }
+    &--main-pos-middle {
+      #{$main} {
+        align-items: center;
+      }
+      .c-floating-contents__floating {
+        top: 50%;
+        bottom: auto;
+        transform: translateY(-50%);
+      }
+    }
+    &--main-pos-bottom {
+      #{$main} {
+        /*! rtl:ignore */
+        align-items: flex-end;
+      }
+      .c-floating-contents__floating {
+        top: auto;
+      }
+    }
+
+    // mobile
+    &--main-pos-top-mobile {
+      @include screen(mobile) {
+        #{$main} {
+          /*! rtl:ignore */
+          align-items: flex-start;
+        }
+        .c-floating-contents__floating {
+          top: 0;
+          bottom: auto;
+          transform: translateY(0%);
+        }
+      }
+    }
+    &--main-pos-middle-mobile {
+      @include screen(mobile) {
+        #{$main} {
+          align-items: center;
+        }
+        .c-floating-contents__floating {
+          top: 50%;
+          bottom: auto;
+          transform: translateY(-50%);
+        }
+      }
+    }
+    &--main-pos-bottom-mobile {
+      @include screen(mobile) {
+        #{$main} {
+          /*! rtl:ignore */
+          align-items: flex-end;
+        }
+        .c-floating-contents__floating {
+          top: auto;
+          bottom: 0;
+          transform: translateY(0);
+        }
+      }
+    }
+
+    // 4. Text block : horizontal
+    &--main-pos-left #{$main} {
+      flex-direction: row #{'/*!rtl:row-reverse*/'}; /*! RTL last keep colon */
+
+      /*! rtl:ignore */
+      justify-content: flex-start;
+      #{$text} {
+        /*! rtl:ignore */
+        align-items: flex-start;
+        text-align: left #{'/*!rtl:right*/'}; /*! RTL last keep colon */
+      }
+    }
+    &--main-pos-center #{$main} {
+      justify-content: center;
+      #{$text} {
+        align-items: center;
+        text-align: center;
+      }
+      #{$cta} {
+        justify-content: center;
+      }
+    }
+    &--main-pos-right #{$main} {
+      flex-direction: row #{'/*!rtl:row-reverse*/'}; /*! RTL last keep colon */
+
+      /*! rtl:ignore */
+      justify-content: flex-end;
+      #{$text} {
+        align-items: flex-end #{'/*!rtl:flex-start*/'}; /*! RTL last keep colon */
+
+        /*! rtl:ignore */
+        text-align: right;
+        // @include screen(web) {
+        //     align-items: flex-start #{'/*!rtl:flex-start*/'}; /*! RTL last keep colon */
+        //     text-align: left /*!rtl:right*/; /*! RTL last keep colon */
+        // }
+      }
+    }
+    // mobile
+    &--main-pos-left-mobile #{$main} {
+      @include screen(mobile) {
+        flex-direction: row #{'/*!rtl:row-reverse*/'}; /*! RTL last keep colon */
+        justify-content: flex-start;
+        #{$text} {
+          align-items: flex-start #{'/*!rtl:flex-start*/'}; /*! RTL last keep colon */
+          text-align: left /*!rtl:right*/; /*! RTL last keep colon */
+        }
+      }
+    }
+    &--main-pos-center-mobile #{$main} {
+      @include screen(mobile) {
+        justify-content: center;
+        #{$text} {
+          align-items: center;
+          text-align: center;
+        }
+        #{$cta} {
+          justify-content: center;
+        }
+      }
+    }
+    &--main-pos-right-mobile #{$main} {
+      @include screen(mobile) {
+        flex-direction: row #{'/*!rtl:row-reverse*/'}; /*! RTL last keep colon */
+        justify-content: flex-end;
+        #{$text} {
+          // align-items: flex-end #{'/*!rtl:flex-start*/'};
+          align-items: flex-start #{'/*!rtl:flex-start*/'}; /*! RTL last keep colon */
+          text-align: left /*!rtl:right*/; /*! RTL last keep colon */
+        }
+      }
+    }
+
+    // 5. Text color
+    &.font-white {
+      #{$watch-video-button},
+      #{$layout}__main-contents #{$text}__bodycopy,
+      #{$layout}__sub-contents .swiper-pagination-fraction,
+      #{$text-icon-right-button} {
+        color: $white;
+      }
+      #{$watch-video-button}:before {
+        background-image: url($icon-play-outline-white-24-24);
+      }
+      #{$text-icon-right-button}#{$precedence}:after {
+        background-image: url($icon-arrow-white-right-9-14);
+      }
+      #{$carousel-arrow}:after {
+        background-image: url($icon-arrow-white-right-12-7);
+      }
+      #{$carousel-arrow}:disabled:after {
+        background-image: url($icon-arrow-black-right-12-7);
+      }
+    }
+    &.font-black {
+      #{$watch-video-button},
+      #{$layout}__main-contents #{$text}__bodycopy,
+      #{$layout}__sub-contents .swiper-pagination-fraction,
+      #{$text-icon-right-button} {
+        color: $black;
+      }
+      #{$watch-video-button}:before {
+        background-image: url($icon-play-outline-black-24-24);
+      }
+      #{$text-icon-right-button}#{$precedence}:after {
+        background-image: url($icon-arrow-black-right-9-14);
+      }
+      #{$carousel-arrow}:after {
+        background-image: url($icon-arrow-black-right-12-7);
+      }
+      #{$carousel-arrow}:disabled:after {
+        background-image: url($icon-arrow-graycb-right-12-7);
+      }
+    }
+    &.font-white-mobile {
+      @include screen(mobile) {
+        color: $white;
+        #{$watch-video-button},
+        #{$layout}__main-contents #{$text}__bodycopy,
+        #{$layout}__sub-contents .swiper-pagination-fraction,
+        #{$text-icon-right-button} {
+          color: $white;
+        }
+        #{$watch-video-button}:before {
+          background-image: url($icon-play-outline-white-24-24);
+        }
+        #{$text-icon-right-button}#{$precedence}:after {
+          background-image: url($icon-arrow-white-right-9-14);
+        }
+        #{$carousel-arrow}:after {
+          background-image: url($icon-arrow-white-right-12-7);
+        }
+        #{$carousel-arrow}:disabled:after {
+          background-image: url($icon-arrow-black-right-12-7);
+        }
+      }
+    }
+    &.font-black-mobile {
+      @include screen(mobile) {
+        color: $black;
+        #{$watch-video-button},
+        #{$layout}__main-contents #{$text}__bodycopy,
+        #{$layout}__sub-contents .swiper-pagination-fraction,
+        #{$text-icon-right-button} {
+          color: $black;
+        }
+        #{$watch-video-button}:before {
+          background-image: url($icon-play-outline-black-24-24);
+        }
+        #{$text-icon-right-button}#{$precedence}:after {
+          background-image: url($icon-arrow-black-right-9-14);
+        }
+        #{$carousel-arrow}:after {
+          background-image: url($icon-arrow-black-right-12-7);
+        }
+        #{$carousel-arrow}:disabled:after {
+          background-image: url($icon-arrow-graycb-right-12-7);
+        }
+      }
+    }
+
+    &--main-pos-left {
+      .c-hero-banner__contents {
+        &.has-icon {
+          display: flex;
+          gap: rem(12px);
+          .c-icon-side {
+            display: flex;
+            align-items: flex-start;
+            max-width: 64px;
+            width: 100%;
+            @include screen(mobile) {
+              max-width: 36px;
+            }
+            &__big {
+              position: absolute;
+              right: rem(20px);
+              bottom: rem(20px);
+              max-width: rem(60px);
+              @include screen(web) {
+                position: initial;
+                max-width: rem(160px);
+              }
+            }
+          }
+          .c-floating-contents__main-contents {
+            width: calc(100% - 76px);
+            @include screen(mobile) {
+              width: calc(100% - 48px);
+            }
+            .c-text-contents__headline {
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@mixin width-wide() {
+  .c-hero-banner--main-pos-left,
+  .c-hero-banner--main-pos-right {
+    .c-text-contents {
+      &.width-narrow {
+        @include screen(desktop) {
+          width: min(rem(550px), 550px / $design-grid-full * 100%);
+        }
+        @include screen(tablet) {
+          width: min(rem(570px), 570px / $design-grid-full * 100%);
+        }
+      }
+    }
+  }
+}
+@mixin width-other() {
+  .c-hero-banner--main-pos-left,
+  .c-hero-banner--main-pos-right {
+    .c-text-contents {
+      &.width-narrow {
+        @include screen(web) {
+          width: min(rem(570px), 570px / $design-grid-full * 100%);
+        }
+      }
+    }
+  }
+}
+// hero style variation by type... default, pdp, thin, promotion, icon-block, blog, bg-image...etc.
+// not include "block-image" type. that is definitely different layout.
+@mixin hero-banner-type-variation {
+  .type-pdp,
+  .type-icon-block {
+    .c-hero-banner--main-pos-right,
+    .c-hero-banner--main-pos-left {
+      // free floating
+      .c-floating-contents__floating {
+        @include screen(mobile) {
+          position: static;
+        }
+      }
+      &.font-white {
+        .c-hero-banner__contents {
+          @include screen(mobile) {
+            background-color: $black;
+          }
+        }
+      }
+      &.font-black {
+        .c-hero-banner__contents {
+          @include screen(mobile) {
+            background-color: $warm-gray;
+          }
+        }
+      }
+      &.font-white-mobile {
+        @include screen(mobile) {
+          .c-hero-banner__contents {
+            @include screen(mobile) {
+              background-color: $black;
+            }
+          }
+        }
+      }
+      &.font-black-mobile {
+        @include screen(mobile) {
+          .c-hero-banner__contents {
+            @include screen(mobile) {
+              background-color: $warm-gray;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // pdp hero
+  .type-pdp {
+    // inset padding
+    .c-hero-banner--main-pos-left,
+    .c-hero-banner--main-pos-right {
+      .c-floating-contents__floating {
+        @include screen(mobile) {
+          transform: translate(0);
+        }
+      }
+      .c-floating-contents__main-contents {
+        @include screen(mobile) {
+          @include inset-padding-hz(mobile);
+          @include inset-padding-vt(mobile);
+          align-items: initial;
+        }
+      }
+      .c-hero-banner__contents {
+        @include screen(mobile) {
+          padding: 0;
+        }
+      }
+      .c-floating-contents__floating {
+        @include screen(tablet) {
+          padding-left: rem($block-margin-w);
+          padding-right: rem($block-margin-w);
+        }
+      }
+    }
+    &.width-wide {
+      @include width-wide;
+    }
+    &.width-narrow,
+    &.width-content {
+      @include width-other;
+    }
+    // Added code to fit the banner size even in the way it was applied in development.
+    @at-root .ST0001 {
+      &.width-wide {
+        .type-pdp {
+          @include width-wide;
+        }
+      }
+      &.width-narrow,
+      &.width-content {
+        .type-pdp {
+          @include width-other;
+        }
+      }
+    }
+    // -- end
+
+    // case: banner + banner
+    .c-hero-banner + .c-hero-banner {
+      margin-top: rem($margin10px);
+      @include screen(web) {
+        margin-top: rem($margin24px);
+      }
+    }
+  }
+
+  // thin hero
+  .type-thin {
+    // ...
+  }
+
+  // promotion hero
+  .type-promotion {
+    // ...
+  }
+
+  // Advance (PD0041 - Hot&New/Best)
+  .type-advance {
+    // layout : margin
+    $layout: '.c-floating-contents';
+    $text: '.c-text-contents';
+    $cta: '.c-cta';
+    $media: '.c-media';
+    $watch-video-button: '.c-action-button';
+    $text-icon-right-button: '.c-button[class*="-text-icon"]';
+
+    /* stylelint-disable-next-line no-descending-specificity */
+    .c-hero-banner {
+      $block: '.c-hero-banner';
+
+      @include lgness-radius('default');
+
+      #{$block}__contents {
+        padding-bottom: 0;
+        @include screen(tablet) {
+          padding-bottom: rem($padding80px - $padding40px);
+        }
+        @include screen(mobile) {
+          padding-bottom: rem($padding70px);
+        }
+      }
+      #{$layout} {
+        &__floating {
+          @include screen(mobile) {
+            padding-left: rem($padding30px - $block-margin-m);
+            padding-right: rem($padding30px - $block-margin-m);
+          }
+        }
+        .c-hero-badge {
+          position: relative;
+          top: inherit;
+          left: inherit;
+          margin-bottom: rem($margin16px);
+        }
+      }
+      #{$media}__controls {
+        margin-bottom: rem($padding20px);
+        @include screen(web) {
+          margin-bottom: rem($padding24px);
+        }
+      }
+    }
+
+    .column-1 {
+      .c-hero-banner {
+        &__contents {
+          padding: 0;
+        }
+        #{$layout}__floating {
+          padding: rem($padding20px $padding20px $padding20px);
+          @include screen(web) {
+            padding: rem($padding80px);
+          }
+        }
+        &--use-animation {
+          #{$layout}__floating {
+            padding: rem($padding20px $padding20px $padding68px);
+            @include screen(web) {
+              padding: rem($padding80px);
+            }
+          }
+        }
+      }
+    }
+    .column-2,
+    .column-3 {
+      .c-hero-banner {
+        &__contents {
+          padding: 0;
+        }
+        #{$layout}__floating {
+          padding: rem($padding20px $padding20px $padding20px);
+          @include screen(web) {
+            padding: rem($padding32px $padding32px $padding42px);
+          }
+        }
+        &--use-animation {
+          #{$layout}__floating {
+            padding: rem($padding20px $padding20px $padding68px);
+            @include screen(web) {
+              padding: rem($padding20px $padding20px $padding90px);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // blog hero
+  .type-blog {
+    .c-floating-contents__main-contents .c-text-contents__bodycopy {
+      @include screen(mobile) {
+        display: none;
+      }
+    }
+  }
+
+  // slim hero (WTB PDP banner)
+  .type-slim {
+    .cmp-container > * {
+      @include container($design-grid-full);
+    }
+    .c-region-header {
+      @include screen(web) {
+          margin-bottom: rem(20px);
+      }
+      &__container {
+        padding: rem(24px 16px 12px 16px);
+        @include screen(custom, rem(1440px), max) {
+          padding: rem(24px 0 12px 24px);
+        }
+      }
+    }
+    .c-floating-contents {
+      overflow: hidden;
+      @include screen(custom, rem(1440px), max) {
+        margin: rem(0 24px);
+      }
+      @include screen(mobile) {
+        margin: rem(0 16px);
+      }
+      &__floor {
+        position: absolute;
+        top: rem(-1px);
+        left: rem(-1px);
+        right: rem(-1px);
+        bottom: rem(-1px);
+        overflow: hidden;
+        @include lgness-radius('default');
+        .c-image {
+          height: 100%;
+          &__img {
+            height: 100%;
+            background: {
+              size: cover;
+              repeat: no-repeat;
+            }
+            object-fit: cover;
+          }
+          .cmp-image {
+            height: 100%;
+          }
+        }
+      }
+      &__floating {
+        position: relative;
+        @include screen(web) {
+          padding: rem(48px);
+        }
+        .c-hero-banner__contents {
+          @include screen(mobile) {
+            padding: rem(20px 80px 20px 20px);
+          }
+          &.has-icon {
+            display: block;
+            position: relative;
+            @include screen(web) {
+              display: flex;
+            }
+            .c-floating-contents__main-contents {
+              width: 100%;
+              justify-content: flex-start #{'/*!rtl:flex-end*/'}; /*! RTL last keep colon */
+              .c-text-contents {
+                &.width-narrow {
+                  max-width: rem(780px);
+                }
+                .c-cta {
+                  margin-top: rem(28px);
+                  @include screen(web) {
+                    margin-top: rem(44px);
+                  }
+                }
+              }
+            }
+          } 
+        }
+      }
+    }
+    // Gradient bg image, CTA color
+    .c-hero-banner {
+      &__bgImage {
+        &.gradient-typeA {
+          color: $black;
+          .c-image__img-bgImage {
+            background: {
+              image: url('../../assets/image/LG_Electronics_Gradient_01_RGB.jpg');
+            }
+          }
+        }
+        &.gradient-typeB {
+          .c-image__img-bgImage {
+            background: {
+              image: url('../../assets/image/LG_Electronics_Gradient_02_RGB.jpg');
+            }
+          }
+        }
+        &.gradient-typeC {
+          .c-image__img-bgImage {
+            background: {
+              image: url('../../assets/image/LG_Electronics_Gradient_03_RGB.jpg');
+            }
+          }
+        }
+        &.gradient-typeD {
+          .c-image__img-bgImage {
+            background: {
+              image: url('../../assets/image/LG_Electronics_Gradient_04_RGB.jpg');
+            }
+          }
+        }
+      }
+      &.font-white {
+        .c-cta {
+          .c-button--circle {
+            border: none;
+            background-color: transparent;
+            &.arrow.w-large {
+              &:after {
+                background-image: url($icon-cta-light-36-36);
+                @include screen(web) {
+                  background-image: url($icon-cta-light-65-65);
+                }
+              }
+            }
+          }
+        }
+      }
+      &.font-black, &.gradient-typeA {
+        .c-cta {
+          .c-button--circle {
+            border: none;
+            background-color: transparent;
+            &.arrow.w-large {
+              &:after {
+                background-image: url($icon-cta-dark-36-36);
+                @include screen(web) {
+                  background-image: url($icon-cta-dark-65-65);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // with icon block
+  $hero: '.c-hero-banner';
+  $container: '.c-hero-banner__contents';
+  $main: '.c-floating-contents__main-contents';
+  $sub: '.c-floating-contents__sub-contents';
+
+  .type-icon-block,
+  .type-blog-icon-block {
+    // default
+    #{$container} {
+      display: flex;
+      flex-direction: column;
+      @include screen(web) {
+        row-gap: rem($margin40px);
+      }
+    }
+    #{$main} {
+      height: auto;
+    }
+    #{$sub} {
+      #{$hero}__image {
+        display: none;
+      }
+    }
+
+    // shape
+    &.shape-horizontal {
+      // ...
+    }
+    &.shape-vertical {
+      .c-spec-info__container {
+        @include screen(web) {
+          width: auto;
+        }
+      }
+    }
+
+    // text-block
+    // y-axis
+    &.text-vertical-middle {
+      @include screen(web) {
+        #{$hero} {
+          &--sub-pos-top #{$container} {
+            flex-direction: column-reverse;
+          }
+          &--sub-pos-top#{$hero}--main-pos-center #{$container} {
+            flex-direction: column-reverse;
+          }
+        }
+        #{$main} {
+          height: 100%;
+          align-items: center;
+        }
+        #{$sub} {
+          height: auto;
+          align-content: start;
+        }
+      }
+      &--mobile {
+        @include screen(mobile) {
+          #{$hero} {
+            &--sub-pos-top#{$hero}--main-pos-center #{$container} {
+              flex-direction: column-reverse;
+            }
+          }
+          #{$main} {
+            height: 100%;
+            align-items: center;
+          }
+          #{$sub} {
+            height: auto;
+          }
+          .c-spec-info {
+            height: 100%;
+          }
+        }
+      }
+    }
+    &.text-vertical-bottom {
+      @include screen(web) {
+        #{$container} {
+          flex-direction: column-reverse;
+        }
+      }
+      &--mobile {
+        @include screen(mobile) {
+          #{$hero} {
+            &--main-pos-right,
+            &--main-pos-left {
+              flex-direction: column-reverse;
+            }
+          }
+          #{$container} {
+            flex-direction: column-reverse;
+          }
+        }
+      }
+    }
+    &.text-vertical-bottom,
+    &.text-vertical-top {
+      @include screen(web) {
+        #{$sub} {
+          height: 100%;
+        }
+      }
+      &--mobile {
+        @include screen(mobile) {
+          #{$sub} {
+            height: 100%;
+          }
+        }
+      }
+    }
+
+    // icon-block
+    // positioning
+    // x-axis
+    $icon-block-top: '#{$hero}--sub-pos-top #{$sub} .c-spec-info';
+    $icon-block-bottom: '#{$hero}--sub-pos-bottom #{$sub} .c-spec-info';
+    $icon-block-middle: '#{$hero}--sub-pos-middle #{$sub} .c-spec-info';
+    $icon-block-left: '#{$hero}--sub-pos-left #{$sub} .c-spec-info';
+    $icon-block-right: '#{$hero}--sub-pos-right #{$sub} .c-spec-info';
+    $icon-block-center: '#{$hero}--sub-pos-center #{$sub} .c-spec-info';
+
+    #{$icon-block-top} {
+      align-items: flex-start;
+    }
+    #{$icon-block-bottom} {
+      align-items: flex-end;
+    }
+    #{$icon-block-middle} {
+      align-items: center;
+    }
+    // y-axis
+    #{$icon-block-left} {
+      justify-content: flex-start #{'/*!rtl:flex-end*/'}; /*! RTL last keep colon */
+    }
+    #{$icon-block-right} {
+      justify-content: flex-end #{'/*!rtl:flex-start*/'}; /*! RTL last keep colon */
+    }
+    #{$icon-block-center} {
+      justify-content: center;
+    }
+  }
+  .type-blog-icon-block {
+    // inset padding
+    #{$container} {
+      @include screen(mobile) {
+        row-gap: rem($padding24px);
+      }
+    }
+    #{$sub} {
+      @include screen(mobile) {
+        flex: 1;
+      }
+    }
+    // -- end
+  }
+  .type-icon-block {
+    // style is separate by text block horizontal
+    $center-case: '#{$hero}--main-pos-center';
+    $left-case: '#{$hero}--main-pos-left';
+    $right-case: '#{$hero}--main-pos-right';
+
+    #{$center-case} {
+      // inset padding
+      #{$container} {
+        @include screen(mobile) {
+          row-gap: rem($padding24px);
+        }
+      }
+      // -- end
+    }
+    #{$left-case},
+    #{$right-case} {
+      // inset padding
+      #{$container} {
+        @include screen(mobile) {
+          padding: 0;
+        }
+      }
+      #{$main} {
+        @include screen(mobile) {
+          padding: rem($padding24px $block-margin-m);
+        }
+      }
+      #{$sub} .ST0020 {
+        @include screen(mobile) {
+          // clip spec
+          // overflow: hidden;
+          @include inset-padding-vt(mobile);
+          @include inset-padding-hz(mobile);
+        }
+      }
+      // -- end
+
+      // set display for reverse
+      @include screen(mobile) {
+        display: flex;
+        flex-direction: column;
+      }
+
+      // switch image to display screen
+      $mobile-img: #{$sub} #{$hero}__image;
+      $web-img: '.c-floating-contents__floor';
+
+      // on mobile image
+      #{$mobile-img} {
+        @include screen(mobile) {
+          display: block;
+        }
+      }
+
+      // off web image
+      #{$web-img} {
+        @include screen(mobile) {
+          display: none;
+        }
+      }
+
+      // deny to apply font color on mobile
+      // &.font-white,
+      // &.font-black {
+      //     #{$main} .c-text-contents__headline,
+      //     #{$main} .c-text-contents__date,
+      //     #{$main} .c-text-contents__bodycopy {
+      //         color: $white;
+      //     }
+      // }
+    }
+  }
+}

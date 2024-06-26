@@ -1,0 +1,83 @@
+@use 'sass:map';
+@use '../abstract/' as *;
+@use 'cta' as *;
+
+// # align-value-filter
+@function align-value-filter($value) {
+  @each $v in $value {
+    @if 'left' != $v and 'right' != $v and 'center' != $v {
+      @return false;
+    }
+  }
+  @return true;
+}
+// =- description -=
+// if valid value what align direction, returns "true".
+// if invalid, returns "false".
+// these return value determine to create align class in "align" mixin.
+// we pursued re-use class. so this filter becomes less important than before.
+
+// # align-type-filter
+@function align-type-filter($type) {
+  @if 'text' == $type {
+    @return 'text-';
+  } @else {
+    @return '';
+  }
+}
+// =- description -=
+// it provide selector name in "align" mixin.
+
+$align-case: (
+  left: flex-start,
+  /* 230601 RTL */ right: flex-end #{'/*!rtl:flex-start*/'},
+  center: center,
+);
+
+// # align
+@mixin align($list, $type: 'default') {
+  $passed: align-value-filter($list);
+  // @debug "$passed : " $passed;
+  $identifier: align-type-filter($type);
+  // @debug "identifier : #{$identifier}";
+  @if $passed == false {
+    @warn "Fail compile!! Align value only allowed 'left', 'right', 'center'. Check parameter.";
+  }
+  @each $value in $list {
+    .align-#{$identifier}#{$value} {
+      // text-contents or any block
+      @if 'text' == $type {
+        /* 230515 RTL */
+        text-align: $value;
+        @include cta($value);
+      }
+      // component
+      @else {
+        $flex-align: map.get($align-case, $value);
+        @if 'default' == $type {
+          justify-content: $flex-align;
+        }
+        .c-text-contents {
+          /* 230512 RTL */
+          text-align: $value;
+        }
+        .align-container {
+          display: flex;
+          justify-content: $flex-align; /*! RTL last keep colon */
+          @include flex-context;
+        }
+        @include cta($flex-align); /*! RTL last keep colon */
+      }
+    }
+  }
+}
+// =- description -=
+// $list : value is align direction collection. "left right center"
+// $type : allow token "text" and "default"
+// create the following classes by $type.
+// .align-text-center
+// .align-text-left
+// .align-text-right... by "text"
+// .align-center
+// .align-left
+// .align-right... by "default"

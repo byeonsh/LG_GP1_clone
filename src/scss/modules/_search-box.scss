@@ -1,0 +1,146 @@
+/* stylelint-disable no-descending-specificity */
+@use '../abstract/' as *;
+
+@mixin search-box {
+  $block: '.c-search-box';
+
+  #{$block} {
+    @include container($design-grid-full, true);
+    @include inset-padding-hz;
+
+    padding-bottom: rem($padding24px);
+
+    // element
+    &__form {
+      display: flex;
+      width: 100%;
+      flex-direction: column;
+      align-items: flex-start;
+      @include screen(web) {
+        flex-direction: row;
+      }
+      @include screen(tablet) {
+        flex: 1 1 auto;
+      }
+
+      // block
+      .c-select-item,
+      .c-input-item {
+        width: 100%;
+        // &:not(:only-child) {
+        //     @include screen(desktop) {
+        //         width: rem(columns(5, true));
+        //     }
+        //     @include screen(tablet) {
+        //         flex: 1 1 auto;
+        //     }
+        // }
+      }
+    }
+    &__body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: $white;
+      padding: rem($padding20px $block-margin-m);
+      @include lgness-radius('default');
+      @include screen(web) {
+        flex-direction: row;
+        align-items: flex-start;
+        padding: rem($padding24px);
+      }
+      .c-wrapper.bg-white & {
+        border: rem($border1) solid $mid-gray1;
+      }
+      body.dark-theme .c-wrapper.bg-darkgray &,
+      body.dark-theme .c-wrapper.bg-black & {
+        background: $black;
+        border: rem($border1) solid $dark-gray2;
+        .c-select-item label {
+          color: $mid-gray1;
+        }
+      }
+
+      // modifier
+      &--double,
+      &--multi {
+        #{$block}__form {
+          flex: 1 1 auto;
+          @include screen(web) {
+            display: flex;
+            flex-direction: row;
+          }
+          .c-select-item,
+          .c-input-item {
+            @include screen(desktop) {
+              flex: 1 1 auto;
+              width: auto;
+            }
+          }
+        }
+      }
+      // &--double {
+      //     #{$block}__form {
+      //         .c-select-item,
+      //         .c-input-item {
+      //             @include screen(desktop) {
+      //                 &:first-child {
+      //                     flex: 0 0 rem(columns(4, true));
+      //                     width: rem(columns(4, true));
+      //                 }
+      //             }
+      //         }
+      //     }
+      // }
+    }
+    &__button {
+      @include screen(web) {
+        margin-top: rem($margin30px);
+      }
+    }
+
+    &.c-text-only {
+      padding-bottom: 0;
+      & + .c-map-search {
+        &.is-search {
+          margin-top: rem($margin35px);
+        }
+        &.is-direction {
+          margin-top: 0;
+          @include screen(web) {
+            margin-top: rem($margin35px);
+          }
+        }
+      }
+    }
+
+    &.c-no-title {
+      @include screen(web) {
+        @include inset-padding-hz;
+        max-width: rem($design-grid-full);
+        margin: 0 auto;
+      }
+    }
+
+    // layout : margin
+    &__header {
+      + * {
+        // removed existing margin of component
+        // component margin handled only from "margin-top" or "margin-bottom"
+
+        // LGness
+        @include lgness-component-title-margin;
+      }
+      .c-text-contents__bodycopy {
+        margin-top: rem($margin8px);
+      }
+    }
+    &__form,
+    &__body {
+      gap: rem($margin20px);
+      @include screen(web) {
+        gap: rem($gutter-w);
+      }
+    }
+  }
+}

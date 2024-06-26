@@ -1,0 +1,730 @@
+include ../_common/_cart-price-total.pug
+include ./CT0302-inc.pug
+
+mixin deliveryBox(title, status, checkActive, btnCancelOption=false, params, qty=1)
+    - let data = { ...params }
+    - let statusType = Boolean(status) ? status : 'default'
+    //- 2023.07.19 UPDATE - error case markup
+    .buy-delivery-box(class=`${status === 'only' ? "buy-delivery-box--only" : ""}${status === 'error' ? "buy-delivery-box--error" : ""}`)
+        -for(let i = 0; i < title.length; i += 1)
+            .buy-delivery-box-product
+                .buy-delivery-box-product__img
+                    .image.c-image
+                        +printLazyImage('https://via.placeholder.com/80x80/999999/333333')
+                .buy-delivery-box-product__title.font-w-normal-20.font-m-normal-16= title[i]
+                    if qty
+                        .c-text-contents.font-w-normal-16.font-m-normal-12 Qty : &nbsp;
+                            span.c-text-contents.font-w-normal-16.font-m-normal-12= qty
+                if btnCancelOption !== false
+                    +textButton({name: 'Cancel', wSize: 'small', mSize: 'small', buttonStyle: 'default', underline : true, isButton: true})(class='buy-delivery-box-product__btn-cancel')
+        ul(class=`${checkActive ? "buy-delivery-box__list buy-delivery-box__list--border" : "buy-delivery-box__list"}`)
+            each set in data
+                if status === 'complete' || status === 'all' || status === 'only'
+                    li.buy-delivery-box__item.buy-delivery-box__item--complete(class=`${status === 'all' || status === 'only' ? 'buy-delivery-box__item--complete--no-tool-m' : ''}`)
+                        .c-accordion__head.buy-delivery-box__head
+                            // block - text contents
+                            .c-accordion__head-text.c-text-contents(class=`${status === 'all' ? 'buy-delivery-box--all' : ''}`)
+                                if status === 'all' || status === 'complete'
+                                    span.c-accordion__initial.buy-delivery-box__head.font-w-normal-16.font-m-normal-14(aria-hidden="true")= set.type
+                                        if set.tooltipMsg
+                                            +exclamTooltip(set.tooltipMsg, false)
+                                    if !set.notEdit
+                                        .c-checkout-step02-delivery__date-edit
+                                            +linkButton({href:"#CalendarPopup", class:"js-pop-open", type:"text", color:"black", underline: true, name: "Edit"})(role="button")
+                                else if status === 'only'
+                                    span.c-accordion__initial.buy-delivery-box__head.font-w-normal-16.font-m-normal-14.buy-delivery-box__head--only(class=`${set.warn ? 'font-semibold' : ''}` aria-hidden="true")= set.type
+                                else
+                                    span.c-accordion__initial.buy-delivery-box__head.font-w-normal-16.font-m-normal-14(aria-hidden="true")= set.type
+                                        +exclamTooltip(set.tooltipMsg, false)
+                        if set.warn
+                            .buy-delivery-box__warn.font-w-normal-14.font-m-normal-14.font-red= set.warn
+                        if status === 'all'
+                            .buy-delivery-box__select__container
+                                .buy-delivery-box__select.buy-delivery-box__select-info= set.select
+                                if set.price
+                                    .buy-delivery-box__select.buy-delivery-box__select-info= set.price
+                                else 
+                                    .buy-delivery-box__select.buy-delivery-box__select-info FREE OF CHARGE
+                        if status === 'complete'
+                            .buy-delivery-box__select.buy-delivery-box__select-info= set.select
+                else
+                    li.buy-delivery-box__item
+                        .c-accordion.js-accordion.buy-delivery-box__accordion
+                            .c-accordion__box.js-accordion-handle-target
+                                .c-accordion__head
+                                    // block - text contents
+                                    .c-accordion__head__container
+                                        .c-accordion__head-text.c-text-contents
+                                            span.c-accordion__initial.buy-delivery-box__head.font-w-normal-16.font-m-normal-14(aria-hidden="true")= set.type
+                                                if set.tooltipMsg
+                                                    +exclamTooltip(set.tooltipMsg, false)
+                                        span.c-accordion__initial.buy-delivery-box__head.font-w-semibold-16.font-m-semibold-14(aria-hidden="true")= set.price
+                                    .button
+                                        button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`buy-delivery-box__target-${statusType}-${set.id}`)
+                                            span.c-accordion__button-text.expand.sr-only Expand
+                                            span.c-accordion__button-text.collapse.sr-only Collapse
+                                .c-accordion__body(id=`buy-delivery-box__target-${statusType}-${set.id}`)
+                                    .c-text-contents.c-accordion__body-text
+                                        .c-checkout-step02-delivery__date-edit.buy-delivery-box__select(class=`${status === 'edit' ? 'buy-delivery-box__select--edit' : ''}`)
+                                            if set.expectedDate
+                                                div(class=`${set.checkedDate ? 'buy-delivery-box__select__expected-date buy-delivery-box__select__expected-date--active' : 'buy-delivery-box__select__expected-date'}`)
+                                                    .font-m-normal-14.font-w-normal-16 Očekávaný termín dodání : 
+                                                        span.font-m-normal-14.font-w-normal-16 !{set.expectedDate}
+                                            +linkButton({href:"#CalendarPopup", type:"box", class:`${set.checkedDate ? 'js-pop-open c-button__active' : 'js-pop-open'}`, color:"red", icon:true, name: `${status === 'edit' ? set.select: "Select Date"}`, roleButton: true})(role="button")
+                                            if set.validWarning || set.validInfo
+                                                div(class=`${set.checkedDate ? 'buy-delivery-box__select__valid buy-delivery-box__select__valid--active' : 'buy-delivery-box__select__valid'}`)
+                                                    if set.validWarning
+                                                        each validWarning in set.validWarning
+                                                            .c-warning.font-m-normal-12.font-w-normal-14.font-red !{validWarning}
+                                                    if set.validInfo
+                                                        each validInfo in set.validInfo
+                                                            .c-info-text.font-m-normal-14.font-w-normal-16 !{validInfo}
+                                                    if set.descBullIcon
+                                                        each text in set.descBullIcon
+                                                            .c-info-text.c-info-text--descBullIcon.font-m-normal-14.font-w-normal-16 !{text}
+        each desc in data
+            if desc.descListDot
+                .buy-delivery-info--list
+                    ul.buy-delivery-info__list
+                        each descItem in desc.descListDot
+                            li.font-w-normal-16.font-m-normal-14 !{descItem}
+
+mixin CT0302(option=false, country=false)
+    .CT0302
+        if(option === "member")
+            case country
+                when 'cz'
+                    .buy-checkout__item.buy-checkout__item--delivery
+                        +checkoutStep({
+                            title:"Delivery",
+                            current:"2",
+                            total:"3",
+                            type: "active"
+                        })
+                        .c-checkout-step02
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag: ["Shipping"],
+                                        title:"Robert Surrency",
+                                        address:"Jeseniova 123, Praha 3 Praha , 130 00 Česká republika",
+                                        num:"123-4567-8910",
+                                        type: "",
+                                    },
+                                ])
+                        .c-checkout-step02.c-checkout-step02--warn
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag: ["Billing"],
+                                        title:"Robert Surrency",
+                                        address:"Jeseniova 123, Praha 3 Praha , 130 00 Česká republika",
+                                        num:"123-4567-8910",
+                                        type: "",
+                                    },
+                                ])
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'The items(s) are not available for shipping in your area. Please change address options',
+                                remove: true,
+                            },
+                        ])
+                    .buy-checkout__item.buy-checkout__item--delivery.buy-checkout__item--delivery-mix
+                        details(open).buy-delivery-box__accordion-mix
+                            summary.c-accordion-mix__head
+                                .c-accordion-mix__head-text
+                                    +deliveryBoxProduct([
+                                        {
+                                            title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                            qty: '1',
+                                        },
+                                    ])
+                            .c-accordion-mix__body
+                                +deliveryBoxSubTitle({
+                                    boxTitle : 'Delivery Method',
+                                    tooltip: false,
+                                })
+                                +deliveryMixRadioSelect([
+                                    {
+                                        type: 'Delivery Option 1',
+                                        tooltipMsg: '11111111111',
+                                        id: 'delivery01',
+                                        price:'0',
+                                        unitPos: 'right',
+                                        unitName: 'Kč',
+                                    },
+                                    {
+                                        type: 'Delivery Option 2',
+                                        tooltipMsg: '11111111111',
+                                        id: 'delivery02',
+                                        price:'0',
+                                        unitPos: 'right',
+                                        unitName: 'Kč',
+                                    },
+                                ])
+                                +deliveryBoxSubTitle({
+                                    boxTitle : 'Additional Services',
+                                    tooltip: false,
+                                })
+                                +deliveryAccodionRadio('Installation', false, [
+                                    {
+                                        type: 'Installation Option 1',
+                                        tooltipMsg: '11111111111',
+                                        id: 'delivery03',
+                                        price:'0',
+                                        unitPos: 'right',
+                                        unitName: 'Kč',
+                                    },
+                                    {
+                                        type: 'Installation Option 2',
+                                        tooltipMsg: '11111111111',
+                                        id: 'delivery04',
+                                        price:'0',
+                                        unitPos: 'right',
+                                        unitName: 'Kč',
+                                    },
+                                ])
+                                +deliveryAccodionCheck('Haulaway', false, [
+                                    {
+                                        type: 'Haulaway Option 1',
+                                        id: 'delivery05',
+                                        tooltipMsg: '1111',
+                                        nameId: 'delivery05',
+                                        price:'0',
+                                        unitPos: 'right',
+                                        unitName: 'Kč',
+                                    },
+                                    {
+                                        type: 'Haulaway Option 2',
+                                        id: 'delivery05',
+                                        tooltipMsg: '1111',
+                                        nameId: 'delivery05',
+                                        price:'0',
+                                        unitPos: 'right',
+                                        unitName: 'Kč',
+                                    }
+                                ])
+                                +deliveryBoxNoneAcc(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], false, false, [
+                                    {
+                                        selectDateAreaTitle : 'Delivery Time',
+                                        selectDateCancel : false,
+                                        type: 'Thu, Oct 18  All day',
+                                        id: 'delivery06',
+                                        price:'',
+                                        validList: [
+                                            {text: 'Vámi preferované datum doručení se může lišit od skutečného data doručení'},
+                                            {text: 'Čas doručení se může lišit v závislosti na aktuálních podmínkách'}
+                                        ],
+                                    },
+                                ])
+                                +deliverySelectDateComplete({
+                                    title:'Delivery Time',
+                                    text:'Dodací lhůta 3 - 4 pracovních dnů',
+                                    descList: [
+                                        {text: 'Vámi preferované datum doručení se může lišit od skutečného data doručení'},
+                                        {text: 'Čas doručení se může lišit v závislosti na aktuálních podmínkách'}
+                                    ],
+                                })
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'The items(s) are not available for shipping in your area. Please change delivery options',
+                                remove: true,
+                            },
+                        ])
+                        
+                        .button.buy-order-info-coupon__button 
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+
+                default 
+                    .buy-checkout__item.buy-checkout__item--delivery
+                        +checkoutStep({
+                            title:"Delivery",
+                            current:"2",
+                            total:"3",
+                            type: "active"
+                        })
+                        .c-checkout-step02
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag: ["Shipping"],
+                                        title:"Robert Surrency",
+                                        address:"20 Farringdon Street, London, EC4A 4AB, United Kingdom",
+                                        num:"123-4567-8910",
+                                        type: "",
+                                    },
+                                ])
+                        .c-checkout-step02.c-checkout-step02--warn
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag: ["Shipping"],
+                                        title:"Robert Surrency",
+                                        address:"20 Farringdon Street, London, EC4A 4AB, United Kingdom",
+                                        num:"123-4567-8910",
+                                        type: "",
+                                    },
+                                ])
+                        +formCheckbox('Receive order status notification from LG.com via SMS', "name", "val1", "checkId1", count="false", false)
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'The items(s) are not available for shipping in your area. Please change address options',
+                                remove: true,
+                            },
+                        ])
+                        //- [Start] 2023-04-18 : ADD - Delivery Error case
+                        // [Start] 2023.07.19 UPDATE - error case markup
+                        //- .buy-delivery-box--error
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], "error", false, false, [
+                            {
+                                type: 'Delivery Only',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery60',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery62',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation & Wallmount',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery63',
+                                price:'£25.00',
+                            },
+                        ])
+                        // [End] 2023.07.19 UPDATE - error case markup
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'The items(s) are not available for shipping in your area. Please change delivery options',
+                                remove: true,
+                            },
+                        ])
+                        //- [End] 2023-04-18 : ADD - Delivery Error case
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], false, false, false, [
+                            {
+                                type: 'Delivery Only',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery64',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery65',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation & Wallmount',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery66',
+                                price:'£25.00',
+                            },
+                        ])
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], 'complete', false, false, [
+                            {
+                                type: 'Delivery & Installation',
+                                select: 'Thu, Oct 18  All day',
+                            },
+                        ])
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], 'edit', false, false, [
+                            {
+                                type: 'Delivery Only',
+                                select: 'Thu, Oct 18  All day',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery67',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                select: 'Thu, Oct 18  All day',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery68',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation & Wallmount',
+                                select: 'Thu, Oct 18  All day',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery69',
+                                price:'£25.00',
+                            },
+                        ])
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV"], 'all', false, false, [
+                            {
+                                type: 'Delivery & Installation',
+                                select: 'Thu, Oct 18  All day',
+                            },
+                        ])
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV", "LG Soundbar SP8YAV"], 'all', false, false, [
+                            {
+                                type: 'Delivery & Installation',
+                                select: 'Thu, Oct 18  All day',
+                            },
+                        ])
+                        +deliveryBox(["LG Soundbar SP8YA"], 'only', false, false, false, [
+                            {
+                                type: 'Delivery Only',
+                            },
+                        ])
+                        +radioDeliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV"],'complete',[
+                            {
+                                type: 'Home Delivery & Installation',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery70',
+                                price:'£25.00',
+                            }
+                        ])
+                        +deliveryBox(["LG Soundbar SP8YA"], 'only', false, false, [
+                            {
+                                type: 'Delivery Only',
+                                warn: 'The delivery time is different for each shipping company.',
+                            },
+                        ])
+                        +radioDeliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV"],false,[
+                            {
+                                type: 'Delivery Only',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery71',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery72',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation & Wallmount ',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery73',
+                                price:'£25.00',
+                            }
+                        ])
+                        .button.buy-order-info-coupon__button 
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+
+            +CT0302("complete",'hide')
+
+        if(option === "guest")
+            .buy-checkout__item.buy-checkout__item--delivery
+                +checkoutStep({
+                    title:"Delivery",
+                    current:"2",
+                    total:"3",
+                    type: "active"
+                })
+                .c-checkout-step02.c-checkout-step02-form
+                    // [Start] 2023-06-02 : UPDATE- change messages
+                    p.c-checkout-step01-prevention Upozornění: Dodání pouze v rámci České republiky
+                    // [End] 2023-06-02 : UPDATE- change messages
+                    p.c-checkout-step02-form__title.font-w-normal-24.font-m-normal-20 Shipping
+                    // [Start] 2023-06-12 : ADD - number-text
+                    +myInputForm([
+                        {
+                            type:"text",
+                            label:"Jméno",
+                            id:"firstName",
+                            required:false,
+                            placeholder:"Robert",
+                        },
+                        {
+                            type:"text",
+                            label:"Příjmení",
+                            id:"lastName",
+                            required:false,
+                            placeholder:"Surrency",
+                        },
+                        {
+                            type:"tel",
+                            label:"Telefonní číslo",
+                            id:"mobileNumber",
+                            tooltipMsg:false,
+                            required:false,
+                            placeholder:"12345678910",
+                            infoTextSecond: ["Pro dotazy týkající se doručení."],
+                        },
+                        {
+                            type:"searchAddress",
+                            label:"Ulice a č. popisné",
+                            id:"searchAddress-cz",
+                            required:true,
+                            value:'Hledat pomocí PSČ nebo ulice',
+                            addressClass:false,
+                            clearCountry:true,
+                            list: false,
+                            placeholder:"",
+                            doubleInputNo: 2,
+                            countryImg:"icon-checkout-czech-30-20.svg",
+                            countryName:"Česká republika",
+                            infoTextSecond: ["Chcete-li použít funkci automatického vyplňování, zadejte svou adresu"],
+                        },
+                        {
+                            type:"searchAddress",
+                            label:"Ulice a č. popisné",
+                            id:"searchAddress-cz-list",
+                            required:true,
+                            value:'Hledat pomocí PSČ nebo ulice',
+                            addressClass:false,
+                            clearCountry:false,
+                            list: false,
+                            doubleInputNo: 2,
+                            countryImg:"icon-checkout-czech-30-20.svg",
+                            countryName:"Česká republika",
+                            infoTextSecond: ["Chcete-li použít funkci automatického vyplňování, zadejte svou adresu"],
+                        },
+                        {
+                            type:"searchAddress",
+                            label:"Ulice a č. popisné",
+                            id:"searchAddress-cz-list2",
+                            required:true,
+                            value:'01030',
+                            addressClass:false,
+                            clearCountry:false,
+                            list: [
+                                '01001 1 Avenue Paul Ramadier (21 more)',
+                                '01002 1 Chemin de Grimal (21 more)',
+                                '01003 1 Avenue Paul Ramadier (21 more)',
+                                '01004 1 Avenue Paul Ramadier (21 more)',
+                                '01005 1 Avenue Paul Ramadier (21 more)',
+                            ],
+                            doubleInputNo: 2,
+                            countryImg:"icon-checkout-czech-30-20.svg",
+                            countryName:"Česká republika",
+                            infoTextSecond: ["Chcete-li použít funkci automatického vyplňování, zadejte svou adresu"],
+                        },
+                        {
+                            type:"text",
+                            label:"Město",
+                            id:"city",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"text",
+                            label:"PSČ",
+                            id:"ZIPCode",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"text",
+                            label:"Země",
+                            id:"county",
+                            value:"",
+                            placeholder:"Česká republika",
+                            readonly:true,
+                        },
+                        {
+                            type:"text",
+                            label:"Společnost",
+                            id:"company",
+                            required:false,
+                            placeholder:"Společnost",
+                        },
+                        {
+                            type:"text",
+                            label:"IČO",
+                            id:"ruc",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"text",
+                            label:"DIČ",
+                            id:"taxNumber",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"checkbox",
+                            label:false,
+                            id:"sameBilling",
+                            required:false,
+                            placeholder:false,
+                            readonly: false,
+                            text:'Same for billing address'
+                        },
+                    ])
+                    p.c-checkout-step02-form__title.font-w-normal-24.font-m-normal-20 Billing
+                    // [Start] 2023-06-12 : ADD - number-text
+                    +myInputForm([
+                        {
+                            type:"text",
+                            label:"Jméno",
+                            id:"firstName",
+                            required:false,
+                            placeholder:"Robert",
+                        },
+                        {
+                            type:"text",
+                            label:"Příjmení",
+                            id:"lastName",
+                            required:false,
+                            placeholder:"Surrency",
+                        },
+                        {
+                            type:"tel",
+                            label:"Telefonní číslo",
+                            id:"mobileNumber",
+                            tooltipMsg:false,
+                            required:false,
+                            placeholder:"12345678910",
+                            infoTextSecond: ["Pro dotazy týkající se doručení."],
+                        },
+                        {
+                            type:"searchAddress",
+                            label:"Ulice a č. popisné",
+                            id:"searchAddress-cz",
+                            required:true,
+                            value:'Hledat pomocí PSČ nebo ulice',
+                            addressClass:false,
+                            clearCountry:true,
+                            list: false,
+                            placeholder:"",
+                            doubleInputNo: 2,
+                            countryImg:"icon-checkout-czech-30-20.svg",
+                            countryName:"Česká republika",
+                            infoTextSecond: ["Chcete-li použít funkci automatického vyplňování, zadejte svou adresu"],
+                        },
+                        {
+                            type:"searchAddress",
+                            label:"Ulice a č. popisné",
+                            id:"searchAddress-cz-list",
+                            required:true,
+                            value:'Hledat pomocí PSČ nebo ulice',
+                            addressClass:false,
+                            clearCountry:false,
+                            list: false,
+                            doubleInputNo: 2,
+                            countryImg:"icon-checkout-czech-30-20.svg",
+                            countryName:"Česká republika",
+                            infoTextSecond: ["Chcete-li použít funkci automatického vyplňování, zadejte svou adresu"],
+                        },
+                        {
+                            type:"searchAddress",
+                            label:"Ulice a č. popisné",
+                            id:"searchAddress-cz-list2",
+                            required:true,
+                            value:'01030',
+                            addressClass:false,
+                            clearCountry:false,
+                            list: [
+                                '01001 1 Avenue Paul Ramadier (21 more)',
+                                '01002 1 Chemin de Grimal (21 more)',
+                                '01003 1 Avenue Paul Ramadier (21 more)',
+                                '01004 1 Avenue Paul Ramadier (21 more)',
+                                '01005 1 Avenue Paul Ramadier (21 more)',
+                            ],
+                            doubleInputNo: 2,
+                            countryImg:"icon-checkout-czech-30-20.svg",
+                            countryName:"Česká republika",
+                            infoTextSecond: ["Chcete-li použít funkci automatického vyplňování, zadejte svou adresu"],
+                        },
+                        {
+                            type:"text",
+                            label:"Město",
+                            id:"city",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"text",
+                            label:"PSČ",
+                            id:"ZIPCode",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"select",
+                            label:"Země",
+                            id:"county",
+                            value:"",
+                            optionVal: ['Česká republika', 'Česká republika', 'Česká republika'],
+                            placeholder:"",
+                            required:true,
+                        },
+                        {
+                            type:"text",
+                            label:"Společnost",
+                            id:"company",
+                            required:false,
+                            placeholder:"Společnost",
+                        },
+                        {
+                            type:"text",
+                            label:"IČO",
+                            id:"ruc",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"text",
+                            label:"DIČ",
+                            id:"taxNumber",
+                            required:false,
+                            placeholder:"",
+                        },
+                    ])
+
+                .button.buy-order-info-coupon__button
+                    +defaultButton({name: "Save Address", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="save")
+
+                // form bottom content area
+        
+        if(option === "before")
+            .buy-checkout__item.before
+                +checkoutStep({
+                    title:"Delivery",
+                    current:"2",
+                    total:"3",
+                    type: "checkoutStep"
+                })
+
+        if(option === "complete")
+            .buy-checkout__item.buy-checkout__item--delivery.buy-checkout__item--complete(style=`${country=='hide'?'display:none':''}`)
+                +checkoutStep({
+                    title:"Delivery",
+                    current:"2",
+                    total:"3",
+                    type: "checked",
+                })
+                .c-checkout-step02
+                    .buy-address-box.buy-address-box--complete
+                        +addressBox(false, false, [
+                            {
+                                flag: ["Shipping"],
+                                title:"Robert Surrency",
+                                address:"Jeseniova 123, Praha 3 Praha , 130 00 Česká republika",
+                                num:"123-4567-8910",
+                                type: "",
+                            },
+                        ])
+                .c-checkout-step02
+                    .buy-address-box.buy-address-box--complete
+                        +addressBox(false, false, [
+                            {
+                                flag: ["Billing"],
+                                title:"Robert Surrency",
+                                address:"Jeseniova 123, Praha 3 Praha , 130 00 Česká republika",
+                                num:"123-4567-8910",
+                                type: "",
+                            },
+                        ])
+                .c-checkout-orderd.c-checkout-orderd--confirm
+                    .c-checkout-orderd__item.c-checkout-orderd__item--delivery
+                        +checkoutOrderDeliveryProduct("Delivery + installation", "Thu, Oct 18", [
+                            {
+                                title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) ...",
+                                qty: "1",
+                                price: "27 490",
+                                unitPos: "right",
+                                unitName: " Kč"
+                            },
+                        ])

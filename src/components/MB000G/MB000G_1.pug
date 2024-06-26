@@ -1,0 +1,171 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_forms.pug
+include ../_common/_pop-msg.pug
+
+block meta 
+    - var componentId = "MB000G"
+    - var componentName = "Member Forgot Password"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- recaptcha
+    script(src="https://www.google.com/recaptcha/api.js?render=explicit&onload=onRecaptchaLoadCallback" async)
+    
+    script(type='text/javascript').
+        onRecaptchaLoadCallback = function(){
+            var clientId = grecaptcha.render('security-box', {
+                'sitekey': '6Le3NdgaAAAAAK8TXN0_DHQfP-FtiHoGCdiK1QQT',
+                'badge': 'inline',
+                'size': 'invisible',
+            });
+
+            grecaptcha.ready(function() {
+                grecaptcha.execute(clientId, {
+                    action: 'homepage'
+                })
+                .then(function(token) {
+                    // token
+                    document.getElementById('g-recaptcha').value = token;
+                });
+            });
+        }
+//- Member
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin myCaptcha({label, id, placeholder, warning= false})
+    .c-input-item
+        .my-captcha
+            .my-captcha__container
+                label.font-w-normal-16.font-m-normal-14(for=`${id}`)= label
+                #security-box.my-captcha__area
+                //-     .my-captcha__box
+                //-     .my-captcha__btnbox
+                //-         button.sr-only(type='button' class='my-captcha__button my-captcha__button--reload')
+                //-             span.sr-only refresh
+                //-         button.sr-only(type='button' class='my-captcha__button my-captcha__button--play')
+                //-             span.sr-only
+                //- input(type='text' id=`${id}`, placeholder=`${placeholder}` class=`${warning ? 'my-warn' : ''}`)&attributes(attributes)
+    +myMsg({warning: warning})
+
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+    if data.type === 'captcha'
+        +myCaptcha({label: data.label, id: data.id, placeholder: data.placeholder, warning: data.warning})
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                    if data.required
+                        em.c-required *
+                            span.sr-only Required fields
+            if data.required
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+            else 
+                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`, aria-describedby='error-email')&attributes(attributes)
+                    
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+mixin MB000G
+    .MB000G
+        .my-component__wrap
+            .my-component.no-crop
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        +headline('font-w-light-56 font-m-light-28', "h2", "My LG Account")
+        .my-component
+            .my-forgot
+                .my-forgot__container
+                    .my-forgot__title
+                        span.font-w-light-56.font-m-light-28 ¿Cómo reestablecer mi contraseña?
+                    ul.my-forgot__list
+                        li.my-forgot__item
+                            span.font-w-normal-24.font-m-normal-16 Por favor, introduzca su dirección de correo electrónico para obtener el enlace para reestablecer contraseña.
+                        li.my-forgot__item
+                            span.font-w-normal-24.font-m-normal-16 En caso de creer que no has recibido el enlace de reestablecimiento, primero, revisa la sección de SPAM de tu correo.
+                        li.my-forgot__item
+                            span.font-w-normal-24.font-m-normal-16 Si, aun así, no encuentra el enlace, por favor, introduzca de nuevo su dirección de e-mail.
+        .my-component.margin-bottom
+            .my-formbox
+                +myInputForm([
+                    {
+                        type:"email", 
+                        label:"Correo electrónic", 
+                        id:"email",
+                        required:true,
+                        placeholder:"Correo electrónico",
+                    },
+                    {
+                        type:"email", 
+                        label:"Correo electrónic", 
+                        id:"email",
+                        required:true,
+                        placeholder:"Correo electrónico",
+                        warning: ['Correo electrónico inválido.' ,'Correo electrónico no registrado.'],
+                    },
+                ])
+            .button.c-cta.my-button.my-button__full
+                +defaultButton({name: "Cancel", wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                +defaultButton({name: "Submit", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+        .my-component__wrap
+            .my-component
+                .my-text-link-content 
+                    .c-text-contents
+                        .title.c-text-contents__headline
+                            +headline("font-w-light-56 font-m-light-28", "h3", 'We have emailed password set link  to the email address.​')
+                        .text.c-text-contents__bodycopy
+                            p.c-text-contents__text.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") 
+                                | This mail may be classified as spam mail inbox. First, please check your spam inbox.​​ Haven't received the email?​
+                                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="" class="font-underline font-semibold text-link" target="_blank") Resend link
+                    
+block content
+    // Component Markup
+    .c-wrapper
+        .component
+            .fluid-container
+                +MB000G
+                // RO 리캡챠 임시 표시
+                .recapcha(style={position: 'fixed', right: '0px', bottom: '20px'})
+                    img(src="../../assets/image/recaptcha.png", alt="")

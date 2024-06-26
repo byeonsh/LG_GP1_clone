@@ -1,0 +1,214 @@
+extends ../_common/_layout.pug
+include ../_common/_image.pug
+include ../_common/_product-list.pug
+include ../_common/_pagination.pug
+include ./_compare-product-information.pug
+
+
+block styles
+	- var componentId = "PD0038"
+	link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+	script(type="text/javascript").
+		const waitForResponse = 1000;
+		setTimeout(function(){window.print();}, waitForResponse);
+
+block content
+		
+	mixin printItem(params)
+		// block - product item 
+		.c-product-item
+			.c-product-item__top-container
+				+product_image(params.imageUrl, null)
+				+product_name(params.sku, params.name, null, null, null)(class="c-product-item__model-display-name")
+				+compare-price-area(params)
+
+	mixin print-spec-table(params)
+		- var options = {...params}
+		.c-compare-print-spec
+			//- spec head
+			.c-compare-print-spec__head
+				.cmp-text.font-w-semibold-24.font-m-semibold-20(data-cmp-data-layer="")= options.title
+			//- spec body
+			.c-compare-print-spec__body
+				each tableData, index in options.table
+					//- body head
+					.c-compare-spec__head
+						.cmp-text.font-w-semibold-20.font-m-semibold-18(data-cmp-data-layer="")= tableData.title
+					//- body table
+					each set in tableData.data
+						.c-compare-spec-table
+							//- table head
+							.c-compare-spec-table__head.font-w-semibold-16.font-m-semibold-16= set.name
+								//- table body
+							.c-compare-spec-table__body
+								each item in set.values
+									//- table cell
+									.c-compare-spec-table__cell.font-w-normal-16.font-m-normal-14
+										case item.value
+											when "empty"
+												| --
+											when "check"
+												+printLazyImage("../../mocks/PD0038/icon-available-green-18-14.svg", "available")
+											when "none"
+												|
+											default 
+												| Lorem ipsum dolor sit amet consectetur, adipisicing elit. Fuga, dolorum?
+	- var count = 4
+	// block - compare print table
+	.c-compare-print-wrap
+		.c-compare-print-table
+			//- spec head
+			.c-compare-print-table__head.align-text-center
+				.image.c-image
+					+printLazyImage(`../../assets/image/logo-lg-128-60.png`, `LG logo (Life's Good)`)
+				.c-text-contents 
+					.title.c-text-contents__headline 
+						.cmp-title.font-w-semibold-40.font-m-semibold-26(data-cmp-data-layer="") Lorem ipsum dolor sit amet.
+					.text.c-count-text
+						.cmp-text.font-w-semibold-20.font-w-semibold-16(data-cmp-data-layer="") 
+							span.font-red= count
+							|
+							|
+							span Products in Comparison
+				
+			.c-compare-print-contents
+				.c-compare-print-table__product-list
+					.c-compare-print-table__product-list-item
+						+printItem({
+							sku:'GSJV70PZTF', 
+							modelid: 'MD07258328',
+							name:'American Fridge Freezer 635L Water & Ice Dispenser',
+							imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+							retailer: true,
+						})
+					.c-compare-print-table__product-list-item
+						+printItem({
+							sku:'GSJV70PZTF', 
+							modelid: 'MD07258328',
+							name:'American Fridge Freezer 635L Water & Ice Dispenser',
+							imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+							soldOut : true,
+						})
+					.c-compare-print-table__product-list-item
+						+printItem({
+							sku:'GSJV70PZTF', 
+							modelid: 'MD07258328',
+							name:'American Fridge Freezer 635L Water & Ice Dispenser',
+							imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+						})
+					.c-compare-print-table__product-list-item
+
+				+print-spec-table({
+					title : "Key Specs",
+					table : [
+						{
+							title : "Summary",
+							data : [
+								{
+									name : "Diagonal Size",
+									values : [
+										{value : "65 inches"},
+										{value : "65 inches"},
+										{value : "65 inches"},
+										{value : "no data"},
+									]
+								}
+							],
+						},
+						{
+							title: "Picture Quality",
+							data : [
+								{
+									name : "Lorem ipsum dolor sit",
+									values : [
+										{value : "TruMotion 120 (Refresh Rate 60Hz)"},
+										{value : "check"},
+										{value : "empty"},
+										{value : "no data"},
+									]
+								},
+								{
+									name : "Lorem ipsum dolor",
+									values : [
+										{value : "check"},
+										{value : "TruMotion 120 (Refresh Rate 60Hz)"},
+										{value : "none"},
+										{value : "no data"},
+									]
+								},
+							],
+						}
+					]
+				})
+				+print-spec-table({
+					title : "All Specs",
+					table : [
+						{
+							title : "Summary",
+							data : [
+								{
+									name : "Diagonal Class",
+									values : [
+										{value : "65 inches"},
+										{value : "65 inches"},
+										{value : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, voluptatem!"},
+										{value : "no data"},
+
+									]
+								},
+								{
+									name : "Diagonal Size",
+									values : [
+										{value : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, voluptatem!"},
+										{value : "65 inches"},
+										{value : "65 inches"},
+										{value : "no data"},
+									]
+								}
+							],
+						},
+						{
+							title: "Picture Quality",
+							data : [
+								{
+									name : "Lorem ipsum dolor sit",
+									values : [
+										{value : "TruMotion 120 (Refresh Rate 60Hz)"},
+										{value : "check"},
+										{value : "empty"},
+										{value : "no data"},
+									]
+								},
+								{
+									name : "Lorem ipsum",
+									values : [
+										{value : "TruMotion 120 (Refresh Rate 60Hz)"},
+										{value : "TruMotion 120 (Refresh Rate 60Hz)"},
+										{value : "TruMotion 120 (Refresh Rate 60Hz)"},
+										{value : "no data"},
+									]
+								},
+								{
+									name : "Lorem ipsum dolor sit",
+									values : [
+										{value : "check"},
+										{value : "check"},
+										{value : "check"},
+										{value : "no data"},
+									]
+								},
+								{
+									name : "Lorem ipsum dolor",
+									values : [
+										{value : "check"},
+										{value : "TruMotion 120 (Refresh Rate 60Hz)"},
+										{value : "none"},
+										{value : "no data"},
+									]
+								},
+							],
+						}
+					]
+				})

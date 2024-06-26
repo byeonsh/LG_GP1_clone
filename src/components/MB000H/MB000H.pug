@@ -1,0 +1,58 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+
+block meta 
+    - var componentId = "MB000H"
+    - var componentName = "Change Password Guide"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+
+mixin myLinkBtnContent(params)
+    - let data = {...params}
+    .my-link-content
+        .c-text-contents
+            .title.c-text-contents__headline.my-link-content__title
+                +headline("font-w-light-56 font-m-light-28", "h3", data.title)
+            .text.c-text-contents__bodycopy.my-link-content__desc
+                p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") !{data.desc}
+        if data
+            .button.c-cta(class=`${data.margin ? data.margin : ''}`)
+                //- +linkButton({type:"box-outlined", color:"black", size:"medium", name: data.buttonFirst})
+                +defaultButton({name: data.buttonFirst, wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                if data.buttonSecond
+                    //- +linkButton({type:`${data.buttonSecondType ? 'box' : 'box-outlined'}`, color:`${data.buttonSecondType == "box"? 'red' : 'black'}`, size:"medium", name: data.buttonSecond})
+                    +defaultButton({name: data.buttonSecond, wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+
+mixin MB000H
+    .MB000H
+        .my-component__wrap
+            .my-component.no-crop
+                .c-text-contents
+                        .title.c-text-contents__headline
+                            +headline("font-w-light-56 font-m-light-28", h3, "Change Password")
+        .my-component.my-guide
+            +myLinkBtnContent({
+                title:'It is recommended that you change your password',
+                desc:'Recommends changing the password every 3 months for safe system use, so please change your password.​', 
+                buttonFirst: 'Change It Later',
+                buttonSecond: 'Change It Now',
+                buttonSecondType: 'box',
+            })
+
+block content
+    // Component Markup
+    .c-wrapper
+        .component
+            .fluid-container
+                +MB000H

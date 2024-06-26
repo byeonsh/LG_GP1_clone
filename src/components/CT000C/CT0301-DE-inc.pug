@@ -1,0 +1,136 @@
+include ./CT0301-inc.pug
+
+mixin CT0301(option=false)
+    .CT0301
+        .buy-checkout__item.buy-checkout__item--id(style="display:block;")
+            +buyMemberId({
+                id:"abced123@gmail.com"
+            })
+        .buy-checkout__item.buy-checkout__item--id.buy-checkout__item--complete(style="display:none")
+            +buyMemberIdEdit({
+                id:"abced123@gmail.com"
+            })
+        .buy-checkout__item.buy-checkout__item--coupon(style="display:block;")
+            +checkoutStep({
+                title:"Coupon",
+                current:"1",
+                total:"3",
+                type: "active",
+            })
+            .buy-order-info-coupon
+                ul.buy-order-info-coupon__list
+                    li
+                        +buyCouponRegister({
+                            id: "1",
+                            btnDisabled : true,
+                        })
+                    li
+                        .buy-order-info-coupon__item
+                            +buyCouponSelect(false,[])
+            .buy-order-info-coupon
+                ul.buy-order-info-coupon__list
+                    li
+                        +buyCouponRegister({
+                            id: "2",
+                            btnDisabled : false,
+                        })
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: '"HA_SAVE15" is a code that is not available on the product or is not valid.',
+                                remove: true
+                            },
+                        ], 'aria-validation-0')
+                    li
+                        .buy-order-info-coupon__item
+                            //- [Start] 2023-04-11 : UPDATE - duplicate option
+                            +buyCouponSelect(3,[
+                                {
+                                    title:"For Your Cart",
+                                    couponTitle:["10% off Sign-up Welcome Coupon"],
+                                    val:["val1"],
+                                    id:["selectCouponCheck1"],
+                                    date:["Expires Jan 31, 2023"],
+                                },
+                                {
+                                    title:"For Your Product",
+                                    couponTitle:["10% off LG Home Appliances <br/>(Buy Any 2)","£100 off OLED Promotion <br/>(for Selected Model)"],
+                                    val:["val2", "val3"],
+                                    id:["selectCouponCheck2", "selectCouponCheck3"],
+                                    date:["Expires Jan 31, 2023","Expires Jan 31, 2023"],
+                                },
+                            ])
+                            //- [End] 2023-04-11 : UPDATE - duplicate option
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'This price has exceeded the Maximum DC Rate',
+                                remove: true,
+                            },
+                            {
+                                type: "success",
+                                text: 'Promocode registered. Check the coupon.',
+                                remove: true,
+                            },
+                        ], 'aria-validation-1')
+            //- Secret Coupon add
+            .buy-order-info-coupon
+                ul.buy-order-info-coupon__list
+                    li
+                        +buyCouponRegister({
+                            id: "3",
+                            btnDisabled : false,
+                            typeInput : 'var-red',
+                            value : 'BF_Secret_xyz1'
+                        })
+                        .buy-order-info-coupon__secret
+                            p.font-w-normal-16.font-m-normal-14 Your secret coupon is available for only today.
+                            +textButton({name: 'Terms & Condition', underline:true, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: false, buttonStyle:"js-pop-open"})(href="#popSecretCoupon")
+                            
+                    li
+                        .buy-order-info-coupon__item
+                            //- [Start] 2023-04-11 : UPDATE - duplicate option
+                            +buyCouponSelect(1,[
+                                {
+                                    title:"For Your Cart",
+                                    couponTitle:["10% off Sign-up Welcome Coupon"],
+                                    val:["val1"],
+                                    id:["selectCouponCheck4"],
+                                    date:["Expires Jan 31, 2023"],
+                                }
+                            ])
+                            //- [End] 2023-04-11 : UPDATE - duplicate option
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'This price has exceeded the Maximum DC Rate',
+                                remove: true
+                            },
+                            {
+                                type: "success",
+                                text: 'Promocode registered. Check the coupon.',
+                                remove: true
+                            },
+                        ], 'aria-validation-3')
+                .button.buy-order-info-coupon__button
+                    //- [Start] 2023-04-07 : UPDATE - button name change Proceed to Next to Proceed to Delivery
+                    //- +defaultButton({name: 'Proceed to Delivery', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-07 : UPDATE - button name change Proceed to Next to Proceed to Delivery
+
+                    //- [Start] 2023-04-11 : UPDATE - button name change 'Proceed to Delivery' to 'Next'
+                    +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                    //- [End] 2023-04-11 : UPDATE - button name change 'Proceed to Delivery' to 'Next'
+
+        .buy-checkout__item.buy-checkout__item--coupon.buy-checkout__item--complete(style="display:none")
+            +checkoutStep({
+                title:"Coupon",
+                current:"1",
+                total:"3",
+                type: "checked",
+            })
+            .apply-coupon.apply-coupon--complete
+                +applyCoupon(
+                    {
+                        coupon:"10% off Sign-up welcome coupon",
+                    },
+                )

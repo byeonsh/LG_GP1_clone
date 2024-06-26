@@ -1,0 +1,2455 @@
+mixin buyBasket(params)
+    - let data = {...params}
+    .c-product-item__input.buy-basket
+        .buy-basket__text
+            .c-text-contents__bodycopy.buy-basket__text
+                p.cmp-text.font-w-light-56.font-m-light-28(role='status' aria-live='polite' id='basket_info')
+                    | Your Basket
+                    if !data.empty
+                        |(
+                        span.font-red= data.num
+                        | )
+                        | 
+                        span.sr-only Add
+
+mixin buyZipcode({zipcode})
+    .buy-zipcode
+        .buy-zipcode__box
+            button(type="button").font-w-semibold-14.font-m-semibold-14.buy-zipcode__ziptxt= zipcode
+
+mixin buyCartList(params)
+    - let data = { ...params }
+    div(class=`${data.subTotalText && data.subTotalPrice ? 'c-product-directly c-product-directly--sub-total c-medium-size' : 'c-product-directly c-medium-size'}`)
+        .c-product-directly-item
+            +buyProductItem(params)
+
+mixin bundleAddList(data)
+    .my-bundle-add.c-product-item__bundle
+        ul.c-product-item__bundle__items
+            each set in data
+                +bundleAddItem(set)
+
+mixin exchangeOffer(params)
+    .c-product-item__exchange-box--round
+        dl.exchange-item 
+            dt.exchange-item__title
+                .exchang-item__title--group
+                    .cmp-title
+                        | Exchange offer
+                    .exchange-toggle-area
+                        +textButton({name: 'Add', wSize: 'small', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})
+                        span.price-area.inactive ₹25000
+            dd.exchange-item__detail
+                .exchange-info 
+                    | Trade in your old device &amp; receive instant discount on your order
+                .exchange-product__list.inactive 
+                    p.title Smart Exchange added successfully
+                    p.product-name - LED TV (24-32 inches)
+                .exchange-link__button--bottom
+                    +textButton({name: 'More Information', wSize: 'small', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})
+                    button(type="button" class='exchange__item--delete')
+                        span.sr-only Delete
+
+mixin bundleAddItem(params)
+    - let data={...params}
+        li
+            div
+                .my-bundle-add__input
+                    +formCheckbox(false, `pdpPackageItem${data.id}`, `${data.name}`, `pdpPackageItem${data.id}`, count="false", disabled = data.outStock)(aria-describedby='basket_info grand_total')
+                        strong.sr-only= `${data.name} Select`
+                .my-bundle-add__box
+                    .my-bundle-add__imgbox
+                        +printLazyImage(`https://via.placeholder.com/80x80/999999/333333`)
+                    .my-bundle-add__txtbox
+                        .text.c-text-contents__eyebrow.sku
+                            +product_name(`${data.name}`,)
+                            .c-text-contents__bodycopy
+                                if data.inStock
+                                    span.font-w-normal-16.font-m-normal-12.font-green IN STOCK
+                                if data.outStock
+                                    span.font-w-normal-16.font-m-normal-12.font-red OUT OF STOCK
+                        p.font-w-semibold-16.font-m-semibold-14.my-bundle-add__bundle= data.title
+                        +product_price({promotion: data.promotion, installment:data.installment, discount: data.discount, pricesup: data.pricesup, membership: data.member, installmentPlus:data.installmentPlus})
+                        if data.desc
+                            each set in data.desc
+                                .my-bundle-add__desc
+                                    span.font-w-normal-14.font-m-normal-14.font-red= set.desc
+                .buy-product-btn
+                    .buy-count-box(class=`${data.inStock ? 'inStock' : 'outStock'}`)
+                        button(type='button' aria-describedby=`basket_info grand_total input-${data.name}-${data.id}`).buy-count-box__minus
+                            span.sr-only minus
+                        .buy-count-box__number
+                            input(type='number' value= '1' id=`input-${data.name}-${data.id}`)
+                        button(type='button').buy-count-box__plus.active
+                            span.sr-only plus
+                    button(type="button" class='c-product-item__input--delete' aria-describedby=`basket_info grand_total input-${data.name}-${data.id}`)
+                        span.sr-only Delete
+
+mixin bundleAddItem2(params)
+    - let data={...params}
+    a(href='#' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="")
+        .my-bundle-add
+            .my-bundle-add__box
+                .my-bundle-add__imgbox
+                    .image.c-image
+                        +printLazyImage(`https://via.placeholder.com/80x80/999999/333333`)
+                .my-bundle-add__txtbox
+                    +product_name(sku, data.name.toUpperCase(), fontstyle, useLink = false)
+                    p.font-w-semibold-16.font-m-semibold-14.my-bundle-add__bundle= data.title
+
+mixin buyProductItem(params)
+    - let data = { ...params }
+    .c-product-item
+        .c-product-item__top-container
+            // [Start] 2023-04-03 : ADD - Product checkbox 추가			
+            .button
+                +formCheckbox(false, `pdpPackageItem${data.id}`, `${data.name}`, `pdpPackageItem${data.id}`, count="false", disabled = data.outStock, labelledby = true, `aria__${data.name}`)(aria-describedby='basket_info grand_total')
+                    strong.sr-only= `${data.name} Select`
+            // [End] 2023-04-03 : ADD - Product checkbox 추가			
+            .c-product-item__visual-imagebuyProductItem
+                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="").image.c-image
+                    //- +printLazyImage(`https://www.lg.com/uk/images/tvs/md07546594/gallery/GT1.jpg`)
+                    +printLazyImage('https://via.placeholder.com/200x180/999999/000000')
+        .c-product-item__bottom-container
+            .c-product-item__bottom-container__text-box
+                .c-text-contents.c-product-item__layout
+                    .text.c-text-contents__eyebrow.sku
+                        if data.name
+                            .cmp-text(data-cmp-data-layer="" class="font-w-normal-16 font-m-normal-14")
+                                p
+                                    span= data.name
+                        if data.inStock
+                            span.font-w-normal-16.font-m-normal-12.font-green In Stock
+                        if data.outStock
+                            span.font-w-normal-16.font-m-normal-12.font-red Out of Stock
+                    if data.plag
+                        .text.c-text-contents__plag 
+                            // [Start] 2023-05-11 : UPDATE - badge
+                            span.font-w-normal-16.font-m-normal-12= data.plag
+                            // [End] 2023-05-11 : UPDATE - badge
+                    a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="").text.c-text-contents__headline
+                        .cmp-text(data-cmp-data-layer="" class="font-w-normal-20 font-m-normal-16") 
+                            p(id=`aria__${data.name}`)= `${data.title ? `${data.title}` : 'LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5" Diag) IntGel® core™ i7 / 16GB / 2TB / Intel®  Iris® Plus Graphics / Noble Steel / Services A'}`
+                    if data.warrantyinfo 
+                        .c-text-contents__warrantyinfo 
+                            each set in data.warrantyinfo
+                                .c-text-contents__warrantyinfo__box
+                                    span.font-w-normal-16.font-m-normal-12.c-text-contents__warrantyinfo__title !{set.title} :
+                                    span.font-w-normal-16.font-m-normal-12.c-text-contents__warrantyinfo__text !{set.text}
+                // [Start] 2023-05-30 : UPDATE -about product price
+                +buyProductPrice({
+                    installment: data.installment, 
+                    installmentBottom: data.installmentBottom, 
+                    installmentPlus: data.installmentPlus, 
+                    discount: `${data.discount ? '20% off' : ''}`, 
+                    purchase: `${data.purchase ? data.purchase : '£1,866.98'}`, 
+                    priceInstallment: data.priceInstallment, 
+                    previousPrice: data.previousPrice, 
+                    discount: data.discount, 
+                    pricesup: data.pricesup, 
+                    membership: data.membership,
+                    productLabel: data.productLabel,
+                    installmentText: data.installmentText,
+                    installmentTag: data.installmentTag,
+                    installmentImg: data.installmentImg,
+                    includeEHF: data.includeEHF,
+                    vipPremierBenefit: data.vipPremierBenefit,
+                    previousPriceVN: data.previousPriceVN,
+                    discountVN: data.discountVN,
+                    installmentImgText: data.installmentImgText,
+                    installmentAddClass: data.installmentAddClass,
+                })
+                // [End] 2023-05-30 : UPDATE -about product price
+                if data.deliveryStartDate 
+                    .c-product-item_delivery-status
+                        span.font-w-normal-14.font-m-normal-12.c-product-item_delivery-status__text Shipment will start from
+                            em.font-w-semibold-14.font-m-semibold-12.c-product-item_delivery-status__date !{data.deliveryStartDate}.
+                if data.guideMsg 
+                    .c-product-item_guise-msg 
+                        span.font-w-normal-16.font-m-normal-12 !{data.guideMsg}
+            if data.bundle
+                .c-product-item__bundle
+                    .c-product-item__bundle__items
+                        each set in data.bundle 
+                                +bundleAddItem2(set)
+            .buy-product-btn
+                .buy-product-btn__area
+                    .buy-product-btn__pos
+                        .buy-count-box(class=`${data.inStock ? 'inStock' : 'outStock'}`)
+                            button(type='button' aria-describedby=`basket_info grand_total input-${data.name}_${data.id}`).buy-count-box__minus
+                                span.sr-only minus
+                            .buy-count-box__number
+                                input(type='number' value= '1' title="Quantity" id=`input-${data.name}_${data.id}`)
+                            button(type='button' aria-describedby=`basket_info grand_total input-${data.name}_${data.id}`).buy-count-box__plus.active
+                                span.sr-only plus
+                            if data.outStock 
+                                a.cmp-button.c-button.c-button--text-underline.black.js-pop-open(href="#" role="button")
+                                    span.cmp-button__text.c-button__text Get Stock Alert
+                        // [Start] 2023-11-27 : ADD-cart subTotal area
+                        if data.subTotalText && data.subTotalPrice
+                            .c-product-item__sub-total
+                                .c-text-contents.c-product-item__sub-total__price
+                                    .c-text-contents__bodycopy
+                                        span.cmp-text.font-w-semibold-32.font-m-semibold-24(data-cmp-data-layer="") !{data.subTotalText}
+                                        span.cmp-text.font-w-semibold-32.font-m-semibold-24(data-cmp-data-layer="") !{data.subTotalPrice}
+                                if data.subTotalLink
+                                    +textButton({name: `${data.subTotalLink}`, wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false, mainClass: 'js-pop-open'})
+                        // [End] 2023-11-27 : ADD-cart subTotal area
+                    button(type="button" class='c-product-item__input--delete' aria-describedby=`basket_info grand_total input-${data.name}`)
+                        span.sr-only Delete 
+
+mixin buyProductPrice(params)
+    - var priceStyle = params.priceFontStyle || "font-w-semibold-32 font-m-semibold-24"
+    - var subPriceStyle = params.subPriceFontStyle || "font-w-normal-14i font-m-normal-12"
+    - var soldOutStyle = params.soldOutFontStyle || "font-w-semibold-18 font-m-semibold-18"
+    - var subBenefitStyle = params.subBenefitFontStyle || "font-w-normal-16 font-m-normal-12"
+
+    if (params.productLabel)
+        // [Start] 2023-05-26 : UPDATE- UPDATE- Change markup level, change common mixin(product_rating)
+        .product-label__container
+            +product_rating(params.productLabel, modelid='MD07546559', specsheet=true, rating=false, catalog=false, summary=false, labels=false)
+        // [End] 2023-05-26 : UPDATE- UPDATE- Change markup level, change common mixin(product_rating)
+    .price-area
+        if(params.promotion)
+            .price-box(class=`${subPriceStyle}`)
+                .c-price__flag--promotion(class=params.promotion=="Limited Quantities" ? "limited" : "")
+                    span= params.promotion
+        if(params.vipPremierBenefit)
+            .price-box
+                .c-price
+                    ul.c-price__vipPremierBenefit-list
+                        each setData in params.vipPremierBenefit
+                            li.font-red(class=`${subBenefitStyle}`)
+                                span= setData
+        if(params.installment)
+            .price-box(class=`${subPriceStyle}`)
+                .c-price
+                    if(typeof params.installment === "number")
+                        - for(let i = 0; i < params.installment; i++)
+                            .c-price__installment.c-product-item__button
+                                a(href="#" role="button") 699.99/mo for 3 mos at 0% or
+                    else if params.installmentText
+                        each data in params.installmentText
+                            .c-price__installment.c-product-item__button
+                                a(href="#" role="button")= data
+                    else if params.installmentTag
+                        .c-price__installment.c-product-item__button !{params.installmentTag}
+                    else if params.installmentImgText    
+                        each data in params.installmentImgText  
+                            .c-price__installment.c-product-item__button
+                                if data.installmentAddClass
+                                    if data.installmentAddClass == 'payment_zippay_logo'
+                                        a(href="#" role="button")
+                                            span.payment_zippay= data.installmentText 
+                                                span.image-box.c-image-installment.payment_zippay_logo
+                                    else if data.installmentAddClass == 'payment_afterpay_logo'
+                                        a(href="#" role="button")
+                                            span.payment_afterpay= data.installmentText 
+                                                span.image-box.c-image-installment.payment_afterpay_logo
+                                    else
+                                        a(href="#" role="button")= data.installmentText 
+                                            span.image-box.c-image-installment(class=`${data.installmentAddClass}`)
+                                else
+                                    a(href="#" role="button")= data.installmentText
+                                        if data.installmentImg
+                                            span.image.c-image-installment
+                                                img(src=`${data.installmentImg}`)
+                    else
+                        .c-price__installment.c-product-item__button
+                            a(href="#" role="button") 699.99/mo for 3 mos at 0% or
+        if(params.previousPriceVN)
+            .product-price.font-w-normal-14i.font-m-normal-14
+                .c-price
+                    .c-price__previous= params.previousPriceVN
+                        if (params.previousPriceVN && params.pricesup)
+                            sup.c-price__unit ₫
+        .price-box 
+            .c-price(class=`${priceStyle}`)
+                // [Start] 2023-05-30 : UPDATE -about product price
+                if (params.pricesup)
+                    .c-price__purchase
+                        span= params.pricesup
+                            sup.c-price__unit ₫
+                else
+                    .c-price__purchase= params.purchase
+                // [End] 2023-05-30 : UPDATE -about product price
+            //- [Start] 2023-09-13 : ADD- Includes $15 EHF fee
+            if params.includeEHF
+                span.c-price__EHF-fee.font-w-normal-16.font-m-normal-12 !{params.includeEHF}
+            //- [End] 2023-09-13 : ADD- Includes $15 EHF fee
+            if(!params.previousPriceVN && !params.discountVN)
+                .product-price(class=`${subPriceStyle}`)
+                    .c-price
+                        // [Start] 2023-05-30 : UPDATE -about product price
+                        //- .c-price__previous= params.previousPrice
+                        .c-price__previous= params.previousPrice
+                            if (params.previousPrice && params.pricesup)
+                                sup.c-price__unit ₫
+                        // [End] 2023-05-30 : UPDATE -about product price
+                    .c-price
+                        if (params.discount)
+                            .c-price__discount 
+                                span Save
+                                span= params.discount
+                                    // [Start] 2023-05-30 : UPDATE -about product price
+                                    if (params.discount && params.pricesup)
+                                        sup.c-price__unit ₫
+                                    // [Start] 2023-05-30 : UPDATE -about product price
+        if(params.discountVN)
+            .product-price.font-w-normal-14i.font-m-normal-14
+                .c-price
+                    if (params.discountVN)
+                        .c-price__discount 
+                            span= params.discountVN
+                                if (params.discountVN && params.pricesup)
+                                    sup.c-price__unit ₫
+        if(params.installmentBottom)
+            .price-box(class=`${subPriceStyle}`)
+                .c-price
+                    if(typeof params.installmentBottom === "number")
+                        - for(let i = 0; i < params.installmentBottom; i++)
+                            .c-price__installment.c-product-item__button
+                                a(href="#" role="button") Chỉ 1.412.016 VNĐ/tháng(12 tháng) với 0% lãi suất
+                    else if params.installmentText
+                        .c-price__installment.c-product-item__button
+                            a(href="#" role="button")= params.installmentText
+                    else if params.installmentTag
+                        .c-price__installment.c-product-item__button !{params.installmentTag}
+                    else
+                        .c-price__installment.c-product-item__button
+                            a(href="#" role="button") Chỉ 1.412.016 VNĐ/tháng(12 tháng) với 0% lãi suất
+        if (params.installmentPlus)
+            .price-box(class=`${subPriceStyle}`)
+                .c-price__installmentPlus
+                    span= params.installmentPlus
+        if(typeof params.membership === "object")
+            each item in params.membership
+                .price-box(class=`${subPriceStyle}`)
+                    .c-price__flag--member
+                        span.flag= item.title
+                        span= item.cost
+        else
+            if(params.membership)
+                .price-box(class=`${subPriceStyle}`)
+                    .c-price__flag--member
+                        span.flag LG Members only
+                        span= params.membership
+
+        if(params.outOfStock || params.soldOut)    
+            .price-box(class=`${soldOutStyle}`)
+                if(params.outOfStock)
+                    .c-price__flag--notice
+                        span Out of stock
+                if(params.soldOut)    
+                    .c-price__flag--notice
+                        span Sold out
+
+mixin ctWarrantyAdd(controlsId, selectionSkuView, service)
+    include ../PD0003/_summary-information.pug
+    .ct-warranty
+        .ct-warranty-add
+            // [Start] 2023-08-23 : Changed - Add on bundle		
+            .c-accordion.js-accordion
+                +product-sibling-option-box({title : "Buy More, Save More", controlsId : controlsId, columnCount : 1, useTooltip : true})
+                    // step 1: c-sibling-option-box__option-group
+                    // step 2: c-sibling-option-box__option-group c-addon-product-box--option-choosing
+                    // step 3: c-sibling-option-box__option-group c-addon-product-box--option-selected
+                    .c-sibling-option-box__option-group
+                        // bundle (step1 sample)
+                        .c-addon-product-box.c-accordion__box
+                            // before selection
+                            +product-addon-before('bundleBtype')
+                            // choosing
+                            +product-addon-selection('bundleBtype', selectionSkuView)
+                            // selection done
+                            +product-addon-after('bundleBtype')
+
+                        // accessory
+                        .c-addon-product-box.c-accordion__box
+                            // before selection
+                            +product-addon-before('accessoryBtype')
+                            // choosing
+                            +product-addon-selection('accessoryBtype', selectionSkuView)
+                            // selection done
+                            +product-addon-after('accessoryBtype')
+
+                        // warranty
+                        .c-addon-product-box.c-accordion__box
+                            // before selection
+                            +product-addon-before('warranty')
+                            // choosing
+                            +product-addon-selection('warranty')
+                            // selection done
+                            +product-addon-after('warranty')
+                        if (service)
+                          // service
+                          .c-addon-product-box.c-accordion__box
+                              // before selection
+                              +product-addon-before('service')
+                              // choosing
+                              +product-addon-selection('service')
+                              // selection done
+                              +product-addon-after('service')
+            // [End] 2023-08-23 : Changed - Add on bundle
+
+// LGCOMMON-4762 start
+mixin ctWarrantyAddToggle(controlsId, selectionSkuView)
+    include ../PD0003/_summary-information.pug
+    .ct-warranty
+        .ct-warranty-add
+            .c-accordion.js-accordion
+                +product-sibling-option-box({title : "Protect with LG Premium Care", titleFontStyle: "font-w-normal-20 font-m-normal-16", controlsId : "PD0003SiblingOptionsB01", columnCount : 1, useTooltip : true})
+                    .c-sibling-option-box__option-group.type-toggle
+                        // warranty
+                        .c-addon-product-box.c-accordion__box.c-addon-product-box--option-choosing
+                            +product-addon-selection-toggle('warranty')
+            .c-accordion.js-accordion
+                +product-sibling-option-box({title : "Buy More, Save More", titleFontStyle: "font-w-normal-20 font-m-normal-16", controlsId : "PD0003SiblingOptionsB02", columnCount : 1, useTooltip : true})
+                    .c-sibling-option-box__option-group.type-toggle
+                        // bundle (step1 sample)
+                        .c-addon-product-box.c-accordion__box.c-addon-product-box--option-choosing
+                            +product-addon-selection-toggle('bundle')
+            .c-accordion.js-accordion
+                +product-sibling-option-box({title : "Perfect pairing for your TV&Soundbars", titleFontStyle: "font-w-normal-20 font-m-normal-16", controlsId : "PD0003SiblingOptionsB03", columnCount : 1, useTooltip : true})
+                    .c-sibling-option-box__option-group.type-toggle
+                        // accessory
+                        .c-addon-product-box.c-accordion__box.c-addon-product-box--option-choosing
+                            +product-addon-selection-toggle('accessory')
+            .c-accordion.js-accordion
+                +product-sibling-option-box({title : "Protect with LG Premium Care", titleFontStyle: "font-w-normal-20 font-m-normal-16", controlsId : "PD0003SiblingOptionsB01", columnCount : 1, useTooltip : true})
+                    .c-sibling-option-box__option-group.type-toggle
+                        // warranty
+                        .c-addon-product-box.c-accordion__box.c-addon-product-box--option-choosing
+                            +product-addon-selection-toggle('service')
+            .c-accordion.js-accordion
+                +product-sibling-option-box({title : "Buy More, Save More", titleFontStyle: "font-w-normal-20 font-m-normal-16", controlsId : "PD0003SiblingOptionsB02", columnCount : 1, useTooltip : true})
+                    .c-sibling-option-box__option-group.type-toggle
+                        // bundle (step1 sample)
+                        .c-addon-product-box.c-accordion__box.c-addon-product-box--option-choosing
+                            +product-addon-selection-toggle('bundleBtype')
+            .c-accordion.js-accordion
+                +product-sibling-option-box({title : "Perfect pairing for your TV&Soundbars", titleFontStyle: "font-w-normal-20 font-m-normal-16", controlsId : "PD0003SiblingOptionsB03", columnCount : 1, useTooltip : true})
+                    .c-sibling-option-box__option-group.type-toggle
+                        // accessory
+                        .c-addon-product-box.c-accordion__box.c-addon-product-box--option-choosing
+                            +product-addon-selection-toggle('accessoryBtype')
+            .c-accordion.js-accordion
+                +product-sibling-option-box({title : "Explore Additional Savings", titleFontStyle: "font-w-normal-20 font-m-normal-16", controlsId : "PD0003SiblingOptionsB07", columnCount : 1, useTooltip : true})
+                    .c-sibling-option-box__option-group.type-toggle
+                        // Questionnaire Coupon
+                        .c-addon-product-box.c-accordion__box.c-addon-product-box--option-choosing
+                            +product-addon-item-popup('Cart')
+// LGCOMMON-4762 end
+
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin invalid-warning(text = "warning msg")
+    .c-warning.font-m-normal-14.font-w-normal-14 !{text}
+
+mixin exclamTooltip(tooltipText, usedButton = true, direction = 'bottom-left', size = '')
+    - var text = tooltipText || "Lorem ipsum  Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.."
+    if (size == 'large')
+        - var size = 'c-tooltip__contents--large'
+    if (size == 'medium')
+        - var size = 'c-tooltip__contents--medium'
+    span.c-tooltip
+        span.button
+            button.cmp-button.c-icon-button.c-icon-button--more-info.c-tooltip__button(type="button" aria-expanded="false", data-cmp-data-layer="")
+                span.sr-only More information
+        span.c-tooltip__container(class=direction)
+            span.c-tooltip__contents.has-close(class=size)
+                button.c-tooltip__close(type='button')
+                    span.sr-only Close
+                span.c-text-contents
+                    span.text.c-text-contents__bodycopy
+                        span.cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")
+                            span= text
+                    if usedButton
+                        span.button
+                            +linkButton({type:"text", color:"black", icon: true, name: "Learn More"})
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-24(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                if data.tooltipMsg
+                    +exclamTooltip(data.tooltipMsg, false)
+            if data.required
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+            else if data.button
+                if data.validation
+                    .input-button__container.input-button__container--validation
+                        .my-button-validation
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config)&attributes(attributes)
+                            +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                        .button.c-cta.button-full
+                            if data.button === 'Find Address'
+                                +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})(role="search")
+                            else 
+                                +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})
+                else
+                    .input-button__container
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config)&attributes(attributes)
+                        .button.c-cta.button-full
+                            if data.button === 'Find Address'
+                                +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})(role="search")
+                            else 
+                                +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})
+            else 
+                input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder maxlength=data.maxlength class=`my-input__password ${config} ${data.class}` value= data.value)&attributes(attributes)
+        +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        if data.doubleInputNo > 0
+            - for (let i=1; i<=data.doubleInputNo; i++)
+                .c-input-item
+                    input(type='text' id=`${data.id}-${i}` class=`my-input__password`)&attributes(attributes)
+
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin product-card-info
+    .c-product-card-info.text
+        .cmp-text.c-product-card-info__text.font-w-normal-14.font-m-normal-12(data-cmp-data-layer="")
+            p You can pay with
+        .c-product-card-info__image
+            <svg width="134" height="22" viewBox="0 0 134 22" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <rect y="4.15234" width="42" height="13.6957" fill="url(#pattern0)"/>
+                <g clip-path="url(#clip0_16_29190)">
+                    <path d="M73.9737 17.6965C73.8792 18.3171 73.4055 18.3171 72.9472 18.3171H72.6865L72.8694 17.1584C72.8804 17.0884 72.9408 17.0368 73.0117 17.0368H73.1312C73.4431 17.0368 73.7378 17.0368 73.8896 17.2145C73.9805 17.321 74.0081 17.4786 73.9737 17.6965ZM73.7743 16.0774H72.0461C71.9279 16.0774 71.8273 16.1634 71.8089 16.2802L71.1101 20.7134C71.0963 20.8009 71.1639 20.88 71.2523 20.88H72.139C72.2217 20.88 72.2922 20.8198 72.3051 20.7381L72.5033 19.4812C72.5217 19.3644 72.6222 19.2784 72.7404 19.2784H73.2873C74.4256 19.2784 75.0825 18.7273 75.2543 17.6349C75.3316 17.1572 75.2574 16.7818 75.0338 16.519C74.788 16.2301 74.3524 16.0774 73.7743 16.0774Z" fill="#459ADB"/>
+                    <path d="M61.6477 17.6965C61.5532 18.3171 61.0794 18.3171 60.6212 18.3171H60.3605L60.5434 17.1584C60.5544 17.0884 60.6148 17.0368 60.6857 17.0368H60.8052C61.1171 17.0368 61.4118 17.0368 61.5636 17.2145C61.6545 17.321 61.682 17.4786 61.6477 17.6965ZM61.4483 16.0774H59.72C59.6019 16.0774 59.5013 16.1634 59.4828 16.2802L58.784 20.7134C58.7702 20.8009 58.8378 20.88 58.9263 20.88H59.7515C59.8696 20.88 59.9702 20.794 59.9886 20.6772L60.1772 19.4812C60.1956 19.3644 60.2962 19.2784 60.4144 19.2784H60.9613C62.0996 19.2784 62.7566 18.7273 62.9283 17.6349C63.0056 17.1572 62.9314 16.7818 62.7078 16.519C62.462 16.2301 62.0264 16.0774 61.4483 16.0774Z" fill="#253B7D"/>
+                    <path d="M65.4603 19.2881C65.3804 19.7612 65.0051 20.0787 64.5263 20.0787C64.2863 20.0787 64.0942 20.0015 63.9706 19.8552C63.8482 19.7103 63.8021 19.5038 63.841 19.2738C63.9155 18.805 64.2968 18.4772 64.7683 18.4772C65.0033 18.4772 65.1941 18.5551 65.32 18.7027C65.4468 18.8514 65.4966 19.0593 65.4603 19.2881ZM66.6136 17.6767H65.7861C65.7152 17.6767 65.6548 17.7283 65.6438 17.7984L65.6074 18.0299L65.5495 17.9461C65.3703 17.6858 64.9709 17.5988 64.5721 17.5988C63.6579 17.5988 62.8769 18.292 62.7249 19.264C62.6457 19.7491 62.7581 20.2125 63.0329 20.536C63.2854 20.8331 63.6458 20.9569 64.0752 20.9569C64.8121 20.9569 65.2208 20.4833 65.2208 20.4833L65.1839 20.7134C65.17 20.8009 65.2376 20.8801 65.3262 20.8801H66.0714C66.1895 20.8801 66.2901 20.7941 66.3085 20.6773L66.7559 17.8432C66.7697 17.7558 66.7021 17.6767 66.6136 17.6767Z" fill="#253B7D"/>
+                    <path d="M77.7864 19.2881C77.7065 19.7612 77.3311 20.0787 76.8524 20.0787C76.6124 20.0787 76.4202 20.0015 76.2967 19.8552C76.1743 19.7103 76.1282 19.5038 76.167 19.2738C76.2415 18.805 76.623 18.4772 77.0944 18.4772C77.3294 18.4772 77.5202 18.5551 77.6461 18.7027C77.7729 18.8514 77.8227 19.0593 77.7864 19.2881ZM78.9397 17.6767H78.1122C78.0413 17.6767 77.9809 17.7283 77.9699 17.7984L77.9335 18.0299L77.8757 17.9461C77.6964 17.6858 77.297 17.5988 76.8982 17.5988C75.9839 17.5988 75.2029 18.292 75.0509 19.264C74.9718 19.7491 75.0841 20.2125 75.359 20.536C75.6115 20.8331 75.9719 20.9569 76.4012 20.9569C77.1381 20.9569 77.5469 20.4833 77.5469 20.4833L77.5099 20.7134C77.4961 20.8009 77.5637 20.8801 77.6522 20.8801H78.3975C78.5156 20.8801 78.6162 20.7941 78.6346 20.6773L79.082 17.8432C79.0958 17.7558 79.0282 17.6767 78.9397 17.6767Z" fill="#459ADB"/>
+                    <path d="M71.0211 17.6767H70.1893C70.1097 17.6767 70.0353 17.7163 69.9907 17.782L68.8433 19.4726L68.357 17.8481C68.3266 17.7465 68.2331 17.6767 68.127 17.6767H67.3094C67.2106 17.6767 67.1412 17.7739 67.173 17.8674L68.0889 20.5569L67.2274 21.7729C67.1598 21.8683 67.228 22.0004 67.3449 22.0004H68.1759C68.2547 22.0004 68.3284 21.9617 68.3732 21.897L71.1395 17.903C71.2056 17.8074 71.1373 17.6767 71.0211 17.6767Z" fill="#253B7D"/>
+                    <path d="M79.915 16.1991L79.2058 20.7135C79.192 20.8009 79.2596 20.88 79.3481 20.88H80.0614C80.1796 20.88 80.2802 20.794 80.2985 20.6772L80.998 16.244C81.0118 16.1565 80.9442 16.0774 80.8556 16.0774H80.0574C79.9864 16.0774 79.926 16.129 79.915 16.1991Z" fill="#459ADB"/>
+                    <path d="M75.2793 3.64449C75.4543 2.52859 75.2781 1.76929 74.6748 1.08155C74.0106 0.324333 72.8106 -6.00815e-05 71.2753 -6.00815e-05H66.8187C66.5049 -6.00815e-05 66.2378 0.228357 66.1889 0.538455L64.3331 12.3111C64.2965 12.5434 64.476 12.7534 64.711 12.7534H67.4623L67.2724 13.9581C67.2404 14.1613 67.3973 14.3451 67.603 14.3451H69.922C70.1965 14.3451 70.4302 14.1452 70.473 13.874L70.4957 13.7561L70.9326 10.9847L70.9608 10.8315C71.0035 10.5603 71.2372 10.3605 71.5116 10.3605H71.8586C74.1052 10.3605 75.8643 9.44728 76.3784 6.80651C76.5931 5.70306 76.4821 4.78192 75.9141 4.13442C75.7423 3.93853 75.5286 3.77661 75.2793 3.64449Z" fill="#459ADB"/>
+                    <path d="M75.2793 3.64453C75.4543 2.52862 75.2781 1.76932 74.6748 1.08158C74.0106 0.324366 72.8106 -2.76566e-05 71.2753 -2.76566e-05H66.8187C66.5049 -2.76566e-05 66.2378 0.22839 66.1889 0.538487L64.3331 12.3111C64.2965 12.5434 64.476 12.7534 64.711 12.7534H67.4623L68.1534 8.36916L68.132 8.50658C68.1809 8.19656 68.4458 7.96814 68.7595 7.96814H70.0671C72.6353 7.96814 74.6461 6.92437 75.2337 3.90563C75.2511 3.81624 75.266 3.72966 75.2793 3.64453Z" fill="#232D62"/>
+                    <path d="M68.8958 3.6593C68.9252 3.47281 69.0448 3.32013 69.206 3.24287C69.2792 3.20777 69.361 3.18825 69.4468 3.18825H72.9402C73.354 3.18825 73.7399 3.21532 74.0927 3.27218C74.1935 3.28849 74.2916 3.30712 74.3869 3.32824C74.4822 3.34945 74.5747 3.37306 74.6643 3.39932C74.7091 3.41233 74.7531 3.42607 74.7964 3.44044C74.9696 3.49803 75.1309 3.5659 75.2793 3.64453C75.4543 2.52862 75.2781 1.76932 74.6748 1.08158C74.0106 0.324366 72.8106 -2.76566e-05 71.2753 -2.76566e-05H66.8187C66.5049 -2.76566e-05 66.2378 0.22839 66.1889 0.538487L64.3331 12.3111C64.2965 12.5434 64.476 12.7534 64.711 12.7534H67.4623L68.1534 8.36916L68.8958 3.6593Z" fill="#253B7D"/>
+                </g>
+                <rect x="97" y="3.50024" width="37" height="15" fill="url(#pattern1)"/>
+                <defs>
+                    <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
+                        <use xlink:href="#image0_16_29190" transform="scale(0.0217391 0.0666667)"/>
+                    </pattern>
+                    <pattern id="pattern1" patternContentUnits="objectBoundingBox" width="1" height="1">
+                        <use xlink:href="#image1_16_29190" transform="scale(0.027027 0.0666667)"/>
+                    </pattern>
+                    <clipPath id="clip0_16_29190">
+                        <rect width="23" height="22.0004" fill="white" transform="translate(58)"/>
+                    </clipPath>
+                    <image id="image0_16_29190" width="46" height="15" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAPCAMAAAHbkD0AAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAJzUExURQAAAAD/AACAgFWqVUC/QDOZZjPMZiuqVSS2SUm2SUCfQDmqVTnGVTOZTTOzTTPMTS65RkCvYEC/YDy0Wjm4VTOzWTq5UTexWTWqVTGxWDuxTjW5WDG1Ujq1UjC3WDa5VTmxVTm4VTa1UTa1VzmzUzK0UTO1VTS2UzOzUjG1UzW3Vza3VTW0VDSzVDO0UjO2VDSwUzWzUzS0VTSyUzSzVTe2VTa0VDWyUzW1UzW4VjazUjazVTa1VTa2VDezUTSyUja6VzrGWjS1VDOzUzi/WDa0VDS1UzvHXTvJXza1VTW0VDa2VDWzUzi+WDS0Uza0VTWzVDS1VDSzVDS1VDa1VjO0UzW2VDS1VDe/WDSzUzS1UzW0VDe/WTW1VTS0VDSzUza0VTWzVDW1VDW3VDW4Vje6Vje6WDe8WDe+Wje/WjnBWjnDWjnDWzW0VDa1VDW0VDWzVDSzVDWzUzW1UzW0UzW1VTWzVDWzUzW0UzWzVDWzVDW0VTSzVDW0VTW0VDS0VDW0VDW1VDW0VDS1VDWzVDW0VDS0VTW0VDW0VTW1VTW0VTW0VDa1VDi9WDW0VDW0VDW1VTe6VzW0VDS0VDW0VDW0VTWzVTW0VDWyUzWzVDW0VDW1VDa0VDa1VTa2VTa3VTa3Vja4Vje5Vze6Vze7Vze7WDe8Vze8WDe9WDi9WDi9WTi+WDi+WTi/WTjAWTjBWTjBWjnBWjnBWznCWjnCWznDWjnDWznDXDnEWznEXDrEXDrFXDrGXDrGXTrHXTvJXjvKXjvLXzzKXjzLXzzMXzzNYD3NYD3OYD3PYD3PYT7RYT7RYj7SYT7SYz7TYkDaZULiaV+hCQsAAACYdFJOUwABAgMEBQUGBwcICQkKCgoLEBAREhQWFxgaGh0fHyAhJCQmJigpLTEyNDU5OkBBRkpNTlNUVFVWVlZaWlpeYWNkZmdoaG1xcXFyc3Z4ent7fH+AgICBiImLjY2Pj5CSk5OUlJSUlJSUlJSUlJSVmJqboaWlqayzu7u9wMHDxMXIy8vM0dTU1trc3OXo6erw8fHx8vj4+v3+tm4jYAAAAAlwSFlzAAAXEQAAFxEByibzPwAAAglJREFUKFNjYGDYBsQMc4W3rWdYA2KBgETzwlyGWQx9R9m6tu07UXjaavN+iITlMggNBE1QmuH0/iN1vPqrNm/bdIRh+4JtFdwaU9a6TzcCyzGbTwXTUNAAtgsJcHgoLBDe1lqzjXuh3ropuWsZlodOX6s7i6Fl48ndYkd27z3HdODojCleW06fdt50zGQLVBcQcE7sn+AJZSPAyjgoAw2sjIcyYOD86c2TbI8wrAlbdUJ/n8CZvbuPiO0+vrGdwUVqxXS/5Qxrwqes01vIt7m8eafgfMUtsxhmGQLFVzCsDZ+yQR0oXmljoDxfa+MshgNHNm+y2nZ6c17Pxv3zeU7uOX1BZI/2KSR3GltELpCDspFBW39/L5SJCRpXbsPhESjwSU1MTEyK0WFgcc3xZ6hfvS2KNTYlU0kpMyWW3SIbJJfuyiiakAxkJUfIMlg72LsVLZ43TyRox/JWhto128K5pyxcp6e3buEUvtzNizoC+ubvCBWaPn9RUumSmYsZmg6dtVNZvmC6sN82oPJqNOVrqhi6jh40FZ0+f42W0cZZsxjmzFpaFr1wwXSh4B3z+wI6F20L4542f0lx/mKg8oKtC7v9newdVaXhymUiwM5KEGV0TU8CsnLMGOR9QwJLFi+YIsnmnQYUSczW5E9IzpBRy0pMhHoYGXBNPrxr17rZS2aJQwXggIEBAG7D0AEnQa9eAAAAAElFTkSuQmCC"/>
+                    <image id="image1_16_29190" width="37" height="15" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAAPCAMAAAEjcMb3AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAKaUExURQAAAAAAAAAAAAAAAACq/wAAAAAAAACZ/wAAAACA1QCq1QAAACT//wAAAACO4wAAAAAAABX//wAQEAAPDw4ODg2G1wwMDAyi6AsLCwAKCgkJCROX4xKe7RGi7ggICAgICAgICAcHBwcHBw2a5AcHBwYGBgYGBgYGBgYAAAYGCxCY5AULCwUKCgUKCgUFCQQJCQkJCQQJCRGk7gQJCQQAAA2b5hGf6gQICBCi7wQICAgICAQAAAQICAgICA+e5QQHCwcHCgcHCgMHBwcHCgcHCgcHCgYGCRCb5gYJCQ+c5wYJCQYDAw+h6gYJCQ6g6Q6f6QUAAAUICAUICxC7/wUICg+c5gUHCgcHCg6k8RC7+gUAAAcJCQcJCwYGCQYJCQ+e5wYICA+i7gYICA6f6wYIChC3/wYICgYIChCg6g+f6gYICgYICQYHCQYJCQcJCQUHCQUJCQUHCQUJCRCk8QcICAcHBwcICAcICg+l8AcHCAYGCAYICAUDAw6f6QYICAYICAYICQYICQYICQ+f6AYICQYHCQYHCQYHCRCk7wYJCRCj7gYHCQYJCQYJCRCg6g+g6Q+m8QUICAUICQcICQ+h6w+j7w+g6gUICAcICQ6g6gUICQYJCQYICQYICQYJCgYICRCq+QYICQYICQ+h6gYICQYHCQYJCQ+g6hCm8xCh7AYHCBCk7gYICQ+g6gYHCAYICQ+j7wYICQ+f6RCn8BCo9AYICQ+e5wYICQYICQ6g6g+h6wUICgUICgYJCQ+m8AYJCQUHCRCq9AYICg+j7gYICQYICQYICQYICQ+i7Q+m9A+g6gYICQYICRCr9wYICQYICgYJCgcJChCo9RCp9hCt/RCt/hCu+BG1/xG4/xG5/xG6/xK9/xK+/xLF//OhRaUAAADOdFJOUwABAgMDBAUFBgYGBwcICQsMDBAREhMVFhgaGxsdHh8gISUmJicoKiwtLi8wMjQ4OTo7Ozw9PT0+P0FCREREREVJSktLTU5RUlNVVldXWltdXl9gYmRnaGprcHFydXZ2dnl5e31+f4GDg4WGh4mKioyMjY2PmJubm5ucnZ6foKGio6SlqKqrrK+xsrKzs7S0ubq8vLy9vb7AwMTFxcbHx8jJysvLzM/Q0dHT1NTX19jZ29zg4uLj4+Xm5+vs7u7u7/Dw8fH09fb39/f4+/z+p9wh1wAAAAlwSFlzAAAXEQAAFxEByibzPwAAAbtJREFUKFNdjPlbTVEUhr97lCipSIY0qESlMuUikbFIpihRGRNNIlRCKEJRFA3IUFGZuhpcjTTcNDjtVWig/8W55+x+4N3PXvv9vudZGxLVgIq8123T+0NATVuCT+pdxgt4RURasbyL3inV0h9zFRmV7hskLNkdiPhFPjPhI7eCPMcZOgIY3arlqaPtNgv146HSGG4gU5pO07SgOU/W9zkQPsK/9wFKpJOFp7giFKLEYgdfkEkc+Lafq8Kxbhtg5YgrjxJb7yjvr8n66cJms11jciHRjtVn8Tj89E2z5Wtc1JviVPEYgPviq2keG2INNZnRk8hJ3HyxCDrfaxec1ScEzV0rtJm8mH++FB0RUYft3fYKNxIskTcx1fbAc/7nv6ytGB58nX45p2HoZ/IM3v3PqT+51lyB7d+/OnLV43QwxNxwT9jCKS01U3mlsO/3IW5ANKlhR0lAUKQBr8bZObwCR1ldM1t2hokyXfZNjShgOgosFlv72ctOxgJQ/wimUW/r2HWco3nwpONQaTXIFi2B8k5AVwZbSkH+Z/R/2PiMMpBGC7CKYiB8+YT74izgfd8EE7EKznQJPff+AvwJlIm3GVIeAAAAAElFTkSuQmCC"/>
+                </defs>
+            </svg>
+
+// [Start] 2024-03-20 : ADD - giftcard 마크업 변경
+mixin iconButtonMx(params)
+    //- 상위에 .button 클래스 추가해야합니다.
+    - var option={color:'black', type:'link', class:'', otherClass:'', comment: true, ...params}
+    - var otherClass = option.otherClass ? ` ${option.otherClass}` : ''
+    if(option.otherClass == 'c-tooltip__button')
+        //- tooltip
+        - var control = option.ariaControls ? `${option.ariaControls}` : ''
+        - var expanded = option.expanded ? `${option.expanded}` : ''
+        - var describedby = option.describedby ? `${option.describedby}` : ''
+        - var attributes = {"aria-controls":control, "aria-expanded": expanded, "aria-describedby": describedby}
+    if(option.type == 'link')
+        if(option.comment)
+            // Option : target="_blank"
+        if(option.ariaControls || attributes.role)
+            a(href="#" class=`cmp-button c-icon-button c-icon-button--${option.class} ${option.color}${otherClass}` data-cmp-data-layer="")&attributes(attributes)
+                +printLazyPicture(`../../assets/icon/icon-gift-card-24-24.svg`)
+                span.cmp-button__text.c-icon-button__text #{option.name}
+        else
+            // GA4
+            a(href="#" class=`cmp-button c-icon-button c-icon-button--${option.class} ${option.color}${otherClass}` data-cmp-data-layer="" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")&attributes(attributes)
+                span.cmp-button__text.c-icon-button__text #{option.name}
+    else if(option.type == 'button')
+        button(type="button" class=`cmp-button c-icon-button c-icon-button--${option.class} ${option.color}${otherClass}` data-cmp-data-layer="")&attributes(attributes)
+            span.cmp-button__text.c-icon-button__text #{option.name}
+            
+    else if(option.type == 'tooltip')
+        button(type="button" class=`cmp-button c-icon-button c-icon-button--${option.class} ${option.color}${otherClass}` data-cmp-data-layer="")&attributes(attributes)
+            span.cmp-button__text.c-icon-button__text #{option.name}
+
+    else if(option.type == 'icon')
+        button(type="button" class=`cmp-button c-icon-button c-icon-button--${option.class} ${option.color}${otherClass}` data-cmp-data-layer="")&attributes(attributes)
+            span.cmp-button__text.c-icon-button__text.sr-only #{option.name}
+
+// [Start] 2023-05-09 : ADD - class empty 추가	
+	
+mixin CT0100(option=false, empty=false, zipcode=false)
+    .c-wrapper.no-crop.CT0100
+        .component
+            .fluid-container
+                // 2023-05-31 : UPDATE - added total area type zipcode 
+                .my-component.buy-summary-area
+                    //- div(class=`${zipcode === true ? 'my-component buy-summary-area buy-summary-area--zipcode' : 'my-component buy-summary-area'}`)
+                    .buy-summary-area__primary
+                        if(option === false || option === "Guest" || option === "other")
+                            .my-component__header
+                                +buyBasket({num:'17'})
+                                // [Start] 2023-04-03 : ADD - All checkbox 추가			
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                                // [End] 2023-04-03 : ADD - All checkbox 추가			
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '0',
+                                        name: "OLW480B",
+                                        title: "Default Product Title Type & Default Product Style Card",
+                                        inStock : true,
+                                        purchase: '£2,099.98',
+                                        previousPrice: '£2,399.98',
+                                        discount: '£233.00',
+                                        installment: true,
+                                        productLabel: 'a'
+                                    })
+                                // [Start] 2023-05-24 : UPDATE- productLabel name
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "OLW480B",
+                                        title: "If the product name is long, type (If the product name is long, type) / If the product name is long, type / If the product name is long, type / If the product name is long, type / If the product name is long, type",
+                                        inStock : true,
+                                        purchase: '£2,099.98',
+                                        installment: true,
+                                        productLabel: 'a'
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "OutStock : false Type",
+                                        inStock : true,
+                                        purchase: '£2,099.98',
+                                        outStock : false,
+                                        installment: true,
+                                        productLabel: 'A'
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "OutStock : true Type",
+                                        outStock: true,
+                                        purchase: '£2,099.98',
+                                        installment: true,
+                                        productLabel: 'a'
+                                    })
+                                
+                                // [Start] 2023-05-11 : UPDATE - badge
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '4',
+                                        name: "OLW480B",
+                                        title: "Pre Order Type",
+                                        inStock : true,
+                                        plag:"Pre Order",
+                                        deliveryStartDate:"02/01/2023",
+                                        installment: true,
+                                        purchase: '£2,099.98',
+                                        productLabel: 'A'
+                                    })
+                                // [End] 2023-05-11 : UPDATE - badge                               
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '5',
+                                        name: "OLW480B",
+                                        title: "Installment false Type",
+                                        inStock : true,
+                                        purchase: '£2,099.98',
+                                        productLabel: 'a'
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '6',
+                                        title:"Warrantyinfo Type",
+                                        purchase: '£2,099.98',
+                                        productLabel: 'A',
+                                        inStock : true,
+                                        warrantyinfo:[
+                                            {
+                                                title:"Model number",
+                                                text:"LRMVS2806S"
+                                            },
+                                            {
+                                                title:"Serial number",
+                                                text:"706RMHR3C001"
+                                            }
+                                        ]
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '7',
+                                        name: "TONE-UFP8",
+                                        title: "ProductLabel : false Type",
+                                        inStock : true,
+                                        purchase: '£29.98',
+                                        installment: true,
+                                        productLabel: false,
+                                    })
+                                li.buy-cart-list__item
+                                    //- CT0025
+                                    // [Start] 2023-04-10 : UPDATE - inStock option
+                                    +buyCartList({
+                                        id : '8',
+                                        name: "TONE-UFP8",
+                                        title: "WarrantyAddToggle Type",
+                                        purchase: '£29.98',
+                                        installment: true,
+                                        inStock: true,
+                                        noMore: true,
+                                        productLabel: 'a',
+                                    })
+                                    // [End] 2023-04-10 : UPDATE - inStock option
+                                    //- +ctWarrantyAdd(controlsId="PD0003SiblingOptions01")
+                                    +ctWarrantyAddToggle()
+                                li.buy-cart-list__item
+                                    //- CT0025
+                                    // [Start] 2023-04-10 : UPDATE - inStock option
+                                    +buyCartList({
+                                        id : '9',
+                                        name: "TONE-UFP8",
+                                        title: "includeEHF Type",
+                                        purchase: '£29.98',
+                                        installment: true,
+                                        inStock: true,
+                                        noMore: true,
+                                        productLabel: 'a',
+                                        includeEHF: 'Includes $15 EHF fee',
+                                    })
+                                    // [End] 2023-04-10 : UPDATE - inStock option
+                                    //- +ctWarrantyAdd(controlsId="PD0003SiblingOptions01")
+                                li.buy-cart-list__item
+                                    //- CT0005
+                                    +buyCartList({
+                                        id : '10',
+                                        name: "OLED65C25LB",
+                                        title: "bundle List Type",
+                                        inStock : true,
+                                        purchase: '£2,099.98',
+                                        installment: true,
+                                        productLabel: 'A',
+                                        bundle: [
+                                            {
+                                                name: "OLED65C25LB",
+                                                title: "LG LED65C25LB.AEU",
+                                            },
+                                            {
+                                                name: "sp8ya",
+                                                title: "LG Soundbar SP8YA",
+                                            },
+                                        ]
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '11',
+                                        name: "OLED65C25LB",
+                                        title: "bundle List & OutStock Type",
+                                        outStock : true,
+                                        purchase: '£2,099.98',
+                                        installment: true,
+                                        productLabel: 'a',
+                                        bundle: [
+                                            {
+                                                name: "OLED65C25LB",
+                                                title: "LG LED65C25LB.AEU",
+                                            },
+                                            {
+                                                name: "sp8ya",
+                                                title: "LG Soundbar SP8YA",
+                                            },
+                                        ]
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '12',
+                                        name: "OLW480B",
+                                        title: "installmentBottom Type",
+                                        inStock : true,
+                                        pricesup: '27.993.000',
+                                        installmentBottom: true,
+                                        productLabel: false,
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '13',
+                                        name: "OLW480B",
+                                        title: "installmentBottom & previousPriceVN & discountVN : Type",
+                                        inStock : true,
+                                        pricesup: '23.940.000',
+                                        installmentBottom: true,
+                                        productLabel: false,
+                                        previousPriceVN: "39.990.000",
+                                        discountVN: "Tiết kiệm 15.960.000",
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '14',
+                                        name: "OLW480B",
+                                        title: "installmentBottom & vipPremierBenefit : Type",
+                                        inStock : true,
+                                        pricesup: '2,099.98',
+                                        installmentBottom: true,
+                                        productLabel: false,
+                                        vipPremierBenefit:["Routine care Careship within 1 year", "Repair within 24 hours", "20% discount on spare parts"],
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '15',
+                                        name: "OLW480B",
+                                        title: "installmentImgText : Type",
+                                        inStock : true,
+                                        purchase: '$2,099.98',
+                                        installment: true,
+                                        installmentImgText: [
+                                            {
+                                                installmentText: "4 payments of $594.00 with ",
+                                                installmentAddClass: "payment_afterpay_logo",
+                                            },
+                                        ]
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '16',
+                                        name: "OLW480B",
+                                        title: "installmentImgText Others : Type",
+                                        inStock : true,
+                                        purchase: '$2,099.98',
+                                        outStock : false,
+                                        productLabel: false,
+                                        installment: true,
+                                        installmentImgText: [
+                                            {
+                                                installmentText: "4 payments of $594.00 with ",
+                                                installmentAddClass: "payment_afterpay_logo",
+                                            },
+                                            {
+                                                installmentText: "or Interest free up to 12 months with ",
+                                                installmentAddClass: "payment_zippay_logo",
+                                            },
+                                        ],
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: 'R 2,099.98',
+                                        accBtn:true,
+                                        bundleBtn : false,
+                                        applyCoupon: true,
+                                        installment: true,
+                                        installmentText: ['R 0,000.00 x 4 interest-free instalments due every 2 weeks', 'Get up to R 50,000.00 credit with Mobicred'],
+                                    })
+                                // [End] 2023-05-24 : UPDATE- productLabel name
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Membership benefits, Receive an extra 2% membership discount, Free Delivery for All 
+                                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="") LG.com
+                                |  orders
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 All items in the basket must be eligible for Klarna & the total amount in the basket cannot exceed £2,500 for the financing option to appear in checkout.
+                        if(option === "unit")
+                            .my-component__header
+                                +buyBasket({num:'3'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '2,099.98€',
+                                        installment: true
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '2,099.98€',
+                                        outStock : false,
+                                        installment: true
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        purchase: '2,099.98€',
+                                        installment: true,
+                                    })
+                                
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Membership benefits, Receive an extra 2% membership discount, Free Delivery for All 
+                                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="") LG.com
+                                |  orders
+                        if(option === "ca")
+                            .my-component__header
+                                +buyBasket({num:'3'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "OLW480B",
+                                        inStock : true,
+                                        purchase: '$1,861.97',
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        installment: true,
+                                        productLabel: false,
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '$1,861.97',
+                                        installment: true,
+                                        installmentTag: 'Starting at $57/mo. &nbsp; <a href="#" role="button">Learn more</a> &nbsp; or $1,999.88'
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        purchase: '$1,861.97',
+                                        installment: true,
+                                        installmentTag: 'Credit Available from Affirm'
+                                    })                                
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Membership benefits, Welcome Coupon available for new LG members.
+                        if(option === "es")
+                            .my-component__header
+                                +buyBasket({num:'3'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "TONE-UFP8",
+                                        inStock : true,
+                                        purchase: '29.98 €',
+                                        title: "LG TONE Free UFP8 - Enhanced Active Noise Cancelling True Wireless Bluetooth UVnano Earbuds / white / Delivery only / 2 years / Delivery only",
+                                        installment: true,
+                                        installmentText: ['Financiación con Aplazame y Cetelem'],
+                                        productLabel: 'a',
+                                    })
+                                    +ctWarrantyAdd("PD0003SiblingOptions03", false, true)
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "TONE-UFP8",
+                                        inStock : true,
+                                        purchase: '29.98 €',
+                                        title: "LG TONE Free UFP8 - Enhanced Active Noise Cancelling True Wireless Bluetooth UVnano Earbuds / white / Delivery only / 2 years / Delivery only",
+                                        installment: true,
+                                        installmentText: ['Financiación con Aplazame y Cetelem'],
+                                        productLabel: 'a',
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '1,861.97 €',
+                                        installment: true,
+                                        installmentText: ['Financiación con Aplazame y Cetelem'],
+                                        productLabel: 'a',
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        purchase: '1,861.97 €',
+                                        installment: true,
+                                        installmentText: ['Financiación con Aplazame y Cetelem'],
+                                        productLabel: 'a',
+                                    })
+                                    //- +ctWarrantyAdd(controlsId="PD0003SiblingOptions02")
+                                li.buy-cart-list__item
+                                    //- CT0005
+                                    +buyCartList({
+                                        id : '18',
+                                        name: "OLED65C25LB",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel®  Iris® Plus Graphics / Noble Steel / Services A / 2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '£2,099.98',
+                                        installment: true,
+                                        installmentText: ['Financiación con Aplazame y Cetelem'],
+                                        productLabel: 'a',
+                                        bundle: [
+                                            {
+                                                name: "OLED65C25LB",
+                                                title: "LG LED65C25LB.AEU",
+                                            },
+                                            {
+                                                name: "sp8ya",
+                                                title: "LG Soundbar SP8YA",
+                                            },
+                                        ]
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '4',
+                                        name: "OLW480B",
+                                        inStock : true,
+                                        purchase: '2.099,98 €',
+                                        title: "LG Ultra 16UD70R/Sin Sis OP/R5/ 16GB/ 1TB SSD/ 1,6Kg/ 20h",
+                                        installment: true,
+                                        installmentText: ['Financiación con Aplazame y Cetelem'],
+                                        productLabel: 'a',
+                                        guideMsg: 'Incluye compensación por copia privada: Tasa 5,33 euros',
+                                    })
+                                li.buy-cart-list__item
+                                        +buyCartList({
+                                            id : '1',
+                                            inStock : true,
+                                            purchase: '29.98 €',
+                                            title: "LG Premium Care 2 Year",
+                                            warrantyinfo : [
+                                                {
+                                                    title: "Model number", 
+                                                    text: "LRMVS2806S",
+                                                },
+                                                {
+                                                    title: "Serial number ", 
+                                                    text: "706RMHR3C001",
+                                                }
+                                            ],
+                                        })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        inStock : true,
+                                        purchase: '69.00 €',
+                                        title: "Combis door change of direction service",
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock: true,
+                                        purchase: '1,861.97 €',
+                                        installment: true,
+                                        installmentText: ['Financiación con Aplazame y Cetelem'],
+                                    })
+                                    //- +ctWarrantyAdd("PD0003SiblingOptions02", false, true)
+                            p.buy-banner.font-w-normal-18.font-m-normal-16
+                                | Descubre nuestas ventajas con el Club de Fidelización LG
+                                | Inicia sesión para acumular un 1,5% del valor de tu compra y canjearlos como cupón de descuento en tus próximas compras
+                        if(option === "jp")
+                            .my-component__header
+                                +buyBasket({num:'3'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "TONE-UFP8",
+                                        inStock : true,
+                                        purchase: '￥209,980',
+                                        title: "LG TONE Free UFP8 - Enhanced Active Noise Cancelling True Wireless Bluetooth UVnano Earbuds / white / Delivery only / 2 years / Delivery only",
+                                        installment: true,
+                                        installmentText: ['24回払いまで分割払手数料0％'],
+                                        productLabel: false,
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '￥1,861.97',
+                                        installment: true,
+                                        installmentText: ['24回払いまで分割払手数料0％'],
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        purchase: '￥1,861.97',
+                                        installment: true,
+                                        installmentText: ['24回払いまで分割払手数料0％'],
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        purchase: '￥1,861.97',
+                                        installment: true,
+                                        installmentText: ['24回払いまで分割払手数料0％'],
+                                    })
+                                    //- +ctWarrantyAdd(controlsId="PD0003SiblingOptions03")
+                                li.buy-cart-list__item
+                                    //- CT0005
+                                    +buyCartList({
+                                        id : '18',
+                                        name: "OLED65C25LB",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel®  Iris® Plus Graphics / Noble Steel / Services A / 2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '￥2,099.98',
+                                        installment: true,
+                                        productLabel: false,
+                                        installmentText: ['24回払いまで分割払手数料0％'],
+                                        bundle: [
+                                            {
+                                                name: "OLED65C25LB",
+                                                title: "LG LED65C25LB.AEU",
+                                            },
+                                            {
+                                                name: "sp8ya",
+                                                title: "LG Soundbar SP8YA",
+                                            },
+                                        ]
+                                    })
+                            //- p.buy-banner.font-w-normal-18.font-m-normal-16 Membership benefits, Receive an extra 2% membership discount, Free Delivery for All 
+                            //-     a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="") LG.com
+                            //-     |  orders
+                        if(option === "id")
+                            .my-component__header
+                                +buyBasket({num:'3'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "TONE-UFP8",
+                                        inStock : true,
+                                        purchase: 'Rp 29.98',
+                                        title: "LG TONE Free UFP8 - Enhanced Active Noise Cancelling True Wireless Bluetooth UVnano Earbuds / white / Delivery only / 2 years / Delivery only",
+                                        installment: true,
+                                        installmentTag:'Mulai dari Rp 699.990/bulan dengan bunga 0% selama 12 bulan',
+                                        productLabel: false,
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: 'Rp 1,861.97',
+                                        installment: true,
+                                        installmentTag:'Mulai dari Rp 699.990/bulan dengan bunga 0% selama 12 bulan'
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        purchase: 'Rp 1,861.97',
+                                        installment: true,
+                                        installmentTag:'Mulai dari Rp 699.990/bulan dengan bunga 0% selama 12 bulan'
+                                    })
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Dapatkan promo spesial untuk LG Membership. Daftar sekarang dan dapatkan potongan 2% untuk semua pembelian di LG.com
+                        if(option === "co")
+                            .my-component__header
+                                +buyBasket({num:'3'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "OLW480B",
+                                        inStock : true,
+                                        purchase: '$1.999.98',
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        installment: false,
+                                        productLabel: false,
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '$1.999.98',
+                                        installment: false
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        purchase: '$1.999.98',
+                                        installment: false,
+                                    })
+                                
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Estimated to arrived within 1-3 business days, Delivery time may vary depending on circumstances.
+                        if(option === "hk")
+                            .my-component__header
+                                +buyBasket({num:'3'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "TONE-UFP8",
+                                        inStock : true,
+                                        purchase: 'HK$20,980.00',
+                                        title: "LG TONE Free UFP8 - Enhanced Active Noise Cancelling True Wireless Bluetooth UVnano Earbuds / white / Delivery only / 2 years / Delivery only",
+                                        installment: true,
+                                        productLabel: false,
+                                        installmentText: ['Interest-free installments from HK$1,234.56 /mo*'],
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: 'HK$20,980.00',
+                                        installment: true,
+                                        installmentText: ['Interest-free installments from HK$1,234.56 /mo*'],
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        purchase: 'HK$20,980.00',
+                                        installment: true,
+                                        installmentText: ['Interest-free installments from HK$1,234.56 /mo*'],
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '5',
+                                        name: "OLW480B",
+                                        inStock : true,
+                                        plag:"Pre Order",
+                                        deliveryStartDate:"02/01/2023",
+                                        installment: true,
+                                        purchase: 'HK$20,980.00',
+                                        productLabel: false,
+                                        installmentText: ['Interest-free installments from HK$1,234.56 /mo*'],
+                                    })
+                                li.buy-cart-list__item
+                                    //- CT0025
+                                    // [Start] 2023-04-10 : UPDATE - inStock option
+                                    +buyCartList({
+                                        id : '17',
+                                        name: "TONE-UFP8",
+                                        purchase: 'HK$20,980.00',
+                                        installment: true,
+                                        inStock: true,
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel®  Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        noMore: true,
+                                        productLabel: false,
+                                        installmentText: ['Interest-free installments from HK$1,234.56 /mo*'],
+                                    })
+                                    // [End] 2023-04-10 : UPDATE - inStock option
+                                    //- +ctWarrantyAdd("PD0003SiblingOptions04", true)
+                                li.buy-cart-list__item
+                                    //- CT0005
+                                    +buyCartList({
+                                        id : '18',
+                                        name: "OLED65C25LB",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel®  Iris® Plus Graphics / Noble Steel / Services A / 2 years / Delivery",
+                                        inStock : true,
+                                        purchase: 'HK$699.90',
+                                        installment: true,
+                                        productLabel: false,
+                                        installmentText: ['Interest-free installments from HK$1,234.56 /mo*'],
+                                        bundle: [
+                                            {
+                                                name: "OLED65C25LB",
+                                                title: "LG LED65C25LB.AEU",
+                                            },
+                                            {
+                                                name: "sp8ya",
+                                                title: "LG Soundbar SP8YA",
+                                            },
+                                        ]
+                                    })
+                                
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Free Hong Kong local delivery.
+                        if(option === "pt")
+                            .my-component__header
+                                +buyBasket({num:'3'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "OLW480B",
+                                        inStock : true,
+                                        purchase: '€2,099.98',
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        installment: true,
+                                        productLabel: 'a',
+                                        installmentText: ["Ou 93.33€/mês durante 3 meses sem juros"],
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '€2,099.98',
+                                        productLabel: 'a',
+                                        installment: true,
+                                        installmentText: ["Ou 93.33€/mês durante 3 meses sem juros"],
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        purchase: '€2,099.98',
+                                        installment: true,
+                                        installmentText: ["Ou 93.33€/mês durante 3 meses sem juros",],
+                                        productLabel: 'a',
+                                    })
+                                
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Entregas apenas em Portugal Continental
+                        if(option === "th")
+                            .my-component__header
+                                +buyBasket({num:'3'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "TONE-UFP8",
+                                        inStock : true,
+                                        purchase: '฿209,980.00',
+                                        title: "LG TONE Free UFP8 - Enhanced Active Noise Cancelling True Wireless Bluetooth UVnano Earbuds / white / Delivery only / 2 years / Delivery only",
+                                        installment: true,
+                                        productLabel: false,
+                                        installmentText: ['ผ่อน 0%  3 เดือน เพียงเดือนละ 411,522 บาท'],
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '฿209,980.00',
+                                        installment: true,
+                                        installmentText: ['ผ่อน 0%  3 เดือน เพียงเดือนละ 411,522 บาท'],
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        purchase: '฿209,980.00',
+                                        installment: true,
+                                        installmentText: ['ผ่อน 0%  3 เดือน เพียงเดือนละ 411,522 บาท'],
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '5',
+                                        name: "OLW480B",
+                                        inStock : true,
+                                        plag:"Pre Order",
+                                        deliveryStartDate:"02/01/2023",
+                                        installment: true,
+                                        purchase: '฿209,980.00',
+                                        productLabel: false,
+                                        installmentText: ['ผ่อน 0%  3 เดือน เพียงเดือนละ 411,522 บาท'],
+                                    })
+                                li.buy-cart-list__item
+                                    //- CT0025
+                                    // [Start] 2023-04-10 : UPDATE - inStock option
+                                    +buyCartList({
+                                        id : '17',
+                                        name: "TONE-UFP8",
+                                        purchase: '฿209,980.00',
+                                        installment: true,
+                                        inStock: true,
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel®  Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        noMore: true,
+                                        productLabel: false,
+                                        installmentText: ['ผ่อน 0%  3 เดือน เพียงเดือนละ 411,522 บาท'],
+                                    })
+                                    // [End] 2023-04-10 : UPDATE - inStock option
+                                    //- +ctWarrantyAdd(controlsId="PD0003SiblingOptions05")
+                                li.buy-cart-list__item
+                                    //- CT0005
+                                    +buyCartList({
+                                        id : '18',
+                                        name: "OLED65C25LB",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel®  Iris® Plus Graphics / Noble Steel / Services A / 2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '฿699.90',
+                                        installment: true,
+                                        productLabel: false,
+                                        installmentText: ['ผ่อน 0%  3 เดือน เพียงเดือนละ 411,522 บาท'],
+                                        bundle: [
+                                            {
+                                                name: "OLED65C25LB",
+                                                title: "LG LED65C25LB.AEU",
+                                            },
+                                            {
+                                                name: "sp8ya",
+                                                title: "LG Soundbar SP8YA",
+                                            },
+                                        ]
+                                    })
+                                
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 สิทธิพิเศษสำหรับ LG Membership รับส่วนลดเพิ่ม 10% ส่งฟรีพร้อมติดตั้ง                
+                        if(option === "sa")
+                            .my-component__header
+                                +buyBasket({num:'3'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "TONE-UFP8",
+                                        inStock : true,
+                                        purchase: 'SAR 209,998',
+                                        title: "LG TONE Free UFP8 - Enhanced Active Noise Cancelling True Wireless Bluetooth UVnano Earbuds / white / Delivery only / 2 years / Delivery only",
+                                        installment: true,
+                                        productLabel: false,
+                                        installmentText: ["Split into 3 payments of SAR 69,980/mo or"],
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: 'SAR 209,998',
+                                        installment: true,
+                                        installmentText: ["Split into 3 payments of SAR 69,980/mo or"],
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        purchase: 'SAR 209,998',
+                                        installment: true,
+                                        installmentText: ["Split into 3 payments of SAR 69,980/mo or"],
+                                    })
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Delivery in all areas except for remote or restricted zones
+                        if(option === "tr")
+                            .my-component__header
+                                +buyBasket({num:'3'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "OLW480B",
+                                        inStock : true,
+                                        purchase: '209,980 TL',
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        installment: false,
+                                        productLabel: false,
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '209,980 TL',
+                                        installment: false
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        purchase: '209,980 TL',
+                                        installment: false,
+                                    })
+                                
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Delivery in all areas except for restricted zone
+                        if(option === "sg")
+                            .my-component__header
+                                +buyBasket({num:'3'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "OLW480B",
+                                        inStock : true,
+                                        purchase: '$1.999.98',
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        installment: false,
+                                        productLabel: false,
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '$1.999.98',
+                                        installment: false
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        purchase: '$1.999.98',
+                                        installment: false,
+                                    })
+                                
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Delivery in all areas except for remote or restricted zones
+                        if(option === "cn, hk, th, kz")
+                            .my-component__header
+                                +buyBasket({num:'3'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "TONE-UFP8",
+                                        inStock : true,
+                                        purchase: '£29.98',
+                                        title: "LG TONE Free UFP8 - Enhanced Active Noise Cancelling True Wireless Bluetooth UVnano Earbuds / white / Delivery only / 2 years / Delivery only",
+                                        installment: true,
+                                        productLabel: false,
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '£1,861.97',
+                                        installment: true
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        purchase: '£1,861.97',
+                                        installment: true,
+                                    })
+                                
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Membership benefits, Receive an extra 2% membership discount, Free Delivery for All 
+                                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="") LG.com
+                                |  orders
+                        if(option === "in")
+                            .my-component__header
+                                +buyBasket({num:'9'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '₹274990',
+                                        installment: false,
+                                        productLabel: false,
+                                    })
+                                li.buy-cart-list__item
+                                    .c-product-item__bundle.c-product-item__bundle-outExchange
+                                        +exchangeOffer
+                        if(option === "it")
+                            .my-component__header
+                                +buyBasket({num:'9'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '€2,099.98',
+                                        installment: false,
+                                        productLabel: 'a',
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '€2,099.98',
+                                        installment: false,
+                                        productLabel: 'a',
+                                        subTotalText: 'Subtotal',
+                                        subTotalPrice: '€2.099,98',
+                                        subTotalLink: '€76.2 per 40 mesi TAN 9.61% TAEG 10.05% Importo tot dovuto €2.099,98',
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        purchase: '€2,099.98',
+                                        installment: false,
+                                        productLabel: 'a',
+                                        subTotalText: 'Subtotal',
+                                        subTotalPrice: '€2.099,98',
+                                    })
+                        if(option === "sup")
+                            .my-component__header
+                                +buyBasket({num:'3'})
+                                .my-component__button
+                                    .button
+                                        +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                            strong.sr-only All Select
+                                    +buyZipcode({zipcode:"Delete All"})
+                            ul.buy-cart-list
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '1',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        pricesup: '2,099.98',
+                                        installment: true,
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '2',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        pricesup: '2,099.98',
+                                        outStock : false,
+                                        installment: true
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '3',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        outStock: true,
+                                        pricesup: '2,099.98',
+                                        installment: true
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '4',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        pricesup: '2,099.98',
+                                        installmentBottom: true,
+                                        productLabel: false,
+                                    })
+                                li.buy-cart-list__item
+                                    +buyCartList({
+                                        id : '5',
+                                        name: "OLW480B",
+                                        title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag) IntGel® core™ i7 / 16GB / 2TB / Intel® Iris® Plus Graphics / Noble Steel / Services A /2 years / Delivery",
+                                        inStock : true,
+                                        pricesup: '2,099.98',
+                                        installmentBottom: true,
+                                        productLabel: false,
+                                        previousPriceVN: "39.990.000",
+                                        discountVN: "Tiết kiệm 15.960.000",
+                                    })
+                                
+                                
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Membership benefits, Receive an extra 2% membership discount, Free Delivery for All 
+                                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="") LG.com
+                                |  orders
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 All items in the basket must be eligible for Klarna & the total amount in the basket cannot exceed £2,500 for the financing option to appear in checkout.
+                        if(option === "Member-Empty")
+                            .my-component__header
+                                +buyBasket({num:'3', empty: true})
+                            .c-product-have
+                                .c-text-contents
+                                    .c-text-contents__title
+                                        span.font-w-light-36.font-m-normal-20
+                                            | There are no items in your Cart.
+                                    //- +linkButton({type:"box", size:"medium", color:"red", name:"Continue Shopping"})  
+                                    +defaultButton({name: 'Continue Shopping', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+                            // [Start] 2023-06-02 : Fixed - Text
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 Membership benefits, Receive an extra 2% membership discount, Free Delivery for All 
+                                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="") LG.com
+                                |  orders.
+                            p.buy-banner.font-w-normal-18.font-m-normal-16 All items in the basket must be eligible for Klarna & the total amount in the basket cannot exceed £2,500 for the financing option to appear in checkout.
+                            // [Start] 2023-06-02 : Fixed - Text
+                        if(option === "Guest-Empty" || option === "Guest-Empty-PH")
+                            .my-component__header
+                                +buyBasket({num:'3', empty: true})
+                            .c-product-have.c-product-have--guest
+                                .c-text-contents
+                                    .c-text-contents__title
+                                        // [Start] 2023-06-02 : Fixed - Text
+                                        span.font-w-light-36.font-m-normal-20
+                                            | There are no items in your Cart.
+                                        // [End] 2023-06-02 : Fixed - Text
+                                    //- +linkButton({type:"box", size:"medium", color:"red", name:"Continue Shopping"})  
+                                    +defaultButton({name: 'Continue Shopping', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+                            //- p.buy-banner.font-w-normal-18.font-m-normal-16 Membership benefits, Receive an extra 2% membership discount, Free Delivery for All 
+                            //-     a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="") LG.com
+                            //-     |  orders
+                        if(option === "unit-Empty")
+                            .my-component__header
+                                +buyBasket({num:'3', empty: true})
+                            .c-product-have.c-product-have--guest
+                                .c-text-contents
+                                    .c-text-contents__title
+                                        span.font-w-light-36.font-m-normal-20
+                                            | There are no items in your Cart.
+                                    +defaultButton({name: 'Continue Shopping', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+                        if(option === "sup-Empty")
+                            .my-component__header
+                                +buyBasket({num:'3', empty: true})
+                            .c-product-have.c-product-have--guest
+                                .c-text-contents
+                                    .c-text-contents__title
+                                        span.font-w-light-36.font-m-normal-20
+                                            | There are no items in your Cart.
+                                    +defaultButton({name: 'Continue Shopping', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+                    .buy-summary-area__secondary
+                        .buy-summary-area__payment(class=`${empty?"empty":""}`)
+                            // [End] 2023-05-09 : ADD - class empty 추가		
+                            //- if(option === "Guest" || option === "Guest-Empty")
+                            //-     .c-product-have
+                            //-         .c-text-contents.align-text-center
+                            //-             .c-text-contents__title
+                            //-                 span.font-w-semibold-32.font-m-semibold-26 Have an account?
+                            //-             .c-text-contents__bodycopy
+                            //-                 span.font-w-normal-16.font-m-normal-16 Join or sign in to see items you may have added using another computer or device.
+                            if(zipcode === true && option === "mx")
+                                .zipcode-area
+                                    +myInputForm([
+                                        {
+                                            type:"text",
+                                            label:"Consulta disponibilidad en tu zona",
+                                            id:"postcode",
+                                            required:false,
+                                            placeholder:"Ingresa tu Código Postal",
+                                            warning: ['Por favor ingrese un código postal válido.'],
+                                            correct: ['Producto disponible en tu zona.'],
+                                            button: 'Consult',
+                                        },
+                                    ])
+                            if(zipcode === true && (option === "hk" || option === "ca"))
+                                .zipcode-area
+                                    +myInputForm([
+                                        {
+                                            type:"text",
+                                            label:"Check if stock is available",
+                                            id:"postcode",
+                                            required:false,
+                                            placeholder:"Enter post code to check stock",
+                                            button: 'Consult',
+                                        },
+                                    ])
+                            if(option === false || option === "Guest")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'left',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:true,
+                                        coupon: false,
+                                        delivery: true,
+                                        deliveryInstall: true,
+                                        service: true,
+                                        payAtDoor: true,
+                                        card: true,
+                                        point: false,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your basket.", remove: true},
+                                            {type:"error", text:"“OLW480B” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"All items in the basket must be eligible for Klarna & the total amount in the basket must be within {{min_amount}} - {{Max_amount}} for financing option to appear in checkout", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "unit")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'right',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:true,
+                                        coupon: false,
+                                        delivery: true,
+                                        deliveryInstall: true,
+                                        service: true,
+                                        card: true,
+                                        point: false,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your basket.", remove: true},
+                                            {type:"error", text:"“OLW480B” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"All items in the basket must be eligible for Klarna & the total amount in the basket must be within {{min_amount}} - {{Max_amount}} for financing option to appear in checkout", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "sup")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'sup',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:true,
+                                        taxIncludeTax:true,
+                                        coupon: false,
+                                        delivery: true,
+                                        deliveryInstall: true,
+                                        service: true,
+                                        card: true,
+                                        point: true,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your basket.", remove: true},
+                                            {type:"error", text:"“OLW480B” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"All items in the basket must be eligible for Klarna & the total amount in the basket must be within {{min_amount}} - {{Max_amount}} for financing option to appear in checkout", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "ca")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'left',
+                                        unitName: '$',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        priceListCustomize : [
+                                            {title:'Subtotal (Tax included)',price:'1,469.98', emphasis:false},
+                                            {title:'Delivery fee',price:'30.00'},
+                                            {title:'Service fee',price:'18.00', sub: [{title:'Installation',price:'8.00'},{title:'Haul-away',price:'10.00',isTooltip:'tooltip msg'}]},
+                                        ],
+                                        card: true,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your cart.", remove: true},
+                                            {type:"error", text:"“Model name” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"Please note that sales product`s quantity has been changed due to LG Add-on product policy.", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "es")
+                                +cartPriceTotal([
+                                    {
+                                        totalGuideMsg: 'Incluye compensación por copia privada: Tasa 5,33 euros',
+                                        unitPosition: 'right',
+                                        unitName: ' €',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude: true,
+                                        discountFreeDelivery: true,
+                                        deliveryFee: true,
+                                        serviceFeeTooltip: true,
+                                        card: true,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your cart.", remove: true},
+                                            {type:"error", text:"“Model name” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"Please note that sales product`s quantity has been changed due to LG Add-on product policy.", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "jp")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'left',
+                                        unitName: '￥',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxIncludeSub: true,
+                                        deliveryFee: true,
+                                        serviceFeeTooltip: true,
+                                        card: true,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your cart.", remove: true},
+                                            {type:"error", text:"“Model name” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"Please note that sales product`s quantity has been changed due to LG Add-on product policy.", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "id")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'left',
+                                        unitName: 'Rp ',
+                                        discountMembership: true,
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude: true,
+                                        deliveryFee: true,
+                                        serviceFee: true,
+                                        card: true,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your cart.", remove: true},
+                                            {type:"error", text:"“Model name” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"Please note that sales product`s quantity has been changed due to LG Add-on product policy.", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "co")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'left',
+                                        unitName: '$',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude: true,
+                                        taxIncludeVat: true,
+                                        delivery: true,
+                                        service: true,
+                                        card: true,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your cart.", remove: true},
+                                            {type:"error", text:"“Model name” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"Please note that sales product`s quantity has been changed due to LG Add-on product policy.", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "hk")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'left',
+                                        unitName: 'HK$',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude: true,
+                                        delivery: true,
+                                        deliveryInstall: true,
+                                        service: true,
+                                        payAtDoor: true,
+                                        card: true,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your cart.", remove: true},
+                                            {type:"error", text:"“Model name” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"Please note that sales product`s quantity has been changed due to LG Add-on product policy.", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            //- if(option === "pt")
+                            //-     +cartPriceTotal([
+                            //-         {
+                            //-             unitPosition: 'left',
+                            //-             unitName: '€',
+                            //-             isMobileBottomFixed: true,
+                            //-             useToggleFoldBtn: true,
+                            //-             priceListCustomize : [
+                            //-                 {title:'Subtotal',price:'1,469.98', emphasis:false},
+                            //-                 {title:'Tax',price:'295.00', sub: [{title:'VAT (23%)',price:'343.99'}]},
+                            //-                 {title:'Delivery',price:'0.00', sub: [{title:'OLW480B',price:'0.00'}, {title: 'TONE-UFP8+OLW480B', prie:'0.00'}]},
+                            //-                 {title: 'Serice charge', price:'0.00', sub:[{title: 'Haul away', price: '0.00'}]}
+                            //-             ],
+                            //-             card: true,
+                            //-             btnName:"Checkout",
+                            //-             msg:[
+                            //-                 {type:"success", text:"We've removed the selected item(s) from your cart.", remove: true},
+                            //-                 {type:"error", text:"“Model name” is out of stock and cannot be purchased.", remove: true},
+                            //-                 {type:"warning", text:"Please note that sales product`s quantity has been changed due to LG Add-on product policy.", remove: true},
+                            //-                 {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                            //-             ]
+                            //-         },
+                            //-     ])
+                            if(option === "th")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'left',
+                                        unitName: '฿',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        unitPrice: "209,980.00",
+                                        priceListCustomize : [
+                                            {title:'Subtotal (Tax included)',price:'146,998.00', emphasis:false},
+                                            {title:'Delivery',price:'Free', unitName:' ', sub: [{title:'OLW480B',price:'Free'},{title:'TONE-UFP8+OLW480B',price:'Free'}]},
+                                        ],
+                                        card: true,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your cart.", remove: true},
+                                            {type:"error", text:"“Model name” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"Please note that sales product`s quantity has been changed due to LG Add-on product policy.", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "tr")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'right',
+                                        unitName: ' TL',
+                                        unitPrice: '209,980',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        totalDetail : [
+                                            {
+                                                parent_title : "Subtotal (VAT included)",
+                                                parent_price : "149,980 TL",
+                                            },
+                                            {
+                                                parent_title : "Tax",
+                                                parent_price : "39,998 TL",
+                                                children : [
+                                                    {
+                                                        title: "VAT (20%)",
+                                                        price: "39,998 TL",
+                                                    },
+                                                ]
+                                            },
+                                            {
+                                                parent_title : "Delivery",
+                                                parent_price : "300 TL",
+                                                children : [
+                                                    {
+                                                        title: "OLW480b",
+                                                        price: "300 TL"
+                                                    },
+                                                    {
+                                                        title: "TONE-UFP8+OLW480B",
+                                                        price: "Free",
+                                                    }
+                                                ]
+                                            },
+                                        ],
+                                        card: true,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your cart.", remove: true},
+                                            {type:"error", text:"“Model name” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"Please note that sales product`s quantity has been changed due to LG Add-on product policy.", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "sg")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'left',
+                                        unitName: '$',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        priceListCustomize : [
+                                            {title:'Subtotal (Tax included)',price:'1,469.98', emphasis:false},
+                                            {title:'Tax',price:'343.98', sub: [{title:'Tax (8%)',price:'343.98'}]},
+                                            {title:'Delivery',price:'30.00', sub: [{title:'OLW480B',price:'30.00'},{title:'TONE-UFP8+OLW480B',price:'Free'}]},
+                                            {title:'Service Charge',price:'20.00', sub: [{title:'Disposal of existing product',price:'20.00'}]},
+                                        ],
+                                        card: true,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your cart.", remove: true},
+                                            {type:"error", text:"“Model name” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"Please note that sales product`s quantity has been changed due to LG Add-on product policy.", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "cn, hk, th, kz")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'left',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude: true,
+                                        taxIncludeVat:true,
+                                        delivery: true,
+                                        deliveryInstall: true,
+                                        service: true,
+                                        card: true,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your cart.", remove: true},
+                                            {type:"error", text:"“Model name” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"Please note that sales product`s quantity has been changed due to LG Add-on product policy.", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "sa")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'left',
+                                        unitName: 'SAR ',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:true,
+                                        vatInfo: true,
+                                        delivery: true,
+                                        deliveryInstall: true,
+                                        card: true,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your cart.", remove: true},
+                                            {type:"error", text:"“Model name” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"Please note that sales product`s quantity has been changed due to LG Add-on product policy.", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "in")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'left',
+                                        unitName: '₹',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        priceListCustomize : [
+                                            {title:'Subtotal (Tax included)',price:'146998', emphasis:false},
+                                            {title:'Tax',price:'34399', sub: [{title:'VAT (12%)',price:'34399'}]},
+                                            {title:'Delivery',price:'30', sub: [{title:'OLW480B',price:'30'},{title:'TONE-UFP8+OLW480B',price:'0'}]},
+                                            {title:'Service charge',price:'0', sub: [{title:'Haul-away',price:'0'}]}
+                                        ],
+                                        coupon: false,
+                                        card: true,
+                                        point: false,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your basket.", remove: true},
+                                            {type:"error", text:"“OLW480B” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"All items in the basket must be eligible for Klarna & the total amount in the basket must be within {{min_amount}} - {{Max_amount}} for financing option to appear in checkout", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "it")
+                                +cartPriceTotal([
+                                    {
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:true,
+                                        taxIncludeVat:true,
+                                        coupon: false,
+                                        shipping: true,
+                                        deliveryInstall: true,
+                                        service: true,
+                                        card: true,
+                                        point: false,
+                                        unitName: '€',
+                                        unitPosition: 'left',
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your basket.", remove: true},
+                                            {type:"error", text:"“OLW480B” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"All items in the basket must be eligible for Klarna & the total amount in the basket must be within {{min_amount}} - {{Max_amount}} for financing option to appear in checkout", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            // [Start] 2023-05-30 : UPDATE -about product price
+                            if(option === "unit")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'right',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:true,
+                                        taxIncludeTax:true,
+                                        coupon: false,
+                                        delivery: true,
+                                        deliveryInstall: true,
+                                        service: true,
+                                        card: true,
+                                        point: false,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your basket.", remove: true},
+                                            {type:"error", text:"“OLW480B” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"All items in the basket must be eligible for Klarna & the total amount in the basket must be within {{min_amount}} - {{Max_amount}} for financing option to appear in checkout", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "sup")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'sup',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:true,
+                                        taxIncludeTax:true,
+                                        coupon: false,
+                                        delivery: true,
+                                        deliveryInstall: true,
+                                        service: true,
+                                        card: true,
+                                        point: false,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your basket.", remove: true},
+                                            {type:"error", text:"“OLW480B” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"All items in the basket must be eligible for Klarna & the total amount in the basket must be within {{min_amount}} - {{Max_amount}} for financing option to appear in checkout", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            if(option === "other")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'left',
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        discount: true,
+                                        taxInclude: true,
+                                        taxIncludeTax: true,
+                                        shipping: true,
+                                        freeShipping: true,
+                                        deliveryInstallation: true,
+                                        coupon: true,
+                                        delivery: true,
+                                        deliveryInstall: true,
+                                        freight: true,
+                                        service: true,
+                                        priceListCustomize : [
+                                            {title:'Original price',price:'39.990.000', emphasis:false},
+                                            {title:'Save',price:'- 15.960.000', emphasis:false},
+                                            {title: 'Delivery charge', price:'0', sub:[{title: 'OLW480b', price: '0'},{title: 'TONE-UFP8', price: '0'}]},
+                                            {title: 'Service charge', price:'0', sub:[{title: 'Installation', price: '0'},{title: 'Haul-away', price: '0'}]},
+                                        ],
+                                        card: true,
+                                        point: true,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        msg:[
+                                            {type:"success", text:"We've removed the selected item(s) from your basket.", remove: true},
+                                            {type:"error", text:"“OLW480B” is out of stock and cannot be purchased.", remove: true},
+                                            {type:"warning", text:"All items in the basket must be eligible for Klarna & the total amount in the basket must be within {{min_amount}} - {{Max_amount}} for financing option to appear in checkout", remove: true},
+                                            {type:"error", text:"You have exceeded the orderable quantity.", remove: true},
+                                        ]
+                                    },
+                                ])
+                            // [End] 2023-05-30 : UPDATE -about product price
+                            if(option === "unit-Empty")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'right',
+                                        empty:false,
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:false,
+                                        coupon: false,
+                                        delivery: false,
+                                        deliveryInstall: true,
+                                        service: false,
+                                        card: true,
+                                        point: false,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        isBtnDisabled:true,
+                                    },
+                                ])
+                            if(option === "sup-Empty")
+                                +cartPriceTotal([
+                                    {
+                                        unitPosition: 'sup',
+                                        empty:false,
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:false,
+                                        coupon: false,
+                                        delivery: false,
+                                        deliveryInstall: true,
+                                        service: false,
+                                        card: true,
+                                        point: false,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        isBtnDisabled:true,
+                                    },
+                                ])
+                            if(option === "Member-Empty" || option === "Guest-Empty")
+                                +cartPriceTotal([
+                                    {
+                                        empty:true,
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        taxInclude:false,
+                                        coupon: false,
+                                        delivery: false,
+                                        deliveryInstall: true,
+                                        service: false,
+                                        card: true,
+                                        point: false,
+                                        btnName:"Checkout",
+                                        close: true,
+                                        isBtnDisabled:true,
+                                    },
+                                ])
+                            if(option === "Guest-Empty-PH" )
+                                +cartPriceTotal([
+                                    {
+                                        empty:true,
+                                        isMobileBottomFixed: true,
+                                        useToggleFoldBtn: true,
+                                        totalPriceTitle: "Total Payable",
+                                        unitPosition: 'left',
+                                        unitName: '₱ ',
+                                        taxIncludePH: true,
+                                        btnName:"Checkout",
+                                        card: true,
+                                        close: true,
+                                        isBtnDisabled:true,
+                                    },
+                                ])
+    
+    //- if(option === "Guest" || option === "Guest-Empty" || zipcode === true)
+    if(option === "Guest" || option === "Guest-Empty")
+        include ../../components/CM0010/CM0010-inc.pug
+        +CM0010('')
+
+    else if (option === "Guest-Empty-PH")
+        include ../../components/CM0010/CM0010-inc.pug
+        +CM0010('ph')
+
+    if(zipcode === true)
+        .c-wrapper.no-crop.CT0100.mobile-only
+            .component
+                .fluid-container
+                    .my-component
+                        .zipcode-area
+                            +myInputForm([
+                                {
+                                    type:"text",
+                                    label:"Consulta disponibilidad en tu zona",
+                                    id:"postcode",
+                                    required:false,
+                                    placeholder:"Ingresa tu Código Postal",
+                                    warning: ['Por favor ingrese un código postal válido.'],
+                                    correct: ['Producto disponible en tu zona.'],
+                                    button: 'Consult',
+                                },
+                            ])

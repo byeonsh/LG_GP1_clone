@@ -1,0 +1,122 @@
+@use '../abstract/' as *;
+
+@mixin promotion-card {
+  .c-promotion-card {
+    $block: '.c-promotion-card';
+
+    height: 100%;
+    &__container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+    &__box {
+      // modifier
+      &--top {
+        // ...
+      }
+      &--bottom {
+        // ...
+      }
+    }
+    &__thumbnail {
+      display: flex;
+      overflow: hidden;
+      @include lgness-radius('default');
+    }
+
+    // block
+    .c-text-contents {
+      &__subcopy,
+      &__bodycopy {
+        @include ellipsis(2);
+      }
+      &__date {
+        color: $black;
+      }
+    }
+    .c-image {
+      aspect-ratio: 464/300;
+      @include lgness-image-crop('y');
+    }
+
+    // layout : margin
+    $image: '&__thumbnail';
+    $badge: '&__badge';
+    $text: '.c-text-contents';
+    $cta: '.c-cta';
+
+    #{$image} + * {
+      margin-top: rem($margin12px);
+      @include screen(web) {
+        margin-top: rem($margin24px);
+      }
+    }
+    #{$badge} + #{$text} {
+      margin-top: rem($margin8px);
+    }
+    #{$text}__subcopy + #{$text}__bodycopy {
+      margin-top: rem($margin8px);
+    }
+    #{$text}__bodycopy + #{$text}__date {
+      margin-top: rem($margin8px);
+    }
+    #{$cta} {
+      margin-top: rem($margin12px);
+      @include screen(web) {
+        margin-top: rem($margin16px);
+      }
+    }
+  }
+}
+@mixin promotion-notice {
+  .c-promotion-notice {
+    $block: '.c-promotion-notice';
+
+    // element
+    &__item {
+      // ...
+    }
+
+    // modifier
+    &--list {
+      @include reset-list-style;
+      @include list(wrap);
+
+      #{$block}__item {
+        display: flex;
+        @include flex-context;
+        align-items: center;
+      }
+    }
+
+    // layout : margin... based on PD0003
+    $gap: rem($margin10px) min(rem($margin40px), calc(($margin40px / columns(6, false)) * 100%));
+    gap: $gap;
+    * + & {
+      margin-top: rem($margin20px);
+      @include screen(web) {
+        margin-top: rem($margin24px);
+      }
+    }
+    &__item {
+      gap: rem($margin10px);
+      @include screen(mobile) {
+        column-gap: rem($margin8px);
+      }
+    }
+  }
+}
+
+.align-case-right {
+  flex: 1;
+  text-align: right;
+  align-self: center;
+  .c-button__text {
+    font-size: rem(14px);
+    @include screen(web) {
+      font-size: rem(16px);
+    }
+  }
+}

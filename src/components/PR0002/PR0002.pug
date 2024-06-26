@@ -1,0 +1,230 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "PR0002"
+    - var componentName = "Explore List"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pr.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+
+    // Component Markup
+    mixin more-button
+        .c-list-more.align-text-center.button
+            +textButton({name: 'More', wSize: 'large', mSize: 'medium', buttonStyle: 'down', isButton: true})
+            //- +button({type:"box-outlined", color:"black", size:"medium", icon: true, name: "More"})
+
+    mixin list-item(params, index = null)
+        - var options = {headLv : "h2", useImgTag : true, useDate : true, ...params}
+        - var count = options.type == 'type1' ? 8 : options.type == 'type2' ? 12 : 16
+        //- - var type1HeadStyle = 'font-w-light-36 font-m-light-24'
+        //- - var type1HeadStyle = index%3 == 0 ? 'font-w-semibold-36 font-m-semibold-20' : 'font-w-light-36 font-m-light-24'
+        //- - var headStyle = options.type == 'type1' ? type1HeadStyle : 'font-w-semibold-20 font-m-semibold-14' 
+        //- - var bodyStyle = options.type == 'type1' ? type1BodyStyle : 'font-w-normal-16 font-m-normal-14' 
+        - var headText = options.headText || "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Numquam, nesciunt!"
+        - var bodyText = options.bodyText || "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ratione neque quis cupiditate maiores facilis ex illum. Numquam quis explicabo facere minima? Fugit, delectus distinctio? Sit quisquam fugiat aut praesentium nam nesciunt fuga?"
+        // item 
+        li.c-explore-list__item(class={[`repeat-order${index}`] : index != null})
+            .c-explore-list__item-container
+                //- thumbnail
+                .c-explore-list__thumbnail
+                    // GA4
+                    a.c-explore-list__item-linker(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        if index == 1
+                            span.c-explore-list__video-article
+                                span.sr-only The content inside the link has a video element.
+                        //- img
+                        if options.useImgTag
+                            //- type1 : ratio 1.6(1000/625)
+                            //- type2 : template size fixed
+                            //- type3 : depend data
+                            - var imgSize = options.type == "type1" ? "1000x625" : `${Math.max(435, Math.ceil(Math.random() * 1000))}x${options.imgSize}` 
+                            .image.c-image.c-explore-list__image 
+                                +printLazyImage(`https://via.placeholder.com/${imgSize}/f6f7f8/bbb.jpg`)
+                        //- bg
+                        else 
+                            .c-explore-list__image(style=`background-image:url(https://via.placeholder.com/800x800/f6f7f8/bbb.jpg)`)
+
+                //- rest contents
+                .c-explore-list__text
+                    // GA4
+                    a.c-explore-list__item-linker(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        // block - text contents
+                        .c-text-contents
+                            //- eyebrow
+                            .text.c-text-contents__eyebrow
+                                .cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") 
+                                    span Lorem ipsum
+                            //- title
+                            .title.c-text-contents__headline
+                                +headline("font-w-light-36 font-m-light-24", options.headLv, headText)
+                            //- body copy
+                            .text.c-text-contents__bodycopy
+                                .cmp-text(data-cmp-data-layer="" class="font-w-normal-16 font-m-normal-14") 
+                                    span= bodyText
+                            //- date
+                            if options.useDate
+                                .text.c-text-contents__date 
+                                    .cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="") 
+                                        span 12/12/2022
+
+                    // block - cta
+                    .button.c-cta
+                        +defaultButton({name: 'Learn More', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                        //- if !isType1
+                        - var raffle = Math.ceil(Math.random() * count)
+                        if raffle == index
+                            +defaultButton({name: 'Buy Now', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+
+    mixin header
+        +component-title-area({
+            alignment:"",
+            headline : {
+                text : "Explore",
+                level : "h1",
+            }
+        })
+    
+    mixin filter(num)
+        .c-article-filter
+            //- +printFilter(num, 'category', 'Up & Coming', 'Helpful Hints', 'LG LAB', 'Inspiration', 'Our Stories')
+            +printFilter(num, 'tag', 'Up & Coming', 'Helpful Hints', 'LG LAB', 'Inspiration', 'Our Stories', 'How to', 'Smart ThinQ', 'OLED TV')
+
+    mixin printFilter(num = '', type, ...vals)
+        .c-article-filter__inner(class=`c-article-filter__inner--${type}` class={[`js-tab-scroll`] : type == 'tag'} id=`${type}Filter${num}`)
+            .c-article-filter__scroll(class={[`js-tab-scroll__target`] : type == 'tag'})
+                div(class=`button c-article-filter__${type}`)
+                    each val, index in vals
+                        button.cmp-button.c-article-filter__button(class={'active': index == 0} type='button')
+                            span.cmp-button__text= val
+            if type == 'tag'
+                button.c-article-filter__btn-scroll.c-article-filter__btn-scroll--left.js-tab-scroll__left(type='button' aria-controls=`${type}Filter${num}` disabled)
+                    span.sr-only Scroll Left
+                button.c-article-filter__btn-scroll.c-article-filter__btn-scroll--right.js-tab-scroll__right(type='button' aria-controls=`${type}Filter${num}` disabled)
+                    span.sr-only Scroll Right
+
+    .guide-text-type Type1
+    .c-wrapper.PR0002.margin-top.margin-bottom.bg-default.type1
+        .component
+            .cmp-container
+                // headline area
+                +header
+                // filter area
+                +filter('1')
+                // list area
+                // block - Explore list
+                - var count = 8
+                - var templateMaxCount = 8
+                - var options = {type : 'type1'}
+                ul.c-explore-list
+                    // template [start]
+                    // - The range of added item groups, When the more button is clicked. 
+                    - for(var i=0; i<count; i++)
+                        - var repeatIndex = (i%templateMaxCount + 1)
+                        +list-item(options, repeatIndex)
+                    // template [end]
+
+                +more-button
+
+    .guide-text-type Type2
+    .c-wrapper.PR0002.margin-top.margin-bottom.bg-default.type2
+        .component
+            .cmp-container 
+                // headline area
+                +header
+                // filter area
+                +filter('2')
+                // list area
+                // block - Explore list
+                //- - var count = 11
+                //- - var templateMaxCount = null
+                - var options = {type : 'type2', useImgTag : false}
+                // template [start]
+                // - The range of added item groups, When the more button is clicked. 
+                ul.c-explore-list
+                    li
+                        ul.c-explore-list__item-group
+                            +list-item(options, 1)
+                            +list-item(options, 2)
+                            +list-item(options, 3)
+                    li
+                        ul.c-explore-list__item-group
+                            +list-item(options, 4)
+                            +list-item(options, 5)
+                            +list-item(options, 6)
+                    li
+                        ul.c-explore-list__item-group
+                            +list-item(options, 7)
+                            +list-item(options, 8)
+                    li
+                        ul.c-explore-list__item-group
+                            +list-item(options, 9)
+                            +list-item(options, 10)
+                            +list-item(options, 11)
+                // template [end]
+
+                +more-button
+
+    .guide-text-type Type3
+    .c-wrapper.PR0002.margin-top.margin-bottom.bg-default.type3
+        .component
+            .cmp-container 
+                // headline area
+                +header
+                // filter area
+                +filter('3')
+                // list area
+                // block - Explore list
+                - var count = 16
+                - var templateMaxCount = 16
+                - var options = {type :'type3'}
+                - var sampleList = [390,660,510,955, 590,560,605,605, 780,780,295,485, 450,590,435,295]
+                ul.c-explore-list.preset
+                    // template [start]
+                    // - The range of added item groups, When the more button is clicked. 
+                    - for(var i=0; i<count; i++)
+                        - var repeatIndex = (i%templateMaxCount)
+                        +list-item({...options, imgSize : sampleList[repeatIndex]}, null)
+                    // template [end]
+                +more-button
+
+                

@@ -1,0 +1,509 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_carousel.pug
+include ../_common/_image.pug
+include ../_common/_forms.pug
+include ../_common/_pop-msg.pug
+
+block meta 
+    - var componentId = "CS0046"
+    - var componentName = "CS PSP_Warranty"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    include ../CS0000/CS-inc.pug
+
+    mixin roleList(item)
+        if item 
+            .c-wide-list__item(role="listitem")
+                if block
+                    block
+        else
+            .c-wide-list__item
+                if block
+                    block
+
+    mixin modelList(params)
+        - var option={contents:both, isList:false, linkType: false, categoryType: false, categoryName: '', productLength: '', productAllName: '', productName: '', ...params}
+            if option.categoryType
+                .c-wide-list__item-category
+                    .category-text 
+                        p.font-w-semibold-14l #{option.categoryName}
+                        span.category-text__line
+                    +roleList(option.isList)
+                        // block : text-contents 
+                        a(href="#video")
+                            p.c-text-contents #{option.productAllName}
+                    - for (var x = 0; x < option.productLength; x++)
+                        +roleList(option.isList)
+                            // block : text-contents 
+                            a(href="#video")
+                                p.c-text-contents #{option.productName}
+            else if option.linkType
+                +roleList(option.isList)
+                    a(href="#video")
+                        // block : text-contents 
+                        p.c-text-contents #{option.productName}
+            else
+                +roleList(option.isList)
+                    // block : text-contents 
+                    p.c-text-contents #{option.productName}
+
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${controlsId}` aria-label="")
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+
+    mixin contentsBody(useImg, listType, content, faq)
+        if listType 
+            .c-wide-list(role="list")
+                +modelList({isList:true, linkType: true, productName: 'productlist'}) 
+                +modelList({isList:true, linkType: true, productName: 'productlist'}) 
+                +modelList({isList:true, linkType: true, productName: 'productlist'}) 
+                +modelList({isList:true, linkType: true, productName: 'productlist'}) 
+                +modelList({isList:true, linkType: true, productName: 'productlist'}) 
+                +modelList({isList:true, linkType: true, productName: 'productlist'}) 
+        else
+            // block - text contents
+            .c-text-contents.c-accordion__body-text
+                .text.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-12
+                    span.cmp-text(data-cmp-data-layer="") #{faq.content}
+
+            if useImg
+                .image.c-image.c-accordion__body-image
+                    +printLazyImage("https://via.placeholder.com/1600x900/000/333/?text=Image", "")
+
+    mixin pack(faq, useImg, controlsId, listType, ifEyebrow)
+        if listType 
+            .c-accordion__box.js-accordion-handle-target(role="listitem")
+                .c-accordion__head
+                    .c-accordion__head-text.c-text-contents #{faq.productName}
+                    +trigger(controlsId)
+                .c-accordion__body(id=`${controlsId}`)
+                    +contentsBody(useImg, listType)  
+        else
+            .c-accordion__box.js-accordion-handle-target
+                .c-accordion__head
+                    // block - text contents
+                    .c-accordion__head-text.c-text-contents
+                        //- span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true") Q.
+                        if ifEyebrow
+                            span.c-accordion__head-flag.font-m-normal-12.font-w-normal-14 #{faq.eyebrow}
+
+                        .text.c-text-contents__headline
+                            .cmp-text.font-m-normal-16.font-w-normal-20(data-cmp-data-layer="") 
+                                strong #{faq.headline} 
+                    +trigger(controlsId)
+                .c-accordion__body(id=`${controlsId}`)
+                    +contentsBody(useImg, listType, content, faq)    
+
+    -
+        const warrantyList = [
+            {
+                'headline':'Specific warranty information',
+                'useImg':false,
+                'listType': false,
+                'ifEyebrow': false,
+                'content': '10 years extended warranty on linear compressor - This extended parts warranty is applicable on specific parts only, The consumer will be charged for labour after the product warranty has expired. The manufacturer warranty is applicable for normal consumer usage. If the product is used in a commercial environment the product and its parts will have a 12 months parts and labour warranty only.'
+            },
+            {
+                'headline':'Extended',
+                'useImg':false,
+                'listType': false,
+                'ifEyebrow': false,
+                'content': "When mentioned in your product's warranty term, some parts or pieces may have additional warranty time. Extended warranties purchased from resellers are not the responsibility of LG Electronics."
+            },
+            {
+                'headline':'Exception',
+                'useImg':false,
+                'listType': false,
+                'ifEyebrow': false,
+                'content': "When mentioned in your product's warranty term, some parts or pieces may have additional warranty time. Extended warranties purchased from resellers are not the responsibility of LG Electronics."
+            },
+            {
+                'headline': 'Warranty terms & conditions',
+                'useImg':false,
+                'listType': false,
+                'ifEyebrow': false,
+                'content': 'Replacement unit or parts may be new or remanufactured service exchanges that are equivalent to new in performance and reliability. The LG warranty does not cover any of the following actions: a) Periodic check ups, maintenance and repair or replacement of parts due to normal wear and tear. b) Cost relating to transport, removal or installation of the product. c) Misuse, including failure to use the product for its normal purposes or incorrect installation. d) Damage caused by Lightning, Water, Fire, Acts of God, War, Public Disturbances, incorrect mains voltage, improper or insufficient ventilation or any other cause beyond the reasonable control of LG. The LG manufacturer warranty is only valid when accompanied by the original invoice, sales receipt or confirmation from LGE UK of the warranty period. If the serial number is defaced, missing or illegible, the warranty with LGE UK is null and void. In this case you should contact the dealer from whom the product was purchased. During the repair process it is possible that any stored data may be lost so it is strongly recommended that you backup any important data and media files before requesting a service. LG will not be responsible for any data corruption or loss however so caused during the repair process or failure of the customer to ensure that all data is properly backed up.'
+            },
+            {
+                'headline':'Installation Prices',
+                'useImg':false,
+                'listType': false,
+                'ifEyebrow': false,
+                'content': "When mentioned in your product's warranty term, some parts or pieces may have additional warranty time. Extended warranties purchased from resellers are not the responsibility of LG Electronics."
+            },
+            {
+                'headline':'Installation Policies',
+                'useImg':false,
+                'listType': false,
+                'ifEyebrow': false,
+                'content': "When mentioned in your product's warranty term, some parts or pieces may have additional warranty time. Extended warranties purchased from resellers are not the responsibility of LG Electronics."
+            },
+        ]
+
+    mixin productList
+        .c-prd-grid
+            div(tabindex="0" data-link-name) 
+                +printLazyPicture('https://placeimg.com/100/100/arch', 'https://placeimg.com/80/80/arch')
+                .c-category__title.font-m-normal-16.font-w-normal-24 Door-in-Door™
+
+            div(tabindex="0" data-link-name)   
+                +printLazyPicture('https://placeimg.com/100/100/arch', 'https://placeimg.com/80/80/arch')
+                .c-category__title.font-m-normal-16.font-w-normal-24 Tall
+            div(tabindex="0" data-link-name) 
+                +printLazyPicture('https://placeimg.com/100/100/arch', 'https://placeimg.com/80/80/arch')
+                .c-category__title.font-m-normal-16.font-w-normal-24 Multi door 
+            div(tabindex="0" data-link-name) 
+                +printLazyPicture('https://placeimg.com/100/100/arch', 'https://placeimg.com/80/80/arch')
+                .c-category__title.font-m-normal-16.font-w-normal-24 American style
+
+    .guide-text-type CS PSP_Warranty
+    .guide-text-option When searched by model number
+    // Component Markup
+    .c-wrapper.CS0046.type-text
+        .component.type-tabs.full
+            .CS0046__container
+                // BREADCRUMB
+                .breadcrumb
+                    .breadcrumb__wrap
+                        p.font-w-normal-14i.font-m-normal-14i Product reselect : 
+                        nav.cmp-breadcrumb.c-breadcrumb.swiper(data-cmp-data-layer="" aria-label="breadcrumb")
+                            ol.cmp-breadcrumb__list.c-breadcrumb__list.font-m-normal-14.font-w-normal-14.swiper-wrapper
+                                +bcItem({text:"Product category"})
+                                +bcItem({text:"Appliances"})
+                                +bcItem({text:"Fridge freezers"})
+                                +bcItem({text:"American style"})   
+                                +bcItem2({text:"GSXV90MCDE", current:true})   
+
+                // CS PSP
+                .c-prd-gallery-area                       
+                    .c-prd-gallery 
+                        .c-prd-gallery__image 
+                            +printLazyImage('../../mocks/CS0028/temp-support-manual-software.png')
+                        .c-prd-gallery__text
+                            .c-prd-gallery__type.font-m-normal-12.font-w-normal-20 GSXV90MCDE
+                            // Not exposed without data
+                            .c-prd-gallery__detail-info
+                                .c-prd-gallery__number InstaView Door-in-Door InstaView Door-in-Door InstaView Door-in-Door InstaView Door-in-DoorInstaView Door-in-Door InstaView Door-in-Door
+                            .c-prd-gallery__button-wrap 
+                                // block - cta
+                                .button.c-cta
+                                    +defaultButton({name: 'Repair request', wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})
+                                    +defaultButton({name: 'Register a product', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})
+
+                // Warranty for Refrigerators
+                .container.type-accordion
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline
+                                +headline('font-w-light-56 font-m-light-28',h2,'Warranty for GSXV90MCDE')
+
+                    .c-warranty-months 
+                        .c-warranty-months__box
+                            p.c-warranty-months__text.font-m-normal-16.font-w-normal-24 Labour
+                            .c-warranty-months__months 24 months
+                        .c-warranty-months__box
+                            p.c-warranty-months__text.font-m-normal-16.font-w-normal-24 Parts
+                            .c-warranty-months__months 24 months
+
+                    .care-text.font-m-normal-14.font-w-normal-14 * Warranty coverage can differ by model/year, please look at the user manual for your unit to check your coverage.
+
+                    .c-accordion.js-accordion
+                        each faq, index in warrantyList
+                            - var controlsId = `faq-set-0${index}`;
+                            +pack(faq, faq.useImg, controlsId, faq.listType, faq.ifEyebrow)
+
+    .guide-text-option When searched by model number - Labor 1, Charge 2
+    // Component Markup
+    .c-wrapper.CS0046.type-text
+        .component.type-tabs.full
+            .CS0046__container
+                // BREADCRUMB
+                .breadcrumb
+                    .breadcrumb__wrap
+                        p.font-w-normal-14i.font-m-normal-14i Product reselect : 
+                        nav.cmp-breadcrumb.c-breadcrumb.swiper(data-cmp-data-layer="" aria-label="breadcrumb")
+                            ol.cmp-breadcrumb__list.c-breadcrumb__list.font-m-normal-14.font-w-normal-14.swiper-wrapper
+                                +bcItem({text:"Product category"})
+                                +bcItem({text:"Appliances"})
+                                +bcItem({text:"Fridge freezers"})
+                                +bcItem({text:"American style"})   
+                                +bcItem2({text:"GSXV90MCDE", current:true})   
+
+                // CS PSP
+                .c-prd-gallery-area                       
+                    .c-prd-gallery 
+                        .c-prd-gallery__image 
+                            +printLazyImage('../../mocks/CS0028/temp-support-manual-software.png')
+                        .c-prd-gallery__text
+                            .c-prd-gallery__type.font-m-normal-12.font-w-normal-20 GSXV90MCDE
+                            // Not exposed without data
+                            .c-prd-gallery__detail-info
+                                .c-prd-gallery__number InstaView Door-in-Door InstaView Door-in-Door InstaView Door-in-Door InstaView Door-in-DoorInstaView Door-in-Door InstaView Door-in-Door
+                            .c-prd-gallery__button-wrap 
+                                // block - cta
+                                .button.c-cta
+                                    +defaultButton({name: 'Repair request', wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})
+                                    +defaultButton({name: 'Register a product', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})
+
+                // Warranty for Refrigerators
+                .container.type-accordion
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline
+                                +headline('font-w-light-56 font-m-light-28',h2,'Warranty for GSXV90MCDE')
+
+                    .c-warranty-months 
+                        .c-warranty-months__box
+                            p.c-warranty-months__text.font-m-normal-16.font-w-normal-24 Labour
+                            .c-warranty-months__months Mão de obra: 1 Ano
+                            .c-warranty-months__months Garantia legal: 90 dias + Garantia LG: 275 dias. Totalizando 1 ano.
+                    
+                    .c-warranty-months 
+                        .c-warranty-months__box
+                            p.c-warranty-months__text.font-m-normal-16.font-w-normal-24 Carry in labor charge
+                            .c-warranty-months__months $162.00 w/GST
+                        .c-warranty-months__box
+                            p.c-warranty-months__text.font-m-normal-16.font-w-normal-24 On site labor charge
+                            .c-warranty-months__months $172.80 w/GST
+
+                    .care-text.font-m-normal-14.font-w-normal-14 * Warranty coverage can differ by model/year, please look at the user manual for your unit to check your coverage.
+
+                    .c-accordion.js-accordion
+                        each faq, index in warrantyList
+                            - var controlsId = `faq-set-0${index}`;
+                            +pack(faq, faq.useImg, controlsId, faq.listType, faq.ifEyebrow)
+
+    .guide-text-option When searched by model number - Labor 2, Charge 2+
+    // Component Markup
+    .c-wrapper.CS0046.type-text
+        .component.type-tabs.full
+            .CS0046__container
+                // BREADCRUMB
+                .breadcrumb
+                    .breadcrumb__wrap
+                        p.font-w-normal-14i.font-m-normal-14i Product reselect : 
+                        nav.cmp-breadcrumb.c-breadcrumb.swiper(data-cmp-data-layer="" aria-label="breadcrumb")
+                            ol.cmp-breadcrumb__list.c-breadcrumb__list.font-m-normal-14.font-w-normal-14.swiper-wrapper
+                                +bcItem({text:"Product category"})
+                                +bcItem({text:"Appliances"})
+                                +bcItem({text:"Fridge freezers"})
+                                +bcItem({text:"American style"})   
+                                +bcItem2({text:"GSXV90MCDE", current:true})   
+
+                // CS PSP
+                .c-prd-gallery-area                       
+                    .c-prd-gallery 
+                        .c-prd-gallery__image 
+                            +printLazyImage('../../mocks/CS0028/temp-support-manual-software.png')
+                        .c-prd-gallery__text
+                            .c-prd-gallery__type.font-m-normal-12.font-w-normal-20 GSXV90MCDE
+                            // Not exposed without data
+                            .c-prd-gallery__detail-info
+                                .c-prd-gallery__number InstaView Door-in-Door InstaView Door-in-Door InstaView Door-in-Door InstaView Door-in-DoorInstaView Door-in-Door InstaView Door-in-Door
+                            .c-prd-gallery__button-wrap 
+                                // block - cta
+                                .button.c-cta
+                                    +defaultButton({name: 'Repair request', wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})
+                                    +defaultButton({name: 'Register a product', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})
+
+                // Warranty for Refrigerators
+                .container.type-accordion
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline
+                                +headline('font-w-light-56 font-m-light-28',h2,'Warranty for GSXV90MCDE')
+
+                    .c-warranty-months 
+                        .c-warranty-months__box
+                            p.c-warranty-months__text.font-m-normal-16.font-w-normal-24 Labour
+                            .c-warranty-months__months Mão de obra: 1 Ano
+                            .c-warranty-months__months Garantia legal: 90 dias + Garantia LG: 275 dias. Totalizando 1 ano.
+                        .c-warranty-months__box
+                            p.c-warranty-months__text.font-m-normal-16.font-w-normal-24 Parts
+                            .c-warranty-months__months Mão de obra: 1 Ano
+                            .c-warranty-months__months Garantia legal: 90 dias + Garantia LG: 275 dias. Totalizando 1 ano.
+                    
+                    .c-warranty-months 
+                        .c-warranty-months__box
+                            p.c-warranty-months__text.font-m-normal-16.font-w-normal-24 Carry in labor charge
+                            .c-warranty-months__months $162.00 w/GST
+                        .c-warranty-months__box
+                            p.c-warranty-months__text.font-m-normal-16.font-w-normal-24 On site labor charge
+                            .c-warranty-months__months $172.80 w/GST
+                        .c-warranty-months__box
+                            p.c-warranty-months__text.font-m-normal-16.font-w-normal-24 Gas charge
+                            .c-warranty-months__months $XXX.XX w/GST
+
+                    .care-text.font-m-normal-14.font-w-normal-14 * Warranty coverage can differ by model/year, please look at the user manual for your unit to check your coverage.
+
+                    .c-accordion.js-accordion
+                        each faq, index in warrantyList
+                            - var controlsId = `faq-set-0${index}`;
+                            +pack(faq, faq.useImg, controlsId, faq.listType, faq.ifEyebrow)
+
+    .guide-text-option When searched by model number
+    .c-wrapper.CS0046.type-text
+        .component.type-tabs.full
+            .CS0046__container
+                // BREADCRUMB
+                .breadcrumb
+                    .breadcrumb__wrap
+                        p.font-w-normal-14i.font-m-normal-14i Product reselect : 
+                        nav.cmp-breadcrumb.c-breadcrumb.swiper(data-cmp-data-layer="" aria-label="breadcrumb")
+                            ol.cmp-breadcrumb__list.c-breadcrumb__list.font-m-normal-14.font-w-normal-14.swiper-wrapper
+                                +bcItem({text:"Product category"})
+                                +bcItem({text:"Appliances"})
+                                +bcItem2({text:"Fridge freezers", current:true})
+
+                .container 
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline
+                                +headline('font-w-light-56 font-m-light-28',h2,'Find my product')
+                    P.searchBar__infoMsg.font-m-normal-14.font-w-normal-20 * After entering the model number, please select the product from the search result. (Enter key does not work)
+                    
+                    .searchbar
+                        #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                            .searchBar__searchInner
+                                form.searchBar__form(autocomplete='off' _lpchecked='1' action='')
+                                    span.fieldIcons__root
+                                        span.fieldIcons__input
+                                            input#textInput__input.textInput__input.field__input.font-m-normal-16.font-w-normal-20(type="text" name='search_query' value='' role='searchbox' aria-label="Search" placeholder='Please type model number')
+                                            button(type="button").c-button-delete delete button
+                                        //- button(type="button" title="search" aria-label="" aria-describedby="").fieldIcons__before.c-hidden-mo
+                                        //-     span.icon__root
+                                        //-         span.sr-only Search
+                                    p.message__root
+                                    .searchBar__SearchAutocompleteWrapper
+
+                        .c-model-contents
+                            a(tabindex="0" class="c-modal-open find-number font-m-normal-14 font-w-normal-16" aria-label="" aria-controls="CS0027" role="dialog" data-link-name data-link-destination data-link-menu data-link-page-type) How to find my model number?
+
+                        .searchLayer 
+                            #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                                .searchBar__searchInner
+                                    form.searchBar__form(autocomplete='off' _lpchecked='1' action='')
+                                        span.fieldIcons__root
+                                            span.fieldIcons__input
+                                                input#textInput__input2.textInput__input.field__input.font-m-normal-16.font-w-normal-20(type="text" name='search_query' value='' role='searchbox' aria-label="Search" placeholder='Please type model number')
+                                                button(type="button").c-button-delete delete button
+                                            //- button(type="button" title="search" aria-label="" aria-describedby="").fieldIcons__before.c-hidden-pc
+                                                span.icon__root
+                                                    span.sr-only Search
+                                        p.message__root
+                                button(type="button" title="cancel" role="search box cancel" aria-label="" aria-describedby="").c-cancel.c-hidden-pc.font-m-normal-16 Cancel
+
+                            // When there are no search results
+                            .c-recent__nosearches 
+                                .font-m-light-28.font-w-light-36 There are no related products
+                                .font-m-normal-14.font-w-normal-24 Please check the spelling and try your search again.
+
+                            // Recent searches 
+                            .c-recent__searches.c-border__top 
+                                .c-recent__tit
+                                    .font-m-normal-20.font-w-normal-24 Recent searches 
+                                    .button.c-cta
+                                        +linkButton({type: "text", name:'Clear all', icon:false})
+                                ul
+                                    li.font-w-normal-16.font-m-normal-14 Oled
+                                        button(type="button").c-btn__delete
+                                    li.font-w-normal-16.font-m-normal-14 OLED TV
+                                        button(type="button").c-btn__delete
+                                    li.font-w-normal-16.font-m-normal-14 OLED TV
+                                        button(type="button").c-btn__delete
+                                    li.font-w-normal-16.font-m-normal-14 OLED TV
+                                        button(type="button").c-btn__delete
+                                    li.font-w-normal-16.font-m-normal-14 OLED TV
+                                        button(type="button").c-btn__delete
+
+                            // search result
+                            ul(role="grid" aria-label="Find my product list")
+                                li(role="row")
+                                    a(href="#")
+                                        span.font-m-normal-12.font-w-normal-16 OLED55C7V.AEK
+                                        div 
+                                            .c-search-prd-name.font-m-normal-16.font-w-normal-32 55’’ LG     
+                                                span OLED 
+                                                | TV - B7
+                                            .c-search-category-name.font-m-normal-12 TVs
+                                li(role="row")
+                                    a(href="#")
+                                        span.font-m-normal-12.font-w-normal-16 OLED55C7V.AEK
+                                        div 
+                                            .c-search-prd-name.font-m-normal-16.font-w-normal-32 55’’ LG     
+                                                span OLED 
+                                                | TV - B7
+                                            .c-search-category-name.font-m-normal-12 TVs
+
+                    +productList       
+                    .care-text.font-m-normal-12.font-w-normal-14 *Includes business-only products.<br>*The above image may be slightly different from the actual image.
+
+                    
+    .guide-text-option not data
+    .c-wrapper.CS0046.type-text
+        .component.type-tabs.full
+            .CS0046__container
+                // BREADCRUMB
+                .breadcrumb
+                    .breadcrumb__wrap
+                        p.font-w-normal-14i.font-m-normal-14i Product reselect : 
+                        nav.cmp-breadcrumb.c-breadcrumb.swiper(data-cmp-data-layer="" aria-label="breadcrumb")
+                            ol.cmp-breadcrumb__list.c-breadcrumb__list.font-m-normal-14.font-w-normal-14.swiper-wrapper
+                                +bcItem({text:"Product category"})
+                                +bcItem({text:"Appliances"})
+                                +bcItem({text:"Fridge freezers"})
+                                +bcItem({text:"American style"})   
+                                +bcItem2({text:"GSXV90MCDE", current:true})   
+
+
+                // CS PSP
+                .c-prd-gallery-area                       
+                    .c-prd-gallery 
+                        .c-prd-gallery__image 
+                            +printLazyImage('../../mocks/CS0028/temp-support-manual-software.png')
+                        .c-prd-gallery__text
+                            //- .c-prd-gallery__title.font-m-semibold-14i.font-w-semibold-16  American style
+                            .c-prd-gallery__type.font-m-normal-12.font-w-normal-20 GSXV90MCDE
+                            // Not exposed without data
+                            .c-prd-gallery__detail-info
+                                .c-prd-gallery__number InstaView Door-in-Door InstaView Door-in-Door InstaView Door-in-Door InstaView Door-in-DoorInstaView Door-in-Door InstaView Door-in-Door
+                                //- .c-prd-gallery__color.font-m-normal-14.font-w-normal-16 Matte Black
+                                //- .c-prd-gallery__size.font-m-normal-14.font-w-normal-16 635L
+                            .c-prd-gallery__button-wrap 
+                                // block - cta
+                                .button.c-cta
+                                    +defaultButton({name: 'Repair request', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+                                    +defaultButton({name: 'Register a product', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight'})
+
+                // No Result
+                .container   
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline
+                                +headline('font-w-light-56 font-m-light-28',h2,'Warranty for GSXV90MCDE')
+                    .c-no-result 
+                        .c-no-result__wrap
+                            span.c-no-result__icon 
+                            p.font-m-normal-16.font-w-normal-20 There are no matches, please try again.
+

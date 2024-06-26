@@ -1,0 +1,89 @@
+extends ../components/_common/_layout-template.pug
+include ../components/_common/_index.pug
+
+block meta 
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title HOME Template
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href="../components/CM0001/CM0001.css")
+    link(rel="stylesheet", href="../components/CM0002/CM0002.css")
+    link(rel="stylesheet", href="../components/CM0007/CM0007.css")
+
+    link(rel="stylesheet", href="../components/ST0001/ST0001.css")
+    link(rel="stylesheet", href="../components/ST0048/ST0048.css")
+    link(rel="stylesheet", href="../components/PD0041/PD0041.css")
+    link(rel="stylesheet", href="../components/PD0046/PD0046.css")
+    link(rel="stylesheet", href="../components/ST0058/ST0058.css")
+
+block scripts
+    script(src="../components/CM0001/CM0001.js" type="module")
+    script(src="../components/CM0002/CM0002.js" type="module")
+    script(src="../components/CM0007/CM0007.js" type="module")
+
+    script(src="../components/ST0001/ST0001.js" type="module")
+    script(src="../components/ST0048/ST0048.js" type="module")
+    script(src="../components/PD0041/PD0041.js" type="module")
+    script(src="../components/PD0046/PD0046.js" type="module")
+    script(src="../components/ST0058/ST0058.js" type="module")
+
+block header
+    include ../components/CM0001/CM0001-inc.pug
+    +CM0001('HOME')
+
+block content
+    
+    mixin carousel-item-component(id, set) 
+        //- - var bgColor = ["#ffffff", "#000000", "#333333", "#f6f3eb", "#f6f7f8", "#262626", "#e6e1d6"]
+        - var index = Math.floor(Math.random() * 7);
+        .c-wrapper(class=`${id}`)&attributes(attributes)
+            .component
+                .cmp-container
+                    +hero-banner-case-select(set)
+
+    mixin carousel-nested-component(id, type = "", itemOption)
+        .carousel.panelcontainer
+            // block : carousel
+            .cmp-carousel.swiper.c-carousel(data-cmp-autoplay="autoplay" data-cmp-data-layer="")&attributes(attributes)
+                .cmp-carousel__content.swiper-wrapper
+                    - for (var i=0; i < itemOption.length; i++)
+                        - var set = itemOption[i]
+                        .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item" data-title="Multi Door Fridge Freezers")
+                            +carousel-item-component(id, set)(class=`${type}`)
+                +hero-controls
+
+    .c-wrapper.ST0048.margin-top.margin-bottom.bg-default
+        .component.type-default.width-wide
+            .cmp-container
+                // "margin-top", "margin-bottom" is unnecessary on ".ST0001"
+                +carousel-nested-component("ST0001", "type-default", [
+                    {caseSelect : "video", width : "wide", heroType : "default", dateType : "range", useEyebrow : true, textAlign : "left", headline : "Lorem ipsum dolor sit amet consectetur.", bodycopy: "", fontColor : "font-white"},
+                    {caseSelect : "image", width : "wide", heroType : "default", dateType : "range", useEyebrow : true, textAlign : "left", bodycopy: ""},
+                    {caseSelect : "image", width : "wide", heroType : "default", dateType : "range", useEyebrow : false, textAlign : "left", bodycopy: "Lorem, ipsum dolor sit amet", useMobileSource : true}
+                ])(class="autoplay")
+
+    //- include ../components/ST0001/ST0001-inc.pug
+    //- +ST0001('HOME')
+
+    include ../components/PD0041/PD0041-inc.pug
+    +PD0041('HOME')
+
+    include ../components/PD0046/PD0046-inc.pug
+    +PD0046('HOME')
+    +PD0046('DEV')
+
+    include ../components/ST0058/ST0058-inc.pug
+    +ST0058()
+    +ST0058('DEV')
+
+    include ../components/CM0007/CM0007-inc.pug
+    +CM0007()
+
+block footer
+    include ../components/CM0002/CM0002-inc.pug
+    +CM0002()
+
+block modal 

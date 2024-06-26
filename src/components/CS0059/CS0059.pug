@@ -1,0 +1,69 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+
+block meta 
+    - var componentId = "CS0059"
+    - var componentName = "Step_Review"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${controlsId}` aria-label="")
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+    
+    mixin contentsBody(stepNumber)
+        // block - text contents
+        .c-text-contents.c-accordion__body-text
+            case stepNumber 
+                when 5
+                    p.font-m-normal-12.font-w-normal-16 Please review your request. Select edit to change your information. Select submit to request service.
+
+    mixin pack(faq, stepNumber, controlsId)
+        .c-accordion__box.js-accordion-handle-target.c-mobile-accordion
+            .c-accordion__head
+                // block - text contents
+                // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+                //- .c-accordion__head-text.c-text-contents.c-step-active
+                .c-accordion__head-text.c-text-contents
+                    span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true") 
+                        span.c-accordion__step Step #{faq.stepNumber}
+                        span.c-accordion__head-flag.font-m-normal-16.font-w-semibold-20 #{faq.eyebrow}
+                            span.c-dot *
+                +trigger(controlsId)
+            // This area is accordion content. Please include only this area during development.
+            .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+                +contentsBody(stepNumber)
+    -
+        const stepList = [
+            {
+                'eyebrow': 'Call appointment review',
+                'stepNumber': 5
+            },
+        ]
+
+    .guide-text-type Step_Review
+
+    // Component Markup 
+    .c-wrapper.CS0059.type-text
+        .component.type-accordion
+            .CS0059__container
+                // 20230321 markup change
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(faq, faq.stepNumber, controlsId)

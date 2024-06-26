@@ -1,0 +1,2190 @@
+include ./_forms.pug
+include ./_product-list.pug
+include ../_common/_specs.pug
+
+mixin pop-close-button(dailogId)
+    .button.c-pop-msg__close.c-pop-msg__close--on-top
+        button.cmp-button.js-pop-close(type="button", aria-controls=`${dailogId}` data-cmp-data-layer="")
+            span.cmp-button__text.sr-only close
+
+mixin pop-msg-header(params)
+    - var option = {headerBorder : true, headerSrOnly: false, align : "left", headLineStyle: "",  ...params}
+    - var dialogHeadline = option.headline || "Dialog Headline"
+    - var dialogDescription = option.headerDescription || "Dialog Description"
+    - var headerBorder = option.headerBorder ? '' : 'c-pop-msg__header--no-border'
+    - var headerMargin = option.headerMargin ? `c-pop-msg__header--margin-${option.headerMargin}` : ''
+    - var dialogLabelId = `${option.id}-headline`
+    - var headerSrOnly = option.headerSrOnly ? 'sr-only' : ''
+    - var alignClass = option.align
+    - var headLineStyle = option.headLineStyle ? option.headLineStyle : 'font-w-normal-36 font-m-normal-24'
+    .c-pop-msg__header(class=`${headerBorder} ${headerMargin} ${headerSrOnly}` class={[alignClass] : 0 > option.align.indexOf("left")})
+        // block - text contents
+        .c-text-contents
+            .title.c-text-contents__headline(id=`${dialogLabelId}`)
+                // 22.11.11 - moved font classname here
+                .cmp-title(data-cmp-data-layer="" class=`${headLineStyle}`)
+                    strong= dialogHeadline
+            if option.headerDescription
+                .text.c-text-contents__bodycopy
+                    span.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")= dialogDescription
+                    
+mixin pop-msg-start-description(text, font)
+    - var fontStyle = font || "font-m-normal-16 font-w-normal-16"
+    // block - text contents
+    .c-pop-msg__start-description&attributes(attributes)
+        .c-text-contents
+            .text.c-text-contents__bodycopy
+                .cmp-text(data-cmp-data-layer="" class=`${fontStyle}`)= text
+
+mixin pop-msg-layout(params)
+    - var option={id:`popMsg${new Date().getTime()}`, ...params}
+    - var dialogId = option.id
+    - var dialogLabelId = `${option.id}-headline`
+    - var dialogSize = option.size || "medium"
+    - var dialogClass = `${dialogSize}`
+    - var useHeadline = option.headline != null && 0 < option.headline.length
+    - var label = option.label ? option.label : null
+    - var headlineTitle = option.headlineTitle
+    - var logoInPrint = option.logoInPrint || false
+    // block - pop-msg ( dialog )
+    .c-pop-msg(class=`${dialogClass}` class={[option.classes] : !!option.classes} id=`${dialogId}` role="dialog" aria-modal="true" aria-label= label aria-labelledby=useHeadline&&dialogLabelId)
+        .c-pop-msg__container
+            if logoInPrint
+              .logo-only-in-print
+                img(src="../../assets/image/logo-lg-100-44_gray.svg" alt="LG")
+            if useHeadline
+                //- header
+                +pop-msg-header(params)
+            //- contents
+            if block
+                block
+            //- close button
+            if(!option.btnCloseNone)
+                .button.c-pop-msg__close.c-pop-msg__close--on-top
+                    button.cmp-button.c-pop-msg__close-button.js-pop-close(type="button", aria-controls=`${dialogId}` data-cmp-data-layer="")
+                        span.cmp-button__text.sr-only close
+        .c-pop-msg__dimmed
+
+mixin pop-msg-only-message(params)
+    - var option={size: 'small', bodySize:'font-w-normal-16 font-m-normal-16', ...params}
+    +pop-msg-layout(option)
+        .c-pop-msg__contents.fit-header
+            //- insert block - only msg
+            .text.font-black.align-text-center
+                .cmp-text(class=`${option.bodySize}` data-cmp-data-layer='')
+                    p #{option.text}
+
+mixin pop-msg-standard(params)
+    +pop-msg-layout(params)
+        block
+
+
+//- print layer popup 
+mixin printLayerPopup(popId, params)
+    case popId
+        when 'popSummaryGallery'
+            +pop-msg-standard({id : `popSummaryGallery`, useHeadline:false, size: "full", label: "Product Summary Gallery"})
+                // 2023-01-13 add .c-summary-gallery-expand
+                .c-pop-msg__contents.c-summary-gallery-expand
+                    +gallery({
+                        isPopup: true,
+                        galleryFeatures : ["image", "video", "360", "3d", "ar", "vr"],
+                        galleryList : [
+                            {color: '000/888'},
+                            {color: '111/999'},
+                            {color: '222/aaa'},
+                            {color: '333/bbb'},
+                            {color: '444/ccc'},
+                            {color: '555/ddd'},
+                            {color: '666/eee'},
+                            {color: '777/fff'},
+                        ]
+                    })
+
+        when 'popCopyComplete'
+            +pop-msg-standard({id:'popCopyComplete', size: "small"})
+                .c-pop-msg__contents
+                    p.align-text-center#popCopyComplete-headline The URL has been copied to the clipboard.
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: 'Close', 
+                        wSize: 'medium', 
+                        mSize: 'small', 
+                        buttonStyle: 'default', 
+                        isButton: true
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popCopyComplete")
+                    //- +button({type:"box-outlined", color:"black", size:"medium", name: "Close"})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popCopyComplete")
+        
+        when 'popCopyCompleteMsg'
+            +pop-msg-standard({id:'popCopyCompleteMsg', size: "medium"})
+                .c-pop-msg__contents
+                    p.pop-copy-complete-msg-headline
+                        // Please enter the current url.
+                        span.current-url= `${params.copyUrl}`
+                        |  is copied. 
+                        br
+                        | Select Ctrl+V to paste.
+
+        when 'popFindModel'
+            +pop-msg-standard({id : "popFindModel", headline:"Find My Model & Serial Number", headerBorder: false})
+                .c-pop-msg__contents.c-pop-msg__contents--popFindModel.c-pop-msg__contents--box
+                    // block - text contents
+                    form(action="#" method="post").c-pop-msg-form
+                        .c-pop-msg-form__head Select a Product below.
+                        .c-pop-msg-form__item
+                            +formSelect("", "downloadCategory", "Select a Category", false)
+                                option(value="" disabled selected) Category
+                                option(value="products") Products
+                                option(value="energyStorageSystem") Energy Storage System
+                                option(value="certification") Certification
+                                option(value="dataSheets") Data Sheets
+                            .c-warning Please select Category.
+                        .c-pop-msg-form__item
+                            +formSelect("", "downloadSub", "Select a Product", false)(disabled="disabled")
+                                option(value="" disabled selected) Product
+                                option(value="subCategory1") Product1
+                                option(value="subCategory2") Product2
+                                option(value="subCategory3") Product3
+                            .c-warning Please select Product.
+                    // before the results
+                    .c-pop-msg-result.hidden
+                    // after the results(Remove 'hidden' class)
+                    .c-pop-msg-result
+                        // GA4
+                        a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                            // block - image
+                            .image.c-image 
+                                +printLazyImage(`https://via.placeholder.com/520x345/999/333`)
+                        .c-text-contents
+                            .text.c-text-contents__bodycopy
+                                .cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")
+                                    p The model and/or serial number may be found in the following location:
+                                    p - Sound Bars, Sound Plates, and Home Theater Systems: under the main unit.
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: 'Close', 
+                        wSize: 'medium', 
+                        mSize: 'small', 
+                        buttonStyle: 'default', 
+                        isButton: true
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popFindModel")
+
+        when 'popRecommendedBanner'
+            +pop-msg-standard({id : "popRecommendedBanner", headline: "Recommended Promotion", headerBorder: false, size : "large"})
+                .c-pop-msg__contents
+                    - var bannerType1 = "overlay-side"
+                    - var bannerType2 = "overlay-bottom"
+                    - var bannerType3 = "flexible-text-area"
+                    each banner in [bannerType2, bannerType2, bannerType2] 
+                        +banner-item(banner)
+
+        when 'popInstallmentCalculator'
+            mixin printTab(div, num, selected)
+                if selected
+                    button.c-tabs__tab.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0", data-cmp-hook-tabs="tab", aria-selected="true")
+                        if block
+                            block
+                else 
+                    button.c-tabs__tab.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1", data-cmp-hook-tabs="tab", aria-selected="false")
+                        if block
+                            block
+            mixin printTabPanel(div, num, selected)
+                if selected 
+                    .c-tabs__tabpanel.c-tabs__tabpanel--active.cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                        if block
+                            block
+                else 
+                    .c-tabs__tabpanel.cmp-tabs__tabpanel(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                        if block
+                            block
+
+            mixin tableContent()
+                td
+                    | ₹18600
+                    <br />
+                    | x 3m
+                td 
+                    | ₹18600
+                    <br />
+                    | (20%)
+                td ₹0
+                td ₹53990
+                
+            +pop-msg-standard({id : "popInstallmentCalculator", headline: "Installment Calculator", headerBorder: true, size: "large"})
+                .c-wrapper.c-pop-msg__contents.c-pop-msg__contents--popInstallmentCalculator.fit-header
+                    p.c-calculator__cost Product Cost: ₹51990
+                    .c-tabs.c-tabs--box-style.tabs.panelcontainer
+                        .cmp-tabs(data-cmp-data-layer="", data-placeholder-text="false")
+                            .c-tabs__inner
+                                .c-tabs__tablist.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                    +printTab(3, 1, true)
+                                        span Credit Card
+                                    +printTab(3, 2, false)
+                                        span Debit Card
+                            p.c-calculator__subtitle Standard EMI
+
+                            +printTabPanel(3, 1, true)
+                                .c-calculator__table
+                                    //- [c-change-select]
+                                    //- 1. select와 button list가 반응형 별로 다르게 노출될 경우 사용
+                                    //- 2. select option 중 가이드 ('option(value="") Select Item' 과 같은 형태)가 있을 경우 c-change-select에 "has-guide 클래스 추가"
+                                    //- 3. 가이드 option을 제외한 나머지 option의 갯수와 c-change-select__item의 갯수가 동일해야 함
+                                    //- [예제]
+                                    //- 1. 가이드 있음
+                                    //-     .c-change-select.has-guide
+                                    //-         +formSelect("select label", "selectID", "select title", false, true)
+                                    //-             option(value="" selected) Select Item
+                                    //-             option(value="option1") option1
+                                    //-         .c-change-select__box.c-calculator__card-list-box(role="listbox")
+                                    //-             .c-change-select__item.c-calculator__card-list-item.active(role="option" aria-selected="true")
+                                    //-                 button.cmp-button(type="button" data-cmp-data-layer="")
+                                    //-                 .cmp-button__text option1
+                                    //- 2. 가이드 없음
+                                    //-     .c-change-select
+                                    //-         +formSelect("select label", "selectID", "select title", false, true)
+                                    //-             option(value="option1") option1
+                                    //-         .c-change-select__box.c-calculator__card-list-box(role="listbox")
+                                    //-             .c-change-select__item.c-calculator__card-list-item.active(role="option" aria-selected="true")
+                                    //-                 button.cmp-button(type="button" data-cmp-data-layer="")
+                                    //-                     .cmp-button__text option1
+
+                                    //- card list
+                                    .c-change-select.c-calculator__card-list
+                                        +formSelect("EmiCredit", "EmiCredit", "Select Standard EMI", false, true)
+                                            option(value="hdfc" selected) HDFC
+                                            option(value="sbi") SBI
+                                            option(value="icici") ICICI
+                                            option(value="axis") AXIS
+                                            option(value="citi") CITI
+                                            option(value="bob_financial") BOB_Financial
+                                            option(value="hsbc") HSBC
+                                            option(value="indusind_bank") Indusind_Bank
+                                            option(value="kotak") KOTAK
+                                            option(value="rbl_bank") RBL_Bank
+                                            option(value="standard_chartered_bank") STANDARD_CHARTERED_BANK
+                                            option(value="yes") YES
+                                        .c-change-select__box.c-calculator__card-list-box(role="listbox")
+                                            .c-change-select__item.c-calculator__card-list-item.active(role="option" aria-selected="true")
+                                                button.cmp-button(type="button" data-cmp-data-layer="")
+                                                    .cmp-button__text HDFC
+                                            .c-change-select__item.c-calculator__card-list-item(role="option")
+                                                button.cmp-button(type="button" data-cmp-data-layer="")
+                                                    .cmp-button__text SBI
+                                            .c-change-select__item.c-calculator__card-list-item(role="option")
+                                                button.cmp-button(type="button" data-cmp-data-layer="")
+                                                    .cmp-button__text ICICI
+                                            .c-change-select__item.c-calculator__card-list-item(role="option")
+                                                button.cmp-button(type="button" data-cmp-data-layer="")
+                                                    .cmp-button__text AXIS
+                                            .c-change-select__item.c-calculator__card-list-item(role="option")
+                                                button.cmp-button(type="button" data-cmp-data-layer="")
+                                                    .cmp-button__text CITI
+                                            .c-change-select__item.c-calculator__card-list-item(role="option")
+                                                button.cmp-button(type="button" data-cmp-data-layer="")
+                                                    .cmp-button__text BOB_Financial
+                                            .c-change-select__item.c-calculator__card-list-item(role="option")
+                                                button.cmp-button(type="button" data-cmp-data-layer="")
+                                                    .cmp-button__text HSBC
+                                            .c-change-select__item.c-calculator__card-list-item(role="option")
+                                                button.cmp-button(type="button" data-cmp-data-layer="")
+                                                    .cmp-button__text Indusind_Bank
+                                            .c-change-select__item.c-calculator__card-list-item(role="option")
+                                                button.cmp-button(type="button" data-cmp-data-layer="")
+                                                    .cmp-button__text KOTAK
+                                            .c-change-select__item.c-calculator__card-list-item(role="option")
+                                                button.cmp-button(type="button" data-cmp-data-layer="")
+                                                    .cmp-button__text RBL_Bank
+                                            .c-change-select__item.c-calculator__card-list-item(role="option")
+                                                button.cmp-button(type="button" data-cmp-data-layer="")
+                                                    .cmp-button__text STANDARD_CHARTERED_BANK
+                                            .c-change-select__item.c-calculator__card-list-item(role="option")
+                                                button.cmp-button(type="button" data-cmp-data-layer="")
+                                                    .cmp-button__text YES
+                                    //- emi table
+                                    .c-table.c-calculator__emi-list
+                                        table
+                                            caption Credit Card Standard EMI
+                                            thead
+                                                tr
+                                                    th(scope='col') EMI Plan
+                                                    th(scope='col') Interest (pa)
+                                                    th(scope='col') EMI Discount
+                                                    th(scope='col') Total Payable
+                                            tbody
+                                                - for (var x = 0; x < 4; x++)
+                                                    tr
+                                                        +tableContent
+                            +printTabPanel(3, 2, false)
+                                .c-calculator__table
+                                    //- card list
+                                    //- c-change-select : select 에 guide 가 있을 경우 has-guide 클래스 추가
+                                    .c-change-select.c-calculator__card-list
+                                        +formSelect("EmiDebit", "EmiDebit", "Select Standard EMI", false, true)
+                                            option(value="axis_debit" selected) Axis_Debit
+                                            option(value="hdfc_bank_debit_card") HDFC_Bank_Debit_Card
+                                            option(value="icici_debit") ICICI_Debit
+                                        .c-change-select__box.c-calculator__card-list-box(role="listbox")
+                                            .c-change-select__item.c-calculator__card-list-item.active(role="option")
+                                                button.cmp-button(type="button" data-cmp-data-layer="")
+                                                    .cmp-button__text Axis_Debit
+                                            .c-change-select__item.c-calculator__card-list-item(role="option")
+                                                button.cmp-button(type="button" data-cmp-data-layer="")
+                                                    .cmp-button__text HDFC_Bank_Debit_Card
+                                            .c-change-select__item.c-calculator__card-list-item(role="option")
+                                                button.cmp-button(type="button" data-cmp-data-layer="")
+                                                    .cmp-button__text ICICI_Debit
+                                    //- emi table
+                                    .c-table.c-calculator__emi-list
+                                        table
+                                            caption Debit Card Standard EMI
+                                            thead
+                                                tr
+                                                    th(scope='col') EMI Plan
+                                                    th(scope='col') Interest (pa)
+                                                    th(scope='col') EMI Discount
+                                                    th(scope='col') Total Payable
+                                            tbody
+                                                - for (var x = 0; x < 6; x++)
+                                                    tr
+                                                        +tableContent
+
+        when 'popPayWithAfterpay'
+            mixin printTab(div, num, selected)
+                if selected
+                    button.c-tabs__tab.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0", data-cmp-hook-tabs="tab", aria-selected="true")
+                            if block
+                                block
+                else 
+                    button.c-tabs__tab.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1", data-cmp-hook-tabs="tab", aria-selected="false")
+                            if block
+                                block
+            mixin printTabPanel(div, num, selected)
+                if selected 
+                    .c-tabs__tabpanel.c-tabs__tabpanel--active.cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                        if block
+                            block
+                else 
+                    .c-tabs__tabpanel.cmp-tabs__tabpanel(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                        if block
+                            block
+            mixin afterPaylogoTitle(size, alt, bodycopy)
+                .c-after-pay-contents--logo-title
+                    .image.c-image
+                        +printLazyImage(size, alt)
+                    .c-text-contents 
+                        .text.c-text-contents__bodycopy
+                            .cmp-text(data-cmp-data-layer="" class="font-w-normal-24 font-m-normal-16")= bodycopy
+            mixin afterPayInfo
+                .c-after-pay-contents--info
+                    .c-text-contents 
+                        .text.c-text-contents__bodycopy
+                            .cmp-text(data-cmp-data-layer="" class="font-w-normal-16 font-m-normal-16") All you need to appply is to have a debit or credit card, to be over 18 years of age, and to be a resident of Australia.
+                        .text.c-text-contents__bodycopy
+                            .cmp-text(data-cmp-data-layer="" class="font-w-normal-16 font-m-normal-16") Late fees and additional eligibility criteria apply. The first payment may be due at the time of purchase. For complete terms visit afterpay.com/en-AU/terms.
+                    .c-text-contents
+                        .text.c-text-contents__disclaimer
+                            .cmp-text(data-cmp-data-layer="" class="font-w-normal-14 font-m-normal-14") 
+                                p LG Electronics Australia is offering Afterpay to online customers for orders up to the value of $3,000.
+                        .text.c-text-contents__disclaimer
+                            .cmp-text(data-cmp-data-layer="" class="font-w-normal-14 font-m-normal-14") 
+                                p Click below to find out more :
+                            .button.c-button-item
+                                +textButton({name: 'How it Work and FAQs', wSize: 'small', mSize: 'small', buttonStyle: 'highlight', underline : true, isButton: true})(target="_blank")
+                
+            +pop-msg-standard({id : "popPayWithAfterpay", headline: "Pay with Afterpay", headerBorder: true})
+                .c-wrapper.c-pop-msg__contents.c-pop-msg__contents--popPayWithAfterpay.fit-header
+                    .c-tabs.c-tabs--box-style.tabs.panelcontainer
+                        .cmp-tabs(data-cmp-data-layer="", data-placeholder-text="false")
+                            .c-tabs__inner
+                                .c-tabs__tablist.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                    +printTab(2, 1, true)
+                                        span Afterpay
+                                    +printTab(2, 2, false)
+                                        span Zip
+                            +printTabPanel(2, 1, true)
+                                +afterPaylogoTitle("../../mocks/PD0003/icon-logo-afterpay-162-60.png" ,"afterpay", "Shop now. Pay later. Always interest-free.")
+                                .c-after-pay-contents--step.type-4block
+                                    .c-after-pay-contents--step__item
+                                        .image.c-image
+                                            +printLazyImage("../../mocks/PD0003/icon-pay-cart-64-64.png")
+                                        .c-text-contents
+                                            .text.c-text-contents__bodycopy
+                                                .cmp-text(data-cmp-data-layer="" class="font-w-normal-16 font-m-normal-14") Add you favourites to cart
+                                    .c-after-pay-contents--step__item
+                                        .image.c-image
+                                            +printLazyImage("../../mocks/PD0003/icon-pay-post-64-64.png")
+                                        .c-text-contents
+                                            .text.c-text-contents__bodycopy
+                                                .cmp-text(data-cmp-data-layer="" class="font-w-normal-16 font-m-normal-14") Select Afterpay at checkout
+                                    .c-after-pay-contents--step__item
+                                        .image.c-image
+                                            +printLazyImage("../../mocks/PD0003/icon-pay-rewards-64-64.png")
+                                        .c-text-contents
+                                            .text.c-text-contents__bodycopy
+                                                .cmp-text(data-cmp-data-layer="" class="font-w-normal-16 font-m-normal-14") Log into or create your Afterpay account, with instant approval decision
+                                    .c-after-pay-contents--step__item
+                                        .image.c-image
+                                            +printLazyImage("../../mocks/PD0003/icon-pay-payment-64-64.png")
+                                        .c-text-contents
+                                            .text.c-text-contents__bodycopy
+                                                .cmp-text(data-cmp-data-layer="" class="font-w-normal-16 font-m-normal-14") Your purchase will be split into 4 payments, payable every 2 weeks
+                                +afterPayInfo
+                            +printTabPanel(2, 2, false)
+                                +afterPaylogoTitle("../../mocks/PD0003/icon-logo-zip-162-60.png","zip", "Everyday Account, Always interest-free.")
+                                .c-after-pay-contents--step.type-3block
+                                    .c-after-pay-contents--step__item
+                                        .image.c-image
+                                            +printLazyImage("../../mocks/PD0003/icon-pay-cart-64-64.png")
+                                        .c-text-contents 
+                                            .text.c-text-contents__eyebrow
+                                                .cmp-text(data-cmp-data-layer="" class="font-w-normal-16 font-m-normal-14") Repay your way
+                                            .text.c-text-contents__bodycopy
+                                                .cmp-text(data-cmp-data-layer="" class="font-w-normal-14 font-m-normal-14") Choose how you pay - weekly, fortnightly or monthly.
+                                    .c-after-pay-contents--step__item
+                                        .image.c-image
+                                            +printLazyImage("../../mocks/PD0003/icon-pay-post-64-64.png")
+                                        .c-text-contents 
+                                            .text.c-text-contents__eyebrow
+                                                .cmp-text(data-cmp-data-layer="" class="font-w-normal-16 font-m-normal-14") Shop just about everywhere
+                                            .text.c-text-contents__bodycopy
+                                                .cmp-text(data-cmp-data-layer="" class="font-w-normal-14 font-m-normal-14") Shop at all your favourite places, online and instore, with the Zip app.
+                                    .c-after-pay-contents--step__item
+                                        .image.c-image
+                                            +printLazyImage("../../mocks/PD0003/icon-pay-rewards-64-64.png")
+                                        .c-text-contents 
+                                            .text.c-text-contents__eyebrow
+                                                .cmp-text(data-cmp-data-layer="" class="font-w-normal-16 font-m-normal-14") Rewards
+                                            .text.c-text-contents__bodycopy
+                                                .cmp-text(data-cmp-data-layer="" class="font-w-normal-14 font-m-normal-14") Exclusive cashback offers when you shop, simply check the Zip app.
+                                +afterPayInfo
+                    .button.c-pop-msg__button-wrap
+                        +defaultButton({
+                            name: "Close",
+                            wSize:"medium", 
+                            mSize:"small",
+                            buttonStyle : "highlight",
+                            isButton : true 
+                        })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popPayWithAfterpay")
+
+        when 'calculateYourFinancing'
+            mixin printTab(div, num, selected)
+                if selected
+                    button.c-tabs__tab.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0", data-cmp-hook-tabs="tab", aria-selected="true")
+                            if block
+                                block
+                else 
+                    button.c-tabs__tab.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1", data-cmp-hook-tabs="tab", aria-selected="false")
+                            if block
+                                block
+            mixin printTabPanel(div, num, selected)
+                if selected 
+                    .c-tabs__tabpanel.c-tabs__tabpanel--active.cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                        if block
+                            block
+                else 
+                    .c-tabs__tabpanel.cmp-tabs__tabpanel(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                        if block
+                            block
+            mixin afterPaylogoTitle(size, alt, bodycopy)
+                .c-after-pay-contents--logo-title
+                    .image.c-image
+                        +printLazyImage(size, alt)
+                    .c-text-contents 
+                        .text.c-text-contents__bodycopy
+                            .cmp-text(data-cmp-data-layer="" class="font-w-normal-24 font-m-normal-16")= bodycopy
+            mixin afterPayInfo
+                .c-after-pay-contents--info
+                    .c-text-contents 
+                        .text.c-text-contents__bodycopy
+                            .cmp-text(data-cmp-data-layer="" class="font-w-normal-16 font-m-normal-16") All you need to appply is to have a debit or credit card, to be over 18 years of age, and to be a resident of Australia.
+                        .text.c-text-contents__bodycopy
+                            .cmp-text(data-cmp-data-layer="" class="font-w-normal-16 font-m-normal-16") Late fees and additional eligibility criteria apply. The first payment may be due at the time of purchase. For complete terms visit afterpay.com/en-AU/terms.
+                    .c-text-contents
+                        .text.c-text-contents__disclaimer
+                            .cmp-text(data-cmp-data-layer="" class="font-w-normal-14 font-m-normal-14") 
+                                p LG Electronics Australia is offering Afterpay to online customers for orders up to the value of $3,000.
+                        .text.c-text-contents__disclaimer
+                            .cmp-text(data-cmp-data-layer="" class="font-w-normal-14 font-m-normal-14") 
+                                p Click below to find out more :
+                            .button.c-button-item
+                                +textButton({name: 'How it Work and FAQs', wSize: 'small', mSize: 'small', buttonStyle: 'highlight', underline : true, isButton: true})(target="_blank")
+                
+            +pop-msg-standard({id : "calculateYourFinancing", headline: "Calcula tu financiación", headerBorder: true})
+                .c-wrapper.c-pop-msg__contents.c-pop-msg__contents--calculateYourFinancing.fit-header
+                    .c-tabs.c-tabs--box-style.tabs.panelcontainer
+                        .cmp-tabs(data-cmp-data-layer="", data-placeholder-text="false")
+                            .c-tabs__inner
+                                .c-tabs__tablist.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                    +printTab(22, 1, true)
+                                        span Aplazame
+                                    +printTab(22, 2, false)
+                                        span Cetelem
+                            +printTabPanel(22, 1, true)
+                                .calculate-iframe(style="height: 300px") 
+                            +printTabPanel(22, 2, false)
+                                .calculate-iframe(style="height: 300px") 
+                    .button.c-pop-msg__button-wrap.align-center
+                        +defaultButton({
+                            name: "Close",
+                            wSize:"medium", 
+                            mSize:"small",
+                            buttonStyle : "default",
+                            isButton : true 
+                        })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popPayWithAfterpay")
+
+        when 'popRecommendedProducts'
+            +pop-msg-standard({id : "popRecommendedProducts", headline: "Recommended products", headerBorder: false, size:"large"})
+                .c-pop-msg__contents.c-pop-msg__contents--popRecommendedProducts
+                    // block - product list
+                    .c-product-list.c-product-list--carousel
+                        .carousel.panelcontainer
+                            // block - carousel
+                            .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                                .cmp-carousel__content.swiper-wrapper
+                                    - for(var x = 0; x < 10; x++)
+                                        +productItemSlide( 
+                                            {
+                                                flag:['New','Pre Order'], 
+                                                promotion: "",
+                                                installment: true,
+                                                membership: '£1,866.98',
+                                                soldOut: false,
+                                                outOfStock: false ,
+                                                imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                                type:'inch',
+                                                groups:['55','66','77','55','66','77','55','66','77'],
+                                                sku:'GSJV70PZTF', 
+                                                modelid: 'MD07553044',
+                                                ufn:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                                grade:'f',
+                                                review: true,
+                                                wishlist:false,
+                                            }
+                                        )
+                                .c-carousel__handler
+                                    .cmp-carousel__actions
+                                        +carouselBtn({type:"pagination", direction:"prev"})
+                                    +carouselPagination
+                                    .cmp-carousel__actions
+                                        +carouselBtn({type:"pagination", direction:"next"})
+        
+        when 'popSimilarProducts'
+            +pop-msg-standard({id : "popSimilarProducts", headline: "Similar Product", headerBorder: false, size:"large"})
+                .c-pop-msg__contents.c-pop-msg__contents--popSimilarProducts
+                    // block - product list
+                    .c-product-list.c-product-list--carousel
+                        .carousel.panelcontainer
+                            // block - carousel
+                            .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                                .cmp-carousel__content.swiper-wrapper
+                                    - for(var x = 0; x < 10; x++)
+                                        if defaultSimilarProducts
+                                            +productItemSlide( 
+                                                {
+                                                    flag:['New','Pre Order'], 
+                                                    promotion: "Promotional info",
+                                                    installment: true,
+                                                    soldOut: false,
+                                                    outOfStock: false ,
+                                                    imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                                    type:'inch',
+                                                    groups:['55','66','77','55','66','77','55','66','77'],
+                                                    sku:'GSJV70PZTF', 
+                                                    modelid: 'MD07553044',
+                                                    ufn:'American Fridge Freezer 635L Water similar product',
+                                                    grade:'f',
+                                                    review: true,
+                                                    wishlist:false,
+                                                    discountTxt:true,
+                                                    discountPer:true,
+                                                    priceValue:"₹7999990",
+                                                }
+                                            )
+                                        if !defaultSimilarProducts
+                                            +productItemSlide( 
+                                                {
+                                                    flag:['New','Pre Order'], 
+                                                    promotion: "Promotional info",
+                                                    installment: true,
+                                                    soldOut: false,
+                                                    outOfStock: false ,
+                                                    imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                                    type:'inch',
+                                                    groups:['55','66','77','55','66','77','55','66','77'],
+                                                    sku:'GSJV70PZTF', 
+                                                    modelid: 'MD07553044',
+                                                    ufn:'American Fridge Freezer 635L Water similar product',
+                                                    grade:'f',
+                                                    review: false,
+                                                    inhouseReview: true,
+                                                    wishlist:false,
+                                                    discountTxt:false,
+                                                    discountPer:false,
+                                                    priceValue:"₹7999990",
+                                                    mrpPricing: true,
+                                                    mrpPricingtitle: true,
+                                                }
+                                            )
+                                .c-carousel__handler
+                                    .cmp-carousel__actions
+                                        +carouselBtn({type:"pagination", direction:"prev"})
+                                    +carouselPagination
+                                    .cmp-carousel__actions
+                                        +carouselBtn({type:"pagination", direction:"next"})
+
+        when 'popProductSpecs'
+            +pop-msg-standard({id : "popProductSpecs", headline: "InstaView Door-in-Door Specifications", headerBorder: true, size:"large"})
+                .c-pop-msg__contents.c-pop-msg__contents--popProductSpecs
+                    +specs-lgness({onLayer : true})
+        when 'popProductSpecsTab'
+            mixin printTab(div, num, selected, productInfo)
+                if selected
+                    li.cmp-tabs__tab.cmp-tabs__tab--active.cmp-carousel__item.swiper-slide.c-carousel__item(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0", data-cmp-hook-tabs="tab", aria-selected="true")
+                        //- if block
+                        //-     block
+                        +printLazyPicture(`https://via.placeholder.com/32x32`, `https://via.placeholder.com/64x64`)
+                        .cmp-text.font-w-normal-16.font-m-normal-12= productInfo.pro_title
+                else 
+                    li.cmp-tabs__tab.cmp-carousel__item.swiper-slide.c-carousel__item(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1", data-cmp-hook-tabs="tab", aria-selected="false")
+                        //- if block
+                        //-     block
+                        +printLazyPicture(`https://via.placeholder.com/32x32`, `https://via.placeholder.com/64x64`)
+                        .cmp-text.font-w-normal-16.font-m-normal-12= productInfo.pro_title
+
+            mixin printTabPanel(div, num, selected)
+                if selected 
+                    .cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                        if block
+                            block
+                else 
+                    .cmp-tabs__tabpanel(id=`tabs-1-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-1-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                        if block
+                            block
+            +pop-msg-standard({id : "popProductSpecsTab", headline: "", headerBorder: false, size:"large"})
+                .c-pop-msg__contents.c-pop-msg__contents--popProductSpecs.c-pop-msg__contents--popProductSpecsTab
+                    .tabs.spec-slide
+                        .cmp-tabs.carousel.panelcontainer(data-cmp-data-layer="", data-placeholder-text="false")
+                            // .cmp-tabs__inner.cmp-tabs__inner--qty-2 | width 50%
+                            // .cmp-tabs__inner.cmp-tabs__inner--qty-3 | width 33.333%
+                            // .cmp-tabs__inner.cmp-tabs__inner--qty-4 | width 25%
+                            .cmp-tabs__inner.cmp-tabs__inner--qty-2.cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                                ul.cmp-tabs__tablist.cmp-carousel__content.swiper-wrapper(role="tablist", aria-multiselectable="false")
+                                    +printTab(1, 1, true, productInfo = {
+                                        pro_title : "TV LG OLED EVO C2 | 2022 | 55'' (139 CM) | UHD | PROCESSEUR Α9 GEN5 AI"
+                                    }) tab menu name 1
+                                    +printTab(1, 2, false, productInfo = {
+                                        pro_title : "TV LG OLED EVO C2 | 2022 | 55'' (139 CM) | UHD | PROCESSEUR Α8 GEN5 AI"
+                                    }) tab menu name 2
+                                    +printTab(1, 3, false, productInfo = {
+                                        pro_title : "TV LG OLED EVO C2 | 2022 | 55'' (139 CM) | UHD | PROCESSEUR Α7 GEN5 AI"
+                                    }) tab menu name 3
+                                    +printTab(1, 4, false, productInfo = {
+                                        pro_title : "TV LG OLED EVO C2 | 2022 | 55'' (139 CM) | UHD | PROCESSEUR Α6 GEN5 AI"
+                                    }) tab menu name 4
+                                .c-carousel__handler
+                                    .cmp-carousel__actions
+                                        +carouselBtn({type:"pagination", direction:"prev"})
+                                    .cmp-carousel__actions
+                                        +carouselBtn({type:"pagination", direction:"next"})
+                            .c-pop-msg__header
+                                .c-text-contents
+                                    .title.c-text-contents__headline
+                                        strong.cmp-title.font-w-light-36.font-m-light-24(data-cmp-data-layer="") InstaView Door-in-Door Specifications
+
+                            +printTabPanel(1, 1, true)
+                                +specs-lgness({onLayer : true})
+                            +printTabPanel(1, 2, false)
+                                +specs-lgness({onLayer : true})
+                            +printTabPanel(1, 3, false)
+                                +specs-lgness({onLayer : true})
+                            +printTabPanel(1, 4, false)
+                                +specs-lgness({onLayer : true})
+                    
+        when 'popCurationLearnMore'
+            mixin image(size1, size2)
+                div(class='image c-image')&attributes(attributes)
+                    +printLazyPicture(`https://via.placeholder.com/${size1}/999999/333333`, `https://via.placeholder.com/${size2}/999999/333333`)
+                    if block
+                        block
+            mixin video-contents(params)
+                - var option={size1:'',size2:'',videoType:'', ...params}
+                    +image(option.size1,option.size2)&attributes(attributes)
+                        +floating-video(option.videoType)
+            +pop-msg-standard({id : `popCurationLearnMore`, size : "large", headline:"Laptops Curation", headerBorder: false})(class="active" data-can-ajax-video="true")
+                .c-pop-msg__contents.c-pop-msg__contents--box.fit-header
+                    +pop-msg-start-description("to the developer : You can change the id of this layer to whatever you want. When the user presses the learn more button, the markup of this layer should be changed dynamically, and if there is a video, the function media(obj); should also be executed. Do that and the video will be ready.")
+                    .c-video-gallery
+                        // case - img 
+                        +image('688x387','960x540')
+                        div(style="text-align:center;") -- or --
+                        // case - video(youtube)
+                        +video-contents({size1:'688x387', size2:'960x540', videoType:'youtube'})
+                        div(style="text-align:center;") -- or --
+                        // case - video (brightcove)
+                        +video-contents({size1:'688x387', size2:'960x540', videoType:'brightcove'})
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Close", 
+                        wSize:"medium", 
+                        mSize:"small", 
+                        buttonStyle : "default", 
+                        isButton : true
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popCurationLearnMore")
+
+        when 'popNotifyMe'
+            +pop-msg-standard({id : `popNotifyMe`, headline:"Notify Me About Availability", headerBorder: false})
+                .c-pop-msg__contents.c-pop-msg__contents--box.fit-header
+                    //- dialog description 
+                    +pop-msg-start-description("Leave your email address below to receive an email as soon as the promotion opens.")
+                    +required-text-indicate
+                    // block - pop msg (dialog) form 
+                    - var require = true
+                    - var inLayer = true
+                    form(action="#" method="post").c-pop-msg-form.gray
+                        .c-pop-msg-form__item
+                            +email-field("stockAlertEmail2", require, inLayer)
+                            +field-description("By providing your e-mail, you agree to get product stock notification from LG.")(class="c-pop-msg-form__text--item-guide")
+                        .c-pop-msg-form__item.has-line
+                            +agreement-field("agreeStockAlert2", require)
+                            
+                    +form-disclaimer(" * We won't share your email address with anyone else ")(class="font-m-normal-12 font-w-normal-12")
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Close", 
+                        wSize:"medium", 
+                        mSize:"small", 
+                        buttonStyle : "default", 
+                        isButton : true
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popNotifyMe")
+                    +defaultButton({
+                        name: "OK", 
+                        wSize:"medium", 
+                        mSize:"small", 
+                        buttonStyle : "highlight", 
+                        isButton : true
+                    })(type="submit")
+
+        when 'popNotifyMe_CA'
+            +pop-msg-standard({id: `popNotifyMe_CA`, headline: "Notify Me About Availability", headerBorder: false, headLineStyle: "font-w-semibold-36 font-m-semibold-24"})
+                .c-pop-msg__contents.c-pop-msg__contents--box.fit-header
+                    //- dialog description 
+                    +pop-msg-start-description("Leave your email address below to receive an email as soon as the promotion opens.")
+                    +required-text-indicate
+                    // block - pop msg (dialog) form 
+                    - var require = true
+                    - var inLayer = true
+                    form(action="#" method="post").c-pop-msg-form.gray
+                        .c-pop-msg-form__item
+                            +email-field("stockAlertEmailTestTest2", require, inLayer)
+                            .c-text-contents.c-pop-msg-form__text
+                                .text.c-text-contents__disclaimer
+                                    .cmp-text(data-cmp-data-layer="" class="c-pop-msg-form__text--item-guide font-m-normal-14 font-w-normal-16")
+                                        | By providing my email, I understand that I will receive an email about sale notification from LG Electronics Canada, Inc.* I understand that I can withdraw my consent at any time by following the instructions given in the email and in accordance with the 
+                                        a(href="#" class="font-underline" target="_blank" title="Opens in a new window" data-link-name="") LGE Privacy Policy.
+                        .c-pop-msg-form__item.has-line
+                            +formCheckbox(false, "agreeTestTest2", "", "agreeTestTest2")
+                                span.font-w-normal-16.font-m-normal-14.c-pop-msg__gray-form-agree
+                                    | I have read and understood the Privacy Policy and Cookie Policy.
+                                    +required-text-sr
+                                    a(href="#" class="font-underline font-m-semibold-14 font-w-semibold-16" target="_blank" title="Opens in a new window" data-link-name="") Read more
+                            +invalid-warning("Agreement check is not checked.", "aria-error-connection")
+                        .c-pop-msg-form__item
+                            +formCheckbox(false, "marketingAgreeTestTest1", "", "marketingAgreeTestTest1")
+                                span.font-w-normal-16.font-m-normal-14.c-pop-msg__gray-form-agree
+                                    | Receipt of marketing messages (Optional)
+                                    br
+                                    br
+                                    | I consent to being contacted by *LG Electronics, Inc. and **LG Electronics Canada, Inc. about the latest news and special offers by email, SMS, push notification and/or other form of electronic messages.
+                                    br
+                                    | I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE Privacy Policy.​
+                                    br
+                                    | *LG Electronics Inc. – LG Twin tower, 128 Yeoui—daero, Yeongdeungpo-gu, Seoul, Republic of Korea​
+                                    br
+                                    | **LG Electronics Canada, Inc. – 20 Norelco Drive, North York, Ontario M9L 2X6, Canada. 
+                                    a(href="#" class="font-underline font-m-normal-14 font-w-normal-16" target="_blank" title="Opens in a new window" data-link-name="") www.lg.ca
+                    +form-disclaimer(" * We won't share your email address with anyone else ")(class="font-m-normal-12 font-w-normal-16")
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Close", 
+                        wSize:"medium", 
+                        mSize:"small", 
+                        buttonStyle : "default", 
+                        isButton : true
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popNotifyMe_CA")
+                    +defaultButton({
+                        name: "OK", 
+                        wSize:"medium", 
+                        mSize:"small", 
+                        buttonStyle : "highlight", 
+                        isButton : true
+                    })(type="submit" disabled)
+
+        when 'popNotifyMeSuccess'
+            +pop-msg-standard({id:'popNotifyMeSuccess', size: "small"})
+                .c-pop-msg__contents.c-pop-msg__contents--popNotifyMeSuccess
+                    .c-pop-msg__contents--icon.c-pop-msg__contents--icon-success
+                    p.align-text-center Your email has been successfully registered.
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Close", 
+                        wSize:"medium", 
+                        mSize:"small", 
+                        buttonStyle : "default", 
+                        isButton : true
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popNotifyMeSuccess")
+
+        when 'popNotifyMeError'
+            +pop-msg-standard({id:'popNotifyMeError', size: "small"})
+                .c-pop-msg__contents.c-pop-msg__contents--popNotifyMeError
+                    .c-pop-msg__contents--icon.c-pop-msg__contents--icon-error
+                    p.align-text-center The restocking notification has already been updated.
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Close", 
+                        wSize:"medium", 
+                        mSize:"small", 
+                        buttonStyle : "default", 
+                        isButton : true
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popNotifyMeError")
+
+        when 'popInvoiceError'
+            +pop-msg-standard({id:'popInvoiceError', size: "small"})
+                .c-pop-msg__contents.c-pop-msg__contents--popNotifyMeError
+                    .c-pop-msg__contents--icon.c-pop-msg__contents--icon-error
+                    p.align-text-center#popNotifyMeError-headline 
+                        | The file cannot be opened.
+                        br
+                        | please try again
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Close", 
+                        wSize:"medium", 
+                        mSize:"small", 
+                        buttonStyle : "default", 
+                        isButton : true
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popInvoiceError")
+                    
+        when 'popAddToCart'
+            +pop-msg-standard({id : `popAddToCart`, size: "small"})
+                .c-pop-msg__contents#popAddToCart-headline
+                    p.align-text-center Successfully added to your basket
+                .button.c-pop-msg__button-wrap.vertical-align
+                    +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popAddToCart")
+                    +defaultButton({name: 'View Basket', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+        
+        when 'popAddToWishList'
+            +pop-msg-standard({id : `popAddToWishList`, size: "small"})
+                .c-pop-msg__contents.c-pop-msg__contents--popAddToWishList
+                    p.align-text-center 
+                        | Add items to your
+                        br
+                        | MY LG wishlist
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({name: 'Remove Item', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popAddToWishList")
+                    +defaultButton({name: 'Continue to MYLG Wishlist', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+
+        when 'popWishlistSignIn'
+            +pop-msg-standard({id : `popWishlistSignIn`, headline:"Sign In to Create Your Wishlist"})
+                // block - text contents
+                .c-text-contents 
+                    .text.c-text-contents__bodycopy
+                        .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="")
+                            | Add items to your wishlist so you can easily find them when you return to LG.com.
+                            |
+                            <br>
+                            |
+                            | Its an easy way to keep track of that special something Youve had your eye on or save gift ideas for friends and family.
+                .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap--no-divide-on-mobile
+                    +defaultButton({name: 'No Thanks, Not Now', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popWishlistSignIn")
+                    +defaultButton({name: 'Continue to Sign In', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+
+        when 'popStockAlert'
+            +pop-msg-standard({id : `popStockAlert`, headline:"Get Stock Alert", headerBorder: false})
+                .c-pop-msg__contents.fit-header
+                    //- dialog description 
+                    +pop-msg-start-description("Leave your email address below to receive an email as soon as the selected item is back in stock")
+                    +required-text-indicate
+                    // block - pop msg (dialog) form 
+                    - var require = true
+                    - var inLayer = true
+                    form(action="#" method="post").c-pop-msg-form.gray
+                        .c-pop-msg-form__item
+                            +email-field("stockAlertEmail1", require, inLayer)
+                            +field-description("by providing your e-mail, you agree to get product stock notification from LG")(class="c-pop-msg-form__text--item-guide")
+                        .c-pop-msg-form__item.has-line
+                            +agreement-field("agreeStockAlert1", require)
+                            
+                    +form-disclaimer(" * We won't share your email address with anyone else ")(class="font-m-normal-12 font-w-normal-12")
+
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popStockAlert")
+                    +defaultButton({name: 'OK', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+
+        when 'popVertificationCode'
+            +pop-msg-standard({id : `popVertificationCode`, headline:"发送卖场地址", headerBorder: false})
+                .c-pop-msg__contents.c-verification
+                    // block - pop msg (dialog) form 
+                    - var require = true
+                    - var inLayer = true
+                    form(action="#" method="post").c-pop-msg-form
+                        .c-pop-msg-form__item
+                            +formText("text", "电话", "verificationPhoneNumber", true, "请只输入数字")
+                            +invalid-warning("您输入的电话号码有误,请重新输入")
+                            .c-verification__text
+                                strong 验证码
+                                p 请输入图片显示的文本或听到的声音
+                            .c-verification__contents.c-verification__image
+                                .c-verification-left
+                                .c-verification-right
+                                    button.refresh(type="button" aria-label="refresh verification image")
+                                        span.sr-only refresh
+                                    button.sound(type="button" aria-label="Listen to the verification code")
+                                        span.sr-only tts
+                            .c-verification__contents.c-verification__code
+                                .c-verification-left
+                                    +formText("text", "", "verificationCode", true, "")
+                                    +invalid-warning("请确认验证码")
+                                .c-verification-right
+                            +form-disclaimer("本条信息免费。LG电子保证，不向任何第三方提供您输入的手机号码。请协助确认如下事项 :")(class="c-verification__desc")
+                        .c-pop-msg-form__item.has-line
+                            +formCheckbox(false, "chkVerificationAgree", "", "chkVerificationAgree", false)
+                                span.font-w-normal-16.font-m-normal-12
+                                    | 我愿意接收今后来自LG电子的促销、公告等信息。
+                                    |
+                                    br
+                                    |
+                                    | (若不同意，请不要选择，这不影响您发送短信息。)
+
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "取消",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popVertificationCode")
+                    +defaultButton({
+                        name: "发送",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(type="submit")
+
+        when 'popSMSSuccess'
+            +pop-msg-standard({id:'popSMSSuccess', size: "small-x"})
+                .c-pop-msg__contents.c-pop-msg__contents--popNotifyMeSuccess
+                    .c-pop-msg__contents--icon.c-pop-msg__contents--icon-sms-success
+                    p.align-text-center#popNotifyMeSuccess-headline 短信发送成功
+                .button.c-pop-msg__button-wrap
+                     +defaultButton({
+                        name: "搜 索",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popSMSSuccess")
+
+        when 'popSMSError'
+            +pop-msg-standard({id:'popSMSError', size: "small-x"})
+                .c-pop-msg__contents.c-pop-msg__contents--popNotifyMeError
+                    .c-pop-msg__contents--icon.c-pop-msg__contents--icon-error
+                    p.align-text-center#popNotifyMeError-headline 系统维护期间，此服务暂停使用
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "搜 索",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popSMSError")
+
+        when 'popSMSFail'
+            +pop-msg-standard({id:'popSMSFail', size: "small-x"})
+                .c-pop-msg__contents.c-pop-msg__contents--popNotifyMeError
+                    .c-pop-msg__contents--icon.c-pop-msg__contents--icon-error
+                    p.align-text-center#popNotifyMeError-headline 发送失败
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "搜 索",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popSMSFail")
+
+        when 'popSMSCountLimit'
+            +pop-msg-standard({id:'popSMSCountLimit', size: "small-x"})
+                .c-pop-msg__contents.c-pop-msg__contents--popNotifyMeError
+                    .c-pop-msg__contents--icon.c-pop-msg__contents--icon-error
+                    p.align-text-center#popNotifyMeError-headline 同一手机号当天只能收取最多10条短信
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "搜 索",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popSMSCountLimit")
+
+        when 'popNotSupportedGeolocation'
+            +pop-msg-only-message({id:'popNotSupportedGeolocation', size: "small-x", text : "Geolocation is not supported for this Browser/OS."})
+
+        when 'compareCountOver'
+            +pop-msg-only-message({id:'compareCountOver', size: "small", text : "You have 6 products ready to Compare."})
+
+        when 'popPostReview'
+            +pop-msg-standard({id : `popPostReview`, headline:"What people are saying", headerBorder: false, size:"large"})
+                .c-pop-msg__contents.c-pop-msg__contents--popReview.c-pop-msg__contents--reset
+                    //- dialog description 
+                    +required-text-indicate
+                    // block - pop msg (dialog) form 
+                    - var require = true  
+                    - var inLayer = true
+                    form(action="#" method="post").c-post-form
+                        +postFormFieldset({
+                            legend : "Review",
+                            required : false
+                        })
+                            .c-post-form__item
+                                +formRating("post")
+                                +postFormMessage("Ratings are required.", "")
+                            .c-post-form__item.c-post-form__item--input
+                                +formText("text", "Title", "post_title", true, "Title Example : Great features!", false, false, false, true, true)(maxlength="40")
+                                +postFormMessage("A Title is required.", "")
+                            .c-post-form__item.c-post-form__item--textarea
+                                +formTextarea("text", "Review", "post_review", true, "Review Example : I bought this a month ago and am so happy that I did…  (Please Write a review with a minimum of 20 characters.)", inLayer=false, labelSrOnly=false, lengthText=true, isError = true)(minLength="20", maxlength="5000")
+                                +postFormMessage("A Review is required.", "")
+
+                            .c-post-form__item
+                                ul(aria-label="Writing Guidelines").font-w-normal-14.font-m-normal-16
+                                    li If the review is inappropriate, it may not be displayed after the administrator approval process.
+                                    li Please keep your review focused on the product.
+                                    li Refrain from mentioning competitors, prices, other products, websites, “spam” or ads.
+                                    li Do not include any personally identifiable information, obscenities or spiteful comments.
+                                    li Avoid writing about installation or customer service: contact us instead.
+                            .c-post-form__item
+                                .c-input-item
+                                    label(for="post_recommend").c-select-label.font-w-normal-16.font-m-normal-14 Would you recommend this product to friends?
+                                    .c-radio
+                                        .c-radio-group
+                                            +formRadio('Yes', 'post_recommend', 'post_recommend', 'post_yes')
+                                            +formRadio('No', 'post_recommend', 'post_recommend', 'post_no')
+
+                        +postFormFieldset("Reviewer")
+                            .c-post-form__group
+                                .c-post-form__item
+                                    +formText("text", "NickName", "post_nickname", true, "")
+                                    +postFormMessage("NickName is required", "")
+                                .c-post-form__item
+                                    +formText("password", "Password", "post_password", true, "")
+                                    +postFormMessage("Password is required", "Passwords must be 8-16 characters, and have at least 1 Uppercase Letter, 1 Lowercase Letter, and 1 Number.")
+                                .c-post-form__item
+                                    +formText("text", "E-mail", "post_email", true, "")
+                                    +postFormMessage("E-mail is required", "")
+
+                        +postFormFieldset()
+                            .c-post-form__item
+                                +agreement-field("postAgreeStockAlert", require, false)
+
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Cancel",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popPostReview")
+                    +defaultButton({
+                        name: "Post Review",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "highlight",
+                        isButton : true 
+                    })(type="submit")
+
+        when 'popEditReview'
+            +pop-msg-standard({id : `popEditReview`, headline:"What people are saying", headerBorder: false, size:"large"})
+                .c-pop-msg__contents.c-pop-msg__contents--popReview.c-pop-msg__contents--reset
+                    //- dialog description 
+                    +required-text-indicate
+                    // block - pop msg (dialog) form 
+                    - var require = true
+                    - var inLayer = true
+                    form(action="#" method="post").c-post-form
+                        +postFormFieldset("Review")
+                            .c-post-form__item
+                                +formRating("edit")
+                                +postFormMessage("Rating is required", "")
+                            
+                            .c-post-form__item.c-post-form__item--input
+                                +formText("text", "Title", "edit_title", true, "Title Example : Great features!" ,false,false,false,false,true)(maxlength="30")
+                                +postFormMessage("Title is required", "")
+                            .c-post-form__item.c-post-form__item--textarea
+                                +formTextarea("text", "Review", "edit_review", true, "Review Example : I bought this a month ago and am so happy that I did…(Please Write a review with a minimum of 20 characters.)", inLayer=false, labelSrOnly=false, lengthText=true)(minLength="20", maxlength="5000")
+                                +postFormMessage("Review is required", "")
+
+                            .c-post-form__item
+                                .c-input-item
+                                    label(for="edit_recommend").c-select-label.font-w-normal-16.font-m-normal-14 Would you recommend this product to friends?
+                                    .c-radio
+                                        .c-radio-group
+                                            +formRadio('Yes', 'edit_recommend', 'edit_recommend', 'edit_yes')
+                                            +formRadio('No', 'edit_recommend', 'edit_recommend', 'edit_no')
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Cancel",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popEditReview")
+                    +defaultButton({
+                        name: "Edit Review",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "highlight",
+                        isButton : true 
+                    })
+
+        when 'popPostReviewMember'
+            +pop-msg-standard({id : `popPostReviewMember`, headline:"What people are saying", headerBorder: false, size:"large"})
+                .c-pop-msg__contents.c-pop-msg__contents--popReview.c-pop-msg__contents--reset
+                    //- dialog description 
+                    +required-text-indicate
+                    // block - pop msg (dialog) form 
+                    - var require = true  
+                    - var inLayer = true
+                    form(action="#" method="post").c-post-form
+                        +postFormFieldset({
+                            legend : "Review",
+                            required : false
+                        })
+                            .c-post-form__item
+                                +formRating("PostReviewMember")
+                                +postFormMessage("Ratings are required.", "")
+                            .c-post-form__item.c-post-form__item--input
+                                +formText("text", "Title", "post_title", true, "Title Example : Great features!", false, false, false, false, true)(maxlength="30")
+                                +postFormMessage("A Title is required.", "")
+                            .c-post-form__item.c-post-form__item--textarea
+                                +formTextarea("text", "Review", "post_review", true, "Review Example : I bought this a month ago and am so happy that I did…(Please Write a review with a minimum of 20 characters.)", inLayer=false, labelSrOnly=false, lengthText=true)(minLength="20", maxlength="5000")
+                                +postFormMessage("A Review is required.", "")
+
+                            .c-post-form__item
+                                ul(aria-label="Writing Guidelines").font-w-normal-14.font-m-normal-16
+                                    li If the review is inappropriate, it may not be displayed after the administrator approval process.
+                                    li Please keep your review focused on the product.
+                                    li Refrain from mentioning competitors, prices, other products, websites, “spam” or ads.
+                                    li Do not include any personally identifiable information, obscenities or spiteful comments.
+                                    li Avoid writing about installation or customer service: contact us instead.
+                            .c-post-form__item
+                                .c-input-item
+                                    label(for="post_recommend").c-select-label.font-w-normal-16.font-m-normal-14 Would you recommend this product to friends?
+                                    .c-radio
+                                        .c-radio-group
+                                            +formRadio('Yes', 'post_recommend', 'post_recommend', 'post_yes')
+                                            +formRadio('No', 'post_recommend', 'post_recommend', 'post_no')
+
+                        //- +postFormFieldset("Reviewer")
+                        //-     .c-post-form__group
+                        //-         .c-post-form__item
+                        //-             +formText("text", "NickName", "post_nickname", true, "")
+                        //-             +postFormMessage("NickName is required", "")
+                        //-         .c-post-form__item
+                        //-             +formText("password", "Password", "post_password", true, "")
+                        //-             +postFormMessage("Password is required", "Passwords must be 8-16 characters, and have at least 1 Uppercase Letter, 1 Lowercase Letter, and 1 Number.")
+                        //-         .c-post-form__item
+                        //-             +formText("text", "E-mail", "post_email", true, "")
+                        //-             +postFormMessage("E-mail is required", "")
+
+                        +postFormFieldset()
+                            .c-post-form__item
+                                +agreement-field("postAgreeStockAlert", require, false)
+
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Cancel",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popPostReview")
+                    +defaultButton({
+                        name: "Post Review",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "highlight",
+                        isButton : true 
+                    })(type="submit")
+
+        when 'popPostReviewGuest'
+            +pop-msg-standard({id : `popPostReviewGuest`, headline:"What people are saying", headerBorder: false, size:"large"})
+                .c-pop-msg__contents.c-pop-msg__contents--popReview.c-pop-msg__contents--reset
+                    //- dialog description 
+                    +required-text-indicate
+                    // block - pop msg (dialog) form 
+                    - var require = true  
+                    - var inLayer = true
+                    form(action="#" method="post").c-post-form
+                        +postFormFieldset({
+                            legend : "Review",
+                            required : false
+                        })
+                            .c-post-form__item
+                                +formRating("popPostReviewGuest")
+                                +postFormMessage("Ratings are required.", "")
+                            .c-post-form__item.c-post-form__item--input
+                                +formText("text", "Title", "post_title", true, "Title Example : Great features!", false, false, false, false, true)(maxlength="30")
+                                +postFormMessage("A Title is required.", "")
+                            .c-post-form__item.c-post-form__item--textarea
+                                +formTextarea("text", "Review", "post_review", true, "Review Example : I bought this a month ago and am so happy that I did…(Please Write a review with a minimum of 20 characters.)", inLayer=false, labelSrOnly=false, lengthText=true)(minLength="20", maxlength="5000")
+                                +postFormMessage("A Review is required.", "")
+
+                            .c-post-form__item
+                                ul(aria-label="Writing Guidelines").font-w-normal-14.font-m-normal-16
+                                    li If the review is inappropriate, it may not be displayed after the administrator approval process.
+                                    li Please keep your review focused on the product.
+                                    li Refrain from mentioning competitors, prices, other products, websites, “spam” or ads.
+                                    li Do not include any personally identifiable information, obscenities or spiteful comments.
+                                    li Avoid writing about installation or customer service: contact us instead.
+                            .c-post-form__item
+                                .c-input-item
+                                    label(for="post_recommend").c-select-label.font-w-normal-16.font-m-normal-14 Would you recommend this product to friends?
+                                    .c-radio
+                                        .c-radio-group
+                                            +formRadio('Yes', 'post_recommend', 'post_recommend', 'post_yes')
+                                            +formRadio('No', 'post_recommend', 'post_recommend', 'post_no')
+
+                        +postFormFieldset("Reviewer")
+                            .c-post-form__group
+                                .c-post-form__item
+                                    +formText("text", "NickName", "post_nickname", true, "Example: Jackie27", false, false, false, true)
+                                    +postFormMessage("A NickName is required.", "")
+                                .c-post-form__item
+                                    +formText("password", "Password", "post_password", true, "", false, false, false, true)
+                                    +postFormMessage("A Password is required. / The entered password doesn’t comply the regulations.", "Passwords must be 8-16 characters, and have at least 1 Uppercase Letter, 1 Lowercase Letter, and 1 Number.")
+                                .c-post-form__item
+                                    +formText("text", "E-mail", "post_email", true, "Example: Jackie27@google.com", false, false, false, true)
+                                    +postFormMessage("An E-mail is required. / The entered E-mail doesn’t comply the regulations.", "")
+                                .c-post-form__item
+
+                        +postFormFieldset()
+                            .c-post-form__item
+                                +agreement-field("postAgreeStockAlert", require, false)
+
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Cancel",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popPostReview")
+                    +defaultButton({
+                        name: "Post Review",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "highlight",
+                        isButton : true 
+                    })(type="submit")
+        
+        when 'popEditDelReviewMember'
+            +pop-msg-standard({id : `popEditDelReviewMember`, headline:"What people are saying", headerBorder: false, size:"large"})
+                .c-pop-msg__contents.c-pop-msg__contents--popReview.c-pop-msg__contents--reset
+                    //- dialog description 
+                    +required-text-indicate
+                    // block - pop msg (dialog) form 
+                    - var require = true
+                    - var inLayer = true
+                    form(action="#" method="post").c-post-form
+                        +postFormFieldset("Review")
+                            .c-post-form__item
+                                +formRating("editDelMember")
+                                //- +postFormMessage("Rating is required", "")
+                            
+                            .c-post-form__item.c-post-form__item--input
+                                +formText("text", "Title", "edit_title", true, "Title Example : Great features!", false, false, false, false, true)(maxlength="30")
+                                //- +postFormMessage("Title is required", "")
+                            .c-post-form__item.c-post-form__item--textarea
+                                +formTextarea("text", "Review", "edit_review", true, "Review Example : I bought this a month ago and am so happy that I did…(Please Write a review with a minimum of 20 characters.)", inLayer=false, labelSrOnly=false, lengthText=true)(minLength="20", maxlength="5000")
+                                //- +postFormMessage("Review is required", "")
+
+                            .c-post-form__item
+                                ul(aria-label="Writing Guidelines").font-w-normal-14.font-m-normal-16
+                                    li If the review is inappropriate, it may not be displayed after the administrator approval process.
+                                    li Please keep your review focused on the product.
+                                    li Refrain from mentioning competitors, prices, other products, websites, “spam” or ads.
+                                    li Do not include any personally identifiable information, obscenities or spiteful comments.
+                                    li Avoid writing about installation or customer service: contact us instead.
+                            .c-post-form__item
+                                .c-input-item
+                                    label(for="edit_recommend").c-select-label.font-w-normal-16.font-m-normal-14 Would you recommend this product to friends?
+                                    .c-radio
+                                        .c-radio-group
+                                            +formRadio('Yes', 'edit_recommend', 'edit_recommend', 'edit_yes')
+                                            +formRadio('No', 'edit_recommend', 'edit_recommend', 'edit_no')
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Cancel",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popEditReview")
+                    +defaultButton({
+                        name: "Edit review",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "highlight",
+                        isButton : true 
+                    })
+        
+        when 'popEditReviewGuest'
+            +pop-msg-standard({id : `popEditReviewGuest`, headline:"What people are saying", headerBorder: false, size:"large"})
+                .c-pop-msg__contents.c-pop-msg__contents--popReview.c-pop-msg__contents--reset
+                    //- dialog description 
+                    +required-text-indicate
+                    // block - pop msg (dialog) form 
+                    - var require = true
+                    - var inLayer = true
+                    form(action="#" method="post").c-post-form
+                        +postFormFieldset("Review")
+                            .c-post-form__item
+                                +formRating("editDelGuest")
+                                //- +postFormMessage("Rating is required", "")
+                            
+                            .c-post-form__item.c-post-form__item--input
+                                +formText("text", "Title", "edit_title", true, "Title Example : Great features!", false, false, false, false, true)(maxlength="30")
+                                //- +postFormMessage("Title is required", "")
+                            .c-post-form__item.c-post-form__item--textarea
+                                +formTextarea("text", "Review", "edit_review", true, "Review Example : I bought this a month ago and am so happy that I did…(Please Write a review with a minimum of 20 characters.)", inLayer=false, labelSrOnly=false, lengthText=true)(minLength="20", maxlength="5000")
+                                //- +postFormMessage("Review is required", "")
+
+                            .c-post-form__item
+                                ul(aria-label="Writing Guidelines").font-w-normal-14.font-m-normal-16
+                                    li If the review is inappropriate, it may not be displayed after the administrator approval process.
+                                    li Please keep your review focused on the product.
+                                    li Refrain from mentioning competitors, prices, other products, websites, “spam” or ads.
+                                    li Do not include any personally identifiable information, obscenities or spiteful comments.
+                                    li Avoid writing about installation or customer service: contact us instead.
+                            .c-post-form__item
+                                .c-input-item
+                                    label(for="edit_recommend").c-select-label.font-w-normal-16.font-m-normal-14 Would you recommend this product to friends?
+                                    .c-radio
+                                        .c-radio-group
+                                            +formRadio('Yes', 'edit_recommend', 'edit_recommend', 'edit_yes')
+                                            +formRadio('No', 'edit_recommend', 'edit_recommend', 'edit_no')
+                        +postFormFieldset("Reviewer")
+                            .c-post-form__group
+                                .c-post-form__item
+                                    +formText("text", "NickName", "post_nickname", true, "Example: Jackie27", false, false, false, true)
+                                    +postFormMessage("A Nickname is required. / Nickname is incorrect.")
+                                .c-post-form__item
+                                    +formText("password", "Password", "post_password", true, "", false, false, false, true)
+                                    +postFormMessage("A Password is required. / Password is incorrect.")
+                                
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Cancel",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popEditReview")
+                    +defaultButton({
+                        name: "Edit Review",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "highlight",
+                        isButton : true 
+                    })
+
+        when 'popDelReviewGuest'
+            +pop-msg-standard({id : `popDelReviewGuest`, headline:"What people are saying", headerBorder: false, size:"large"})
+                .c-pop-msg__contents.c-pop-msg__contents--popReview.c-pop-msg__contents--reset
+                    //- dialog description 
+                    +required-text-indicate
+                    // block - pop msg (dialog) form 
+                    - var require = true
+                    - var inLayer = true
+                    form(action="#" method="post").c-post-form
+                        +postFormFieldset("Reviewer")
+                            .c-post-form__group
+                                .c-post-form__item
+                                    +formText("text", "NickName", "post_nickname", true, "Example: Jackie27", false, false, false, true)
+                                    +postFormMessage("A Nickname is required. / Nickname is incorrect.")
+                                .c-post-form__item
+                                    +formText("password", "Password", "post_password", true, "", false, false, false, true)
+                                    +postFormMessage("A Password is required. / Password is incorrect.")
+                                
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Cancel",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popEditReview")
+                    +defaultButton({
+                        name: "Edit Review",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "highlight",
+                        isButton : true 
+                    })
+
+        when 'popSuccessSubmitReview'
+            +pop-msg-standard({id:'popSuccessSubmitReview', size: "small"})
+                .c-pop-msg__contents.c-pop-msg__contents--popSuccessSubmit
+                    .c-pop-msg__contents--icon.c-pop-msg__contents--icon-submit-success
+                    p.align-text-center#popNotifyMeSuccess-headline Your review was submitted!
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Close",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popSuccessSubmit")
+        
+        when 'popDelSubmitReview'
+            +pop-msg-standard({id:'popDelSubmitReview', size: "small"})
+                .c-pop-msg__contents.c-pop-msg__contents--popSuccessSubmit
+                    .c-pop-msg__contents--icon.c-pop-msg__contents--icon-submit-success
+                    p.align-text-center#popNotifyMeSuccess-headline Are you sure you want to delete?
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Confirm",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popSuccessSubmit")
+        
+        when 'popExpired'
+            +pop-msg-standard({id:'popExpired', size: "small"})
+                .c-pop-msg__contents
+                    p.align-text-center#popExpired-headline
+                        | Sorry for the inconvenience.
+                        br
+                        | Event Registration is expired.
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Close",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "highlight",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popExpired")
+
+        when 'popBrowserNotSupported'
+            +pop-msg-standard({id : popId, headline: "Browser Not Supported", headerSrOnly: true, headerBorder: false, size: "medium"})
+                .c-pop-msg__contents.c-pop-msg__contents--popNotSupported
+                    .c-text-contents.c-browser-supported
+                        .image.c-image
+                            img(src="/assets/image/logo-lg-100-44.svg", alt="lg")
+                        .text.c-text-contents__subcopy.c-browser-supported__subcopy
+                            .cmp-text.font-w-normal-24.font-m-normal-20
+                                p To properly experience our LG.com website, you will need to use an alternate browser.
+                        .text.c-text-contents__bodycopy.c-browser-supported__bodycopy
+                            .cmp-text.font-w-normal-16.font-m-normal-16
+                                p The LG.com website utilizes responsive design to provide convenient experience that conforms to your devices screen size. In order to get the best possible experience our LG.COM website please follow below instructions.
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-16.font-m-normal-16
+                                p
+                                    | If you're using any kind version of Internet Explorer, you will need to 
+                                    span use an alternate browser 
+                                    | such as Firefox or Chrome or Microsoft Edge.
+        when 'popFindRelayPoint'
+            mixin text-wrap(params)
+                .c-text-contents
+                    each set in params
+                        .text.c-text-contents__bodycopy(class=`${set.icon ? 'c-text-contents__bodycopy--icon-pin' : ''}`)
+                            span.cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")= set.text
+                    
+            +pop-msg-standard({id : "popFindRelayPoint", headline:"Find a relay point", headerBorder: false})
+                .c-pop-msg__contents.c-pop-msg__contents--popRelayPoint
+                    ul.c-list 
+                        li.c-list__item
+                            +formRadio('Relais Particulier Chez Merwan', 'name', 'Relais Particulier Chez Merwan', 'relayPoint1')
+                            +text-wrap([
+                                {text: '0.2km'},
+                                {text: '130 Bis Rue Des Pyrenees, Paris', icon: true}
+                            ])
+                            +formSelect("", "selectPoint1", "Select point", false)
+                                option(value="" disabled selected)  Choose an available time
+                                option(value="Mon 10:00 ~ 14:00") Mon 10:00 ~ 14:00
+                                option(value="Tue 10:00 ~ 14:00") Tue 10:00 ~ 14:00
+                                option(value="Wed 10:00 ~ 14:00") Wed 10:00 ~ 14:00
+                                option(value="Thu 10:00 ~ 14:00") Thu 10:00 ~ 14:00
+                                option(value="Thu 10:00 ~ 14:00") Thu 10:00 ~ 14:00
+                                option(value="Fri 10:00 ~ 13:00") Fri 10:00 ~ 13:00
+                                option(value="Sat 10:00 ~ 14:00") Sat 10:00 ~ 14:00
+                                option(value="Sun 10:00 ~ 14:00") Sun 10:00 ~ 14:00
+                        li.c-list__item
+                            +formRadio('MZ Market', 'name', 'MZ Market', 'relayPoint2')
+                            +text-wrap([
+                                {text: '0.2km'},
+                                {text: '130 Bis Rue Des Pyrenees, Paris', icon: true}
+                            ])
+                            +formSelect("", "selectPoint2", "Select point", false)
+                                option(value="" disabled selected)  Choose an available time
+                                option(value="Mon 10:00 ~ 14:00") Mon 10:00 ~ 14:00
+                                option(value="Tue 10:00 ~ 14:00") Tue 10:00 ~ 14:00
+                                option(value="Wed 10:00 ~ 14:00") Wed 10:00 ~ 14:00
+                                option(value="Thu 10:00 ~ 14:00") Thu 10:00 ~ 14:00
+                                option(value="Thu 10:00 ~ 14:00") Thu 10:00 ~ 14:00
+                                option(value="Fri 10:00 ~ 13:00") Fri 10:00 ~ 13:00
+                                option(value="Sat 10:00 ~ 14:00") Sat 10:00 ~ 14:00
+                                option(value="Sun 10:00 ~ 14:00") Sun 10:00 ~ 14:00
+                        li.c-list__item
+                            +formRadio('Relais Particulier Chez Merwan', 'name', 'Relais Particulier Chez Merwan', 'relayPoint3')
+                            +text-wrap([
+                                {text: '0.2km'},
+                                {text: '130 Bis Rue Des Pyrenees, Paris', icon: true}
+                            ])
+                            +formSelect("", "selectPoint3", "Select point", false)
+                                option(value="" disabled selected)  Choose an available time
+                                option(value="Mon 10:00 ~ 14:00") Mon 10:00 ~ 14:00
+                                option(value="Tue 10:00 ~ 14:00") Tue 10:00 ~ 14:00
+                                option(value="Wed 10:00 ~ 14:00") Wed 10:00 ~ 14:00
+                                option(value="Thu 10:00 ~ 14:00") Thu 10:00 ~ 14:00
+                                option(value="Thu 10:00 ~ 14:00") Thu 10:00 ~ 14:00
+                                option(value="Fri 10:00 ~ 13:00") Fri 10:00 ~ 13:00
+                                option(value="Sat 10:00 ~ 14:00") Sat 10:00 ~ 14:00
+                                option(value="Sun 10:00 ~ 14:00") Sun 10:00 ~ 14:00
+                        li.c-list__item
+                            +formRadio('Relais Particulier Chez Merwan', 'name', 'Relais Particulier Chez Merwan', 'relayPoint4')
+                            +text-wrap([
+                                {text: '0.2km'},
+                                {text: '130 Bis Rue Des Pyrenees, Paris', icon: true}
+                            ])
+                            +formSelect("", "selectPoint4", "Select point", false)
+                                option(value="" disabled selected)  Choose an available time
+                                option(value="Mon 10:00 ~ 14:00") Mon 10:00 ~ 14:00
+                                option(value="Tue 10:00 ~ 14:00") Tue 10:00 ~ 14:00
+                                option(value="Wed 10:00 ~ 14:00") Wed 10:00 ~ 14:00
+                                option(value="Thu 10:00 ~ 14:00") Thu 10:00 ~ 14:00
+                                option(value="Thu 10:00 ~ 14:00") Thu 10:00 ~ 14:00
+                                option(value="Fri 10:00 ~ 13:00") Fri 10:00 ~ 13:00
+                                option(value="Sat 10:00 ~ 14:00") Sat 10:00 ~ 14:00
+                                option(value="Sun 10:00 ~ 14:00") Sun 10:00 ~ 14:00
+
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Close",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popFindRelayPoint")
+                    +defaultButton({
+                        name: "OK",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "highlight",
+                        isButton : true 
+                    })
+        //- [Start] LGCOMIS-1080
+        when 'popTaxInfo'
+            +pop-msg-standard({id : "popTaxInfo", headline:"Edit Tax info", headerBorder: false})
+                .c-pop-msg__contents.popTaxinfo
+                    .info-boxfield
+                        +formRadio("Personal","popParentRadioGroupName", "billingData11", "popRadioIdIndividual")
+                        .sub-input-field.hide
+                            +formText("text", "Fiscal Code", "popTaxIdCodeId", true, "Fiscal Code")
+                            .bottom-container
+                                +formCheckbox('Save to my tax info', "popCheckboxGroupName", "val1", "popCheckId1", count="false", false)
+                    .info-boxfield
+                        +formRadio("Company","popParentRadioGroupName", "billingData12", "popRadioIdCorporation")
+                        .sub-input-field.hide
+                            +formText("text", "Business name", "popBusinessNameId", true, "Business name")
+                            +formText("text", "VAT number", "popVatId", true, "VAT number")
+                            .input-box-container
+                                span.box-label SDI/PEC
+                                    em.c-required *
+                                        span.sr-only Required fields
+                                .complex-input
+                                    +formRadio("SDI","popSDIPEC", "SDI", "popSDI")
+                                    +formText("text", "SDI", "infoSDI", false, "SDI")(disabled)
+                                    +invalid-warning
+                                .complex-input
+                                    +formRadio("PEC","popSDIPEC", "PEC", "popPEC")
+                                    +formText("text", "PEC", "popInfoPEC", false, "PEC")(disabled)
+                                    +invalid-warning
+                            .bottom-container
+                                +formCheckbox('Save to my tax info', "popCheckboxGroupName", "val2", "popCheckId2", count="false", false)
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Close",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popTaxInfo")
+                    +defaultButton({
+                        name: "Ok",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "highlight",
+                        isButton : true 
+                    })(class="js-pop-close" aria-controls="popTaxInfo")
+            script.
+                const radioInputs = document.querySelectorAll('.info-boxfield > .c-radio-item input[type="radio"]');
+
+                radioInputs.forEach(radio => {
+                    radio.addEventListener('change', () => {
+                        if (!radio.checked) return;
+
+                        const optionItem = radio.closest('.info-boxfield');
+                        if (!optionItem) return;
+
+                        const siblingOptionItems = Array.from(optionItem.parentElement.children).filter(item => item !== optionItem);
+                        siblingOptionItems.forEach(siblingOptionItem => {
+                            const subInputField = siblingOptionItem.querySelector('.sub-input-field');
+                            if (subInputField) {
+                                subInputField.classList.add('hide');
+                            }
+                        });
+
+                        const closestSubInputField = optionItem.querySelector('.sub-input-field');
+                        if (closestSubInputField) {
+                            closestSubInputField.classList.remove('hide');
+                        }
+                    });
+                });
+
+                const complexRadioInputs = document.querySelectorAll('.complex-input > .c-radio-item input[type="radio"]');
+
+                complexRadioInputs.forEach(radio => {
+                    radio.addEventListener('click', function () {
+                        const parentComplexInput = this.closest('.complex-input');
+                        const inputField = parentComplexInput.querySelector('.c-input-item > input[type="text"]');
+
+                        if (this.checked) {
+                            inputField.removeAttribute('disabled');
+
+                            const siblingComplexInputs = Array.from(parentComplexInput.parentNode.children).filter(
+                                element => element.classList.contains('complex-input') && element !== parentComplexInput
+                            );
+                            siblingComplexInputs.forEach(siblingComplexInput => {
+                                const siblingRadio = siblingComplexInput.querySelector('.c-radio-item input[type="radio"]');
+
+                                if (siblingRadio && siblingRadio !== this) {
+                                    siblingComplexInput
+                                        .querySelector('.c-input-item > input[type="text"]')
+                                        .setAttribute('disabled', '');
+                                }
+                            });
+                        }
+                    });
+                });
+
+        when 'popSelectTaxType'
+            +pop-msg-standard({id : "popSelectTaxType", headline:"Seleziona i dati per la fatturazione", headerBorder: false, classes:"full-m"})
+                .c-pop-msg__contents.m-flex-zero
+                    +formRadio("Sono una persona fisica","radioName", "val1", "id1", "is-block")(checked)
+                    +formRadio("Company","radioName", "val2", "id2", "is-block")
+                    
+                .button.c-pop-msg__button-wrap.m-vertical-align.center-align
+                    +defaultButton({
+                        name: "Aggiungi dati di fatturazione",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popSelectTaxType")
+                    +defaultButton({
+                        name: "Salva",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "highlight",
+                        isButton : true 
+                    })(class="js-pop-close" aria-controls="popSelectTaxType")
+        //- [End] LGCOMIS-1080
+
+        when 'popSelectDate'
+            +pop-msg-standard({id : 'popSelectDate', size: "large", classes: 'c-pop-date'})
+                //- 해당 달력은 웹접근성에 위배되어 react 달력이 따로 있음으로 프론트 개발시 react-datepicker가 반영 되어 있으니 해당 프론트 달력을 사용바랍니다.
+                p This calendar violates web accessibility and has a separate react calendar, so please use that front calendar as it reflects the react-date picker when developing the front.
+                .c-pop-msg__contents
+                    .Buy-calendar
+                        // -- js calendar picker -- //
+                        .Buy-calendar__box
+
+                        .Buy-calendar__radiobox
+                            .Buy-calendar__radio
+                                .Buy-calendar__radio-item
+                                    .Buy-calendar__radio-info
+                                        +formRadio("All day","name", "val1", "radioId1")
+                                    span.font-w-normal-16.font-m-normal-14 £0
+                                .Buy-calendar__radio-item.Buy-calendar__radio-item--disabled
+                                    .Buy-calendar__radio-info
+                                        +formRadio("10:00 - 17:00","name", "val2", "radioId2")(disabled)
+                                    span.font-w-normal-16.font-m-normal-14 Not available
+                                .Buy-calendar__radio-item
+                                    .Buy-calendar__radio-info
+                                        +formRadio("16:00 - 17:00","name", "val3", "radioId3")
+                                        .Buy-calendar__radio-miximum.font-red Maximum order capacity is almost full.
+                                    span.font-w-normal-16.font-m-normal-14 £0
+                                .Buy-calendar__radio-item
+                                    .Buy-calendar__radio-info
+                                        +formRadio("18:00 - 19:00","name", "val4", "radioId4")
+                                    span.font-w-normal-16.font-m-normal-14 £0
+                                .Buy-calendar__radio-item
+                                    .Buy-calendar__radio-info
+                                        +formRadio("20:00 - 21:00","name", "val5", "radioId5")
+                                    span.font-w-normal-16.font-m-normal-14 £0
+                                .Buy-calendar__radio-item
+                                    .Buy-calendar__radio-info
+                                        +formRadio("22:00 - 23:00","name", "val6", "radioId6")  
+                                    span.font-w-normal-16.font-m-normal-14 £0
+                        .button.Buy-calendar__button
+                            +defaultButton({
+                                name: "Save",
+                                wSize:"medium", 
+                                mSize:"small",
+                                buttonStyle : "highlight",
+                                isButton : true 
+                            })
+ 
+        when 'popsEmailMyPackage'
+            +pop-msg-standard({id : `popsEmailMyPackage`, headline:"Email My Package", headerBorder: false})
+                .c-pop-msg__contents.fit-header
+                    //- dialog description 
+                    +pop-msg-start-description("Leave your email address below to receive your selected package information.")
+                    +required-text-indicate
+                    // block - pop msg (dialog) form 
+                    - var require = true
+                    - var inLayer = true
+                    form(action="#" method="post").c-pop-msg-form.gray
+                        .c-pop-msg-form__item
+                            +email-field("packageEmail1", require, inLayer)
+                            +field-description("By providing your email, you agree to get your package information from LG.")(class="c-pop-msg-form__text--item-guide")
+                        .c-pop-msg-form__item.has-line
+                            - var name = 'popsEmailMyPackage'
+                            - var value = ""
+                            - var disabled = false
+                            - var required = require
+                                +formCheckbox(false, name+"1", '', name+"1", require)
+                                    span.font-w-normal-16.font-m-normal-14.c-pop-msg__gray-form-agree
+                                    | I want to receive a reminder email in a week
+                                +formCheckbox(false, name+"2" , '', name+"2", require)
+                                    span.font-w-normal-16.font-m-normal-14.c-pop-msg__gray-form-agree
+                                    | I have read and agree to the&nbsp;
+                                    // GA4
+                                    a.font-underline(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Privacy policy
+                                    +required-text-sr
+                                //- 
+                            +invalid-warning("Agreement check is not checked.")
+                    +form-disclaimer(" * We won't share your email address with anyone else ")(class="font-m-normal-12 font-w-normal-12")
+
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popsEmailMyPackage")
+                    +defaultButton({name: 'OK', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+                    
+        when 'popEmailMyPackageSuccess'
+            +pop-msg-standard({id:'popEmailMyPackageSuccess', size: "small"})
+                .c-pop-msg__contents.c-pop-msg__contents--popNotifyMeSuccess
+                    .c-pop-msg__contents--icon.c-pop-msg__contents--icon-success
+                    p.align-text-center Your email has been successfully registered.
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Close", 
+                        wSize:"medium", 
+                        mSize:"small", 
+                        buttonStyle : "default", 
+                        isButton : true
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popEmailMyPackageSuccess")
+
+        when 'popPromotions'
+            .promotions-popup
+                +pop-msg-standard({id: "Promotions", headline:"", size:"medium", headerBorder: false})
+                    +product-promotion-information
+
+        when 'popUnsubscribe'
+            +pop-msg-standard({id:'popUnsubscribe', size: "small"})
+                .c-pop-msg__contents
+                    p.align-text-center Unsubscribing is complete.
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: 'Close', 
+                        wSize: 'medium', 
+                        mSize: 'small', 
+                        buttonStyle: 'default', 
+                        isButton: true
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popUnsubscribe")
+
+        when 'popSecretCoupon'
+            +pop-msg-standard({id : `popSecretCoupon`, headline:"Secret Coupon Terms & Condition"})
+                // block - text contents
+                .c-text-contents 
+                    .text.c-text-contents__bodycopy
+                        .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="")
+                            | Prices, promotions and availability may vary by store and online. Pirces subject to change without notice. Quantities are linited. Check with your local retailers for final price and availability.
+                .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap--no-divide-on-mobile
+                    +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popSecretCoupon")
+
+        when 'popPromotionLogin'
+            +pop-msg-standard({id : `popPromotionLogin`, headline:"Přihlášení člena", headerBorder: false, size: "small-x-x"})
+                .c-pop-msg__contents
+                    .text.c-text-contents__bodycopy
+                      .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") Nejstepřihlášeni, pro pokračování se prosím přihlaste
+                .button.c-pop-msg__button-wrap.align-center
+                    +defaultButton({name: 'Zavřít', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popPromotionLogin")
+                    +defaultButton({name: 'OK', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+        
+        when 'popPostal'
+            +pop-msg-standard({id :`popPostal`, headline:"Change Shipping Location", headerBorder: false})
+                .c-pop-msg__contents.fit-header
+                    
+                    //- dialog description 
+                    +pop-msg-start-description("Your Postal Code helps us provide the most accurate product and delivery information.")
+                    - var require = false
+                    - var inLayer = true
+                    - var id = 'postal_Wa'
+                    form(action="#" method="post").c-pop-msg-form.gray
+                        .c-pop-msg-form__item
+                            +formText("text", "Postal Code", id, require, "Enter Postal Code (ex-M9L 2X6)", inLayer)
+                            +invalid-warning("Not a valid Postal Code. Please try again.", "postal_Wa")
+
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popPostal")
+                    +defaultButton({name: 'Update', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(id="postalUpdate" disabled)
+
+        when 'popGuestLogin'
+            +pop-msg-standard({id :`popGuestLogin`, headline: "", headerSrOnly: true, headerBorder: false, size: "small-x-x"})
+                .c-pop-msg__contents.c-pop-msg__contents--popGuestLogin
+                    .c-text-contents.align-text-center.c-guest-login
+                        .image.c-image.c-guest-login__logo
+                            img(src="/assets/image/logo-lg-100-44_gray.svg", alt="lg")
+                        .text.c-text-contents__subcopy.c-guest-login__subcopy
+                            .cmp-text.font-w-normal-24.font-m-normal-20
+                                p
+                                    | Ciao testit1234@ruu.kr,
+                                    br
+                                    | siamo felici di rivederti su LG!
+                        .text.c-text-contents__bodycopy.c-guest-login__bodycopy
+                            .cmp-text.font-w-normal-16.font-m-normal-16
+                                p
+                                    | Effettua il login per beneficiare
+                                    br
+                                    | dell'esclusivo sconto Member LG del 2% 
+                .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap--no-divide-on-mobile.align-center
+                    +defaultButton({name: 'Continua come ospite', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popPostal")
+                    +defaultButton({name: 'Accedi', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+
+        when 'popSaving'
+            +pop-msg-standard({id : `popSaving`, headline:"Recycle and Upgrade: Trade In for a New Model", size: "medium"})
+                .c-pop-msg__contents
+                    .saving-step
+                        ol
+                            li.step-act(id="saving-step1" aria-current="step")
+                                .step 
+                                    span(aria-hidden="ture") 1
+                                    | Section 1
+                            li(id="saving-step2")
+                                .step
+                                    span(aria-hidden="ture") 2
+                                    | Section 2
+                    
+                    .saving-form-step1.customScroll(aria-labelledby="saving-step1")
+                        .saving-select
+                            form(action="#" method="post").c-pop-msg-form
+                                ul
+                                    li
+                                        .c-pop-msg-form__head Select Brand of current device
+                                        .c-pop-msg-form__item
+                                            +formSelect("", "selectBrand", "Select Brand of current device", false)
+                                                option(value="" disabled selected) Select an answer
+                                                option(value="select1") select 1
+                                            .c-warning Please Select Brand of current device
+                                    li
+                                        .c-pop-msg-form__head Select Size of current device                    
+                                        .c-pop-msg-form__item
+                                            +formSelect("", "selectSize", "Select Size of current device", false)(disabled="disabled")
+                                                option(value="" disabled selected) Select an answer
+                                                option(value="select2") select 2
+                                            .c-warning Please Select Size of current device
+                                    li
+                                        .c-pop-msg-form__head Select Condition of current device
+                                        .c-pop-msg-form__item
+                                            +formSelect("", "selectCondition", "Select Condition of current device", false)(disabled="disabled")
+                                                option(value="" disabled selected) Select an answer
+                                                option(value="products") select 3
+                                            .c-warning Please Select Condition of current device
+                                    li
+                                        .c-pop-msg-form__head Select your Budget Range
+                                        .c-pop-msg-form__item
+                                            +formSelect("", "selectBudget", "Select your Budget Range", false)(disabled="disabled")
+                                                option(value="" disabled selected) Select an answer
+                                                option(value="products") select 4
+                                            .c-warning Please Select your Budget Range
+                                    li
+                                        .c-pop-msg-form__head Are you considering in upgrading other homeappliances?
+                                        .c-pop-msg-form__item
+                                            +formSelect("", "selectConsidering", "Are you considering in upgrading other homeappliances?", false)(disabled="disabled")
+                                                option(value="" disabled selected) Select an answer
+                                                option(value="products") select 5
+                                            .c-warning Please choose
+                        .saving-info.info-step
+                            p(class="font-w-normal-24 font-m-normal-16") Trade Up in 4 steps
+                            .saving-info-inner
+                                ul.customScroll
+                                    li
+                                        .info-img
+                                            +printLazyImage(`../../assets/icon/icon-mylg-orders-48-48.svg`)(aria-hidden="true")
+                                        .info-txt
+                                            | Identify the device to be recycled, apply discount at checkout
+                                    li
+                                        .info-img
+                                            +printLazyImage(`../../assets/icon/icon-mylg-product-48-48.svg`)(aria-hidden="true")
+                                        .info-txt
+                                            | Fully uninstall your old product so it is ready for collection (no packaging required)
+                                    li
+                                        .info-img
+                                            +printLazyImage(`../../assets/icon/icon-calendar-black-48-48.svg`)(aria-hidden="true")
+                                        .info-txt
+                                            | Delivery team will reach out to arrange a collection date
+                                    li
+                                        .info-img
+                                            +printLazyImage(`../../assets/icon/icon-free-delivery-48-48.svg`)(aria-hidden="true")
+                                        .info-txt
+                                            | We will collect your old device with your LG delivery
+                        .saving-info.info-Process
+                            p(class="font-w-normal-24 font-m-normal-20") Preparation Process
+                            .saving-info-inner
+                                ul.customScroll
+                                    li
+                                        .info-img
+                                            +printLazyImage(`../../assets/icon/icon-mylg-request-repair2-48-48.svg`)(aria-hidden="true")
+                                        .info-txt
+                                            | Appliances must be disconnected and drained of any water.
+                                    li
+                                        .info-img
+                                            +printLazyImage(`../../assets/icon/icon-delivery-48-48.svg`)(aria-hidden="true")
+                                        .info-txt
+                                            | Delivery team may decline the collection if appliance is not ready at the time of delivery
+                                    li
+                                        .info-img
+                                            +printLazyImage(`../../assets/icon/icon-cashback-48-48.svg`)(aria-hidden="true")
+                                        .info-txt
+                                            | A surcharge equal to the discount amount received will apply if the appliance is not ready for recycling.
+                    
+                    .saving-form-step2.hidden.customScroll(aria-labelledby="saving-step2")
+                        .saving-discount
+                            .discount-inner
+                                .discount-title You are eligible for the following discount
+                                .discount-history 
+                                    .discount-txt Trade-up discount
+                                    .discount-pay £200
+                        
+                        .saving-terms
+                            p(class="font-w-normal-24 font-m-normal-20") Terms and Conditions
+                            .terms-link Select Yes to consent to the 
+                                a(href="#inLayerTerms" class="js-inLayer-btn" title="Opens in a new layer") Terms and Conditions
+                                | , and disclaimers
+                            .terms-radio
+                                input(type='radio' id="terms_yes" name='terms_checked' class="sr-only")
+                                label(for='terms_yes') Yes
+                                input(type='radio' id="terms_no" name='terms_checked' class="sr-only" checked)
+                                label(for='terms_no') No
+
+                        .saving-info.info-step
+                            p(class="font-w-normal-24 font-m-normal-20") To be eligible, the device must meet the following conditions:
+                            .saving-info-inner
+                                ul.customScroll
+                                    li
+                                        .info-img
+                                            +printLazyImage(`../../assets/icon/icon-power-settings-48-48.svg`)(aria-hidden="true")
+                                        .info-txt
+                                            | Devices powers on and holds charge
+                                    li
+                                        .info-img
+                                            +printLazyImage(`../../assets/icon/icon-cart-sa-pay-with-step04-black-48-48.svg`)(aria-hidden="true")
+                                        .info-txt
+                                            | Fully operational without significant functional impairments
+                                    li
+                                        .info-img
+                                            +printLazyImage(`../../assets/icon/icon-mylg-request-repair-48-48.svg`)(aria-hidden="true")
+                                        .info-txt
+                                            | No substant8ial cracks or broken components
+                                    li
+                                        .info-img
+                                            +printLazyImage(`../../assets/icon/icon-accessory-48-48.svg`)(aria-hidden="true")
+                                        .info-txt
+                                            | No missing accessories
+                        
+                        .saving-bottom
+                            | By proceeding to purchase and take advantage of this promotion, you accept the following: The trade-up discount you receive is an incentive to recycle and to purchase a new LG appliance, laptop, monitor, soundbar, or television; it is not a trade-in value for the product you are recycling. Recycled products are non-returnable and have zero value. If you return the product you purchased for a refund (for any reason) you will not receive any amount or value for the product you recycle. You will be required to fully uninstall (including disconnecting and draining of water, or wiping of data, as applicable) your appliance or device and make sure it is ready for collection at the same time we deliver your order. We reserve the right to refuse the delivery or collection if you fail to do so. A surcharge equal to the amount of the discount you received will apply if you do not recycle or have your appliance or device ready for recycling. Offer cannot be combined with multi-buy promotions. Each household may only recycle one of each type of product and will receive only one trade-up discount for each product type recycled.
+
+                    .inLayer(id="inLayerTerms" aria-labelledby="inLayerTerms")
+                        .inLayer__headline
+                            .cmp-title.font-w-normal-36.font-m-normal-24
+                                strong T&amp;C information
+                            .inLayer__close-top
+                                button.cmp-button.js-inLayer-close(type="button")
+                                    span.cmp-button__text.sr-only close
+                        .inLayer__body.customScroll
+                            .cmp-text.font-w-normal-16.font-m-normal-16
+                                p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc accuan eget. <br><br> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc accuan eget. <br><br> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc accuan eget. <br><br> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc accuan eget. <br>
+                        .inLayer__button
+                            +defaultButton({
+                                name: 'Close', 
+                                wSize: 'medium', 
+                                mSize: 'small', 
+                                isButton: true
+                            })(class="js-inLayer-close")
+                            
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "Cancel",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "default",
+                        isButton : true 
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popSaving")
+                    +defaultButton({
+                        name: "Continue",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "highlight continue",
+                        isButton : true 
+                    })(type="submit")
+                    +defaultButton({
+                        name: "Add coupon to checkout",
+                        wSize:"medium", 
+                        mSize:"small",
+                        buttonStyle : "highlight confirm hidden",
+                        isButton : true 
+                    })(type="submit" disabled="disabled")
+
+        when 'popSerialNumberGuide'
+            +pop-msg-standard({id:"popSerialNumberGuide", headline:"Hinweis"})
+                .c-pop-msg__contents
+                    // block - text contents
+                    .c-text-contents
+                        .text.c-text-contents__bodycopy
+                            ul.c-list-number
+                                li.c-list-number__item Die ersten 3 Zeichen der Seriennummer bestehen aussschlißlich aus Zahlen.
+                                li.c-list-number__item Die Zeichen 4 bis 7 bestehen ausschließlich aus Buchstaben (alle Buchstaben werden als Großbuchstaben erkannt)
+                                li.c-list-number__item Die Zeichen 8-12 bzw 8-16 enthalten zumeist eine Buchstaben-, Zahlenkombination.<br>Solltest du Probleme haben, deine Seriennummer zu finden, oder einzutragen hilft dir unser Support-Team gerne weiter.
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: "schließen", 
+                        wSize:"medium", 
+                        mSize:"small", 
+                        buttonStyle : "highlight", 
+                        isButton : true
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popSerialNumberGuide")
+
+    if(popId.indexOf('popReference') != -1)
+        +pop-msg-standard({id : popId, headline:"Reference", classes : 'PD0017__modal-container'})
+            .c-pop-msg__contents
+                // block - text contents
+                .c-text-contents
+                    .text.c-text-contents__subcopy
+                        strong.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="")
+                            | Dual Controller 2.72 release for Windows
+                    .text.c-text-contents__info
+                        .cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+                            span Program : Dual Controller
+                            span Version : 2.72
+                    .text.c-text-contents__bodycopy
+                        .cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")
+                            p Dual Controller is application software that lets user to control multiple Windows and Mac systems using the shared keyboard and mouse attached to one computer. It is designed for the people who often use more than one system which are placed near to each other. With Dual Controller Software, user can share a single keyboard/mouse across a set of systems (Windows/MAC). Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget odio. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar tempor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus sapien nunc eget odio. Lorem ipsum dolor sit * Please install the latest package of Dual Controller on all of the devices you are using. Windows 7 (32-bit and 64-bit, Service Pack 1) Windows 10 (32-bit and 64-bit)
+            .button.c-pop-msg__button-wrap
+                +defaultButton({
+                    name: 'Close', 
+                    wSize: 'medium', 
+                    mSize: 'small', 
+                    buttonStyle: 'highlight', 
+                    isButton: true
+                })(class="js-pop-close")
+
+    if(popId.indexOf('popInteractiveGallery') != -1)
+        - var headStyle = "font-w-light-36 font-m-light-24"
+        - var bodyStyle = "font-w-normal-16 font-m-normal-16"
+        mixin image(size1, size2)
+            // block : image
+            div(class='image c-image')&attributes(attributes)
+                +printLazyPicture(`https://via.placeholder.com/${size1}/999999/333333`, `https://via.placeholder.com/${size2}/999999/333333`)
+                if block
+                    block
+        mixin text-contents(params)
+            - var option={isButton:false,headText:'',bodyText:'', ...params}
+                // block : text-contents   
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        +headline(`${headStyle}`, 'h2', `${option.headText} Life's Good from home with LG's ThinQ-enabled smart home appliances`)
+                    .text.c-text-contents__bodycopy 
+                        .cmp-text(class=`${bodyStyle}` data-cmp-data-layer="") 
+                            p #{option.bodyText} Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo
+        mixin video-contents(params)
+            - var option={size1:'',size2:'',videoType:'', ...params}
+                // Video case
+                +image(option.size1,option.size2)&attributes(attributes)
+                    +floating-video(option.videoType)
+        +pop-msg-standard({id : popId, headline:params.headline, headerSrOnly: true, headerBorder: false, size: "large"})
+            .c-pop-msg__contents
+                .carousel.panelcontainer
+                    // block : carousel
+                    .cmp-carousel.swiper.c-carousel.c-interactive-gallery(data-cmp-data-layer="")
+                        .cmp-carousel__content.swiper-wrapper
+                            if(popId == 'popInteractiveGallery1')
+                                .cmp-carousel__item.swiper-slide.c-carousel__item.align-left(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                                    +video-contents({size1:'688x387', size2:'960x540', videoType:'brightcove'})
+                                    +text-contents({headText:'Heading1',bodyText:'Body1'})
+                            else 
+                                .cmp-carousel__item.swiper-slide.c-carousel__item.align-left(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                                    +video-contents({size1:'688x387', size2:'960x540', videoType:'brightcove'})
+                                    +text-contents({headText:'Heading1',bodyText:'Body1'})
+                                .cmp-carousel__item.swiper-slide.c-carousel__item.align-left(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                                    +video-contents({size1:'688x387', size2:'960x540', videoType:'youtube'})
+                                    +text-contents({headText:'Heading2',bodyText:'Body2'})
+                                .cmp-carousel__item.swiper-slide.c-carousel__item.align-left(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                                    +video-contents({size1:'688x387', size2:'960x540', videoType:'brightcove'})
+                                    +text-contents({headText:'Heading3',bodyText:'Body3'})
+                                .cmp-carousel__item.swiper-slide.c-carousel__item.align-left(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                                    +video-contents({size1:'688x387', size2:'960x540', videoType:'youtube'})
+                                    +text-contents({headText:'Heading4',bodyText:'Body4'})
+                        .c-carousel__handlers
+                            .c-carousel__handler
+                                .cmp-carousel__actions
+                                    +carouselBtn({type:"pagination", direction:"prev"})
+                                +carouselPagination({isUnder:true})
+                                .cmp-carousel__actions
+                                    +carouselBtn({type:"pagination", direction:"next"})
+
+mixin printSimpleLayerPopup(popId, params)
+    - var option={desc:'', btn: '', ...params}
+    +pop-msg-standard({id:popId, size: "small", btnCloseNone: option.btnCloseNone})
+        .c-pop-msg__contents
+            p.align-text-center !{option.desc}
+        if (params.color === 'red')
+            .button.c-pop-msg__button-wrap
+                +defaultButton({name: params.btn, wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(class="js-pop-close" aria-controls=popId)
+        else 
+            .button.c-pop-msg__button-wrap
+                +defaultButton({name: "Close", wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-pop-msg__close-btn js-pop-close" aria-controls=popId)
+
+mixin printSuccessPopup(popId, params)
+    - var option={desc:'', btn1: '', btn2: '', ...params}
+    +pop-msg-standard({id:popId, size: "small"})
+        .c-pop-msg__contents
+            p.align-text-center #{option.desc}
+        .button.c-pop-msg__button-wrap
+            +defaultButton({name: params.btn1, wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-pop-msg__close-btn js-pop-close")
+            +defaultButton({name: params.btn2, wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})(aria-controls=popId)
+
+mixin checkedPopup(popId, params)
+    - var option={desc:'', checkdesc:'', btn1: '', btn2: '', ...params}
+    +pop-msg-standard({id:popId, size: "small"})
+        .c-pop-msg__contents
+            p.align-text-center #{option.desc}
+            +formCheckbox(false, "printCheckLogin", "", "printCheckLogin", false)
+                span.font-w-normal-16.font-m-normal-14.c-pop-msg__gray-form-agree
+                |  #{option.checkdesc}
+        .button.c-pop-msg__button-wrap
+            +defaultButton({name: params.btn1, wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-pop-msg__close-btn js-pop-close")
+            +defaultButton({name: params.btn2, wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})(aria-controls=popId)

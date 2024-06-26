@@ -1,0 +1,223 @@
+include ./CT0303-inc.pug
+
+mixin CT0303(option=false, country=false)
+	.CT0303
+		if(option === "before")
+			.buy-checkout__item.before
+				+checkoutStep({
+					title:"Payment",
+					current:"3",
+					total:"3",
+					type: ""
+				})
+
+		if(option === "complete") 
+			.buy-checkout__item.buy-checkout__item--coupon.buy-checkout__item--complete
+				+checkoutStep({
+					title:"Payment",
+					current:"3",
+					total:"3",
+					type: "checked",
+				})         
+
+		if(option === "default")
+			.buy-checkout__item.buy-checkout__item--payment
+				+checkoutStep({
+					title:"Payment",
+					current:"3",
+					total:"3",
+					type: "active"
+				})
+				.c-checkout-step03.c-checkout-step03-active
+					ul.c-checkout-step03-payment
+						case country
+							when 'mx'
+								+paymentBox([
+									{
+										type:"pago",
+										title:"Mercado Pago Pro",
+										terms: [
+											{
+												type: 'form',
+												formText: `<span class="unline-red"><a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Términos y condiciones, Política de privacidad*</a></span>`,
+												formVal: `${country}Pago01`,
+												formId: `${country}PagoId01`
+											},
+											{
+												type: 'form',
+												formText: `Recepción de mensajes de marketing (Opcional)<br />Doy consentimiento a ser contactado por LGE y sus afiliados acerca de las últimas noticias y ofertas especiales por correo electrónico, SMS, notificaciones push, llamadas telefónicas, sitios de medios sociales y/o otra forma de mensajes electrónicas. Puedo cambiar de opinión en cualquier momento siguiendo las instrucciones dadas en cada canal de comunicación incluyendo pero sin limitarse al correo electrónico y de conformidad con la Política de Privacidad de LGE.`,
+												formVal: `${country}Pago02`,
+												formId: `${country}PagoId02`
+											},
+										],
+									},
+									{
+										type:"payPalCreditDebitCard",
+										title:"Paypal credit/Debit Card",
+										terms: [
+											{
+												type: 'form',
+												formText: `<span class="unline-red"><a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Términos y condiciones, Política de privacidad*</a></span>`,
+												formVal: `${country}PayPal01`,
+												formId: `${country}PayPalId01`
+											},
+											{
+												type: 'form',
+												formText: `Recepción de mensajes de marketing (Opcional)<br />Doy consentimiento a ser contactado por LGE y sus afiliados acerca de las últimas noticias y ofertas especiales por correo electrónico, SMS, notificaciones push, llamadas telefónicas, sitios de medios sociales y/o otra forma de mensajes electrónicas. Puedo cambiar de opinión en cualquier momento siguiendo las instrucciones dadas en cada canal de comunicación incluyendo pero sin limitarse al correo electrónico y de conformidad con la Política de Privacidad de LGE.`,
+												formVal: `${country}PayPal02`,
+												formId: `${country}PayPalId02`
+											},
+										],
+									},
+									{
+										type:"payPalEwallet",
+										title:`<span>Paypal Ewallet</span>`,
+										terms: [
+											{
+												type: 'form',
+												formText: `<span class="unline-red"><a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Términos y condiciones, Política de privacidad*</a></span>`,
+												formVal: `${country}PayPalEwallet01`,
+												formId: `${country}PayPalEwalletId01`
+											},
+											{
+												type: 'form',
+												formText: `Recepción de mensajes de marketing (Opcional)<br />Doy consentimiento a ser contactado por LGE y sus afiliados acerca de las últimas noticias y ofertas especiales por correo electrónico, SMS, notificaciones push, llamadas telefónicas, sitios de medios sociales y/o otra forma de mensajes electrónicas. Puedo cambiar de opinión en cualquier momento siguiendo las instrucciones dadas en cada canal de comunicación incluyendo pero sin limitarse al correo electrónico y de conformidad con la Política de Privacidad de LGE.`,
+												formVal: `${country}PayPalEwallet02`,
+												formId: `${country}PayPalEwalletId02`
+											},
+										],
+									},
+								], country)
+							default 
+								+paymentBox([
+									{
+										type:"creditCard",
+										title:"Credit Card",
+									},
+									{
+										type:"payPal",
+										title:"PayPal",
+										fillIcon:true
+									},
+									{
+										type:"klarna",
+										title:"Klarna",
+									}
+								], country)
+
+			.buy-checkout__item.buy-checkout__item--payment.buy-checkout__item--complete(style="display: none;")
+				+checkoutStep({
+					title:"Payment",
+					current:"3",
+					total:"3",
+					type: "checked"
+				})
+				case country
+					when 'mx'
+						+paymentComplete([
+							{
+								type: 'transferencia',
+								title: 'Transferencia Bancaria',
+								isBetween: true,
+							},
+							{
+								type: 'creditCard',
+								title: 'Tarjeta de crédito y débito - Mercado Pago',
+								isBetween: true,
+								tooltip: "1111"
+							},
+							{
+								src: 'icon-payment-paypal-74-20',
+								type: 'payPal',
+								title: '<span>PayPal Express Checkout <span class="font-red"><br/>¿Qué es PayPal?</span></span>',
+								isBetween: true,
+								contents: [
+									{
+										type: 'form',
+										formText: `<span class="unline-red"><a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Términos y condiciones, Política de privacidad</a></span>`,
+										formVal: `${country}Val01`,
+										formId: `${country}EmaliId1`
+									},
+									{
+										type: 'form',
+										formText: `Al marcar esta casilla aceptas recibir por correo electrónico información relacionada con nuestros productos y servicios (lanzamientos, ofertas y promociones) que consideremos de tu interés. Recuerda que puedes darte de baja en cualquier momento siguiendo las instrucciones que están en todos nuestros correos electrónicos de acuerdo a nuestra política de privacidad.`,
+										formVal: `${country}Val02`,
+										formId: `${country}EmaliId2`
+									},
+								]
+							}
+						])
+					default
+						+paymentComplete([
+							{
+								src: 'icon-mylg-visa-31-23',
+								type: 'creditCard',
+								title: 'VISA Xxxxxxxxx6995',
+								date: '05/24',
+								isBetween: false,
+								contents: [
+									{
+										type: 'form',
+										formText: `<span class="unline-red">I accept <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Digital River's terms and conditions of sales.</span></a></span>`,
+										formVal: 'val01',
+										formId: 'emaliId1'
+									},
+									{
+										type: 'form',
+										formText: `<span class="unline-red">Receipt of marketing messages(Optional) <br/> I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text"> Privacy Policy. </span></a></span>`,
+										formVal: 'val02',
+										formId: 'emaliId2'
+									}
+								]
+							},
+							{
+								src: 'icon-payment-paypal-74-20',
+								type: 'payPal',
+								title: 'Buy now and pay later with pay in 3',
+								isBetween: false,
+								contents: [
+									{
+										type: 'paypalList'
+									},
+									{
+										type: 'form',
+										formText: `<span class="unline-red">I accept <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Digital River's terms and conditions of sales.</span></a></span>`,
+										formVal: 'val03',
+										formId: 'emaliId3'
+									},
+									{
+										type: 'form',
+										formText: `<span class="unline-red">Receipt of marketing messages(Optional) <br/> I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text"> Privacy Policy. </span></a></span>`,
+										formVal: 'val04',
+										formId: 'emaliId4'
+									}
+								]
+							},
+							{
+								src: 'icon-payment-klarna-54-20',
+								type: 'klarna',
+								title: 'Buy now, pay later!',
+								isBetween: false,
+								contents: [
+									{
+										type: 'form',
+										formText: `<span class="unline-red">I accept <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Digital River's terms and conditions of sales.</span></a></span>`,
+										formVal: 'val05',
+										formId: 'emaliId5'
+									},
+									{
+										type: 'form',
+										formText: `<span class="unline-red">Receipt of marketing messages(Optional) <br/> I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE <a class="cmp-button c-button c-button--text-underline red" href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text"> Privacy Policy. </span></a></span>`,
+										formVal: 'val06',
+										formId: 'emaliId6'
+									},
+									{
+										type: 'form',
+										formText: `<span class="unline-red">By proceeding, you will be presented with payment options provided by Klarna. By continuing, I accept the terms of the <a class="cmp-button c-button c-button--text-underline red" href="https://cdn.klarna.com/1.0/shared/content/legal/terms/0/en_gb/user" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Klarna Shopping Service</span></a> and confirm that I have read the <a class="cmp-button c-button c-button--text-underline red" href="https://cdn.klarna.com/1.0/shared/content/legal/terms/0/en_gb/privacy" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Privacy Notice</span></a> and the <a class="cmp-button c-button c-button--text-underline red" href="https://cdn.klarna.com/1.0/shared/content/legal/terms/0/en_gb/cookie_purchase" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Cookie Notice. *</span></a></span>`,
+										formVal: 'val07',
+										formId: 'emaliId7'
+									}
+								]
+							}
+							
+						])

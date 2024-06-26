@@ -1,0 +1,240 @@
+/* stylelint-disable no-invalid-position-at-import-rule */
+@charset "UTF-8";
+
+@use '../../scss/abstract/' as *;
+
+$component: '.PD0005';
+#{$component} {
+  > .component {
+    > .cmp-container {
+      @include container($design-grid-full, true);
+      @include inset-padding-hz;
+    }
+  }
+  .c-region-header {
+    & + .c-summary-gallery-expand {
+      margin-top: rem($margin12px);
+      @include screen(web) {
+        margin-top: rem($margin20px);
+      }
+    }
+  }
+  .c-summary-gallery-expand {
+    display: flex;
+    flex-direction: column; // [LGCOMSG-783]
+    .c-summary-gallery {
+      overflow: visible;
+      @include lgness-radius('default');
+      padding: rem($padding12px) rem($padding20px);
+      flex-direction: column;
+      @include screen(web) {
+        padding: rem($padding40px);
+      }
+      &__sort {
+        position: relative;
+        z-index: 2;
+        padding-top: 0;
+        padding-bottom: rem($padding12px);
+        margin-bottom: rem($margin12px);
+        border-bottom: rem($border1) solid $light-gray3;
+        background: transparent;
+        @include screen(web) {
+          padding-bottom: rem($padding20px);
+          margin-bottom: rem($margin40px);
+        }
+      }
+      &__contents {
+        display: block;
+        padding: 0;
+      }
+      .c-gallery {
+        padding-top: 0;
+        padding-bottom: 0;
+        @include screen(web) {
+          @include inset-padding-hz;
+        }
+        .c-gallery__display--iframe {
+          position: absolute;
+        }
+        &[data-type='image'],
+        &[data-type='video'],
+        &[data-type='360'],
+        &[data-type='3d'],
+        &[data-type='ar'],
+        &[data-type='vr'] {
+          overflow: hidden;
+          .c-gallery__display {
+            position: relative;
+            height: 100%;
+            .c-gallery__item {
+              position: absolute;
+              left: 0;
+              top: 0;
+              right: 0;
+              bottom: 0;
+              overflow: visible;
+            }
+          }
+        }
+        // height
+        $default-height: 438px; // or 574
+        $desktop-gap: 192px;
+        &[data-type='image'] {
+          overflow: visible;
+          // padding-top: rem($padding44px);
+          @include screen(web) {
+            padding: rem(0 $padding100px);
+          }
+          .c-gallery__display {
+            min-height: rem($default-height);
+            @include screen(mobile) {
+              margin-bottom: rem(50px);
+              min-height: rem(400px);
+            }
+            @include screen(tablet) {
+              min-height: rem(460px);
+            }
+            @include screen(desktop) {
+              min-height: rem(640px);
+              height: 100%;
+            }
+            .device-mo & {
+              @include screen(phone) {
+                min-height: rem(460px);
+              }
+            }
+          }
+        }
+        &[data-type='video'] {
+          @include screen(web) {
+            padding: rem(0 $padding100px);
+          }
+          .c-gallery__display {
+            min-height: rem(256px);
+            @include screen(tablet) {
+              min-height: rem(460px);
+            }
+            @include screen(desktop) {
+              min-height: rem(640px);
+              height: 100%;
+            }
+          }
+          // variables - Use this layer only
+          $max-problem-section: rem(1180px);
+          .c-gallery__display--iframe {
+            .c-render-video {
+              height: 100%;
+              @media all and (min-aspect-ratio: 100/72) and (max-height: $max-problem-section) {
+                width: auto;
+              }
+            }
+          }
+        }
+        &[data-type='ar'] {
+          .c-gallery__display--iframe {
+            @media (min-width: rem(970px)) {
+              padding: rem(0 $padding153px);
+            }
+          }
+        }
+        &[data-type='360'],
+        &[data-type='3d'],
+        &[data-type='ar'],
+        &[data-type='vr'] {
+          .c-gallery__display {
+            min-height: rem(408px);
+            @include screen(tablet) {
+              min-height: rem($default-height);
+            }
+            @include screen(desktop) {
+              min-height: rem($default-height + $desktop-gap);
+            }
+          }
+        }
+        &__thumbnail {
+          .swiper {
+            .swiper-wrapper.swiper-steady {
+              justify-content: initial;
+            }
+          }
+          @include screen(web) {
+            max-width: rem($width80px * 5 + $width20px * 4);
+            padding-top: rem($padding40px);
+          }
+          .swiper-slide {
+            @include screen(mobile) {
+              border-width: rem($border1);
+            }
+            @include screen(web) {
+              max-width: rem($max-width80px);
+            }
+          }
+        }
+        &__image-zoom-handler {
+          @include screen(mobile) {
+            position: static;
+            width: 100%;
+            transform: none;
+            justify-content: center;
+            margin-top: rem($margin16px);
+            .c-icon-button {
+              width: rem($icon34px);
+              height: rem($icon34px);
+              &:before {
+                width: rem($icon14px);
+                height: rem($icon14px);
+              }
+            }
+          }
+          @include screen(web) {
+            right: rem(-$width100px);
+          }
+        }
+      }
+    }
+  }
+  .c-carousel {
+    overflow: hidden;
+    &__handler {
+      margin-top: rem($margin12px);
+      @include screen(web) {
+        margin-top: rem($margin16px);
+      }
+    }
+  }
+
+  // bg options
+  &.bg-white {
+    .c-summary-gallery {
+      border: rem($border1) solid $mid-gray1;
+    }
+  }
+  &.bg-darkgray,
+  &.bg-black {
+    .c-carousel {
+      &__pagination.swiper-pagination-fraction {
+        color: $black;
+      }
+      &__button {
+        &[class*='--pagination'] {
+          &:not(:disabled):after {
+            @include screen(mobile) {
+              background-image: url($icon-arrow-black-right-12-7);
+            }
+            @include screen(web) {
+              background-image: url($icon-arrow-black-right-10-16);
+            }
+          }
+        }
+      }
+    }
+    .c-summary-gallery ~ .disclaimer {
+      color: inherit;
+    }
+  }
+  // body.dark-theme & {
+  //     &.bg-darkgray,
+  //     &.bg-black {
+  //     }
+  // }
+}

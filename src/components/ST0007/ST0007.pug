@@ -1,0 +1,252 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_video.pug
+include ../_common/_carousel.pug
+
+block meta 
+    - var componentId = "ST0007"
+    - var componentName = "Block Image"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+//- block scripts
+//-     script(src=componentId+".js" type="module")
+
+block content
+
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                        '.c-text-contents' : [
+                            {
+                                'name' : 'Text Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-text-left', 'remove' : 'align-text-center, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-center', 'remove' : 'align-text-left, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-right', 'remove' : 'align-text-left, align-text-center'},
+                                ]
+                            },
+                        ],
+                        '.c-text-contents__bodycopy:not(.custom-text)' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            }
+                        ],
+                    };
+    // Component Markup
+
+    mixin text-contents(params)
+        - var option={custom:false,headline:'',bodycopy:'', describedby, ...params}
+            // block : text-contents   
+            .c-text-contents.align-text-left
+                .text.c-text-contents__eyebrow.font-w-normal-16.font-m-normal-14
+                    .cmp-text(data-cmp-data-layer="" id=`${option.describedby}`) 
+                        p Lorem ipsum
+                .title.c-text-contents__headline
+                    .cmp-title(class=option.headline data-cmp-data-layer="")
+                        strong Heading can be up to 40 characters lorem.
+                .text.c-text-contents__bodycopy(class=option.custom ? 'custom-text' : '')
+                    .cmp-text(class=option.bodycopy data-cmp-data-layer="")
+                        
+                        if(option.custom)
+                            p 
+                                // Option : target="_blank" title="Opens in a new window"
+                                span.font-regular Body text can be up to
+                                // GA4
+                                a.font-red.font-underline(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Text link
+                                span.font-black  200 characters.
+                                span.font-bold  Lorem ipsum 
+                                span.font-red ut aliquam 
+                                span.font-underline dolor sit amet, 
+                                span.font-bold.font-italic consectetuer 
+                                span.font-regular.font-italic adipiscing elit.
+                        else
+                            p Body text can be up to 200 characters. consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor
+                // block :cta
+                .button.c-cta
+                    +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'defalt', isButton: false})(aria-describedby=`${option.describedby}`)
+                    +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})(aria-describedby=`${option.describedby}`)
+                        //- +button({name:'Button Text'})
+                        //- +button({type:"box", color:"red"})
+                .button.c-cta
+                    +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})(aria-describedby=`${option.describedby}`)
+                    +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})(aria-describedby=`${option.describedby}`)
+    mixin printLazyImage2(img, alt="picture")
+        //- 상위에 .image 클래스를 추가해야합니다. (주로 .c-image)
+        .cmp-image.fit-content(data-cmp-data-layer='')
+            img.cmp-image__image.c-image__img(src=img, alt=alt, loading="lazy")&attributes(attributes)  
+    mixin image
+        // block : image
+        .image.c-image
+            +printLazyImage('https://via.placeholder.com/768x512/999999/333333')(aria-hidden="true")
+            if block
+                block  
+    mixin image2
+        // block : image
+        .image.c-image
+            +printLazyImage2('../../assets/image/qr-cn-uwechat.svg')(aria-hidden="true")
+            if block
+                block  
+                         
+    mixin mediaTitleCopy
+        .text.c-media__titlecopy
+            .cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")
+                p Text can be up 35 sit amet consect.
+
+    mixin video-contents
+        // block : media contents
+        .c-media-contents
+            // Video case
+            +image
+                +floating-video("brightcove")
+                    +mediaTitleCopy
+
+    mixin video-contents2
+        // block : media contents
+        .c-media-contents
+            // Video case
+            +image2
+                +floating-video("brightcove")
+                    +mediaTitleCopy
+
+    mixin ani-contents
+        // block : media contents
+        .c-media-contents
+            // Animation case
+            +image
+                +bg-video
+                    +mediaTitleCopy
+    mixin img-contents
+            // block : media contents
+            // Option : target="_blank" title="Opens in a new window"
+            // GA4
+            a(href="#" class="c-media-contents" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                // Image case
+                +image
+                    +mediaTitleCopy
+    mixin contentsList(params)
+        - var option={custom:false, num:'',headline:'',bodycopy:'', listType:'div', ...params}
+            // block : list
+            if option.listType == 'div'
+                .c-list
+                    .c-list__item
+                        +video-contents2
+                        +text-contents({custom:option.custom,eyebrow: option.custom ? false : true, headline:option.headline, bodycopy:option.bodycopy, describedby:'contents-1'})
+                    .c-list__item
+                        +ani-contents
+                        +text-contents({custom:option.custom,eyebrow: option.custom ? false : true, headline:option.headline, bodycopy:option.bodycopy, describedby:'contents-2'})
+                    if(option.num == '3' || option.num == '4')
+                        .c-list__item
+                            +img-contents
+                            +text-contents({custom:option.custom,eyebrow: option.custom ? false : true, headline:option.headline, bodycopy:option.bodycopy, describedby:'contents-3'})
+                    if(option.num == '4')
+                        .c-list__item
+                            +ani-contents
+                            +text-contents({custom:option.custom,eyebrow: option.custom ? false : true, headline:option.headline, bodycopy:option.bodycopy, describedby:'contents-4'})
+            else if option.listType == 'ol'
+                ol.c-list
+                    li.c-list__item
+                        +video-contents2
+                        +text-contents({custom:option.custom,eyebrow: option.custom ? false : true, headline:option.headline, bodycopy:option.bodycopy, describedby:'contents-1'})
+                    li.c-list__item
+                        +ani-contents
+                        +text-contents({custom:option.custom,eyebrow: option.custom ? false : true, headline:option.headline, bodycopy:option.bodycopy, describedby:'contents-2'})
+                    if(option.num == '3' || option.num == '4')
+                        li.c-list__item
+                            +img-contents
+                            +text-contents({custom:option.custom,eyebrow: option.custom ? false : true, headline:option.headline, bodycopy:option.bodycopy, describedby:'contents-3'})
+                    if(option.num == '4')
+                        li.c-list__item
+                            +ani-contents
+                            +text-contents({custom:option.custom,eyebrow: option.custom ? false : true, headline:option.headline, bodycopy:option.bodycopy, describedby:'contents-4'})
+            else if option.listType == 'ul'
+                ul.c-list
+                    li.c-list__item
+                        +video-contents2
+                        +text-contents({custom:option.custom,eyebrow: option.custom ? false : true, headline:option.headline, bodycopy:option.bodycopy, describedby:'contents-1'})
+                    li.c-list__item
+                        +ani-contents
+                        +text-contents({custom:option.custom,eyebrow: option.custom ? false : true, headline:option.headline, bodycopy:option.bodycopy, describedby:'contents-2'})
+                    if(option.num == '3' || option.num == '4')
+                        li.c-list__item
+                            +img-contents
+                            +text-contents({custom:option.custom,eyebrow: option.custom ? false : true, headline:option.headline, bodycopy:option.bodycopy, describedby:'contents-3'})
+                    if(option.num == '4')
+                        li.c-list__item
+                            +ani-contents
+                            +text-contents({custom:option.custom,eyebrow: option.custom ? false : true, headline:option.headline, bodycopy:option.bodycopy, describedby:'contents-4'})
+
+            .button.c-cta
+                +textButton({name: 'View More', wSize: 'large', mSize: 'medium', buttonStyle: 'down', isButton: false})
+    
+    .guide-text-option Option. 2 Block image
+    .c-wrapper.ST0007.bg-default.margin-top.margin-bottom
+        // column2
+        .component.column2
+            .cmp-container
+                +contentsList({num:'2',headline:'font-w-light-56 font-m-light-28',bodycopy:'font-w-normal-24 font-m-normal-16'})
+
+    .guide-text-option Option. 3 Block image / bodycopy custom type
+    .c-wrapper.ST0007.margin-top.margin-bottom
+        // column3
+        .component.column3
+            .cmp-container
+                +contentsList({custom:true, num:'3',headline:'font-w-light-56 font-m-light-28',bodycopy:'font-w-normal-16 font-m-normal-16'})
+
+    .guide-text-option Option. 4 Block image / bodycopy custom type
+    .c-wrapper.ST0007.margin-top.margin-bottom
+        // column4
+        .component.column4
+            .cmp-container
+                +contentsList({custom:true, num:'4',headline:'font-w-light-36 font-m-light-28',bodycopy:'font-w-normal-16 font-m-normal-16'})
+
+    .guide-text-option list type. ol 유형
+    .c-wrapper.ST0007.bg-default.margin-top.margin-bottom
+        // column2
+        .component.column2
+            .cmp-container
+                +contentsList({num:'2',headline:'font-w-light-56 font-m-light-28',bodycopy:'font-w-normal-24 font-m-normal-16', listType:'ol'})
+
+    .guide-text-option list type. ul 유형
+    .c-wrapper.ST0007.bg-default.margin-top.margin-bottom
+        // column2
+        .component.column2
+            .cmp-container
+                +contentsList({num:'2',headline:'font-w-light-56 font-m-light-28',bodycopy:'font-w-normal-24 font-m-normal-16', listType:'ul'})

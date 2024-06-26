@@ -1,0 +1,81 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_resource.pug
+
+
+block meta 
+    - var componentId = "AL0005"
+    - var componentName = "About LG"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+//- block scripts
+//-     script(src=componentId+".js" type="module")
+
+block content
+    .c-wrapper.margin-top.margin-bottom(class=componentId)
+            .component
+                .button.c-cta
+                    +defaultButton({name: 'find model', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight'})(href="#AL0005", class="js-pop-open")
+
+mixin pop-msg-header(params)
+    - var option = {headerBorder : true, ...params}
+    - var dialogHeadline = option.headline || "Dialog Headline"
+    - var dialogDescription = option.headerDescription || "Dialog Description"
+    - var headerBorder = option.headerBorder ? '' : 'c-pop-msg__header--no-border'
+    - var headerMargin = option.headerMargin ? `c-pop-msg__header--margin-${option.headerMargin}` : ''
+
+    .c-pop-msg__header(class=`${headerBorder} ${headerMargin}`)&attributes(attributes)
+        // block - text contents
+        .c-text-contents
+            .title.c-text-contents__headline(id=`${dialogLabelId}`)
+                // 22.11.11 - moved font classname here 
+                h2.cmp-title.font-w-light-36.font-m-light-24(data-cmp-data-layer="")= dialogHeadline
+
+mixin pop-msg-layout(params)
+    - var option={id:`popMsg${new Date().getTime()}`, ...params}
+    - var dialogId = option.id
+    - var dialogLabelId = `${option.id}-headline`
+    - var dialogSize = option.size || "medium"
+    - var useHeadline = option.headline != null && 0 < option.headline.length
+
+    // block - pop-msg ( dialog )
+    .c-pop-msg(class=`${dialogSize}` id=`${dialogId}` role="dialog" aria-modal="true" aria-labelledby=`${dialogLabelId}`)
+        .c-pop-msg__container
+            if useHeadline
+                //- header
+                +pop-msg-header(params)
+            //- contents
+            if block
+                block
+            //- close button
+            .button.c-pop-msg__close.c-pop-msg__close--on-top
+                button.cmp-button.c-pop-msg__close-button.js-pop-close(type="button", aria-controls=`${dialogId}` data-cmp-data-layer="")
+                    span.cmp-button__text.sr-only close
+        .c-pop-msg__dimmed
+
+mixin pop-msg-standard(params)
+    +pop-msg-layout(params)
+        block  
+
+block modal
+    .AL0005
+        //- Find Model
+        +pop-msg-standard({id : `AL0005`, size: "full", headline:"Download", headerBorder: false, headerMargin:"medium"})
+            .c-pop-msg__contents--careerPopup.c-pop-msg__contents--box
+                .c-pop-msg-contents-wrap
+                    .c-resources
+                        +specSheetItem('pdf')
+                        +specSheetItem('pdf')
+                        +specSheetItem('dwg')
+                        +specSheetItem('zip')
+                        +specSheetItem('txt')
+            .button.c-pop-msg__button-wrap
+                +defaultButton({name: 'RETRY', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popNotifyMeError" role="button")

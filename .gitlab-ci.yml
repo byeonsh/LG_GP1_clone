@@ -1,0 +1,31 @@
+image: node:10.15.0
+
+variables:
+  env: dev
+  EFS_DEV_HTML: "/data001/efs-gp1-dev/access-point/lggp1-html"
+  EFS_DEV_HTML_ROOT: "${EFS_DEV_HTML}/$CI_COMMIT_BRANCH"
+  PROJECT_NAME: "lggp1-html"
+  SRC_HTML_REPO: "https://$THE51_PWD@github.com/html-repo-code/${PROJECT_NAME}"
+  TARGET_HTML_REPO: "https://$TARGET_ADMIN_ID:$TARGET_ADMIN_TOKEN@gitlab.gp1.aws.lge.com/front/${PROJECT_NAME}"
+
+
+stages:
+  - git-branch-copy
+  #- force-pull-the51
+  
+before_script:
+  - git config --global user.email "kimchi8301@cnspartner.com"
+  - git config --global user.name "jiwhan.kim"
+
+git-branch-copy:
+  image: node:10.15.0
+  stage: git-branch-copy
+  script:
+    - cd ${EFS_DEV_HTML}/$CI_COMMIT_BRANCH
+    - git fetch
+    - git merge
+       
+  rules:
+    - if:  $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "PBGTgtc" || $CI_COMMIT_BRANCH == "PBOPopt" || $CI_COMMIT_BRANCH == "multishop"
+#      when: manual
+      

@@ -1,0 +1,751 @@
+/* stylelint-disable no-descending-specificity */
+// 컴포넌트 작업 완료 후 삭제 예정
+
+@use '../abstract/' as *;
+
+@mixin summary-gallery {
+  // default style for PD0003, PD0003 popup, PD0005
+  .c-summary-gallery {
+    // @include screen(web) {
+    //     padding-top: rem($padding60px);
+    // }
+    background: $white;
+    @include lgness-radius('default');
+    padding: rem($padding12px $padding9px);
+    @include screen(web) {
+      padding: rem($padding24px);
+    }
+    &__sort {
+      display: flex;
+      gap: 0 rem($padding18px);
+      justify-content: center;
+      padding: rem($padding8px 0 0);
+      flex-wrap: wrap;
+      @include screen(web) {
+        gap: rem($padding10px) rem($padding40px);
+        // padding: rem($padding20px $padding20px $padding30px);
+        padding: 0;
+      }
+      .c-icon-button {
+        display: flex;
+        flex-direction: column;
+        gap: rem($padding4px);
+        width: 20%;
+        max-width: rem($icon32px);
+        overflow: visible;
+        border-radius: rem($radius8);
+        outline-offset: rem(-$offset2px);
+        margin: rem($margin8px) 0;
+        @include screen(web) {
+          max-width: 100%;
+          width: auto;
+          margin: 0;
+          flex-direction: row;
+          gap: rem($padding6px);
+        }
+        &:before {
+          width: rem($icon28px);
+          height: rem($icon28px);
+          @include screen(web) {
+            width: rem($icon32px);
+            height: rem($icon32px);
+          }
+        }
+        span {
+          font-size: rem(12px);
+          line-height: rem(12px);
+          color: $black;
+          font-weight: $font-semibold;
+          display: none;
+          @include screen(web) {
+            display: block;
+            font-size: rem(14px);
+            line-height: rem(14px);
+          }
+        }
+        &.active {
+          span {
+            color: $active-red;
+          }
+        }
+        &--image {
+          &:before {
+            background-image: url($icon-gallery-image-black-24-24);
+          }
+          &.active {
+            &:before {
+              background-image: url($icon-gallery-image-red-24-24);
+            }
+          }
+        }
+        &--video {
+          &:before {
+            background-image: url($icon-gallery-movie-black-24-24);
+          }
+          &.active {
+            &:before {
+              background-image: url($icon-gallery-movie-red-24-24);
+            }
+          }
+        }
+        &--360 {
+          &:before {
+            background-image: url($icon-gallery-360-black-24-24);
+          }
+          &.active {
+            &:before {
+              background-image: url($icon-gallery-360-red-24-24);
+            }
+          }
+        }
+        &--3d {
+          &:before {
+            background-image: url($icon-gallery-3d-black-24-24);
+          }
+          &.active {
+            &:before {
+              background-image: url($icon-gallery-3d-red-24-24);
+            }
+          }
+        }
+        &--ar {
+          &:before {
+            background-image: url($icon-gallery-ar-black-24-24);
+          }
+          &.active {
+            &:before {
+              background-image: url($icon-gallery-ar-red-24-24);
+            }
+          }
+        }
+        &--vr {
+          &:before {
+            background-image: url($icon-gallery-vr-black-24-24);
+          }
+          &.active {
+            &:before {
+              background-image: url($icon-gallery-vr-red-24-24);
+            }
+          }
+        }
+      }
+    }
+    &__contents {
+      .c-carousel__handler {
+        display: flex;
+      }
+    }
+    .c-gallery {
+      &[data-type='image'] {
+        .c-gallery__display {
+          // custom cursor
+          $cursor-point: 48 * 0.5;
+          &,
+          a {
+            cursor:
+              url($icon-reading-glass-black-48-48) $cursor-point $cursor-point,
+              pointer;
+          }
+          &.status-max {
+            &,
+            a {
+              cursor:
+                url($icon-reading-glass2-black-48-48) $cursor-point $cursor-point,
+                pointer;
+            }
+          }
+        }
+      }
+      .c-gallery__display {
+        .c-image {
+          overflow: hidden;
+          border-radius: rem($radius8);
+        }
+        &--large {
+          overflow: hidden;
+          border-radius: rem($radius8);
+        }
+        // custom cursor
+        $cursor-point: 48 * 0.5;
+        &,
+        a {
+          cursor:
+            url($icon-reading-glass-black-48-48) $cursor-point $cursor-point,
+            pointer;
+          &:focus {
+            .image.c-image {
+              outline-offset: -2px;
+              outline: 2px solid $black;
+            }
+          }
+        }
+        &.status-max {
+          &,
+          a {
+            cursor:
+              url($icon-reading-glass2-black-48-48) $cursor-point $cursor-point,
+              pointer;
+          }
+        }
+      }
+      &__thumbnail {
+        display: none;
+        max-width: rem($max-width480px);
+        margin: 0 auto;
+        @include screen(web) {
+          display: block;
+          margin-top: rem($margin8px);
+        }
+        .swiper-slide {
+          cursor: pointer;
+          max-width: rem($max-width80px);
+          border: rem($border2) solid $mid-gray1;
+          overflow: hidden;
+          border-radius: rem($radius8);
+          &-thumb-active {
+            border-color: $black;
+            border-width: rem($border3);
+            [data-countrycode='DE'] & {
+              border-color: $active-red;
+            }
+          }
+        }
+        .swiper {
+          @include swiper-inline-style-adjust;
+        }
+      }
+    }
+    // [Start] LGCOMSG-783
+    ~ .disclaimer {
+      position: relative;
+      padding-inline-start: 1em;
+      margin-top: rem(8px);
+      font-size: rem(14px);
+      @include screen(web) {
+        margin-top: 1em;
+        font-size: rem(16px);
+      }
+      color: $mid-gray3;
+      &::before {
+        content: '*';
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      & + .disclaimer {
+        margin-top: 0.4em;
+      }
+    }
+    // [End] LGCOMSG-783
+  }
+
+  // for PD0003 popup & PD0005
+  .c-summary-gallery-expand {
+    .c-summary-gallery {
+      position: relative;
+      top: auto;
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: space-between;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      overflow: hidden;
+      border-radius: 0;
+      @include screen(web) {
+        flex-direction: column;
+      }
+      &__sort {
+        padding: 0;
+        gap: rem($padding8px);
+        flex-wrap: nowrap;
+        position: relative;
+        z-index: 1;
+        background: $white;
+        @include screen(web) {
+          border-bottom: rem($border1) solid $light-gray3;
+          gap: rem($padding30px);
+          padding: 0 0 rem($padding20px) 0;
+          @include screen(custom, rem(860px), min) {
+            gap: rem($padding40px);
+          }
+          @include screen(desktop) {
+            gap: rem($padding60px);
+          }
+        }
+        .c-icon-button {
+          max-width: rem($max-width53px);
+          padding: rem(5px) 0;
+          @include screen(mobile) {
+            margin: 0;
+          }
+          @include screen(web) {
+            padding: 0;
+            max-width: 100%;
+            gap: rem($padding12px);
+          }
+          &:before {
+            width: rem($icon24px);
+            height: rem($icon24px);
+            @include screen(desktop) {
+              width: rem($icon48px);
+              height: rem($icon48px);
+            }
+          }
+          span {
+            display: block;
+            @include screen(web) {
+              // font-size: rem(20px);
+              // line-height: rem(24px);
+              font-size: rem(18px);
+              line-height: rem(22px);
+            }
+            // @include screen(tablet) {
+            //     // display: none;
+            //     font-size: rem(18px);
+            //     line-height: rem(22px);
+            // }
+          }
+          @include screen(desktop) {
+            &--image {
+              &:before {
+                background-image: url($icon-gallery-image-black-48-48);
+              }
+              &.active {
+                &:before {
+                  background-image: url($icon-gallery-image-red-48-48);
+                }
+              }
+            }
+            &--video {
+              &:before {
+                background-image: url($icon-gallery-movie-black-48-48);
+              }
+              &.active {
+                &:before {
+                  background-image: url($icon-gallery-movie-red-48-48);
+                }
+              }
+            }
+            &--360 {
+              &:before {
+                background-image: url($icon-gallery-360-black-48-48);
+              }
+              &.active {
+                &:before {
+                  background-image: url($icon-gallery-360-red-48-48);
+                }
+              }
+            }
+            &--3d {
+              &:before {
+                background-image: url($icon-gallery-3d-black-48-48);
+              }
+              &.active {
+                &:before {
+                  background-image: url($icon-gallery-3d-red-48-48);
+                }
+              }
+            }
+            &--ar {
+              &:before {
+                background-image: url($icon-gallery-ar-black-48-48);
+              }
+              &.active {
+                &:before {
+                  background-image: url($icon-gallery-ar-red-48-48);
+                }
+              }
+            }
+            &--vr {
+              &:before {
+                background-image: url($icon-gallery-vr-black-48-48);
+              }
+              &.active {
+                &:before {
+                  background-image: url($icon-gallery-vr-red-48-48);
+                }
+              }
+            }
+          }
+        }
+      }
+      &__contents {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        // justify-content: flex-end;
+        @include screen(mobile) {
+          padding: 0 rem($padding20px);
+        }
+        @include screen(web) {
+          // height: calc(100% - rem($padding80px));
+          overflow-y: auto;
+          height: 100%;
+        }
+        .c-carousel__handler {
+          padding: 0;
+        }
+      }
+      .c-gallery {
+        display: flex;
+        flex-direction: column;
+        // justify-content: flex-end;
+        padding: rem($padding68px) 0 rem($margin20px) 0;
+        flex: 1;
+        @include screen(web) {
+          padding: rem($margin30px) 0 0;
+          max-height: 100%;
+        }
+        &__display {
+          position: relative;
+          flex: 1;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          overflow: visible;
+          // background: grey;
+          // border-radius: rem($radius8);
+          &--iframe {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: rem($radius8);
+            overflow: hidden;
+          }
+          iframe {
+            width: 100%;
+            height: 100%;
+          }
+        }
+        &__item {
+          max-width: 100%;
+          max-height: 100%;
+        }
+        &[data-type='image'] {
+          @include screen(web) {
+            padding-left: rem($margin80px);
+            padding-right: rem($margin80px);
+          }
+          .c-gallery__display {
+            height: 1%;
+            min-height: calc(100vh - 360px);
+            .c-gallery__item {
+              width: 100%;
+              height: 100%;
+              overflow: hidden; // do not remove
+              max-width: columns(12, false);
+              .c-image,
+              .cmp-image {
+                width: 100%;
+                height: 100%;
+                &:focus {
+                  .cmp-image__image {
+                    outline-offset: -2px;
+                    outline: 2px solid $black;
+                  }
+                }
+              }
+              .cmp-image {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                overflow: initial;
+              }
+              .cmp-image__image {
+                width: auto;
+                height: auto;
+                max-width: 100%;
+                max-height: 100%;
+                border-radius: rem($radius8);
+                overflow: hidden; // do not remove
+                position: absolute; // do not remove
+              }
+            }
+            @include screen(web) {
+              min-height: 640px;
+            }
+          }
+          .c-gallery__thumbnail {
+            .swiper-slide a:focus .image {
+              outline: 2px solid red;
+              outline-offset: -5px;
+            }
+          }
+        }
+        &[data-type='video'] {
+          .c-gallery__display {
+            height: 1%;
+            .c-gallery__item {
+              width: 100%;
+              height: 100%;
+              overflow: hidden; // do not remove
+            }
+          }
+          // variables - Use this layer only
+          $space-top-bottom: rem(380px);
+          $max-problem-section: rem(1180px);
+          // @media all and (min-aspect-ratio: 100/72) and (max-height: 1180px) {
+          // Sections that cause video size (ratio) problems
+          // background: pink;
+          // }
+          .c-gallery__display--iframe {
+            max-width: columns(12, false);
+            height: 100%;
+            align-items: center; // do not remove
+            .c-render-video {
+              background: $white;
+              border-radius: rem($radius8);
+              overflow: hidden; // do not remove
+              @include screen(landscape) {
+                width: auto;
+                height: auto;
+                max-height: 100%;
+                max-width: 100%;
+                @media all and (min-aspect-ratio: 100/72) and (max-height: $max-problem-section) {
+                  // Sections that cause video size (ratio) problems
+                  height: calc(100vh - $space-top-bottom);
+                  overflow: visible;
+                  display: inline-block;
+                  position: relative;
+                  min-width: fit-content;
+                  -webkit-min-width: fit-content;
+                }
+              }
+              @include screen(portrait) {
+                width: 100%;
+                height: auto;
+                max-height: 100%;
+              }
+              &__close-button {
+                display: none;
+              }
+              svg {
+                display: block !important;
+                @include screen(landscape) {
+                  width: auto;
+                  height: 100%;
+                  margin: 0 auto;
+                  max-height: 100%;
+                  max-width: 100%;
+                  @media (max-height: $max-problem-section) {
+                    height: 100%;
+                  }
+                  @media all and (min-aspect-ratio: 100/72) and (max-height: $max-problem-section) {
+                    // Sections that cause video size (ratio) problems
+                    max-width: initial;
+                    height: calc(100vh - $space-top-bottom);
+                  }
+                }
+                @include screen(portrait) {
+                  width: 100%;
+                  height: auto;
+                }
+              }
+              .youtube-embed-player,
+              .brightcove-player {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                // opacity: 0;
+                border-radius: rem($radius8);
+                overflow: hidden; // do not remove
+              }
+            }
+          }
+        }
+        &[data-type='ar'] {
+          .c-gallery__display--iframe {
+            position: relative;
+          }
+        }
+        &[data-type='360'] {
+          .c-gallery__display {
+            @include screen(web) {
+              @media (max-height: 750px) {
+                display: block;
+              }
+            }
+          }
+          .c-gallery__display--iframe {
+            position: relative;
+            height: 0;
+            padding: calc(560 * 100% / 940) 0 0;
+            // padding: 40% 0;
+            max-width: 940px;
+            margin: 0 auto;
+            iframe {
+              position: absolute;
+              left: 0;
+              top: 50%;
+              width: 100%;
+              height: 100%;
+              max-height: 560px;
+              transform: translateY(-50%);
+            }
+            @include screen(web) {
+              max-height: rem($max-height560px);
+              position: absolute; // do not remove
+              @media (max-height: 750px) {
+                padding: 0;
+                max-width: 100%;
+                height: 100%;
+                iframe {
+                  aspect-ratio: 940 / 560;
+                  width: auto;
+                  height: 100%;
+                  left: 50%;
+                  top: 50%;
+                  transform: translate(-50%, -50%);
+                }
+              }
+            }
+          }
+        }
+        &__thumbnail {
+          display: block;
+          width: 100%;
+          padding: rem($padding20px) 0 0 0;
+          max-width: rem($max-width260px);
+          @include screen(web) {
+            max-width: rem($width80px * 5 + $width20px * 4);
+            margin: 0 auto;
+          }
+          .swiper-slide {
+            max-width: rem($max-width80px);
+            &.active {
+              border-color: $black;
+            }
+            .c-media__button--play {
+              &:before {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 2;
+                border: rem($border1) solid $mid-gray1;
+                border-radius: $radius-full;
+              }
+            }
+          }
+        }
+        &__image-zoom-handler {
+          position: absolute;
+          top: rem(($width36px + $padding8px) * -1);
+          left: 50%;
+          width: rem($icon36px * 2 + $padding8px);
+          transform: translateX(-50%);
+          display: flex;
+          gap: rem($padding8px);
+          @include screen(web) {
+            flex-direction: column;
+            top: 50%;
+            left: auto;
+            right: rem(-$width80px);
+            width: rem($width62px);
+            transform: translateY(-50%);
+          }
+          .c-icon-button {
+            width: rem($icon36px);
+            height: rem($icon36px);
+            border: rem($border1) solid $mid-gray2;
+            border-radius: $radius-full;
+            display: flex;
+            outline-offset: rem(-$offset2px);
+            justify-content: center;
+            align-items: center;
+            @include screen(web) {
+              width: rem($width62px);
+              height: rem($width62px);
+            }
+            &:before {
+              display: block;
+              width: rem($icon16px);
+              height: rem($icon16px);
+              @include screen(web) {
+                width: rem($width18px);
+                height: rem($width18px);
+              }
+            }
+            &.zoom-in {
+              &:before {
+                background-image: url($icon-plus-black-16-16);
+                @include screen(web) {
+                  background-image: url($icon-plus-black-30-30);
+                }
+              }
+              &:is([disabled='disabled']) {
+                background-color: $white;
+                border-color: $black;
+                backdrop-filter: blur(7.5px);
+                opacity: 0.3;
+              }
+              &:not([disabled='disabled']):hover {
+                @include screen(web) {
+                  border-width: rem($border2);
+                  border-color: $active-red;
+                }
+                &:before {
+                  @include screen(web) {
+                    background-image: url($icon-plus-red-30-30);
+                  }
+                }
+              }
+            }
+            &.zoom-out {
+              &:before {
+                background-image: url($icon-minus-black-16-16);
+                @include screen(web) {
+                  background-image: url($icon-minus-black-30-30);
+                }
+              }
+              &:is([disabled='disabled']) {
+                background-color: $white;
+                border-color: $black;
+                backdrop-filter: blur(7.5px);
+                opacity: 0.3;
+              }
+              &:not([disabled='disabled']):hover {
+                @include screen(web) {
+                  border-width: rem($border2);
+                  border-color: $active-red;
+                }
+                &:before {
+                  @include screen(web) {
+                    background-image: url($icon-minus-red-30-30);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    // for PD0003 popup only
+    &.c-pop-msg__contents {
+      .c-summary-gallery {
+        &__sort {
+          @include screen(mobile) {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: rem($padding24px) 0 rem($padding24px);
+          }
+        }
+        &__contents {
+          @include screen(mobile) {
+            margin-bottom: rem($height50px + $padding24px);
+          }
+        }
+      }
+      // [Start] LGCOMSG-783
+      .disclaimer {
+        display: none;
+      }
+      // [End] LGCOMSG-783
+    }
+  }
+}

@@ -1,0 +1,115 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_headline.pug
+include ../_common/_pop-msg.pug
+
+block meta 
+    - var componentId = "GN0003"
+    - var componentName = "Press Kits"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-gn.html") List
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+
+    mixin pressList (param) 
+        each data in param 
+            li.c-list__item
+                .c-list-inner
+                    .c-list-item__img
+                        +printLazyImage(
+                            `https://via.placeholder.com/464x290`
+                        )
+                    .c-list-item__contents.c-text-contents
+                        .title.c-text-contents-title
+                            strong.cmp-title.c-list-item__contents__title.font-w-light-36.font-m-light-24(data-cmp-data-layer="")= data.titleName
+
+                        if data.titlePreview
+                            .text.c-text-contents-bodycopy
+                                p.cmp-text.c-list-item__contents__preview.font-w-normal-16.font-m-normal-14= data.titlePreview
+                        
+                .c-list-item__bottom
+                    if data.hashtag.length > 0
+                        .c-list-item__contents__hashtags
+                            each tag in data.hashtag
+                                +defaultButton({name: tag, wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: true})
+                    
+                    .c-list-item__contents__btn
+                        +defaultButton({name: 'Learn More', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                        +defaultButton({name: 'Learn More', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+                        +textButton({name : 'Learn More', wSize : 'medium', mSize : 'small', buttonStyle : "default", isButton : false})(role="button")
+
+    .c-wrapper.margin-top.margin-bottom.border-top(class=componentId)
+        .component
+            .cmp-container
+                //- block : text-contents
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        h1.cmp-title.font-w-semibold-56.font-m-semibold-28(data-cmp-data-layer="") Press kits
+            .cmp-container
+                .c-pressList
+                    - let lengthPressKit = 3;
+                    ul.c-list(role="list")
+                        +pressList([
+                            {
+                                isURL: "#",
+                                isALT: "image alt text",
+                                titleName: "title test title test title test title test title test title test title test title test",
+                                titlePreview: "Seoul is shining brighter than ever in September thanks to the inspiring artworks brought to life by LG OLED.",
+                                hashtag: ["#CES2023","#innovative","#LG Showcase 2023","#CES2023","#innovative","#LG Showcase 2023"],
+                            },
+                            {
+                                isURL: "#",
+                                isALT: "image alt text",
+                                titleName: "IAA 2023",
+                                titlePreview: "In a recent interview with Bloomberg, LG CEO William Cho talked about his vision to transform LG Electronics from a top",
+                                hashtag: ["CES20","IAA2023"],
+                            },
+                            {
+                                isURL: "#",
+                                isALT: "image alt text",
+                                titleName: "IFA 2023",
+                                titlePreview: "Company Outlines Its Six Strategic Tasks for ESG Management Focused on Achieving ‘3Cs’ for the Planet and ‘3Ds’ for People",
+                                hashtag: ["#5 Tech Keywords","#UltraGear Gaming Laptop","#LG Objet"],
+                            }
+                        ])
+    
+

@@ -1,0 +1,152 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+//- include ../_common/_headline.pug
+include ../_common/_video.pug
+include ../_common/_pop-msg.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "CM0008"
+    - var componentName = "Book a Showroom"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block content
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-cm.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+
+
+
+    mixin title-area(params)
+        - var options = {...params}
+        - var titleConfig = {alignment: "", headline : {text : "Book a Show Room", style : "font-w-light-56 font-m-light-28"}, description : {text : "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.characters. ", style : "font-w-normal-24 font-m-normal-12"}}
+
+        if options.subtitle
+            +component-title-area(titleConfig)
+                .c-text-contents
+                    .c-text-contents__subtitle
+                        .cmp-text.font-w-normal-32.font-m-normal-20(data-cmp-data-layer="")
+                            span [England] London Air Conditioning Academy
+        else 
+            +component-title-area(titleConfig)
+
+    mixin complete-msg(params)
+        - var options = {...params}   
+        - var titleStyle = "font-w-light-36 font-m-light-24"
+        - var descStyle = "font-w-normal-16 font-m-normal-16"
+
+        case options.type 
+            when "error:system"
+                strong(class=titleStyle) System Error.
+                p.c-message-box__desc(class=descStyle) 
+                    | We apologize for this inconvenience. 
+                    br
+                    | Please try again.
+                    
+            when "confirm:send"
+                strong(class=titleStyle) Thank you for your interest.
+                p.c-message-box__desc(class=descStyle) 
+                    | We will respond as soon as possible.
+
+    mixin completion(params)
+        - var options = {...params}   
+
+        .c-message-box&attributes(attributes)
+            .c-message-box__wrapper
+                .c-message-box__icon
+                .c-text-contents
+                    +complete-msg(options)
+                .button
+                    +defaultButton({
+                        name: 'OK', 
+                        wSize: 'medium', 
+                        mSize: 'small', 
+                        buttonStyle: 'highlight', 
+                        isButton: false
+                    })
+
+    // Component Markup
+    // Type 1. Info Page
+    .guide-text-type Type 1. Info Page
+    .c-wrapper.CM0008.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +title-area({subtitle:true})
+
+                +required-text-indicate
+                form(action="#" method="post").c-post-form
+                    +postFormFieldset("About you")
+                        .c-post-form__group
+                            +postFormAbout()
+                                
+                    +postFormFieldset("Company")
+                        .c-post-form__group
+                            .c-post-form__item
+                                +formText("text", "Company Name", "company", true, "Company Name")(maxlength="100")
+                                +postFormMessage("Company Name is required.", "")
+                            .c-post-form__item
+                                +formText("text", "Job Title", "job", true, "Job Title")(maxlength="100")
+                                +postFormMessage("Job Title is required.", "")
+                            .c-post-form__item
+                                +formSelect("Industries", "Select Industies", "Industries", true)
+                                    option(value="" selected) Select Industies
+                                    option(value="option1") option1
+                                    option(value="option2") option2
+                                +postFormMessage(" Industries is required.", "")
+
+                        +formTextarea("text", "Comments", "comments", false, "Review Example : I bought this a month ago and am so happy that I did…")(minLength="20", maxlength="5000")
+
+                    +postFormFieldset("Security")
+                        +formCaptcha("text", "Please enter text or try the audio", "captcha", true, "")
+
+                    +postFormFieldset()
+                        // agreement policy
+                        .c-pop-msg-form__item
+                            +formCheckbox(false, "postAgreeStockAlert", "","postAgreeStockAlert")(required = require)
+                                span.c-pop-msg__gray-form-agree
+                                    | I agree with the data protection policy 
+                                    // GA4
+                                    a.font-underline(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") read privacy policy
+                            +postFormMessage("Privacy Policy is not checked.", "")
+                                
+                    .button.c-post-form__button-wrap
+                        +defaultButton({
+                            name: 'Submit', 
+                            wSize: 'medium', 
+                            mSize: 'small', 
+                            buttonStyle: 'highlight', 
+                            isButton: true
+                        })
+    
+    // Type 2. System Message - confirm
+    .guide-text-type Type 2. System Message - confirm
+    .c-wrapper.CM0008.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +title-area
+                +completion({type : "confirm:send"})(class="c-message-box--confirm")
+
+    // Type 3. System Message - Error
+    .guide-text-type Type 3. System Message - Error
+    .c-wrapper.CM0008.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +title-area
+                +completion({type : "error:system"})(class="c-message-box--system-error")

@@ -1,0 +1,42 @@
+include ./_button.pug
+
+//-- 상위에 .c-resources 필요
+mixin specSheetItem(extension)
+    .c-resources__item
+        if(extension == 'pdf' || extension == 'txt' || extension == 'djvu' || extension == 'zip' || extension == 'html' || extension == 'dwg')
+            div(class=`c-resources__item--extension c-resources__item--extension-${extension}`)
+                span.sr-only= `extension : ${extension}`
+        else
+            div(class=`c-resources__item--extension c-resources__item--extension-etc`)
+                span.sr-only= `extension : ${extension}`
+        .c-resources__item--download
+            .c-resources__item--download-info
+                // The url of the file should be developed so that it opens in a new window, not as a download.
+                // 2023-01-27 : Add role to download link for tagging
+                a(href="#", target="_blank" role="button").c-resources__item--download-info-name.font-underline.font-w-normal-16.font-m-normal-16 
+                    span= `Specs Sheet_File_Name(English).${extension}`
+                    .c-resources__item--download-button.c-resources__item--download-button--icon
+                        .c-icon-button.c-icon-button--download
+
+mixin buttonVersionItem(extension, hasInformation, hash)
+    .c-resources__item
+        if(extension == 'pdf' || extension == 'txt' || extension == 'djvu' || extension == 'zip' || extension == 'html' || extension == 'dwg')
+            div(class=`c-resources__item--extension c-resources__item--extension-${extension}`)
+                span.sr-only= `extension : ${extension}`
+        else
+            div(class=`c-resources__item--extension c-resources__item--extension-etc`)
+                span.sr-only= `extension : ${extension}`
+        .c-resources__item--download
+            .c-resources__item--download-info
+                span.c-resources__item--download-info-name.font-w-normal-16.font-m-normal-16= `Specs Sheet_File_Name(English).${extension}`
+                if(hasInformation)
+                    .c-resources__item--download-info-wrapper.font-w-normal-14.font-m-normal-14
+                        .c-resources__item--download-info-ref
+                            button(type="button" class="font-underline js-pop-open" aria-controls=`popReference${hash}`) Reference
+                            
+                        .c-resources__item--download-info-size
+                            span 1,923 KB
+                        .c-resources__item--download-info-date
+                            span 14/12/2021
+            .c-resources__item--download-button
+                +defaultButton({name: 'Download', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: false})(role="button")

@@ -1,0 +1,139 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_pop-msg.pug
+include ../_common/_my-component.pug
+
+
+block meta 
+    - var componentId = "ML000P"
+    - var componentName = "Change Password"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst ? 'my-warn' : ''}`
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                if data.active
+                    input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only hide password
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+        +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin ML000P
+    .c-wrapper.ML000P
+        .component
+            .fluid-container
+                .my-component.my-page-title
+                    .c-text-contents.my-text__max.my-component__title-section
+                        .title.c-text-contents__headline.font-w-light-56.font-m-light-28
+                            +headline('font-w-light-56 font-m-light-28', "h2", "Change Password")
+                        // .text.c-text-contents__bodycopy.font-w-normal-24.font-m-normal-16
+                        //     p.cmp-text(data-cmp-data-layer="") To change your password, simply enter your old password and then enter your new password in both fields below.
+                .my-component__wrap.border-only-web
+                    .my-component
+                        .my-formbox
+                            +myInputForm([
+                                {
+                                    type:"password",
+                                    label:"Old Password",
+                                    id:"OldPassword",
+                                    required:false,
+                                    value: "1234",
+                                    placeholder:"Old password"
+                                },
+                                {
+                                    type:"password",
+                                    label:"New Password",
+                                    id:"NewPassword",
+                                    required:false,
+                                    value: "Lglg1234!@#",
+                                    placeholder:"New password",
+                                    correct: [
+                                        "8-100 characters only.", 
+                                        "At least 3 types of character need to be included : upper and lower case letter, number, and special character.", 
+                                        "It can't be identical to the user ID or the old password."
+                                    ],
+                                    warningFirst: [
+                                        "Can not identical to the user ID.", 
+                                        "Password violates the password generation rule.", 
+                                        "Cannot be identical to the old password.", 
+                                        "The password must be at least 8 characters.", 
+                                        "The total length of password digit should be less than or equal to 100 digits.", 
+                                        "You cannot use same character more than 3 times.", 
+                                        "Password contains invalid special character. "
+                                    ]
+                                },
+                                {
+                                    type:"password",
+                                    label:"Confirm New Password",
+                                    id:"ConfirmPassword",
+                                    required:false,
+                                    value: "Lglg1234!@#",
+                                    active: true,
+                                    placeholder:"Confirm password",
+                                    warning: ["New password and confirm password do not match."],
+                                },
+                            ])
+                        .button.c-cta.my-button
+                            +defaultButton({name: "Cancel", wSize: "large", mSize: "medium"})
+                            +defaultButton({name: "Save", wSize: "large", mSize: "medium", buttonStyle: 'highlight'})(href="#changeCompleted", class="js-pop-open")
+
+block content
+    // Component Markup
+    +ML000P
+
+block modal
+        +pop-msg-standard({id : "changeCompleted", headline:"Change Completed", size:"small", classes:"c-pop-msg--change-password", headerBorder: false})
+            // block - text contents
+            .c-text-contents 
+                .text.c-text-contents__bodycopy
+                    .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") Password change is completed. please log in to lg.com again.
+            .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap--no-divide-on-mobile
+                //- +linkButton({type:"box", color:"red", size:"medium", name: "Sign in", buttonStyle: 'default'})
+                +defaultButton({name: "Sign In", wSize: "large", mSize: "medium", buttonStyle: 'highlight'})

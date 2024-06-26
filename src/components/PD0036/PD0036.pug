@@ -1,0 +1,243 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_carousel.pug
+include ../_common/_pagination.pug
+include ../_common/_forms.pug
+include ../_common/_brand-detail.pug
+
+block meta 
+    - var componentId = "PD0036"
+    - var componentName = "PDP Find a Dealer (CN)"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+
+    mixin locationItem(index, description)
+        .c-find-a-dealer-locations__item&attributes(attributes)
+            .c-pin
+                .c-pin-num #{index}
+            .c-dealer
+                ul.c-icon-list.black-icon
+                    li.icon-sales
+                    li.icon-install
+                    li.icon-service
+                dl.c-dealer-box
+                    // GA4
+                    dt.font-w-normal-16.font-m-normal-16 #[a(href="#" data-item="" role="button") LightWerks]
+                    dd.address.font-w-normal-16.font-m-normal-14 3331 Jack Northrop Ave, Hawthorne, CA
+                    if (description)
+                        dd.description.font-w-normal-16.font-m-normal-14 Retail / Builder
+                    // GA4
+                    dd.font-w-normal-16.font-m-normal-14 #[a(href="tel:4246752600" role="button") (424) 675-2600]
+                    // GA4
+                    dd.font-w-normal-16.font-m-normal-14 #[a(href="mailto:SouthBay@LightWerks.com" role="button") SouthBay@LightWerks.com]
+                    dd
+                        .button
+                            +defaultButton({
+                                name: "View on map",
+                                wSize : "small",
+                                mSize : "small",
+                                buttonStyle : "default",
+                                isButton : true
+                            })
+    
+    mixin search-box
+        - var headStyle = "font-w-light-56 font-m-light-28"
+        - var bodyStyle = "font-w-normal-24 font-m-normal-16"
+
+        // block : search box
+        .c-search-box
+            .c-text-contents.c-search-box__header
+                .c-text-contents__headline
+                    +headline(headStyle, "h2", "找经销商")
+                .c-text-contents__bodycopy(class=bodyStyle)  
+                    | 寻找经销商为您的销售、安装和售后带来帮助
+            //- block : .c-search-box__body(--multi, --double)
+            .c-search-box__body.c-search-box__body--double
+                //- element : c-search-box__form
+                .c-search-box__form
+                    +formSelect("业务部门", "businessUnit", "选择产品", true, false, "Business Unit is required")
+                        option(value="") 选择产品
+                        option(value="displays") Commercial Displays
+                        option(value="solar") Solar
+                    +formText('text', '城市', 'searchAddress', true, '选择城市', false, false, "Address is required")
+                .button.c-search-box__button
+                    +defaultButton({
+                        name : "搜索",
+                        wSize : "medium",
+                        mSize : "medium",
+                        buttonStyle : "highlight",
+                        isButton : true,
+                    })(type="submit")
+
+    mixin list-legend 
+        - var fontStyle = "font-w-normal-16 font-m-normal-14"
+        - var iconStyle = "white-icon"
+        .c-find-a-dealer-information
+            ul.c-icon-list(class=iconStyle class=fontStyle)
+                li.icon-sales Sales
+                li.icon-install Install
+                li.icon-service Service
+            .button
+                button(type="button" aria-expanded="false").c-find-a-dealer-information__toggle
+                    span.sr-only Collapse
+                    span.sr-only Expand
+
+    - var noDataTitleStyle = "font-w-normal-24 font-m-normal-20"
+    
+    //- Type 1. default
+    .guide-text-type Type1. Default
+    .c-wrapper.PD0036.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                .c-find-a-dealer
+                    +search-box
+
+                    .c-find-a-dealer-inner
+                        .c-find-a-dealer-body.is-hide
+                            .c-find-a-dealer-map
+                                .c-map
+                                    //- Google map                                     
+                            .c-find-a-dealer-list
+                                +list-legend
+                                .c-find-a-dealer-locations
+                                    //- List
+                                    .c-find-a-dealer-locations__list
+                                        each index in [1,2,3,4,5,6,7]
+                                            - var active = 1 == index 
+                                            - var description = 1 == index 
+                                            +locationItem(index, description)(class={"is-active" : active})
+                                    +paginationFraction
+
+    //- Type2. Messege
+    .guide-text-type Type2. Messege
+    .c-wrapper.PD0036.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                .c-find-a-dealer
+                    +search-box
+
+                    .c-find-a-dealer-inner
+                        .c-find-a-dealer-body
+                            .c-find-a-dealer-map
+                                .c-map
+                                    //- Google map
+                            .c-find-a-dealer-list
+                                +list-legend
+                                .c-find-a-dealer-locations
+                                    //- There is no data
+                                    .c-find-a-dealer-empty
+                                        .icon-empty
+                                        .c-text-contents
+                                            .title.c-text-contents__headline 
+                                                .cmp-title(data-cmp-data-layer="" class=noDataTitleStyle)
+                                                    h4.cmp-title__text 请择业务部门。
+                                                //- +headline("font-w-semibold-20 font-m-semibold-20", "h4", "请择业务部门")
+
+    //- Type 3. List
+    .guide-text-type Type3. List
+    .c-wrapper.PD0036.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                .c-find-a-dealer
+                    +search-box
+
+                    .c-find-a-dealer-inner
+                        .c-find-a-dealer-body.is-hide
+                            .c-find-a-dealer-map
+                                .c-map
+                                    //- Google map
+                                .c-pin.is-active
+                                    .c-pin-num 3
+                                .c-find-a-dealer-map__modal
+                                    .button
+                                        button(type="button").c-find-a-dealer-map__modal--close 
+                                            span.sr-only Close
+                                    .c-dealer
+                                        ul.c-icon-list.black-icon
+                                            li.icon-sales
+                                            li.icon-install
+                                            li.icon-service
+                                        dl.c-dealer-box
+                                            // GA4
+                                            dt.font-w-normal-20.font-m-normal-16 #[a(href="#" data-item="" data-link-name="") LightWerks]
+                                            dd.address 3331 Jack Northrop Ave, Hawthorne, CA
+                                            dd.phone
+                                                // GA4
+                                                a(href="tel:4246752600" role="button") (424) 675-2600
+                                                span
+                                                // GA4
+                                                a(href="tel:4246752600" role="button") (424) 675-2600
+                                            // GA4
+                                            dd.fax #[a(href="tel" role="button") +44-161-1234-8899]
+                                            // GA4
+                                            dd.email #[a(href="mailto:SouthBay@LightWerks.com" role="button") SouthBay@LightWerks.com]
+                                            dd.open Sunday to Thursday 9:00 to 6:00 except pubilc holiday.
+                                            // GA4
+                                            dd.font-w-normal-16.font-m-normal-14i #[a(href="www.lightwerks.com" data-link-name="").highlight www.lightwerks.com]
+                            .c-find-a-dealer-list
+                                +list-legend
+                                .c-find-a-dealer-locations
+                                    //- List
+                                    .c-find-a-dealer-locations__list
+                                        each index in [1,2,3,4,5,6,7]
+                                            - var active = 3 == index 
+                                            - var description = 1 == index 
+                                            +locationItem(index, description)(class={"is-active" : active})
+                                    +paginationFraction
+
+    //- Type4. Messege
+    .guide-text-type Type4. Messege
+    .c-wrapper.PD0036.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                .c-find-a-dealer 
+                    +search-box
+
+                    .c-find-a-dealer-inner
+                        .c-find-a-dealer-body
+                            .c-find-a-dealer-map
+                                .c-map
+                                    //- Google map
+                            .c-find-a-dealer-list
+                                +list-legend
+                                .c-find-a-dealer-locations
+                                    //- There is no data
+                                    .c-find-a-dealer-empty
+                                        .icon-empty
+                                        .c-text-contents
+                                            .title.c-text-contents__headline 
+                                                .cmp-title(data-cmp-data-layer="" class=noDataTitleStyle)
+                                                    h4.cmp-title__text 无数据。
+                                                //- +headline("font-w-semibold-20 font-m-semibold-20", "h4", "无数据。")
+

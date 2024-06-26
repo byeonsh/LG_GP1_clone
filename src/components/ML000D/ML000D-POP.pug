@@ -1,0 +1,645 @@
+extends ../_common/_layout.pug
+include ../_common/_pop-msg.pug
+include ../_common/_forms.pug
+include ../_common/_button.pug
+
+
+block meta 
+    - var componentId = "ML000D"
+    - var componentName = "Order Details"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+                
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond}, warningDesc= false)
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info
+            li.font-w-normal-16.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+        if warningDesc
+            +deliveryDesc([
+                {
+                    descWarning: 'Die Lieferung von Großgeräten wie z.B. TVs, Kühlschränke oder Waschmaschinen übernimmt Rhenus Home Delivery. Liefertermin nach Absprache.',
+                },
+            ])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info
+            li.font-w-normal-16.font-m-normal-14= infoTextSecond
+
+mixin formCheckbox(label, name, val, id, count = "false", disabled = false, checked = false)
+    .c-checkbox-item&attributes(attributes)
+        label.checkbox(for=`${id}`)
+            if(disabled)
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, disabled="disabled")&attributes(attributes)
+            else if(checked)
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, checked="checked")&attributes(attributes)
+            else 
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`)&attributes(attributes)
+
+            if(label)
+                span.label !{label}
+                    -if(count >= 0 & count != "false") // for filter
+                        sup.count= count 
+            else 
+                if block 
+                    span.label
+                        block
+        
+                        
+mixin invalid-warning(text = "warning msg")
+    .c-warning.font-m-normal-14.font-w-normal-14 !{text}
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+        if data.type === 'select'
+            +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected, tooltipMsg:data.tooltipMsg, readonly:data.readonly, required:data.required})
+        else if data.type === 'selectMulti'
+            .c-select-item
+                label.font-w-normal-16.font-m-normal-14(for= data.id)= data.label
+                    if(required) 
+                        +required-text-sr
+                .c-select-item--selectMulti
+                    each option, idx in data.optionVal
+                        select(id=`${data.id}-${idx}`, title=`${data.title}`)&attributes(attributes)
+                            - for(var i=0; i < option.length; i++)
+                                if selected === i + 1
+                                    option(value="" selected)= option[i]
+                                else
+                                    option(value="")= option[i]
+                if message
+                    +postFormMessage(`${message}`, "")
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else if data.type === 'searchAddress'
+            .c-input-item.searchAddress(class=data.addressClass)
+                label.font-w-normal-20.font-m-normal-16(for= data.id)= data.label
+                    if data.tooltipMsg
+                        +exclamTooltip(data.tooltipMsg, false)
+                .searchAddress__inr
+                    .c-input-item
+                        if data.required
+                            input(type= data.type id= data.id value= data.value placeholder= data.placeholder data-placeholder=data.placeholder class=config required)&attributes(attributes)
+                        else
+                            input(type= data.type id= data.id value= data.value placeholder= data.placeholder data-placeholder=data.placeholder class=config)&attributes(attributes)
+                    if data.list
+                        .searchAddress__list 
+                            each item in data.list
+                                button(type="button" class="searchAddress__item")= item
+                    if data.clearCountry != true 
+                        .searchAddress__country
+                            p.searchAddress__country-textcontent
+                                img(src=`../../assets/icon/${data.countryImg}` alt=`${data.countryName}`).searchAddress__country-image
+                                span.searchAddress__country-text.font-w-normal-16.font-m-normal-16= data.countryName
+                            if data.list
+                                button(type="button").searchAddress__country-button
+                                    span.sr-only Change Country 
+            +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else if data.type === 'searchAddressSelect'
+            .c-input-item 
+                label.font-w-normal-20.font-m-normal-16(for= data.id)= data.label
+                details.searchAddressSelect(class=data.addressClass)
+                    summary.searchAddress__title= data.title
+                    .searchAddress__inr
+                        .c-input-item
+                            input(type= data.type id= data.id value= data.value placeholder= data.placeholder data-placeholder=data.placeholder class=config)&attributes(attributes)
+                        if data.list
+                            .searchAddress__list 
+                                each item in data.list
+                                    button(type="button" class="searchAddress__item")= item
+                if data.required
+                    +myMsg({correct: data.correct, warning: ['Este é um campo obrigatório.'], check: data.check, warningFirst: data.warningFirst})                                
+                +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else if data.type === 'checkbox'
+            .c-input-item
+                if data.label
+                    label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                +formCheckbox(data.text, "name", "val1", `checkId-${data.id}`, count="false", false)
+        else if data.type === 'tel'
+            .c-input-item(class=`${data.telNumber ? 'c-input-item--tel':''}`)
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                if data.tooltipMsg
+                    if !data.tooltipInInput
+                        +exclamTooltip(data.tooltipMsg, false)
+                if data.tooltipInInput
+                    .c-tooltip__input
+                        input(type='tel' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder maxlength=data.maxlength class=`my-input__password` value= data.value)&attributes(attributes)
+                        +exclamTooltip(data.tooltipMsg, false, 'bottom-right')
+                else
+                    input(type='tel' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder maxlength=data.maxlength class=`my-input__password` value= data.value)&attributes(attributes)
+                if data.telNumber
+                    .my-form-number.font-w-normal-16.font-m-normal-16=data.telNumber
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            .c-input-item(class=`${data.active ? 'active' : ''}${data.frontText?'c-input-item--USTID':''}`)
+                if data.label
+                    label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? "my-info" : ""}`)= data.label
+                        if data.tooltip
+                            +exclamTooltip(data.tooltipMsg, false, data.direction, data.size, 'Link text')
+                        if data.required
+                            em.c-required *
+                                span.sr-only Required fields
+                if data.type === 'textarea'
+                    .my-textarea__container
+                        textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class='my-textarea--limit')&attributes(attributes)
+                else if data.required
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+                else if data.readonly
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+                else if data.disabled
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+                else if data.button
+                    if data.validation
+                        .input-button__container.input-button__container--validation
+                            .my-button-validation
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config)&attributes(attributes)
+                                +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                            .button.c-cta.button-full
+                                if data.button === 'Find Address'
+                                    +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})(role="search")
+                                else 
+                                    +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})
+                    else
+                        .input-button__container
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config)&attributes(attributes)
+                            .button.c-cta.button-full
+                                if data.button === 'Find Address'
+                                    +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})(role="search")
+                                else 
+                                    +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})
+                else 
+                    input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder maxlength=data.maxlength class=`my-input__password ${data.class}` value= data.value)&attributes(attributes)
+                if data.frontText
+                    .my-form-number.font-w-normal-16.font-m-normal-16=data.frontText
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        if data.doubleInputNo > 0
+            - for (let i=1; i<=data.doubleInputNo; i++)
+                .c-input-item
+                    input(type='text' id=`${data.id}-${i}` class=`my-input__password`)&attributes(attributes)
+
+mixin myInputForm(data, uniqueType=false)
+    .my-input
+        ul
+            each set in data
+                li(class=`${!set.label ? 'empty-label':''}`)
+                    +myFormText(set)
+
+mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected, tooltipMsg=false, readonly=false, required})
+    .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+        +formSelect(label, id, placeholder, required, readonly)
+            if optionVal
+                - for(var i=0; i < optionVal.length; i++)
+                    if selected === i + 1
+                        option(value="" selected)= optionVal[i]
+                    else
+                        option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText})
+
+mixin formSelect(label, id, title, required=false, labelSrOnly=false, message = false, tooltipMsg=false, readonly=false)
+    .c-select-item
+        if label != ''
+            - var labelStyle = "font-w-normal-16 font-m-normal-14"
+
+            label(for=`${id}` class=labelStyle class={'sr-only' : labelSrOnly})= label
+                if(required) 
+                    +required-text-sr
+                
+            if tooltipMsg
+                if !tooltipInInput
+                    +exclamTooltip(tooltipMsg, false)
+        //- Bad value true for attribute required on element input.
+        if required
+            select(id=`${id}`, title=`${title}`, required="required")&attributes(attributes)
+                if block
+                    block
+        else if readonly
+            select(id=`${id}`, title=`${title}`, readonly="readonly")&attributes(attributes)
+                if block
+                    block
+        else
+            select(id=`${id}`, title=`${title}`)&attributes(attributes)
+                if block
+                    block
+        if message
+            +postFormMessage(`${message}`, "")
+
+mixin required-text-sr
+    // block - required(sr text)
+    em.c-required * 
+        span.sr-only Required fields
+
+mixin myCouponsList(data)
+    .my-coupons
+        each set in data
+            .my-coupons__item 
+                .my-coupons__inner
+                    .c-text-contents__top(class=`my-coupons__icon--${set.couponType}`)
+                        .c-text-contents__title
+                            span.font-w-normal-32.font-m-normal-24.font-red !{set.couponTitle}
+                        .c-text-contents__desc
+                            span.font-w-normal-20.font-m-normal-16 !{set.couponDesc}
+                    .c-text-contents__bottom.close
+                        .c-text-contents__valid
+                            span.font-w-normal-16.font-m-normal-14= `Valid : ${set.valid}`
+                        if set.expiringDay
+                            .c-text-contents__warningMsg.font-red
+                                span.font-w-normal-16.font-m-normal-14= `Only ${set.expiringDay} days ` 
+                                span.font-w-normal-16.font-m-normal-14 left on this coupon
+                        .c-text-contents__code
+                            span.my-coupons__code.font-w-noraml-16.font-m-normal-14= set.code
+                            +button({type:"box-outlined", color:"black", size:"small", name: "Copy"})
+                        .c-text-contents__info
+                            span.font-w-normal-14.font-m-normal-12 !{set.info}
+                .my-coupons__aside 
+                    .c-button.button 
+                        +button({type:"text",color:"black", icon:true, name:"VIEW DETAIL", class:"my-coupons__icon--arrow"})
+
+block content
+    .button.c-cta
+        .guide-text-option Option : (TR)
+        +defaultButton({name:"ML000D_TR Guide text", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})(href="#TR_GuideText", class="js-pop-open")
+        +defaultButton({name:"ML000D_TR input form", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})(href="#TR_inputForm", class="js-pop-open")
+        +defaultButton({name:"ML000D_TR Cancel Order complete", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})(href="#TR_cancelComplete", class="js-pop-open")
+        .guide-text-option Option : (MX)
+        +defaultButton({name:"ML000D_MX Cancel Order (Member)", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})(href="#MX_cancelOrderMember", class="js-pop-open")
+        +defaultButton({name:"ML000D_MX Cancel Order (Guest)", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})(href="#MX_cancelOrderGuest", class="js-pop-open")
+        //- [Start] 2024-03-07 : Add [CZ] Cancel Request Popup (member,guest)
+        .guide-text-option Option : (CZ)
+        +defaultButton({name:"ML000D_CZ Cancel Request (Member)", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})(href="#CZ_cancelRequestMember", class="js-pop-open")
+        +defaultButton({name:"ML000D_CZ Cancel Request (Guest)", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})(href="#CZ_cancelRequestGuest", class="js-pop-open")
+        //- [End] 2024-03-07 : Add [CZ] Cancel Request Popup (member,guest)
+        .guide-text-option Cancellation Success Popup
+        +defaultButton({name:"Cancellation Success", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})(href="#cancellationSuccess", class="js-pop-open")
+
+block modal
+    #cancelOrderPopup
+        // TR - cancel order guide text
+        +pop-msg-standard({id : `TR_GuideText`, headline:"CAYMA HAKKI", classes : 'ML000D__modal-container ML000D__modal-container--cancel'})
+            // block - text contents
+            .c-pop-msg__contents
+                .c-text-contents.c-pop-msg__contents__text-box 
+                    .c-text-contents__bodycopy.c-pop-msg__contents__text-box__desc
+                        .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") 1. Alıcı ürünü/ürünleri teslim aldığı tarihten itibaren 14 (on dört) gün içerisinde; herhangi bir gerekçe göstermeksizin ve cezai şart ödemeksizin sözleşmeden cayma hakkına sahiptir.
+                        .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") 2. Cayma hakkı süresi, mal teslimine ilişkin sözleşmelerde alıcının veya alıcı tarafından bildirilen adreste bulunan üçüncü kişinin ürünü/ürünleri teslim aldığı gün başlar. Ancak alıcı, sözleşmenin kurulmasından ürünün teslimine kadar olan süre içerisinde de cayma hakkını kullanabilir.
+                        .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") 3. Cayma hakkı süresinin belirlenmesinde; 
+                            ul.c-pop-msg__contents__list.c-pop-msg__contents__list--dot
+                                li Tek sipariş konusu olup ayrı ayrı teslim edilen mallarda, alıcının veya alıcı tarafından bildirilen adreste bulunan üçüncü kişinin son malı teslim aldığı gün, 
+                                li Birden fazla parçadan oluşan mallarda, alıcının veya alıcı tarafından bildirilen adreste bulunan üçüncü kişinin son parçayı teslim aldığı gün, 
+                                li Belirli bir süre boyunca malın düzenli tesliminin yapıldığı sözleşmelerde, alıcının veya alıcı tarafından bildirilen adreste bulunan üçüncü kişinin ilk malı teslim aldığı gün esas alınır. 
+                        .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") 4. Alıcı, cayma süresi içerisinde, cayma hakkını kullanmak isterse;
+                            ul.c-pop-msg__contents__list.c-pop-msg__contents__list--dot
+                                li Üye olarak alışveriş yapmış olması halinde, hesabına giriş yaparak siparişlerim sayfasındaki adımları izleyerek veya  “444 6543” numaralı telefon üzerinden müşteri hizmetlerini arayarak, 
+                                li Üye olmaksızın alışveriş yapmış olması halinde, internet sitesinde iptal iade işlemleri başlığı altında bulunan cayma formunu doldurarak veya “444 6543” numaralı telefon üzerinden müşteri hizmetlerini arayarak, bu hakkını kullanabilir. 
+                        .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") 5. Süresi içinde yapılan cayma beyanından sonra ürünler,
+                            ul.c-pop-msg__contents__list.c-pop-msg__contents__list--dot
+                                li Montaj gerektiren bir ürün olması halinde, 4 iş günü içerisinde yetkili servis tarafından demonte edilerek bunu izleyen 4-7 iş günü içerisinde,
+                                li Montaj gerektirmeyen bir ürün olması halinde, 4-7 iş günü içerisinde, anlaşmalı kargo firmaları olan Hepsijet veya Hepsi XL tarafından, alıcı tarafından işbu sözleşmede belirtilen teslimat adresinden, teslim alınacaktır. Resmi tatiller ve dini/milli bayram günleri bu süreden sayılmaz. 
+                        .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") 6. Bu iade işleminde sözleşmeye konu malın kutusu, ambalajı ve varsa standart aksesuarları ile birlikte eksiksiz ve hasarsız olarak teslim edilmesi gerekmektedir. Ayrıca Vergi Usul Kanunu uyarınca, Alıcı tarafından kanunen iade faturası kesilmesi gereken hallerin yanı sıra ürünle beraber iade edilecek olan fatura üzerinde iade ile ilgili bölüm doldurulup imzalanacaktır. Faturası tüzel kişiler adına düzenlenen sipariş iadeleri, iade faturası kesilmediği takdirde kabul edilmeyecektir.
+                        .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") 7. Satıcı, yukarıda belirtilen gereklerin Alıcı tarafından yerine getirilmesi kaydı ile, cayma bildiriminin kendisine ulaştığı tarihten itibaren 14 (on dört) gün içerisinde, Alıcı’dan almış olduğu toplam bedeli ve Alıcı’yı borç altına sokan her türlü belgeyi Alıcı’ya hiçbir masraf yüklemeksizin ürünün satın alınırken kullandığı ödeme aracına uygun olarak iade eder.
+                        .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") 8. Alıcı, “Mesafeli Sözleşmelere Dair Yönetmelik”te düzenlenen aşağıdaki hususlar ile bunlarla sınırlı olmamak kaydıyla benzer sözleşmelerde cayma hakkını kullanamayacaktır: 
+                            ul.c-pop-msg__contents__list.c-pop-msg__contents__list--dot
+                                li Fiyatı finansal piyasalardaki dalgalanmalara bağlı olarak değişen ve satıcı veya sağlayıcının kontrolünde olmayan mal veya hizmetlere ilişkin sözleşmeler.
+                                li Tüketicinin istekleri veya kişisel ihtiyaçları doğrultusunda hazırlanan mallara ilişkin sözleşmeler.
+                                li Çabuk bozulabilen veya son kullanma tarihi geçebilecek malların teslimine ilişkin sözleşmeler.
+                                li Tesliminden sonra ambalaj, bant, mühür, paket gibi koruyucu unsurları açılmış olan mallardan; iadesi sağlık ve hijyen açısından uygun olmayanların teslimine ilişkin sözleşmeler.
+                                li Tesliminden sonra başka ürünlerle karışan ve doğası gereği ayrıştırılması mümkün olmayan mallara ilişkin sözleşmeler.
+                                li Malın tesliminden sonra ambalaj, bant, mühür, paket gibi koruyucu unsurları açılmış olması halinde maddi ortamda sunulan kitap, dijital içerik ve bilgisayar sarf malzemelerine ilişkin sözleşmeler.
+                                li Abonelik sözleşmesi kapsamında sağlananlar dışında, gazete ve dergi gibi süreli yayınların teslimine ilişkin sözleşmeler.
+                                li Belirli bir tarihte veya dönemde yapılması gereken, konaklama, eşya taşıma, araba kiralama, yiyecek-içecek tedariki ve eğlence veya dinlenme amacıyla yapılan boş zamanın değerlendirilmesine ilişkin sözleşmeler.
+                                li Elektronik ortamda anında ifa edilen hizmetler veya tüketiciye anında teslim edilen gayrimaddi mallara ilişkin sözleşmeler.
+                                li Cayma hakkı süresi sona ermeden önce, tüketicinin onayı ile ifasına başlanan hizmetlere ilişkin sözleşmeler.
+            .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap--no-divide-on-mobile
+                +defaultButton({name: 'Cayma Hakkı Formu için Tıklayın', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="js-pop-close")
+        // TR - cancel order input form
+        +pop-msg-standard({id : `TR_inputForm`, headline:"Cayma Hakkı Bildirim Formu", classes : 'ML000D__modal-container ML000D__modal-container--cancel'})
+            // block - text contents
+            .c-pop-msg__contents
+                .c-text-contents.c-pop-msg__contents__text-box 
+                    .c-text-contents__bodycopy.c-pop-msg__contents__text-box__desc
+                        .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") Bu form yalnızca cayma hakkının kullanılacağı durumlarda doldurulmalıdır.
+                        .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") 
+                            p(class="font-m-normal-20 font-w-normal-20") Kime :
+                            | LG Electronics Ticaret ve Anonim Şirketi Kaptanpaşa Mah. Piyalepaşa Bulvarı No:73 Ortadoğu Plaza K:7 Okmeydanı Şişli/İSTANBUL
+                        .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") 6502 sayılı Tüketicinin Korunması Hakkında Kanunu’ nun 48. maddesinin 4. fıkrasından ve aynı Kanun’ a bağlı olarak çıkarılan, 27.11.2014 tarihli Mesafeli Sözleşmeler Yönetmeliği’nin 9’uncu maddesinden kaynaklanan cayma hakkımı kullanmak suretiyle sözleşmeden caydığımı bildirir, ödemiş olduğum tutarın iadesini talep ederim. İletişim bilgilerim ve siparişim numaram aşağıdaki gibidir :
+                .cancelOrderBox
+                    +myInputForm([
+                        {
+                            type:"text",
+                            label:"Sipariş Numarası",
+                            id:"orderNumber",
+                            required:true,   
+                            value:"",
+                            warning: ['Sipariş numaranızı girin'],
+                            placeholder:"Sipariş Numarası",
+                        },
+                        {
+                            type:"text",
+                            label:"Sipariş Tarihi (GG/AA/YYYY)",
+                            id:"orderDate",
+                            required:true,   
+                            value:"",
+                            warning: ['Sipariş tarihini girin'],
+                            placeholder:"GG/AA/YYYY",
+                        },
+                        {
+                            type:"text",
+                            label:"Alıcının Adı – Soyadı",
+                            id:"orderName",
+                            required:true,   
+                            value:"",
+                            warning: ['Alıcının Adı – Soyadı girin'],
+                            placeholder:"Alıcının Adı – Soyadı",
+                        },
+                        {
+                            type:"text",
+                            label:"Alıcının E-Posta Adresi",
+                            id:"orderMail",
+                            required:true,   
+                            value:"",
+                            warning: ['Alıcının E-Posta Adresi girin', 'E-posta adresi geçersiz.'],
+                            placeholder:"Alıcının E-Posta Adresi",
+                        },
+                        {
+                            type:"textarea",
+                            label:"Alıcının Adresi",
+                            id:"orderAddress",
+                            required:true,   
+                            value:"",
+                            warning: ['Alıcının Adresi girin'],
+                            placeholder:"Alıcının Adresi",
+                        },
+                    ])
+            .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap--no-divide-on-mobile
+                +defaultButton({name: 'GÖNDER', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="js-pop-close")
+        // TR - cancel order cancel complete
+        +pop-msg-standard({id : `TR_cancelComplete`, size: "small"})
+            .c-pop-msg__contents
+                p.align-text-center CAYMA HAKKI<br>başvurunuz tamamlanmıştır.
+            .button.c-pop-msg__button-wrap
+                +defaultButton({name: 'Kapat', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popAddToCart")
+        
+        // MX - cancel order (Member)
+        +pop-msg-standard({id : `MX_cancelOrderMember`, headline:"Cancellation Request", classes : 'ML000D__modal-container ML000D__modal-container--cancel'})
+            // block - text contents
+            .c-pop-msg__contents
+                .c-text-contents.c-pop-msg__contents__text-box 
+                    .c-text-contents__bodycopy.c-pop-msg__contents__text-box__desc
+                        .cmp-text.font-m-normal-16.font-w-normal-16 Hi Sydney,
+                        .cmp-text.font-m-normal-16.font-w-normal-16 We will review and process your cancel request within 24 hours of submission.
+                .cancelOrderBox
+                    .c-text-contents.c-pop-msg__contents__text-box
+                        .cmp-text.font-m-normal-14.font-w-normal-16 The item(s) to be cancel requested
+                        ul.c-pop-msg__contents__list.c-pop-msg__contents__list--dot
+                            li LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)
+                    +myInputForm([
+                        {
+                            type:"select",
+                            label:"Select a reason",
+                            id:"selectReason",
+                            required:true,
+                            optionVal: ['Select a reason','Changed my mind', 'Bought by mistake', 'Found a cheaper alternative', 'Delivery takes too long', 'Update shipping address', 'Update coupon voucher', 'Change Payment method', 'Get negative feedback about the item', 'Other'],
+                        },
+                        {
+                            type:"textarea",
+                            label:"Leave a comment",
+                            id:"leaveComment",
+                            required:true,
+                            placeholder:"Let us know how we can improve!",
+                            infoText: ["200 characters remaining."],
+                        },
+                    ])
+                .c-text-contents.c-pop-msg__contents__text-box 
+                    .c-text-contents__bodycopy.c-pop-msg__contents__text-box__desc
+                        .cmp-text.font-m-normal-16.font-w-normal-16 Please be advised that if the ordered product is already collected by the shipping company, your Cancel Request can be declined. Also, should your purchase involve any promotional prices/coupons, the same offer/s may not be available again after cancellation.
+                        .cmp-text.font-m-normal-16.font-w-normal-16 You will be notified of the Cancellation Request result within next 24 hours.
+                        .cmp-text.font-m-normal-16.font-w-normal-16 Thank you for your being a valued customer!
+                +toastPopup([
+                    {
+                        type: "error",
+                        text: 'The cancellation cannot be made.',
+                        remove: true
+                    },
+                ])
+            .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap__button-auto
+                +defaultButton({name: 'No', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="js-pop-close")
+                +defaultButton({name: 'Yes', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+        // MX - cancel order (Guset)
+        +pop-msg-standard({id : `MX_cancelOrderGuest`, headline:"Cancellation Request", classes : 'ML000D__modal-container ML000D__modal-container--cancel'})
+            // block - text contents
+            .c-pop-msg__contents
+                .c-text-contents.c-pop-msg__contents__text-box 
+                    .c-text-contents__bodycopy.c-pop-msg__contents__text-box__desc
+                        .cmp-text.font-m-normal-16.font-w-normal-16 We will review and process your cancel request within 24 hours of submission.
+                .cancelOrderBox
+                    .c-text-contents.c-pop-msg__contents__text-box
+                        .cmp-text.font-m-normal-14.font-w-normal-16 The item(s) to be cancel requested
+                        ul.c-pop-msg__contents__list.c-pop-msg__contents__list--dot
+                            li LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)
+                    +myInputForm([
+                        {
+                            type:"select",
+                            label:"Select a reason",
+                            id:"selectReason",
+                            required:true,
+                            optionVal: ['Select a reason','Changed my mind', 'Bought by mistake', 'Found a cheaper alternative', 'Delivery takes too long', 'Update shipping address', 'Update coupon voucher', 'Change Payment method', 'Get negative feedback about the item', 'Other'],
+                        },
+                        {
+                            type:"textarea",
+                            label:"Leave a comment",
+                            id:"leaveComment",
+                            required:true,
+                            placeholder:"Let us know how we can improve!",
+                            infoText: ["200 characters remaining."],
+                        },
+                    ])
+                .c-text-contents.c-pop-msg__contents__text-box 
+                    .c-text-contents__bodycopy.c-pop-msg__contents__text-box__desc
+                        .cmp-text.font-m-normal-16.font-w-normal-16 Please be advised that if the ordered product is already collected by the shipping company, your Cancel Request can be declined. Also, should your purchase involve any promotional prices/coupons, the same offer/s may not be available again after cancellation.
+                        .cmp-text.font-m-normal-16.font-w-normal-16 You will be notified of the Cancellation Request result within next 24 hours.
+                        .cmp-text.font-m-normal-16.font-w-normal-16 Thank you for your being a valued customer!
+                +toastPopup([
+                    {
+                        type: "error",
+                        text: 'The cancellation cannot be made.',
+                        remove: true
+                    },
+                ])
+            .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap__button-auto
+                +defaultButton({name: 'No', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="js-pop-close")
+                +defaultButton({name: 'Yes', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+        //- [Start] 2024-03-07 : Add [CZ] Cancel Request Popup (member,guest)
+        // CZ - Cancel Request (Member)
+        +pop-msg-standard({id : `CZ_cancelRequestMember`, headline:"Cancellation Request", classes : 'ML000D__modal-container ML000D__modal-container--cancel ML000D__modal-container--cancel__cz'})
+            // block - text contents
+            .c-pop-msg__contents
+                .c-text-contents.c-pop-msg__contents__text-box 
+                    .c-text-contents__bodycopy.c-pop-msg__contents__text-box__desc
+                        .cmp-text.font-m-normal-16.font-w-normal-16 Hi Sydney,
+                        .cmp-text.font-m-normal-16.font-w-normal-16 We will review and process your cancel request within 24 hours of submission.
+                .cancelOrderBox.cancelOrderBox-first
+                    .c-text-contents.c-pop-msg__contents__text-box
+                        .cmp-text.font-m-normal-14.font-w-normal-16 The item(s) to be cancel requested
+                        ul.c-pop-msg__contents__list.c-pop-msg__contents__list--dot
+                            li LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)
+                    +myInputForm([
+                        {
+                            type:"select",
+                            label:"Select a reason",
+                            id:"selectReason",
+                            required:true,
+                            optionVal: ['Select a reason','Changed my mind', 'Bought by mistake', 'Found a cheaper alternative', 'Delivery takes too long', 'Update shipping address', 'Update coupon voucher', 'Change Payment method', 'Get negative feedback about the item', 'Other'],
+                        },
+                        {
+                            type:"textarea",
+                            label:"Leave a comment",
+                            id:"leaveComment",
+                            required:true,
+                            placeholder:"Let us know how we can improve!",
+                            infoText: ["200 characters remaining."],
+                        },
+                    ])
+                .cancelOrderBox
+                    .c-text-contents.c-pop-msg__contents__text-box
+                        .cmp-text.font-m-normal-16.font-w-normal-20 Refund information
+                    +myInputForm([
+                        {
+                            type:"text",
+                            label:"Bank account number",
+                            id:"accountNumber",
+                            required:true,   
+                            value:"",
+                        },
+                        {
+                            type:"text",
+                            label:"Bank account owner name",
+                            id:"ownerName",
+                            required:true,   
+                            value:"",
+                        },
+                    ])
+                .c-text-contents.c-pop-msg__contents__text-box 
+                    .c-text-contents__bodycopy.c-pop-msg__contents__text-box__desc
+                        .cmp-text.font-m-normal-16.font-w-normal-16 Please be advised that if the ordered product is already collected by the shipping company, your Cancel Request can be declined. Also, should your purchase involve any promotional prices/coupons, the same offer/s may not be available again after cancellation.
+                        .cmp-text.font-m-normal-16.font-w-normal-16 You will be notified of the Cancellation Request result within next 24 hours.
+                        .cmp-text.font-m-normal-16.font-w-normal-16 Thank you for your being a valued customer!
+                +toastPopup([
+                    {
+                        type: "error",
+                        text: 'The cancellation cannot be made.',
+                        remove: true
+                    },
+                ])
+            .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap__button-auto
+                +defaultButton({name: 'No', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="js-pop-close")
+                +defaultButton({name: 'Yes', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+        // CZ - Cancel Request (Guset)
+        +pop-msg-standard({id : `CZ_cancelRequestGuest`, headline:"Cancellation Request", classes : 'ML000D__modal-container ML000D__modal-container--cancel ML000D__modal-container--cancel__cz'})
+            // block - text contents
+            .c-pop-msg__contents
+                .c-text-contents.c-pop-msg__contents__text-box 
+                    .c-text-contents__bodycopy.c-pop-msg__contents__text-box__desc
+                        .cmp-text.font-m-normal-16.font-w-normal-16 We will review and process your cancel request within 24 hours of submission.
+                .cancelOrderBox.cancelOrderBox-first
+                    .c-text-contents.c-pop-msg__contents__text-box
+                        .cmp-text.font-m-normal-14.font-w-normal-16 The item(s) to be cancel requested
+                        ul.c-pop-msg__contents__list.c-pop-msg__contents__list--dot
+                            li LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)
+                    +myInputForm([
+                        {
+                            type:"select",
+                            label:"Select a reason",
+                            id:"selectReason",
+                            required:true,
+                            optionVal: ['Select a reason','Changed my mind', 'Bought by mistake', 'Found a cheaper alternative', 'Delivery takes too long', 'Update shipping address', 'Update coupon voucher', 'Change Payment method', 'Get negative feedback about the item', 'Other'],
+                        },
+                        {
+                            type:"textarea",
+                            label:"Leave a comment",
+                            id:"leaveComment",
+                            required:true,
+                            placeholder:"Let us know how we can improve!",
+                            infoText: ["200 characters remaining."],
+                        },
+                    ])
+                .cancelOrderBox
+                    .c-text-contents.c-pop-msg__contents__text-box
+                        .cmp-text.font-m-normal-16.font-w-normal-20 Refund information
+                    +myInputForm([
+                        {
+                            type:"text",
+                            label:"Bank account number",
+                            id:"accountNumber",
+                            required:true,   
+                            value:"",
+                        },
+                        {
+                            type:"text",
+                            label:"Bank account owner name",
+                            id:"ownerName",
+                            required:true,   
+                            value:"",
+                        },
+                    ])
+                    
+                .c-text-contents.c-pop-msg__contents__text-box 
+                    .c-text-contents__bodycopy.c-pop-msg__contents__text-box__desc
+                        .cmp-text.font-m-normal-16.font-w-normal-16 Please be advised that if the ordered product is already collected by the shipping company, your Cancel Request can be declined. Also, should your purchase involve any promotional prices/coupons, the same offer/s may not be available again after cancellation.
+                        .cmp-text.font-m-normal-16.font-w-normal-16 You will be notified of the Cancellation Request result within next 24 hours.
+                        .cmp-text.font-m-normal-16.font-w-normal-16 Thank you for your being a valued customer!
+                +toastPopup([
+                    {
+                        type: "error",
+                        text: 'The cancellation cannot be made.',
+                        remove: true
+                    },
+                ])
+            .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap__button-auto
+                +defaultButton({name: 'No', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="js-pop-close")
+                +defaultButton({name: 'Yes', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+        //- [End] 2024-03-07 : Add [CZ] Cancel Request Popup (member,guest)
+
+    // Pop-up to Cancellation Success
+    +pop-msg-standard({id : "cancellationSuccess", headline : "Thank you for your feedback!", classes : "ML000D__modal-container ML000D__modal-container--success"})
+        // block - text contents
+        .c-pop-msg__contents
+            .c-text-contents.c-pop-msg__contents__text-box 
+                .c-text-contents__bodycopy.c-pop-msg__contents__text-box__desc
+                    .cmp-text.has-dot.font-m-normal-14.font-w-normal-16 Your satisfaction is our goal and we value your interest in our products!
+                    .cmp-text.has-dot.font-m-normal-14.font-w-normal-16 As a token of appreciation, we’re pleased to offer an exclusive one-time coupon for the canceled product, in case you have a change of heart.
+                    .cmp-text.has-dot.font-m-normal-14.font-w-normal-16 Your feedback matters to us, and we’re here to make your experience exceptional.
+            +myCouponsList([
+                {
+                    couponType: "product",
+                    couponTitle: "Next Purchase",
+                    couponDesc: "20% off LG home appliances <br>(Accessories Included)",
+                    valid: "02 Jun. 2023",
+                    expiringDay: "",
+                    code: "4S3EMQ4V3MGF",
+                    info: "50% off selected Soundbars when you buy selected <br>LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                },
+            ])
+        .button.c-pop-msg__button-wrap
+            +defaultButton({name: 'Save to Coupon List', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+

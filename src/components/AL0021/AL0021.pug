@@ -1,0 +1,129 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_headline.pug
+include ../_common/_carousel.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "AL0021"
+    - var componentName = "About LG"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Top margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'Bottom margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                        ],
+                    };
+    mixin swiperList (param)
+        - var size_pc = "464x300";
+        - var size_mo = "310x206";
+        each data in param 
+            div.cmp-carousel__item.swiper-slide.c-list__item
+                .c-list-item__img
+                    +printLazyPicture(
+                        `https://via.placeholder.com/${size_mo}`, 
+                        `https://via.placeholder.com/${size_pc}`
+                    )
+                .c-list-item__contents.c-text-contents 
+                    .title.c-text-contents__title
+                        strong.cmp-title.font-w-light-36.font-m-light-24(data-cmp-data-layer="")= data.titleName
+                    .text.c-text-contents__bodycopy
+                        p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="")!= data.bodyCopy
+                    //- +linkButton({type:"box-outlined", color:"black", size:"medium", name: "LEARN MORE"})
+                    +defaultButton({name: 'Learn More', wSize: 'medium', mSize: 'small', buttonStyle: 'default transparent', isButton: false})(data-link-destination="" data-link-name="learn_more" data-link-menu="" data-link-page-type="")
+
+
+    mixin handler                           
+        .c-carousel__handler
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"prev"})
+            +carouselPagination
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"next"})
+
+    .c-wrapper.margin-top.margin-bottom(class=componentId)
+        .component
+            .cmp-container
+                +component-title-area({
+                    headline : {
+                        text : "Everything About LG"
+                    }
+                })
+                //- //- block : text-contents
+                //- .c-text-contents
+                //-     .title.c-text-contents__headline
+                //-         // 2022-11-18 change the default font size
+                //-         h1.cmp-title.font-w-semibold-40.font-m-semibold-26(data-cmp-data-layer="") Everything About LG
+                .c-stock-list
+                    //- +contentsList({num:'3',headline:'font-w-semibold-32 font-m-semibold-24',bodycopy:'font-w-normal-16 font-m-normal-16'})
+                    .carousel.panelcontainer
+                        // block - carousel
+                        .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                            .cmp-carousel__content.swiper-wrapper.c-list
+                                +swiperList([
+                                    {
+                                        titleName: "Career",
+                                        bodyCopy: `LG Electronics allows you to realize your dreams and offers the "Right People" great opportunities for growth.`,
+                                    },
+                                    {
+                                        titleName: "Press & Media",
+                                        bodyCopy: `View PR films and ads, read press releases, download information, and get in touch with one of LG's Media Contacts.`,
+                                    },
+                                    {
+                                        titleName: "Sustainability",
+                                        bodyCopy: `Enhancing your life with LG’s products comes with great values, benefits, promise and personality.`,
+                                    },
+                                ])
+                            +handler 
+
+                    //- .carousel.panelcontainer
+                    //-     .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                    //-         .cmp-carousel__content.swiper-wrapper.c-list
+
+                    //- .c-carousel__handler
+                    //-     .cmp-carousel__actions
+                    //-         +carouselBtn({type:"pagination", direction:"prev"})
+                    //-     +carouselPagination({isUnder:true})
+                    //-     .cmp-carousel__actions
+                    //-         +carouselBtn({type:"pagination", direction:"next"})
+
+                    //- .carousel.panelcontainer
+                    //-     // block - carousel
+                    //-     .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                    //-         .cmp-carousel__content.swiper-wrapper
+                    //-             - for (var x = 0; x < 6; x++)
+                    //-                 +slideItem(true, true)
+
+                    //-         +handler 

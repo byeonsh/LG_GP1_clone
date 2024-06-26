@@ -1,0 +1,153 @@
+@use '../abstract/' as *;
+
+@mixin toast {
+  .toast-popup {
+    $toast-popup: '.toast-popup';
+    @include reset-list-style;
+    height: auto;
+    &__container {
+      line-height: rem(20px);
+      display: flex;
+      align-items: center;
+      gap: rem(8px);
+    }
+    &__item {
+      width: 100%;
+      padding: rem($padding12px $padding16px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: opacity ease-in-out 1s;
+      border-radius: rem(20px);
+      box-shadow: rem(0) rem(4px) rem(4px) rgb(0 0 0 / 5%);
+      gap: rem(6px);
+      color: $white;
+      & + #{$toast-popup}__item {
+        margin-top: rem($margin6px);
+        @include screen(web) {
+          margin-top: rem($margin4px);
+        }
+      }
+      &--error {
+        background-color: rgb(38 38 38 / 90%);
+      }
+      &--incorrect {
+        background-color: $white;
+        color: $black;
+        box-shadow: 0 rem(3px) rem(12px) rgb(0 0 0 / 7%);
+        @include screen(web) {
+          background-color: $white;
+        }
+        #{$toast-popup}__remove {
+          background-image: url($icon-close-black-12-12);
+        }
+      }
+      &--warning {
+        background-color: rgb(222 173 37 / 90%);
+        color: $black;
+        #{$toast-popup}__remove {
+          background-image: url($icon-close-black-12-12);
+        }
+      }
+      &--success {
+        background-color: rgb(7 99 105 / 90%);
+      }
+      &--info {
+        background-color: #e6e1d6;
+        color: $gray3;
+        #{$toast-popup}__remove {
+          background-image: url($icon-close-black-12-12);
+        }
+      }
+    }
+    &__title {
+      display: flex;
+      font-size: rem(12px);
+      line-height: rem(16px);
+      flex-direction: column;
+      font-weight: $font-semibold;
+      @include screen(web) {
+        line-height: rem(14px);
+        flex-direction: row;
+      }
+      strong {
+        margin-right: rem($margin3px);
+        font-size: rem(14px);
+        font-weight: $font-semibold;
+      }
+    }
+    a {
+      color: inherit;
+      text-decoration: underline;
+      display: inline-block;
+      @include screen(web) {
+        margin-left: rem(8px);
+      }
+    }
+    &__icon {
+      width: rem(16px);
+      height: rem(16px);
+      flex-shrink: 0;
+      @include screen(web) {
+        width: rem(20px);
+        height: rem(20px);
+      }
+      &--error {
+        background: url($icon-buy-error-16-16) center / contain no-repeat;
+      }
+      &--incorrect {
+        background: url($icon-member-warning-20-20) center / contain no-repeat;
+      }
+      &--warning {
+        background: url($icon-warning-black-20-20) center / contain no-repeat;
+      }
+      &--success {
+        background: url($icon-buy-success-16-16) center / contain no-repeat;
+      }
+      &--info {
+        background: url($icon-information-gray6-16-16) center / contain no-repeat;
+      }
+    }
+    &__remove {
+      cursor: pointer;
+      border: none;
+      width: rem(16px);
+      height: rem(16px);
+      background: url($icon-close-white-12-12) center / contain no-repeat;
+      background-size: rem(10px);
+      opacity: 0.5;
+      @include screen(web) {
+        height: rem(20px);
+      }
+      @include screen(mobile) {
+        display: flex;
+      }
+      @include screen(tablet) {
+        display: flex;
+        align-items: flex-start;
+        align-self: flex-start;
+      }
+    }
+    &.full {
+      position: fixed;
+      bottom: rem($margin24px);
+      z-index: $stacking-ceil + 5;
+      left: rem($margin16px);
+      right: rem($margin16px);
+      max-width: rem($max-width580px);
+      @include screen(web) {
+        transform: translateX(-50%);
+        left: 50%;
+        right: auto;
+        width: rem($max-width580px);
+      }
+      #{$toast-popup}__title {
+        font-size: rem(12px);
+        line-height: rem(16px);
+        @include screen(web) {
+          font-size: rem(14px);
+        }
+      }
+    }
+  }
+}

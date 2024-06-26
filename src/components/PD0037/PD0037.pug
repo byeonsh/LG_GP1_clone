@@ -1,0 +1,631 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_forms.pug
+include ../_common/_brand-detail.pug
+include ../_common/_product-list.pug
+include ../_common/_pagination.pug
+
+block meta 
+    - var componentId = "PD0037"
+    - var componentName = "Brand shop (CN)"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+    <meta name="ps-account" content="1698">
+    <meta name="ps-config" content="59d4fb4e369c750034b61c08">
+    <meta name="ps-country" content="CA">
+    <meta name="ps-language" content="en">
+
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+    script(type="text/javascript")
+        | function setSearchFilterSelect(target) {
+        |     const selected = target.value;
+        |     console.log(target);
+        |     console.log(target.value);
+        |     const subCate = target.parentElement.nextElementSibling.querySelector('select');
+        |     (selected != '') ? subCate.removeAttribute('disabled') : subCate.setAttribute('disabled', true);
+        | }
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+
+    - var noDataTitleStyle = "font-w-normal-24 font-m-normal-20"
+
+
+    mixin printTab(div, num, selected)
+        if selected
+            li.c-tabs__tab.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0", data-cmp-hook-tabs="tab", aria-selected="true")
+                if block
+                    block
+        else 
+            li.c-tabs__tab.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1", data-cmp-hook-tabs="tab", aria-selected="false")
+                if block
+                    block
+
+    mixin printTabPanel(div, num, selected)
+        if selected 
+            .c-tabs__tabpanel.cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+        else 
+            .c-tabs__tabpanel.cmp-tabs__tabpanel(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+
+    mixin mapSearchBox
+        //- block : c-map-search__box
+        form.cmp-form.c-map-search__box(action="#" method="get")&attributes(attributes)
+            .c-map-search__box-inner
+                label.sr-only(for='finderSearch') search
+                input.c-map-search__box-input(type='text' id='finderSearch' placeholder='请输入地址')
+                .c-map-search__box-button
+                    button(type="submit").c-icon-search
+                        span.sr-only search
+                    p.c-map-search__box-divider
+                    button(type="button").c-icon-place
+                        span.sr-only location
+            if block
+                block
+
+    mixin mapSearchResultBrand(params)
+        +brandMapSearchPdp(params)
+
+    mixin mapTooltipBrand
+        +brandDetailItem(
+            {
+                brandLogo: {src: 'https://via.placeholder.com/80x28/999999/333333'},
+                brandDistance: '1.8 mi',
+                brandName: 'Paulson’s',
+                brandAddr: {address: '1880 Broadway New York, NY 10023, United States', hasExport: false, fontStyle: 'font-w-normal-14 font-m-normal-14'},
+                contact: [
+                    {type: 'phone', number: ['(424) 675-2600 ']},
+                ],
+                buttons: [
+                    {color: 'red', type: 'box', name: 'GET DIRECTIONS'}
+                ],
+                category: {title: 'Product Category', text: ['Blu-ray & DVD Players, FridgeBlu-ray & DVD Players,', 'Blu-ray & DVD Players, FridgBlu-ray']},
+            }
+        )
+
+    mixin mapDirectionDefault(type, direction, pin, text)
+        - var bg = type ? 'c-box-gray' : ''
+        - var itmType = type ? direction : 'item'
+        - var color = direction == 'departure' ? 'is-black' : ''
+        - var indent = pin == 'car' ? 'c-pin-text__indent' : ''
+
+        .c-pin-text(class=`${bg} c-map-direction__result-${itmType}`)
+            .c-pin-text__pin
+                if type
+                    .c-pin-text__pin
+                        .c-map__pin(class=`${color}`)= pin
+                else
+                    .c-pin__icon(class=`${pin}`)
+                        span.sr-only= pin
+            if type
+                .font-w-normal-14.font-m-normal-14.c-pin-text__content= text
+            if block
+                .c-pin-text__content
+                    block
+
+    mixin mapDirectionResultTitle(direction, pin, text)
+        +mapDirectionDefault(true, direction, pin, text) 
+
+    mixin mapDirectionResultItem(pin)
+        +mapDirectionDefault(false, '', pin, '')
+            if block
+                block
+    
+    //- Type01. Default
+    .guide-text-type Type01. Default
+    .c-wrapper.PD0037.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+
+                //- block : search
+                .c-search-box
+                    //- element : .c-search-box__body(--multi, --double)
+                    form.cmp-form.c-search-box__body.c-search-box__body--multi(action="#" method="get")
+                        //- element : c-search-box__form
+                        .c-search-box__form
+                            +formSelect("省", "findState", "省", false)(class="c-search-box__state" onchange="setSearchFilterSelect(this)")
+                                option(value="") 省
+                                option(value="state1") State1
+                                option(value="state2") State2
+                                option(value="state3") State3
+                            +formSelect("城市", "findCity", "城市", false)(class="c-search-box__city" disabled="disabled" onchange="setSearchFilterSelect(this)")
+                                option(value="") 城市
+                                option(value="city1") City1
+                                option(value="city2") City2
+                                option(value="city3") City3
+                            +formSelect("产品名称", "findMainCategory", "产品名称", false)(class="c-search-box__category-main" disabled="disabled" onchange="setSearchFilterSelect(this)")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                            +formSelect("产品名称", "findSubCategory", "产品名称", false)(class="c-search-box__category-sub" disabled="disabled")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                        .button.c-search-box__button
+                            +button({color:"red", type:"box", size:"medium", name:"搜索"}, "submit")
+
+                //- block : c-map-search
+                //- 검색타입 : is-search
+                //- 길찾기, 검색 없는 리스트 : is-direction
+                .c-map-search.is-direction
+                    .c-map-search__inner
+                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                            span.sr-only Collapse
+                            span.sr-only Expand
+                        //- block : c-map
+                        .c-map
+                            .c-map__inner
+                                //- element : c-map__pin
+                                .c-map__pin.is-active 1
+                                .c-map__pin 2
+                                .c-map__pin 3
+                                .c-map__pin 4
+                                //- element : c-map-tooltip
+                                .c-map-tooltip
+                                    .c-map-tooltip__container
+                                        .button
+                                            button(type="button").c-map-tooltip__close
+                                                span.sr-only Close
+                                        //- block : c-brand-detail
+                                        .c-map-tooltip__contents
+                                            +mapTooltipBrand()
+                        .c-map-search__body
+                            //- result
+                            .c-map-search__result
+                                //- block : c-tabs
+                                .c-tabs.tabs.panelcontainer.c-tabs__button
+                                    .cmp-tabs.c-tabs__wrap(data-cmp-data-layer="", data-placeholder-text="false")
+                                        //- tab
+                                        .c-tabs__inner
+                                            ul.c-tabs__tablist.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                                +printTab(1, 1, true) 销售网点
+                                                +printTab(1, 2, false) 维修网络
+
+                                        //- tab panel
+                                        +printTabPanel(1, 1, true)
+                                            .c-brand-detail-list
+                                                +mapSearchResultBrand({ isPin: false, isExport: true, isToggle: false })
+                                                +mapSearchResultBrand({ isPin: true, isExport: true, isToggle: true })
+                                                +mapSearchResultBrand({ isPin: false, isExport: true, isToggle: false })
+                                        +printTabPanel(1, 2, false)
+                                            .c-brand-detail-list
+                                                +mapSearchResultBrand({ isPin: false, isExport: true, isToggle: false })
+                                                +mapSearchResultBrand({ isPin: true, isExport: true, isToggle: true })
+                                                +mapSearchResultBrand({ isPin: false, isExport: true, isToggle: false })
+                            .c-map-search__pagenation
+                                +paginationFraction
+    
+    //- Type02. Message
+    .guide-text-type Type02. Message
+    .c-wrapper.PD0037.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+
+                //- block : search
+                .c-search-box
+                    //- element : .c-search-box__body(--multi, --double)
+                    form.cmp-form.c-search-box__body.c-search-box__body--multi(action="#" method="get")
+                        //- element : c-search-box__form
+                        .c-search-box__form
+                            +formSelect("省", "findState", "省", false)(class="c-search-box__state" onchange="setSearchFilterSelect(this)")
+                                option(value="") 省
+                                option(value="state1") State1
+                                option(value="state2") State2
+                                option(value="state3") State3
+                            +formSelect("城市", "findCity", "城市", false)(class="c-search-box__city" disabled="disabled" onchange="setSearchFilterSelect(this)")
+                                option(value="") 城市
+                                option(value="city1") City1
+                                option(value="city2") City2
+                                option(value="city3") City3
+                            +formSelect("产品名称", "findMainCategory", "产品名称", false)(class="c-search-box__category-main" disabled="disabled" onchange="setSearchFilterSelect(this)")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                            +formSelect("产品名称", "findSubCategory", "产品名称", false)(class="c-search-box__category-sub" disabled="disabled")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                        .button.c-search-box__button
+                            +button({color:"red", type:"box", size:"medium", name:"搜索"}, "submit")
+
+                //- block : c-map-search
+                //- 검색타입 : is-search
+                //- 길찾기, 검색 없는 리스트 : is-direction
+                .c-map-search.is-direction
+                    .c-map-search__inner
+                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                            span.sr-only Collapse
+                            span.sr-only Expand
+                        //- block : c-map
+                        .c-map
+                            .c-map__inner
+                                //- google map
+                        .c-map-search__body
+                            //- result
+                            .c-map-search__result
+                                //- block : c-tabs
+                                .c-tabs.tabs.panelcontainer.c-tabs__button
+                                    .cmp-tabs.c-tabs__wrap(data-cmp-data-layer="", data-placeholder-text="false")
+                                        //- tab
+                                        .c-tabs__inner
+                                            ul.c-tabs__tablist.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                                +printTab(2, 1, true) 销售网点
+                                                +printTab(2, 2, false) 维修网络
+
+                                        //- tab panel
+                                        +printTabPanel(2, 1, true)
+                                            .c-no-data-wrap.small 
+                                                .c-no-data 
+                                                    strong(class=noDataTitleStyle) 请输入位置
+                                        +printTabPanel(2, 2, false)
+                                            .c-no-data-wrap.small 
+                                                .c-no-data 
+                                                    strong(class=noDataTitleStyle) 请输入位置
+    
+    //- Type03. No data
+    .guide-text-type Type03. No data
+    .c-wrapper.PD0037.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+
+                //- block : search
+                .c-search-box
+                    //- element : .c-search-box__body(--multi, --double)
+                    form.cmp-form.c-search-box__body.c-search-box__body--multi(action="#" method="get")
+                        //- element : c-search-box__form
+                        .c-search-box__form
+                            +formSelect("省", "findState", "省", false)(class="c-search-box__state" onchange="setSearchFilterSelect(this)")
+                                option(value="") 省
+                                option(value="state1") State1
+                                option(value="state2") State2
+                                option(value="state3") State3
+                            +formSelect("城市", "findCity", "城市", false)(class="c-search-box__city" disabled="disabled" onchange="setSearchFilterSelect(this)")
+                                option(value="") 城市
+                                option(value="city1") City1
+                                option(value="city2") City2
+                                option(value="city3") City3
+                            +formSelect("产品名称", "findMainCategory", "产品名称", false)(class="c-search-box__category-main" disabled="disabled" onchange="setSearchFilterSelect(this)")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                            +formSelect("产品名称", "findSubCategory", "产品名称", false)(class="c-search-box__category-sub" disabled="disabled")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                        .button.c-search-box__button
+                            +button({color:"red", type:"box", size:"medium", name:"搜索"}, "submit")
+
+                //- block : c-map-search
+                //- 검색타입 : is-search
+                //- 길찾기, 검색 없는 리스트 : is-direction
+                .c-map-search.is-direction
+                    .c-map-search__inner
+                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                            span.sr-only Collapse
+                            span.sr-only Expand
+                        //- block : c-map
+                        .c-map
+                            .c-map__inner
+                                //- google map
+                        .c-map-search__body
+                            //- result
+                            .c-map-search__result
+                                //- block : c-tabs
+                                .c-tabs.tabs.panelcontainer.c-tabs__button
+                                    .cmp-tabs.c-tabs__wrap(data-cmp-data-layer="", data-placeholder-text="false")
+                                        //- tab
+                                        .c-tabs__inner
+                                            ul.c-tabs__tablist.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                                +printTab(3, 1, true) 销售网点
+                                                +printTab(3, 2, false) 维修网络
+
+                                        //- tab panel
+                                        +printTabPanel(2, 1, true)
+                                            .c-no-data-wrap.small(class=noDataTitleStyle)
+                                                .c-no-data 
+                                                    strong(class=noDataTitleStyle) 无数据
+                                        +printTabPanel(2, 2, false)
+                                            .c-no-data-wrap.small(class=noDataTitleStyle)
+                                                .c-no-data 
+                                                    strong(class=noDataTitleStyle) 无数据
+    
+    //- Type04. Get Directions
+    .guide-text-type Type04. Get Directions
+    .c-wrapper.PD0037.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+
+                //- block : search
+                .c-search-box
+                    //- element : .c-search-box__body(--multi, --double)
+                    form.cmp-form.c-search-box__body.c-search-box__body--multi(action="#" method="get")
+                        //- element : c-search-box__form
+                        .c-search-box__form
+                            +formSelect("省", "findState", "省", false)(class="c-search-box__state" onchange="setSearchFilterSelect(this)")
+                                option(value="") 省
+                                option(value="state1") State1
+                                option(value="state2") State2
+                                option(value="state3") State3
+                            +formSelect("城市", "findCity", "城市", false)(class="c-search-box__city" disabled="disabled" onchange="setSearchFilterSelect(this)")
+                                option(value="") 城市
+                                option(value="city1") City1
+                                option(value="city2") City2
+                                option(value="city3") City3
+                            +formSelect("产品名称", "findMainCategory", "产品名称", false)(class="c-search-box__category-main" disabled="disabled" onchange="setSearchFilterSelect(this)")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                            +formSelect("产品名称", "findSubCategory", "产品名称", false)(class="c-search-box__category-sub" disabled="disabled")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                        .button.c-search-box__button
+                            +button({color:"red", type:"box", size:"medium", name:"搜索"}, "submit")
+
+                //- block : c-map-search
+                //- 검색타입 : is-search
+                //- 길찾기, 검색 없는 리스트 : is-direction
+                .c-map-search.is-direction
+                    .c-map-search__inner
+                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                            span.sr-only Collapse
+                            span.sr-only Expand
+                        //- block : c-map
+                        .c-map
+                            .c-map__inner
+                                //- google map
+                                //- element : c-map__pin
+                                .c-map__pin.is-active
+                        .c-map-search__body
+                            //- block : c-map-direction__search
+                            .c-map-direction__search
+                                .c-map-direction__search-title
+                                    p.font-w-normal-24.font-m-normal-20 位置
+                                    button.c-button.c-map-direction__search-close(type="button")
+                                        span.sr-only Close
+                                //- element : departure
+                                .c-pin-text.c-box-gray.c-map-direction__search-departure
+                                    .c-pin-text__pin.c-map-direction__search-pin
+                                        .c-map__pin.is-black A
+                                    +mapSearchBox(class="c-pin-text__content")
+                                        .c-warning 地理位置 是必录项
+                                //- element : to
+                                .c-pin-text.c-box-gray.c-map-direction__search-arrival
+                                    .c-pin-text__pin.c-map-direction__search-pin
+                                        .c-map__pin B
+                                    .c-pin-text__content.font-w-normal-14.font-m-normal-16 1 PARK AVE MT VERNON, NY 10550
+
+                            //- result
+                            .c-map-search__result
+                                //- block : c-map-direction__result
+                                .c-map-direction__result
+                                    .c-no-data-wrap.small
+                                        .c-no-data 
+                                            strong(class=noDataTitleStyle) 请输入位置
+    
+    //- Type05. Get Directions_Suggested Routes
+    .guide-text-type Type05. Get Directions_Suggested Routes
+    .c-wrapper.PD0037.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+
+                //- block : search
+                .c-search-box
+                    //- element : .c-search-box__body(--multi, --double)
+                    form.cmp-form.c-search-box__body.c-search-box__body--multi(action="#" method="get")
+                        //- element : c-search-box__form
+                        .c-search-box__form
+                            +formSelect("省", "findState", "省", false)(class="c-search-box__state" onchange="setSearchFilterSelect(this)")
+                                option(value="") 省
+                                option(value="state1") State1
+                                option(value="state2") State2
+                                option(value="state3") State3
+                            +formSelect("城市", "findCity", "城市", false)(class="c-search-box__city" disabled="disabled" onchange="setSearchFilterSelect(this)")
+                                option(value="") 城市
+                                option(value="city1") City1
+                                option(value="city2") City2
+                                option(value="city3") City3
+                            +formSelect("产品名称", "findMainCategory", "产品名称", false)(class="c-search-box__category-main" disabled="disabled" onchange="setSearchFilterSelect(this)")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                            +formSelect("产品名称", "findSubCategory", "产品名称", false)(class="c-search-box__category-sub" disabled="disabled")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                        .button.c-search-box__button
+                            +button({color:"red", type:"box", size:"medium", name:"搜索"}, "submit")
+
+                //- block : c-map-search
+                //- 검색타입 : is-search
+                //- 길찾기, 검색 없는 리스트 : is-direction
+                .c-map-search.is-direction
+                    .c-map-search__inner
+                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                            span.sr-only Collapse
+                            span.sr-only Expand
+                        //- block : c-map
+                        .c-map
+                            .c-map__inner
+                                //- element : c-map__pin
+                                .c-map__pin.c-tooltip-direction.is-black A
+                                .c-map__pin.c-tooltip-direction B
+                                //- element : c-map-tooltip
+                                .c-map-tooltip.c-tooltip-direction
+                                    .c-map-tooltip__container
+                                        .button
+                                            button(type="button").c-map-tooltip__close
+                                                span.sr-only Close
+                                        //- block : c-brand-detail
+                                        .c-map-tooltip__contents
+                                            p.font-w-normal-14.font-m-normal-14 550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States
+                                //- google map
+                        .c-map-search__body
+                            //- block : c-map-direction__search
+                            .c-map-direction__search
+                                .c-map-direction__search-title
+                                    p.font-w-normal-24.font-m-normal-20 位置
+                                    button.c-button.c-map-direction__search-close(type="button")
+                                        span.sr-only Close
+                                //- element : departure
+                                .c-pin-text.c-box-gray.c-map-direction__search-departure
+                                    .c-pin-text__pin.c-map-direction__search-pin
+                                        .c-map__pin.is-black A
+                                    +mapSearchBox(class="c-pin-text__content")
+                                        .c-warning 地理位置 是必录项
+                                //- element : to
+                                .c-pin-text.c-box-gray.c-map-direction__search-arrival
+                                    .c-pin-text__pin.c-map-direction__search-pin
+                                        .c-map__pin B
+                                    .c-pin-text__content.font-w-normal-16.font-m-normal-16 1 PARK AVE MT VERNON, NY 10550
+
+                            //- result
+                            .c-map-search__result
+                                //- block : c-map-direction__result
+                                .c-map-direction__result(tabindex="0")
+                                    .font-w-normal-20.font-m-normal-16.c-map-direction__result-title 建议路线
+                                    +mapDirectionResultTitle('departure', 'A', '550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States')
+
+                                    +mapDirectionResultItem('car')
+                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__indent 5.5 MI. About 12 mins
+                                    +mapDirectionResultItem('turn-left')
+                                        p.c-pin-text__icon 1
+                                        p.font-w-normal-14.font-m-normal-14 At the roundabout, take the 2nd exit onto Hanger Hill/A317
+                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                    +mapDirectionResultItem('turn-left')
+                                        p.c-pin-text__icon 2
+                                        p.font-w-normal-14.font-m-normal-14 Head east toward Baker St
+                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                    +mapDirectionResultItem('turn-left')
+                                        p.c-pin-text__icon 3
+                                        p.font-w-normal-14.font-m-normal-14 Head east toward Baker St
+                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+                                    +mapDirectionResultItem('turn-left')
+                                        p.c-pin-text__icon 4
+                                        p.font-w-normal-14.font-m-normal-14 At the roundabout, take the 2nd exit onto Hanger Hill/A317
+                                        p.font-w-normal-14.font-m-normal-14.c-pin-text__number 282 ft
+
+                                    +mapDirectionResultTitle('arrival', 'B', '550 N. Hillside St, Main Entrance, Wichita, KS 67214, United States')
+    
+    //- Type06. No data
+    .guide-text-type Type06. No data
+    .c-wrapper.PD0037.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+
+                //- block : search
+                .c-search-box
+                    //- element : .c-search-box__body(--multi, --double)
+                    form.cmp-form.c-search-box__body.c-search-box__body--multi(action="#" method="get")
+                        //- element : c-search-box__form
+                        .c-search-box__form
+                            +formSelect("省", "findState", "省", false)(class="c-search-box__state" onchange="setSearchFilterSelect(this)")
+                                option(value="") 省
+                                option(value="state1") State1
+                                option(value="state2") State2
+                                option(value="state3") State3
+                            +formSelect("城市", "findCity", "城市", false)(class="c-search-box__city" disabled="disabled" onchange="setSearchFilterSelect(this)")
+                                option(value="") 城市
+                                option(value="city1") City1
+                                option(value="city2") City2
+                                option(value="city3") City3
+                            +formSelect("产品名称", "findMainCategory", "产品名称", false)(class="c-search-box__category-main" disabled="disabled" onchange="setSearchFilterSelect(this)")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                            +formSelect("产品名称", "findSubCategory", "产品名称", false)(class="c-search-box__category-sub" disabled="disabled")
+                                option(value="") 产品名称
+                                option(value="category1") Category1
+                                option(value="category2") Category2
+                                option(value="category3") Category3
+                        .button.c-search-box__button
+                            +button({color:"red", type:"box", size:"medium", name:"搜索"}, "submit")
+
+                //- block : c-map-search
+                //- 검색타입 : is-search
+                //- 길찾기, 검색 없는 리스트 : is-direction
+                .c-map-search.is-direction
+                    .c-map-search__inner
+                        button.c-map-search__toggle(type="button" aria-expanded="false")
+                            span.sr-only Collapse
+                            span.sr-only Expand
+                        //- block : c-map
+                        .c-map
+                            .c-map__inner
+                                //- google map
+                        .c-map-search__body
+                            //- block : c-map-direction__search
+                            .c-map-direction__search
+                                .c-map-direction__search-title
+                                    p.font-w-normal-24.font-m-normal-20 位置
+                                    button.c-button.c-map-direction__search-close(type="button")
+                                        span.sr-only Close
+                                //- element : departure
+                                .c-pin-text.c-box-gray.c-map-direction__search-departure
+                                    .c-pin-text__pin.c-map-direction__search-pin
+                                        .c-map__pin.is-black A
+                                    +mapSearchBox(class="c-pin-text__content")
+                                        .c-warning 地理位置 是必录项
+                                //- element : to
+                                .c-pin-text.c-box-gray.c-map-direction__search-arrival
+                                    .c-pin-text__pin.c-map-direction__search-pin
+                                        .c-map__pin B
+                                    .c-pin-text__content.font-w-normal-14.font-m-normal-16 1 PARK AVE MT VERNON, NY 10550
+
+                            //- result
+                            .c-map-search__result
+                                //- block : c-map-direction__result
+                                .c-map-direction__result
+                                    .c-no-data-wrap.small
+                                        .c-no-data 
+                                            strong(class=noDataTitleStyle) 无数据
+

@@ -1,0 +1,226 @@
+extends ../_common/_layout.pug
+include ../_common/_image.pug
+include ../_common/_button.pug
+include ../_common/_carousel.pug
+include ../_common/_product-list.pug
+include ../_common/_pagination.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "PD0007"
+    - var componentName = "PDP Bundle"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'BG Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'bg-default', 'remove' : 'bg-white, bg-lightgray'},
+                                    {'toggle' : false, 'add' : 'bg-white', 'remove' : 'bg-lightgray, bg-default'},
+                                    {'toggle' : false, 'add' : 'bg-lightgray', 'remove' : 'bg-white, bg-default'},
+                                ]
+                            },
+                        ],
+                    };
+
+    // Component Markup
+    mixin printTab(div, num, selected)
+        if selected
+            li.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0", data-cmp-hook-tabs="tab", aria-selected="true")
+                if block
+                    block
+        else 
+            li.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1", data-cmp-hook-tabs="tab", aria-selected="false")
+                if block
+                    block
+
+    mixin printTabPanel(div, num, selected)
+        if selected 
+            .cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+        else 
+            .cmp-tabs__tabpanel(id=`tabs-1-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-1-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+
+    mixin printContents(num)
+        - var className = ` length-${num}`;
+        - if(num >= 4) className = 'four-or-more';
+
+        //- title area
+        +component-title-area({
+            headline : {
+                text : "Create your Bundle"
+            },
+            description : {
+                text : `${num} Products in this Bundle`,
+                style : "font-w-normal-24 font-m-normal-14"
+            }
+        })(class="c-region-header--vacate-side")
+
+        .c-product-list.c-product-list--bundle.c-product-list--carousel.js-product-list(class=`${className}`)
+            .carousel.panelcontainer
+                // block - carousel
+                .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                    .cmp-carousel__content.swiper-wrapper
+                        - if(num > 0)
+                            +bundleItemSlide( 
+                                {
+                                    soldOut: false,
+                                    outOfStock: false ,
+                                    imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                    sku:'GSJV70PZTF', 
+                                    modelid: 'MD07553044',
+                                    name:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                    fontstyle:  {headline:"font-w-normal-24 font-m-normal-20", sku:"font-w-normal-16 font-m-normal-12"},
+                                    priceFontStyle:"font-w-normal-32 font-m-light-28",
+                                    subPriceFontStyle:"font-w-normal-16 font-m-normal-12",
+                                    cashDiscount:true, 
+                                    lowPrice30Days:true,
+                                    onlyPurchase:true,
+                                    plInfoTxt: true,
+                                    grade:'A',
+                                    gradeBlock2:true,
+                                    labels:true,
+                                    repair:true,
+                                }
+                            )
+                        - if(num > 1)
+                            +bundleItemSlide( 
+                                {
+                                    installment: true,
+                                    membership: '£1,866.98',
+                                    soldOut: false,
+                                    outOfStock: false ,
+                                    imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                    sku:'GSJV70PZTF', 
+                                    modelid: 'MD07535404',
+                                    name:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                    fontstyle:  {headline:"font-w-normal-24 font-m-normal-20", sku:"font-w-normal-16 font-m-normal-12"},
+                                    priceFontStyle:"font-w-normal-32 font-m-light-28",
+                                    subPriceFontStyle:"font-w-normal-16 font-m-normal-12",
+                                    cashDiscount:true, 
+                                    lowPrice30Days:true,
+                                    onlyPurchase:true,
+                                    plInfoTxt: true,
+                                    grade:'A',
+                                    labels:true,
+                                    repair:true,
+                                }
+                            )
+                        - if(num > 2)
+                            +bundleItemSlide( 
+                                {
+                                    promotion: "Black Friday Promotion",
+                                    installment: true,
+                                    membership: '£1,866.98',
+                                    soldOut: false,
+                                    outOfStock: false ,
+                                    imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                    sku:'GSJV70PZTF', 
+                                    modelid: 'MD07535502',
+                                    name:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                    fontstyle:  {headline:"font-w-normal-24 font-m-normal-20", sku:"font-w-normal-16 font-m-normal-12"},
+                                    priceFontStyle:"font-w-normal-32 font-m-light-28",
+                                    subPriceFontStyle:"font-w-normal-16 font-m-normal-12",
+                                    cashDiscount:true, 
+                                    lowPrice30Days:true,
+                                    onlyPurchase:true,
+                                    grade:'A',
+                                    labels:true,
+                                    repair:true,
+                                }
+                            )
+                        - if(num > 3)
+                            - for (var x = 0; x < num-3; x++)
+                                +bundleItemSlide( 
+                                    {
+                                        flag:['New','Pre Order'], 
+                                        promotion: "",
+                                        installment: true,
+                                        membership: '£1,866.98',
+                                        soldOut: false,
+                                        outOfStock: false , 
+                                        imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+                                        sku:'GSJV70PZTF', 
+                                        modelid: 'MD07536888',
+                                        name:'American Fridge Freezer 635L Water & Ice Dispenser',
+                                        fontstyle:  {headline:"font-w-normal-24 font-m-normal-20", sku:"font-w-normal-16 font-m-normal-12"},
+                                        priceFontStyle:"font-w-normal-32 font-m-light-28",
+                                        subPriceFontStyle:"font-w-normal-16 font-m-normal-12",
+                                        cashDiscount:true, 
+                                        lowPrice30Days:true,
+                                        onlyPurchase:true,
+                                        grade:'A',
+                                        labels:true,
+                                        repair:true,
+                                    }
+                                )
+                    // 23.02.14 modified markup - added ".c-carousel__handler--dial", ".c-carousel__handler--away-from-carousel"
+                    .c-carousel__handler.c-carousel__handler--dial.c-carousel__handler--away-from-carousel
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"prev"})
+                        +carouselPagination
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"next"})
+    
+    .guide-text-option Length 10
+    .c-wrapper.PD0007.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +printContents(10)
+    .guide-text-option Length 4
+    .c-wrapper.PD0007.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +printContents(4)
+    .guide-text-option Length 3
+    .c-wrapper.PD0007.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +printContents(3)
+    .guide-text-option Length 2
+    .c-wrapper.PD0007.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +printContents(2)
+    .guide-text-option Length 1
+    .c-wrapper.PD0007.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +printContents(1)

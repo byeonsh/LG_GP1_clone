@@ -1,0 +1,38 @@
+@use 'sass:map';
+
+// In this file, only add variables or mixins to be used globally.
+
+$grid-data: (
+  web: (
+    column: 98px,
+    gutter: 24px,
+    max-count: 12,
+  ),
+  mobile: (
+    column: 70px,
+    gutter: 10px,
+    max-count: 4,
+  ),
+);
+$gutter-w: 24px;
+$gutter-m: 10px;
+
+// # columns:function
+@function columns($count, $include-gutter: true, $viewport: web) {
+  $data: map.get($grid-data, $viewport);
+  $column: map.get($data, column);
+  $gutter: map.get($data, gutter);
+  $max-count: map.get($data, max-count);
+  @if $count > $max-count {
+    @return 'Input number is over max count of grid. Check 1st parameter';
+  }
+  @if $include-gutter and $count < $max-count {
+    @return ($count * $column) + (($count) * $gutter);
+  }
+  @return ($count * $column) + (($count - 1) * $gutter);
+}
+// =- description -=
+// $count: column count
+// $include-gutter: include gutter at return value. but not counting when 12 columns.
+// $viewport: screen size... grid system use more on web size. so default value is 'web'. default value should never be changed.
+// if use columns([1-12]), you receive value include (n column + n gutter) with web size.

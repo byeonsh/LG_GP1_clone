@@ -1,0 +1,208 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_pop-msg.pug
+
+block meta 
+    - var componentId = "ML000Q"
+    - var componentName = "VIP Upgrade"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? "my-warn" : ""}`
+        .c-input-item(class=`${data.active ? "active" : ""}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? "my-info" : ""}`)= data.label
+            if data.type === "textarea"
+                if data.limit
+                    .my-textarea__container
+                        textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class="my-textarea--limit")&attributes(attributes)
+                        .my-count
+                            span.font-w-normal-14.font-m-normal-12 0 / !{data.limit} byte
+                else 
+                    textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder)&attributes(attributes)
+            //- if data.warning
+            //-     +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+            else if data.button
+                if data.validation
+                    .input-button__container.input-button__container--validation
+                        .my-button-validation
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config value= data.value)&attributes(attributes)
+                        .button.c-cta.button-full
+                            +defaultButton({name: data.button, type:"box-outlined", color:"black", size: "medium"})
+                    if data.warning
+                        +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                else
+                    .input-button__container
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config value= data.value)&attributes(attributes)
+                        .button.c-cta.button-full
+                            +defaultButton({name: data.button, type:"box-outlined", color:"black", size: "medium"})
+            else 
+                if data.active
+                    input(type="text" id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value)&attributes(attributes)
+                    if data.type === "password"
+                        button(type="button" class="my-form__eye")
+                            span.sr-only show password
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? "my-form__search" : ""}`,)&attributes(attributes)
+                    if data.type === "password"
+                        button(type="button" class="my-form__eye")
+                            span.sr-only show password
+                if data.warning
+                    +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        if data.submitBtn
+            .button.c-cta.my-button
+                +defaultButton({name: "Sumit", wSize: "large", mSize: "medium"})
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+                
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin ML000Q
+    .c-wrapper.ML000Q
+        .component
+            .fluid-container
+                .my-component.my-page-title
+                    .c-text-contents.my-component__title-section
+                        .c-text-contents__headline
+                                +headline('font-w-light-56 font-m-light-36', "h2", "Upgrade to VIP program")
+                .my-component__wrap.border-only-web
+                    .my-component.my-component--bykey
+                        .my-formbox.my-vip
+                            +myInputForm([
+                                {
+                                    type:"text",
+                                    label:"LG VIP Shop Key",
+                                    id:"VIPShopKey1",
+                                    required:false,
+                                    placeholder:"Enter your key",
+                                    submitBtn:true
+                                },
+                                {
+                                    type:"text",
+                                    label:"LG VIP Shop Key",
+                                    id:"VIPShopKey2",
+                                    required:false,
+                                    placeholder:"Enter your key",
+                                    warning: ["Invalid key. Please try again with a valid key."],
+                                    validation: true,
+                                    submitBtn:true
+
+                                },
+                            ])
+                    
+                .my-component__wrap.border-only-web
+                    .my-component.my-component--validation-success
+                        .my-formbox
+                            .c-input-item__title
+                                .c-text-contents
+                                    .title.c-text-contents__headline
+                                        p.font-w-normal-32.font-m-normal-20 LG VIP shop key
+                            //- .my-check-msg
+                            +myInputForm([
+                                {
+                                    type:"text",
+                                    id:"VIPShopKey1sefwe",
+                                    required:false,
+                                    placeholder:"Enter your key",
+                                }
+                            ])
+                        
+                        .my-formbox
+                            .c-input-item__title
+                                .c-text-contents
+                                    .title.c-text-contents__headline
+                                        p.font-w-normal-32.font-m-normal-20 VIP Program - Terms & Conditions
+                            .my-check-msg
+                                .my-check-msg__container
+                                    p.font-w-normal-16.font-m-normal-16
+                                        |   Purchase for resale is not permitted
+                                        br.display-pc
+                                        |   (in accordance with the LG VIP Store Regulations and the Purchase Conditions section 1.3). 
+                                        br
+                                        br
+                                        |   If we determine that you have purchased products for resales, we reserve the right to
+                                        br.display-pc
+                                        |   take any action against you, including, but not limited to, restricting your sale, canceling orders,
+                                        br.display-pc
+                                        |   and / or suspending or terminating your account.
+                                        br
+                                        br
+                                        |    The limit of employee purchase in the VIP store is any 3 products per quater - maximum 12 products per year.  
+                                .my-check-msg__button
+                                    +formCheckbox('I have read and familiarized myself with the Terms & Conditions and the LG VIP store.', "name", "val1", `checkId1`, count="false")
+                        
+                        .my-formbox
+                            .c-input-item__title
+                                .c-text-contents
+                                    .title.c-text-contents__headline
+                                        p.font-w-normal-32.font-m-normal-20 VIP Program Privacy Policy
+                            .my-check-msg
+                                .my-check-msg__container
+                                    // [Start] 2023-05-12 : UPDATE- fix font-size font-m-normal-14 -> 16
+                                    p.font-w-normal-16.font-m-normal-16
+                                        | In addtion to out general Privacy and Cookie Policy, we collect your 
+                                        br.display-pc
+                                        | company name with your email address when you upgrade your VIP account to provide pricing for the LG VIP store only.  
+                                .my-check-msg__button
+                                    +formCheckbox('I have read and agreed with VIP program privacy policy.', "name", "val2", `checkId2`, count="false")
+
+                        .button.c-cta.my-button
+                            // case 1. default button
+                            +defaultButton({name: "Join VIP Program", wSize: "large", mSize: "medium", buttonStyle: 'highlight'})(href="#popSignIn", class="js-pop-open")
+                            // case 2. disabled button
+                            // <a class="cmp-button c-button c-button--default highlight m-medium w-large js-pop-open" href="#popSignIn" data-cmp-data-layer="" rolebutton="true" disabled="disabled" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type=""><span class="cmp-button__text c-button__text">Join VIP Program</span></a>
+
+block content
+    // Component Markup
+    +ML000Q
+
+block modal
+        +pop-msg-standard({id : "popSignIn", headline:"Congratulations!", size:"small", headerBorder: false, classes:"c-pop-msg--my-vip"})
+            // block - text contents
+            .c-text-contents 
+                .text.c-text-contents__bodycopy
+                    .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") 
+                        | Your account has been upgrade to VIP.
+                        |
+                        br
+                        |
+                        | You should log in again to start shopping with VIP account.
+            .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap--no-divide-on-mobile.my-pop__button
+                +defaultButton({name: "Sign in again", wSize: "large", mSize: "medium", buttonStyle: 'highlight'})

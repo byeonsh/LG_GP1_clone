@@ -1,0 +1,557 @@
+include ../_common/_cart-price-total.pug
+include ./CT0302-inc.pug
+
+
+mixin CT0302(option=false, country=false)
+    .CT0302
+        if(option === "member")
+            case country
+                when "it"
+                    .buy-checkout__item.buy-checkout__item--delivery
+                        // de
+                        +checkoutStep({
+                            title:"Delivery",
+                            current:"2",
+                            total:"3",
+                            type: "active"
+                        })
+                        .c-checkout-step02
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag: ["Shipping"],
+                                        title:"Robert Surrency",
+                                        address:"8 Temasek boulevard #27-01 Suntec Tower 3, Singapore 038988",
+                                        num:"123-4567-8910",
+                                        type: "",
+                                    },
+                                ])
+                        .c-checkout-step02.c-checkout-step02--warn
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag: ["Billing"],
+                                        title:"Robert Surrency",
+                                        address:"8 Temasek boulevard #27-01 Suntec Tower 3, Singapore 038988",
+                                        num:"123-4567-8910",
+                                        type: "",
+                                    },
+                                ])
+                        .c-checkout-step02
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag: ["FATTURAZIONE"],
+                                        title:"Robert Surrency",
+                                        address:"9 Temasek boulevard #27-01 Suntec Tower 3, Singapore 12345",
+                                        num:"010-4567-8910"
+                                    },
+                                ])
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'The items(s) are not available for shipping in your area. Please change address options',
+                                remove: true,
+                            },
+                        ])
+                    .buy-checkout__item.buy-checkout__item--delivery.buy-checkout__item--delivery-mix
+                        details(open).buy-delivery-box__accordion-mix
+                            summary.c-accordion-mix__head
+                                .c-accordion-mix__head-text
+                                    +deliveryBoxProduct([
+                                        {
+                                            title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                            qty: 1,
+                                        },
+                                    ])
+                            .c-accordion-mix__body
+                                +deliveryBoxSubTitle({
+                                    boxTitle : 'Delivery Method',
+                                })
+                                +accCheckDeliveryBox(false, 'unavailable', true, [
+                                    {
+                                        type: 'Regular delivery',
+                                        id: 'delivery132',
+                                        tooltipMsg: '1111',
+                                        price:'25.00',
+                                        unitPos: 'left',
+                                        unitName: '$',
+                                        nameId: 'delivery132',
+                                        checked: false,
+                                        infoDesc: false,
+                                    }
+                                ])
+                                
+                                +deliveryBoxSubTitle({
+                                    boxTitle : 'Additional Services',
+                                    tooltip: false,
+                                })
+                                +deliveryAccodionRadio('Installation', false, [
+                                    {
+                                        type: 'Basic Installation',
+                                        tooltipMsg: '11111111111',
+                                        id: 'delivery86-error',
+                                        price:'Free',
+                                        useUnitPos: false,
+                                        unitPos: false,
+                                        unitName: false,
+                                    },
+                                    {
+                                        type: 'TV Wallmount',
+                                        tooltipMsg: '11111111111',
+                                        id: 'delivery87-error',
+                                        price:'25.00',
+                                        unitPos: 'left',
+                                        unitName: '$',
+                                    },
+                                ])
+                                +deliveryAccodionCheck('Haulaway', false, [
+                                    {
+                                        type: 'Haulaway',
+                                        id: 'delivery134',
+                                        tooltipMsg: '1111',
+                                        price:'25.00',
+                                        unitPos: 'left',
+                                        unitName: '$',
+                                        nameId: 'delivery134',
+                                        checked: false,
+                                        infoDesc: false,
+                                        select:false,
+                                    }
+                                ])
+                                +deliveryBoxNoneAcc(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], false, false, [
+                                    {
+                                        selectDateAreaTitle : 'Delivery Time',
+                                        selectDateCancel : false,
+                                        type: 'Thu, Oct 18  All day',
+                                        id: 'delivery76-error',
+                                        price:'',
+                                        validList: ['CONSEGNA STANDARD (fronte strada) per i prodotti di piccole dimensioni: TV uguali o inferiori ai 43 pollici, prodotti audio e video, monitor, PC, videoproiettori, piccoli elettrodomestici e climatizzatori.', 'CONSEGNA CON INSTALLAZIONE (consegna al piano su appuntamento, disinballo, collegamento ed eventuale installazione) per i prodotti di grandi dimensioni: TV uguali o superiori ai 48 pollici e grandi elettrodomestici.', 'Ritardi nelle consegne possono presentarsi a cause di contingenze del corriere.', "IMPORTANTE : Se hai selezionato il ritiro dell'usato, ricordati di disinstallare il tuo vecchio prodotto e di prepararlo per il prelievo in sicurezza da parte dell'operatore. Il corriere non effettuerà alcun tipo di disinstallazione."]
+                                    },
+                                ])
+                        //-Combined shipping case (Applied unconditionally when purchasing 2 products)
+                        +deliveryCombinedShippingCase({
+                            title : 'Delivery Time',
+                            calendarType: true,
+                            validList: [
+                                {type: "emphasis", text: "If you purchase more than one product, you can only choose one delivery date per order."},
+                                {type: "normal", text: "CONSEGNA STANDARD (fronte strada) per i prodotti di piccole dimensioni: TV uguali o inferiori ai 43 pollici, prodotti audio e video, monitor, PC, videoproiettori, piccoli elettrodomestici e climatizzatori."},
+                                {type: "normal", text: "CONSEGNA CON INSTALLAZIONE (consegna al piano su appuntamento, disinballo, collegamento ed eventuale installazione) per i prodotti di grandi dimensioni: TV uguali o superiori ai 48 pollici e grandi elettrodomestici."},
+                                {type: "normal", text: "Ritardi nelle consegne possono presentarsi a cause di contingenze del corriere."},
+                                {type: "normal", text: "IMPORTANTE : Se hai selezionato il ritiro dell'usato, ricordati di disinstallare il tuo vecchio prodotto e di prepararlo per il prelievo in sicurezza da parte dell'operatore. Il corriere non effettuerà alcun tipo di disinstallazione."}
+                            ]
+                        })
+                        +deliveryCombinedShippingCase({
+                            title : 'Delivery Time',
+                            leadTimeType: true,
+                            leadtime: 'Consegna prevista in 5–10 giorni',
+                            validList: [
+                                {type: "normal", text: "CONSEGNA STANDARD (fronte strada) per i prodotti di piccole dimensioni: TV uguali o inferiori ai 43 pollici, prodotti audio e video, monitor, PC, videoproiettori, piccoli elettrodomestici e climatizzatori."},
+                                {type: "normal", text: "CONSEGNA CON INSTALLAZIONE (consegna al piano su appuntamento, disinballo, collegamento ed eventuale installazione) per i prodotti di grandi dimensioni: TV uguali o superiori ai 48 pollici e grandi elettrodomestici."},
+                                {type: "normal", text: "Ritardi nelle consegne possono presentarsi a cause di contingenze del corriere."},
+                                {type: "normal", text: "IMPORTANTE : Se hai selezionato il ritiro dell'usato, ricordati di disinstallare il tuo vecchio prodotto e di prepararlo per il prelievo in sicurezza da parte dell'operatore. Il corriere non effettuerà alcun tipo di disinstallazione."}
+                            ]
+                        })
+                        +deliveryCombinedShippingCase({
+                            title : 'Delivery Time',
+                            leadTimeType: true,
+                            leadtime: 'Shipment will start from 4 Dec 2023 in order',
+                            validList: [
+                                {type: "emphasis", text: "If you purchase a pre-order product together, it will be delivered based on the delivery date of the pre-order product. If you want to receive the product earlier, please purchase the pre-order product separately."},
+                                {type: "normal", text: "CONSEGNA STANDARD (fronte strada) per i prodotti di piccole dimensioni: TV uguali o inferiori ai 43 pollici, prodotti audio e video, monitor, PC, videoproiettori, piccoli elettrodomestici e climatizzatori."},
+                                {type: "normal", text: "CONSEGNA CON INSTALLAZIONE (consegna al piano su appuntamento, disinballo, collegamento ed eventuale installazione) per i prodotti di grandi dimensioni: TV uguali o superiori ai 48 pollici e grandi elettrodomestici."},
+                                {type: "normal", text: "Ritardi nelle consegne possono presentarsi a cause di contingenze del corriere."},
+                                {type: "normal", text: "IMPORTANTE : Se hai selezionato il ritiro dell'usato, ricordati di disinstallare il tuo vecchio prodotto e di prepararlo per il prelievo in sicurezza da parte dell'operatore. Il corriere non effettuerà alcun tipo di disinstallazione."}
+                            ]
+                        })
+                        .buy-delivery-info--codechk
+                            p.detail-txt Hai aggiunto nel tuo carrello prodotti contenenti gas fluorurati soggetti alla normativa 146/2018
+                            +formCheckbox('', "name", "val1", "checkId3", count="false", false)
+                                span Acquistando questo prodotto dichiari che l’installazione dei prodotti contenenti gas fluorurati sarà effettuata da un’impresa certificata ai sensi Regolamento UE n. 517/2014 e ti impegni a comunicare al venditore i tuoi dati, come richiesto dal DPR 146/2018.
+                                    span.font-red *
+                            .c-checkout-step02-form
+                                +myInputForm([
+                                    {
+                                        type: "text",
+                                        label: "Codice Fiscale",
+                                        id: "codiceFiscale",
+                                        required: true,
+                                        requiredMark: true,
+                                        warning: ["È richiesto il codice fiscale.","il codice fiscale deve contenere 16 caratteri con inclusi solo lettere e numeri."],
+                                    },
+                                ])
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'The items(s) are not available for shipping in your area. Please change delivery options',
+                                remove: true,
+                            },
+                        ])
+                        .button.buy-order-info-coupon__button
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+                default 
+                    .buy-checkout__item.buy-checkout__item--delivery
+                        +checkoutStep({
+                            title:"Delivery",
+                            current:"2",
+                            total:"3",
+                            type: "active"
+                        })
+                        .c-checkout-step02
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag:["Shipping"],
+                                        title:"Robert Surrency",
+                                        address:"20 Farringdon Street, London, EC4A 4AB, United Kingdom",
+                                        num:"123-4567-8910",
+                                        type: "",
+                                    },
+                                ])
+                        .c-checkout-step02.c-checkout-step02--warn
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag:["Shipping"],
+                                        title:"Robert Surrency",
+                                        address:"20 Farringdon Street, London, EC4A 4AB, United Kingdom",
+                                        num:"123-4567-8910",
+                                        type: "",
+                                    },
+                                ])
+                        +formCheckbox('Receive order status notification from LG.com via SMS', "name", "val1", "checkId1", count="false", false)
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'The items(s) are not available for shipping in your area. Please change address options',
+                                remove: true,
+                            },
+                        ])
+                        //- [Start] 2023-04-18 : ADD - Delivery Error case
+                        // [Start] 2023.07.19 UPDATE - error case markup
+                        //- .buy-delivery-box--error
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], "error", false, false, [
+                            {
+                                type: 'Delivery Only',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery60',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery62',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation & Wallmount',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery63',
+                                price:'£25.00',
+                            },
+                        ])
+                        // [End] 2023.07.19 UPDATE - error case markup
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'The items(s) are not available for shipping in your area. Please change delivery options',
+                                remove: true,
+                            },
+                        ])
+                        //- [End] 2023-04-18 : ADD - Delivery Error case
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], false, false, false, [
+                            {
+                                type: 'Delivery Only',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery64',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery65',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation & Wallmount',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery66',
+                                price:'£25.00',
+                            },
+                        ])
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], 'complete', false, false, [
+                            {
+                                type: 'Delivery & Installation',
+                                select: 'Thu, Oct 18  All day',
+                            },
+                        ])
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV",], 'edit', false, false, [
+                            {
+                                type: 'Delivery Only',
+                                select: 'Thu, Oct 18  All day',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery67',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                select: 'Thu, Oct 18  All day',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery68',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation & Wallmount',
+                                select: 'Thu, Oct 18  All day',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery69',
+                                price:'£25.00',
+                            },
+                        ])
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV"], 'all', false, false, [
+                            {
+                                type: 'Delivery & Installation',
+                                select: 'Thu, Oct 18  All day',
+                            },
+                        ])
+                        +deliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV", "LG Soundbar SP8YAV"], 'all', false, false, [
+                            {
+                                type: 'Delivery & Installation',
+                                select: 'Thu, Oct 18  All day',
+                            },
+                        ])
+                        +deliveryBox(["LG Soundbar SP8YA"], 'only', false, false, false, [
+                            {
+                                type: 'Delivery Only',
+                            },
+                        ])
+                        +radioDeliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV"],'complete',[
+                            {
+                                type: 'Home Delivery & Installation',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery70',
+                                price:'£25.00',
+                            }
+                        ])
+                        +deliveryBox(["LG Soundbar SP8YA"], 'only', false, false, [
+                            {
+                                type: 'Delivery Only',
+                                warn: 'The delivery time is different for each shipping company.',
+                            },
+                        ])
+                        +radioDeliveryBox(["LG OLED evo Gallery Edition G2 55'' 4K Smart TV"],false,[
+                            {
+                                type: 'Delivery Only',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery71',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery72',
+                                price:'£25.00',
+                            },
+                            {
+                                type: 'Delivery & Installation & Wallmount ',
+                                tooltipMsg: '11111111111',
+                                id: 'delivery73',
+                                price:'£25.00',
+                            }
+                        ])
+                        .button.buy-order-info-coupon__button 
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+
+        //- wrapper class('.CT0302') duplication error
+            +CT0302("complete",'hide')
+        if(option === "guest")
+            .buy-checkout__item.buy-checkout__item--delivery
+                +checkoutStep({
+                    title:"Delivery",
+                    current:"2",
+                    total:"3",
+                    type: "active"
+                })
+                .c-checkout-step02.c-checkout-step02-form
+                    // [Start] 2023-06-02 : UPDATE- change messages
+                    // p.c-checkout-step01-prevention Delivery limited to UK mainland only on orders placed via the LG online store
+                    // [End] 2023-06-02 : UPDATE- change messages
+                    p.c-checkout-step02-form__title.font-w-normal-24.font-m-normal-20 Shipping
+                    // [Start] 2023-06-12 : ADD - number-text
+                    +myInputForm([
+                        {
+                            type:"text",
+                            label:"Nome",
+                            id:"firstName",
+                            required:false,
+                            placeholder:"Robert",
+                            warning: ["È richiesto il nome"],
+                        },
+                        {
+                            type:"text",
+                            label:"Cognome",
+                            id:"lastName",
+                            required:false,
+                            placeholder:"Surrency",
+                            warning: ["È richiesto il cognome"],
+                        },
+                        {
+                            type:"tel",
+                            label:"Numero di telefono",
+                            id:"mobileNumber",
+                            required:false,
+                            placeholder:"XXX XXXXXX",
+                            telInfo: 'Numero di telefono* (senza "-")',
+                            warning: ['È richiesto il numero di telefono', 'Per favore inserisci numero di cellulare valido: 9 o 10 cifre']
+                        },
+                        {
+                            type:"select",
+                            label:"Stato/Provincia",
+                            id:"Stato",
+                            value:"United Kingdom",
+                            optionVal: ['Seleziona la regione, stato o provincia.', 'Seleziona la regione, stato o provincia.', 'Seleziona la regione, stato o provincia.'],
+                            required:true,
+                            warning:['Per favore selezioni la PROVINCIA'],
+                        },
+                        {
+                            type:"select",
+                            label:"CAP",
+                            id:"cap",
+                            value:"CAP",
+                            optionVal: ['Seleziona la regione, stato o provincia.', 'Seleziona la regione, stato o provincia.', 'Seleziona la regione, stato o provincia.'],
+                            required:true,
+                            warning:['Per favore selezioni il CAP corretto'],
+                        },
+                        {
+                            type:"text",
+                            label:"Indirizzo",
+                            id:"Indirizzo",
+                            required:false,
+                            placeholder:"",
+                            warning:["L'indirizzo è richiesto."],
+                        },
+                        {
+                            type:"text",
+                            label:"Città",
+                            id:"streetAddress",
+                            required:false,
+                            placeholder:"",
+                            warning:["È richiesta la città"],
+                        },
+                        {
+                            type:"text",
+                            label:"Piano",
+                            id:"piano",
+                            required:false,
+                            placeholder:"",
+                            warning:['Si prega di seleziona il piano.'],
+                        },
+                        {
+                            type:"select",
+                            label:"Ascensore",
+                            id:"ascensore",
+                            value:"ascensore",
+                            optionVal: ['Seleziona', 'Sì', 'No'],
+                            required:false,
+                            warning:['Si prega di specificare la presenza di ascensore.'],
+                        },
+                        {
+                            type:"text",
+                            label:"Paese",
+                            id:"Paese",
+                            readonly:true,
+                            value:"Italia"
+                        },
+                        {
+                            type:"checkbox",
+                            id:"sameBillingAddress",
+                            addClassToLI: "margin-top",
+                            text:"Uguale all’indirizzo di fatturazione",
+                        },
+                        {
+                            type:"checkbox",
+                            id:"saveMyAddress",
+                            text:"Salva nei miei indirizzi",
+                        },
+                    ])
+                    //- [Start] LGCOMIS-1080
+                    +selectBillingData({ idNum: "3" })
+                    //- [End] LGCOMIS-1080
+                .button.buy-order-info-coupon__button
+                    +defaultButton({name: "Save Address", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="save")
+
+        if(option === "before")
+            .buy-checkout__item.before
+                +checkoutStep({
+                    title:"Delivery",
+                    current:"2",
+                    total:"3",
+                    type: "checkoutStep"
+                })
+
+        if(option === "complete")
+            .buy-checkout__item.buy-checkout__item--delivery.buy-checkout__item--complete(style=`${country=='hide'?'display:none':''}`)
+                +checkoutStep({
+                    title:"Delivery",
+                    current:"2",
+                    total:"3",
+                    type: "checked",
+                })
+                .c-checkout-step02
+                    .buy-address-box.buy-address-box--complete
+                        +addressBox(false, false, [
+                            {
+                                flag:["Shipping"],
+                                title:"Robert Surrency",
+                                address:"Via dei SS. Quattro, 66, 00184 Roma RM, Italia",
+                                num:"123-4567-8910",
+                                type: "",
+                                callPopupId2: "#CT0030_3_IT"
+                            },
+                        ])
+                .c-checkout-step02
+                    .buy-address-box.buy-address-box--complete
+                        +addressBox(false, false, [
+                            {
+                                flag: ["Billing"],
+                                title:"Robert Surrency",
+                                address:"Via dei SS. Quattro, 66, 00184 Roma RM, Italia",
+                                num:"123-4567-8910",
+                                type: "",
+                                useBillingData: true,
+                                billingFlag: "Dati per la fatturazione",
+                                biilingType: "Sono una persona fisica",
+                                callPopupId: "#popTaxInfo",
+                                callPopupId2: "#CT0030_3_IT"
+                            }
+                        ])
+                .c-checkout-step02
+                    .buy-address-box.buy-address-box--complete
+                        +addressBox(false, false, [
+                            {
+                                flag: ["Billing"],
+                                title:"popup 2: click Edit button in Tax info area",
+                                address:"after address registration",
+                                num:"123-4567-8910",
+                                type: "",
+                                useBillingData: true,
+                                billingFlag: "Tax info",
+                                biilingType: "option type txts",
+                                callPopupId: "#popSelectTaxType",
+                                callPopupId2: "#CT0030_3_IT"
+                            }
+                        ])
+                .c-checkout-orderd.c-checkout-orderd--confirm
+                    .c-checkout-orderd__item.c-checkout-orderd__item--delivery
+                        +checkoutOrderDeliveryProduct("Free shipping & Pickup Used", "Consegna prevista in 5-10 giorni", [
+                            {
+                                title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                qty: "1",
+                                price: "2 099.98",
+                                unitPos: "left",
+                                unitName: "€"
+                            },
+                        ])
+                //- [Start] LGCOMIS-1080
+                +selectBillingData({ idNum: "4" })
+                //- [End] LGCOMIS-1080

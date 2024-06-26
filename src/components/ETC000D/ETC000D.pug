@@ -1,0 +1,197 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_pop-msg.pug
+include ../_common/_toast.pug
+
+block meta 
+    - var componentId = "ETC000D"
+    - var componentName = "Jeong-do Main"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+    link(rel="stylesheet", href="../../components/MB000D/MB000D.css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin myCaptcha({label, id, placeholder, warning= false})
+    .c-input-item
+        .my-captcha
+            .my-captcha__container
+                label.font-w-semibold-16.font-m-semibold-14(for=`${id}`)= label
+                .my-captcha__area
+                    .my-captcha__box
+                    .my-captcha__btnbox
+                        button.sr-only(type='button' class='my-captcha__button my-captcha__button--reload')
+                            span.sr-only refresh
+                        button.sr-only(type='button' class='my-captcha__button my-captcha__button--play')
+                            span.sr-only
+                input(type='text' id=`${id}`, placeholder=`${placeholder}` class=`${warning ? 'my-warn' : ''}`)&attributes(attributes)
+    +myMsg({warning: warning})
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+    if data.type === 'captcha'
+        +myCaptcha({label: data.label, id: data.id, placeholder: data.placeholder, warning: data.warning})
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                    if data.required
+                        em.c-required *
+                            span.sr-only Required fields
+            if data.required
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+            else if data.inputUnderline
+                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`underline` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+            else 
+                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+                    
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+mixin myInputForm(data, column)
+    .my-input(class=`${column ? 'column2-type' : ''}`)
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin myOrderDetail(params)
+    - let data = {...params}
+    .my-orderDetail
+        ul
+            each set in data
+                li
+                    .c-text-contents__title
+                        span.font-w-normal-16.font-m-normal-16= set.title
+                    if set.type === "file"
+                        .c-text-contents__bodycopy(class='c-text-contents__bodycopy--file')
+                            a(href=set.fileURL data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").font-w-normal-16.font-m-normal-16 !{set.bodycopy}
+                    else
+                        .c-text-contents__bodycopy
+                            span.font-w-normal-16.font-m-normal-16 !{set.bodycopy}          
+
+mixin myItemDetailLink(params)
+    - let data = { ...params }
+    each set in data
+        .my-order-detail__box
+            if(set.files)
+                .c-text-contents
+                    .c-text-contents__title
+                        span.font-w-normal-16.font-m-normal-16= set.title
+                    .c-text-contents__bodycopy.flex-column
+                        each file in set.files
+                            a(href="#" data).font-w-normal-16.font-m-normal-16 #{file}
+                        if set.date
+                            span.font-w-normal-16.font-m-normal-16 Valid date : !{set.date}
+            else
+                .c-text-contents
+                    .c-text-contents__title
+                        span.font-w-normal-16.font-m-normal-16= set.title
+                    .c-text-contents__bodycopy
+                        span.font-w-normal-16.font-m-normal-16 #{set.desc}
+                        if set.date
+                            span.font-w-normal-16.font-m-normal-16 Valid date : !{set.date}
+            if set.warning
+                .my-order-detail__warning
+                    span.font-w-normal-14.font-m-normal-12.font-red 
+                        span.font-semibold Only 90 days
+                        |  left on warranty
+            if set.button 
+                .my-order-detail__button 
+                    .c-button.button
+                        each btnItem in set.button 
+                            +linkButton({type:"text", color:btnItem.btnColor, icon:true, name: btnItem.btnName,})
+
+block content
+    .ETC000D
+        .my-component__wrap
+            .my-component
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        +headline('font-w-light-56 font-m-light-28', "h2", "Reporting Unethical")
+                    .text.c-text-contents__bodycopy.font-w-normal-20.font-m-normal-12 
+                        p.cmp-text(data-cmp-data-layer="") Your voice is the strength of LG Electronics Inc.
+
+
+        .my-component
+            .my-form
+                .my-form__title.font-w-normal-32.font-m-normal-20 Check Report
+                    p.my-form-required.font-w-normal-16.font-m-normal-12
+                        em.c-required * 
+                            span.sr-only Required fields
+                        | Required fields  
+                .my-formbox
+                    .my-form__info.font-w-normal-16.font-m-normal-14 You can check the registered information after entering the ID & PW saved at the time of registration.
+                    +myInputForm([
+                        {
+                            type:"text",
+                            label:"ID",
+                            id:"useId",
+                            required:true,
+                            placeholder:"ID",
+                            inputUnderline:false
+                        },
+                        {
+                            type:"password",
+                            label:"Password",
+                            id:"yourPassword",
+                            required:true,
+                            placeholder:"Your Password",
+                            inputUnderline:false,
+                            infoTextSecond: ['If you lose your password, you cannot retrieve it.'],
+                        },
+                    ])
+            
+            .button.c-cta.my-button
+                //- [Start] 2023-04-07 : UPDATE - Cancel button popup
+                +defaultButton({name:"Identity verification", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})(href="#changedTermsAndConditions", class="js-pop-open")
+                //- [End] 2023-04-07 : UPDATE - Cancel button popup
+            
+            .my-component__wrap
+                .my-component
+                    .c-text-contents
+                        .privacy-policy 
+                            strong Privacy policy
+                            p LG will succeed through fair management practices and constant development of our business skills.
+                                a(href="#" data-cmp-data-layer)&attributes(attributes) Read more
+
+            
+        

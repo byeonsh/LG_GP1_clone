@@ -1,0 +1,284 @@
+/* stylelint-disable no-descending-specificity */
+@use 'sass:map';
+@use 'sass:list';
+@use '../abstract/' as *;
+
+// font-family is added only once here in the entire file.
+
+// # font-family
+@mixin font-find-title {
+  .c-compare-selling__group-head,
+  .font-w-bold-64,
+  .font-w-regular-64,
+  .font-w-semibold-60,
+  .font-w-semibold-56,
+  .font-w-semibold-48,
+  .font-w-regular-54,
+  .font-w-light-80,
+  .font-w-light-56 {
+    &.c-text-contents__headline *,
+    &.title,
+    &.title *,
+    .cmp-title *,
+    &.cmp-title *,
+    .cmp-title__text,
+    &.cmp-title__text {
+      @content;
+    }
+  }
+  .title {
+    .font-w-bold-64,
+    .font-w-regular-64,
+    .font-w-semibold-60,
+    .font-w-semibold-56,
+    .font-w-semibold-48,
+    .font-w-regular-54,
+    .font-w-light-80,
+    .font-w-light-56 {
+      &,
+      * {
+        @content;
+      }
+    }
+  }
+  // for code component
+  .font-family-headline {
+    &,
+    * {
+      @content;
+    }
+  }
+}
+@mixin font-family {
+  * {
+    font-family: 'LG Smart UI', 'Segoe UI', 'Microsoft Sans Serif', sans-serif;
+  }
+
+  // For LGEI font
+  // - Added languages supported by LGEI fonts.
+  [lang*='es-'], // Spanish
+    [lang*='sv-'], // Swedish
+    [lang*='cs-'], // Czech
+    [lang*='da-'], // Danish
+    [lang*='nl-'], // Dutch
+    [lang*='fi-'], // Finnish
+    [lang*='fr-'], // French
+    [lang*='de-'], // German
+    [lang*='hu-'], // Hungarian
+    [lang*='it-'], // Italian
+    [lang*='no-'], // Norwegian
+    [lang*='pl-'], // Polish
+    [lang*='pt-'], // Portuguese
+    [lang*='tr-'], // Turkish
+    [lang*='et-'], // Estonian
+    [lang*='lv-'], // Latvian
+    [lang*='lt-'], // Lithuanian
+    [lang*='hr-'], // Croatian
+    [lang*='ro-'], // Romanian
+    [lang*='sk-'], // Slovak
+    [lang*='vi-'], // Vietnamese
+    [lang*='el-'], // Greek
+    [lang*='th-'], // Thai
+    [lang*='en-'] {
+    * {
+      font-family: 'LGEI Text', 'Segoe UI', 'Microsoft Sans Serif', sans-serif;
+    }
+    @include font-find-title {
+      font-family: 'LGEI Headline', 'Segoe UI', 'Microsoft Sans Serif', sans-serif;
+    }
+  }
+  // title Bold (for All site)
+  @include font-find-title {
+    font-weight: 600;
+  }
+
+  // - 230704, Development request: Change the value of the data-countrycode attribute to uppercase.
+  // Exception - Please add only confirmed.
+  [data-countrycode='JP'] * {
+    font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'Yu Gothic', 'メイリオ', Meiryo, Osaka,
+      'ＭＳ Ｐゴシック', 'MS PGothic', sans-serif;
+  }
+
+  // It has not been confirmed yet,
+  // but has been applied in advance to prevent changes just before the site launch.
+  // When each site is launched, it may be changed according to each BU's request.
+  // [data-countrycode='GR'] * {
+  //     font-family: 'Trebuchet MS', sans-serif;
+  // }
+  [data-countrycode='CN'] * {
+    font-family: 'Microsoft YaHei', sans-serif, Arial;
+  }
+  [data-countrycode='TW'] * {
+    font-family: 'Microsoft JhengHei', sans-serif, Arial;
+  }
+  [data-countrycode='IR'] * {
+    font-family: IRANYekan, sans-serif;
+  }
+  // Since KZ is using LG Smart UI,
+  // it is expected that all Russian languages can use LG Smart UI.
+  // [data-countrycode='bg'],
+  // [data-countrycode='kz'],
+  // [data-countrycode='ru'],
+  // [data-countrycode='ua'],
+  // [data-countrycode='uz_ru'] {
+  //     * {
+  //         font-family: 'LG Smart RU', Tahoma, Arial, sans-serif;
+  //     }
+  // }
+
+  /*
+        for Preload webfont
+
+        1. LGEI Text : LGEIText-Regular.woff2
+        [lang*='es-'] // Spanish
+        [lang*='sv-'] // Swedish
+        [lang*='cs-'] // Czech
+        [lang*='da-'] // Danish
+        [lang*='nl-'] // Dutch
+        [lang*='fi-'] // Finnish
+        [lang*='fr-'] // French
+        [lang*='de-'] // German
+        [lang*='hu-'] // Hungarian
+        [lang*='it-'] // Italian
+        [lang*='no-'] // Norwegian
+        [lang*='pl-'] // Polish
+        [lang*='pt-'] // Portuguese
+        [lang*='tr-'] // Turkish
+        [lang*='et-'] // Estonian
+        [lang*='lv-'] // Latvian
+        [lang*='lt-'] // Lithuanian
+        [lang*='hr-'] // Croatian
+        [lang*='ro-'] // Romanian
+        [lang*='sk-'] // Slovak
+        [lang*='vi-'] // Vietnamese
+        [lang*='el-'] // Greek
+        [lang*='en-'] // English
+        
+        2.It doesn't use webfonts, so there's no need to preload them.
+        [data-countrycode='JP']
+        [data-countrycode='CN']
+        [data-countrycode='TW'] 
+
+        3. iranyekanwebregular.woff2
+        [data-countrycode='IR']
+
+        4. Others 
+        LG Smart UI : LGSmartUI-Regular.woff2
+
+    */
+}
+
+// =- description -=
+// be specified accordingly local language.
+
+// # font-variation
+@mixin font-variation {
+  $font-case: (
+    bold: $font-bold,
+    semibold: $font-semibold,
+    regular: $font-regular,
+    light: $font-light,
+    italic: italic,
+    underline: underline,
+  );
+  @each $key, $value in $font-case {
+    $selector: '.font-#{$key}';
+    // @debug $selector;
+    #{$selector} {
+      @if italic == $key {
+        font-style: $value;
+      } @else if underline == $key {
+        text-decoration: $value;
+        text-underline-offset: rem($offset2px);
+      } @else {
+        font-weight: $value;
+      }
+    }
+  }
+
+  // color variation
+  $font-palette: (
+    'white': $white,
+    'black': $black,
+    'red': $active-red,
+  );
+  $color-variation-list: 'white', 'black', 'red';
+  @each $color in $color-variation-list {
+    $selector: '.font-#{$color}';
+    #{$selector} {
+      color: map.get($font-palette, $color);
+    }
+  }
+}
+// =- description -=
+// create "font-" class by font style, color, decoration type.
+
+// # print-font-set
+@mixin print-font-set($viewport, $map) {
+  $block: 'font-';
+  @each $keyname, $val in $map {
+    $font-size: list.nth(list.nth($val, 1), 2);
+    $line-height: list.nth(list.nth($val, 2), 2);
+
+    .#{$block}#{$viewport}-#{$keyname} {
+      font-size: rem($font-size);
+      line-height: rem($line-height);
+      @if length($val) >= 3 {
+        $font-weight: list.nth(list.nth($val, 3), 2);
+        font-weight: $font-weight;
+      }
+      @if $viewport == w {
+        // If the font-size is 40px or more,
+        // it is displayed at 80% of the tablet screen size.
+        @include screen(tablet) {
+          @if $font-size >= 40px {
+            font-size: rem(calc($font-size * 80 / 100));
+            line-height: rem(calc($line-height * 80 / 100));
+          }
+        }
+      }
+    }
+  }
+}
+
+// =- description -=
+// $viewport : w:web, m:mobile.
+// $map : package of font... font-size, line-height, conditionally font-weight.
+// declare "font-" class such as "font-wt2s", "font-mb4".
+// classname include font information implicitly.
+
+// # font-set
+@mixin font-set {
+  @each $country, $set in $font-set-all {
+    @if $country == default {
+      @each $viewport, $map in $set {
+        @if $viewport == w {
+          @include screen(web) {
+            @include print-font-set($viewport, $map);
+          }
+        } @else if $viewport == m {
+          @include screen(mobile) {
+            @include print-font-set($viewport, $map);
+          }
+        }
+      }
+    } @else {
+      // Country-specific exception handling
+      [data-countrycode='#{$country}'] {
+        @each $viewport, $map in $set {
+          @if $viewport == w {
+            @include screen(web) {
+              @include print-font-set($viewport, $map);
+            }
+          } @else if $viewport == m {
+            @include screen(mobile) {
+              @include print-font-set($viewport, $map);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+// =- description -=
+// all information about fonts is classified by language and viewport.

@@ -1,0 +1,253 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_toast.pug
+include ../_common/_pop-msg.pug
+include ../../components/CT000E/CT502-inc.pug
+include ../../components/CM000A/CM000A-inc.pug
+
+block meta 
+    - var componentId = "CM000A"
+    - var componentName = "Member Create Account"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href="../../components/CT000E/CT502.css")
+    link(rel="stylesheet" href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+    //- recaptcha
+    //- script(src="https://www.google.com/recaptcha/api.js?render=explicit&onload=onRecaptchaLoadCallback" async)
+    
+    //- script(type='text/javascript').
+    //-     onRecaptchaLoadCallback = function(){
+    //-         var clientId = grecaptcha.render('security-box', {
+    //-             'sitekey': '6Le3NdgaAAAAAK8TXN0_DHQfP-FtiHoGCdiK1QQT',
+    //-             'badge': 'inline',
+    //-             'size': 'invisible',
+    //-         });
+    //-         grecaptcha.ready(function() {
+    //-             grecaptcha.execute(clientId, {action: 'homepage'})
+    //-             .then(function(token) {
+    //-                 // token
+    //-                 document.getElementById('g-recaptcha').value = token;
+    //-             });
+    //-         });
+    //-     }
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-16.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-16.font-m-normal-14= infoTextSecond
+
+mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected, required= false})
+    .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+        +formSelect(label, id, placeholder, required)
+            if optionVal
+                - for(var i=0; i < optionVal.length; i++)
+                    if selected === i + 1
+                        option(value="" selected)= optionVal[i]
+                    else
+                        option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText})
+
+mixin myCaptcha({label, id, placeholder, warning= false, required= false})
+    .c-input-item
+        .my-captcha
+            .my-captcha__container
+                label.font-w-normal-16.font-m-normal-14(for=`${id}`)= label
+                    if required
+                        em.c-required *
+                            span.sr-only Required fields
+                #security-box.my-captcha__area
+
+mixin myVerify(params)
+    - let data = {...params}
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                if data.required
+                    em.c-required *
+                        span.sr-only Required fields
+            if data.validation
+                .input-button__container.input-button__container--validation
+                    .my-button-validation
+                        .my-verify__inner
+                            input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}` value= data.value)&attributes(attributes)
+                            span.my-verify__time.font-m-normal-16.font-w-normal-16= data.time
+                        +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                    .button.c-cta
+                        +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+
+            else
+                .input-button__container
+                    .my-verify__inner
+                        input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}` value= data.value)&attributes(attributes)
+                        span.my-verify__time.font-m-normal-16.font-w-normal-16= data.time
+                    .button.c-cta
+                        +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+
+            if !data.validation
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst ? 'my-warn' : ''}`
+    if data.type === 'verify'
+        +myVerify(params)
+    //- 2023-05-24 Date of Birth
+    else if data.type === 'birth'
+        +myBirth(params)
+    else if data.type === 'birth1'
+        +myBirth1(params)
+    else if data.type === 'birth2'
+        +myBirth2(params)
+    //- 2023-05-24
+    else if data.type === 'select'
+        +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required})
+    else if data.type === 'captcha'
+        +myCaptcha({label: data.label, id: data.id, placeholder: data.placeholder, warning: data.warning, required: data.required})
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                    if data.required
+                        em.c-required *
+                            span.sr-only Required fields
+            if data.required && !data.button && data.type !== "password"
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+                //- [Start] 2023-05-24
+                if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                //- [End] 2023-05-24
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+            else if data.type === 'textarea'
+                if data.limit
+                    .my-textarea__container
+                        textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class='my-textarea--limit')&attributes(attributes)
+                        .my-count
+                            span.font-w-normal-14.font-m-normal-12 0 / !{data.limit} byte
+                else 
+                    textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder)&attributes(attributes)
+            else if data.button
+                if data.validation
+                    .input-button__container.input-button__container--validation
+                        .my-button-validation
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required)&attributes(attributes)
+                            +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                        each item in data.button
+                            .button.c-cta.button-full
+                                +defaultButton({name:item, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                else
+                    .input-button__container
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required)&attributes(attributes)
+                        // [Start] 2023-05-03 : ADD - email form case
+                        each item in data.button
+                            .button.c-cta.button-full
+                                +defaultButton({name:item, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                        // [End] 2023-05-03 : ADD - email form case
+            else 
+                if data.active
+                    input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value, required)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                    else if data.search 
+                        button(type='button' class='my-form__search__icon')
+                            span.sr-only search
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config} ${data.search ? 'my-form__search' : ''}`, required)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                    else if data.search 
+                        button(type='button' class='my-form__search__icon')
+                            span.sr-only search
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, })
+                
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+mixin formCheckbox(label, name, val, id, count = "false", disabled = false, required)
+    .c-checkbox-item&attributes(attributes)
+        label.checkbox(for=`${id}`)
+            if(disabled)
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, disabled="disabled")&attributes(attributes)
+            else 
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`)&attributes(attributes)
+            if(label)
+                span.label= label
+                    -if(count >= 0 & count != "false") // for filter
+                        sup.count= count 
+                    if required
+                        em.c-required *
+                            span.sr-only Required fields
+            else 
+                if block 
+                    span.label
+                        block
+mixin CM000A(option=false)
+    if option == 'sa'
+        .c-wrapper.CM000A.margin-bottom
+            .component
+                .fluid-container
+                    .my-component
+                        .my-formbox
+                            .my-check                            
+                                .button.custom-item
+                                    +formCheckbox("", "name", "val1_sa", 'checkId1_sa', count="false")
+                                        span أوافق على شروط الاستخدام
+                                            em.c-required *
+                                                span.sr-only قراءة المزيد
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'قراءة المزيد', href:"/uk/privacy/",})(target='_blank')                                        
+                                .button.custom-item
+                                    +formCheckbox('', "name", "val2_sa", `checkId2_sa`, count="false")
+                                        span لقد قرأت وفهمت سياسة الخصوصية وسياسة ملفات تعريف الارتباط (الكوكيز)
+                                            em.c-required *
+                                                span.sr-only قراءة المزيد
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'قراءة المزيد', href:"/uk/privacy/",})(target='_blank')                                        
+                                .button
+                                    +formCheckbox('استلام الرسائل التسويقية (اختياري)', "name", "val3_sa", `checkId3_sa`, count="false")
+                                    div.my-check--receipt-text.w-full والشركات التابعة لها بخصوص آخر الأخبار والعروض الخاصة من خلال البريد الإلكتروني, الرسائل النصية القصيرة, الإشعارات المنبثقة,  أوافق أوافق على أن تتصل بي شركةLGE المكالمات الهاتفية, مواقع وسائل
+                                    div.my-check--receipt-text.w-full والشركات التابعة لها بخصوص آخر الأخبار والعروض الخاصة من خلال البريد الإلكتروني, الرسائل النصية القصيرة, الإشعارات المنبثقة,  أوافق أوافق على أن تتصل بي شركةLGE المكالمات الهاتفية, مواقع وسائل
+                                    div.my-check--receipt-text.w-full LGEالإلكتروني وبما يتوافق مع سياسة خصوصية 
+                                        +linkButton({type: 'text', color: 'black', underline: true, name: 'سياسة الخصوصية', href:"/uk/privacy/",})(target='_blank')                                        
+                            p.add-comment يمكنك الوصول إلى كلا موقعيك باستخدام لغات مختلفة من خلال تسجيل دخول واحد.  
+
+block content
+    // Component Markup
+    .guide-text-type signup 약관동의 사우디 (SA)
+    +CM000A('sa')   

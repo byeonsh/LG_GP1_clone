@@ -1,0 +1,257 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include svg/svg-map.pug
+
+block meta 
+    - var componentId = "CS0110"
+    - var componentName = "Tab"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block content
+
+    mixin printMap(div, num, selected)
+        if selected
+            li.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0" data-cmp-hook-tabs="tab" aria-selected="true")
+                g(role="tab" aria-label="")
+                    if block
+                        block
+        else 
+            li.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1" data-cmp-hook-tabs="tab" aria-selected="false")
+                g(role="tab" aria-label="")
+                    if block
+                        block             
+
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${controlsId}` aria-label="")
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+
+    mixin contentsBody(useImg)
+        // accordion contents
+        // block - text contents
+        // If you need a flex element, use it by adding a class - .c-flex
+        .c-text-contents.c-accordion__body-text.c-flex
+            // accordion contents
+            .text.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-16
+                p.c-text-contents__title.font-w-normal-20.font-m-normal-16 ELETRÔNICA APOLO
+                .asc-list__wrap
+                    .asc-list__flex
+                        dl
+                            dt Tel 
+                            dd 37 - 32212353
+                        dl 
+                            dt Site 
+                            dd 
+                                a(href="#" data-link-name data-link-destination data-link-menu data-link-page-type) apolipecas.com.br 
+                        dl 
+                            dt Whatsapp
+                            dd 
+                                a(href="#" data-link-name data-link-destination data-link-menu data-link-page-type).app__icon 37999691053  
+                        dl 
+                            dt Lojas Online 
+                            dd 
+                                a(href="#" class="cmp-button")
+                                    img.c-image__img(src="../../mocks/CS0110/icon_lojas_1.png", alt='', loading="lazy")
+                                a(href="#" class="cmp-button")
+                                    img.c-image__img(src="../../mocks/CS0110/icon_lojas_2.png", alt='', loading="lazy")
+                                a(href="#" class="cmp-button")
+                                    img.c-image__img(src="../../mocks/CS0110/icon_lojas_3.png", alt='', loading="lazy")
+                                a(href="#" class="cmp-button")
+                                    img.c-image__img(src="../../mocks/CS0110/icon_lojas_4.png", alt='', loading="lazy")
+                    .asc-list__flex
+                        dl
+                            dt E-mail 
+                            dd atendimentoapolopeas@gmail.com 
+                        dl 
+                            dt Linha 
+                            dd Todas 
+                        dl 
+                            dt Endereço
+                            dd Avenida 7 de Setembro, 1380, Centro, 35500-011
+             
+    mixin pack(faq, useImg, controlsId)
+        .c-accordion__box.js-accordion-handle-target
+            .c-accordion__head
+                // block - text contents
+                .c-accordion__head-text.c-text-contents
+                    .text.c-text-contents__headline
+                        .cmp-text.font-w-normal-20.font-m-normal-18(data-cmp-data-layer="") 
+                            strong #{faq.headline} 
+                +trigger(controlsId)
+            .c-accordion__body(id=`${controlsId}`)
+                +contentsBody
+    -
+        const faqList = [
+            {
+                'headline':'Divinópolis'
+            },
+            {
+                'headline': 'Ipatinga'
+            },
+            {
+                'headline': 'Poços de Caldas'
+            }
+        ]
+
+    mixin printMapAcco(div)
+        .c-accordion.js-accordion
+            each faq, index in faqList
+                - var controlsId = `faq-set-0${index}`; 
+                +pack(faq, faq.useImg, controlsId)
+
+
+    // Component Markup
+
+    .guide-text-type Type1
+ 
+    .guide-text-option Brazil
+    .c-wrapper.CS0110
+        .component.type-accordion.type-accordion__offEye
+            .CS0110__container
+                .c-maps__br
+                    .c-maps__wrap(data-cmp-data-layer="", data-placeholder-text="false")
+                        +svgMap(svg-map-name='map_br')
+                    .c-maps__info
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title CE
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title MG
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title GO
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title TO
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title PI
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title MA
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title RS
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title RN
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title RJ
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title SP
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title ES
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title PR
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title AC
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title RO
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title AL
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title PE
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title PB
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                            .c-printMap__title MS
+                            +printMapAcco
+                        .cmp-tabs__tabpanel
+                             .c-no-result 
+                                .c-no-result__wrap
+                                    span.c-no-result__icon 
+                                    p.font-m-normal-16.font-w-normal-20 Não há nenhum distribuidor neste estado.
+                        .cmp-tabs__tabpanel
+                             .c-no-result 
+                                .c-no-result__wrap
+                                    span.c-no-result__icon 
+                                    p.font-m-normal-16.font-w-normal-20 Não há nenhum distribuidor neste estado.
+                        .cmp-tabs__tabpanel
+                             .c-no-result 
+                                .c-no-result__wrap
+                                    span.c-no-result__icon 
+                                    p.font-m-normal-16.font-w-normal-20 Não há nenhum distribuidor neste estado.
+                        .cmp-tabs__tabpanel
+                             .c-no-result 
+                                .c-no-result__wrap
+                                    span.c-no-result__icon 
+                                    p.font-m-normal-16.font-w-normal-20 Não há nenhum distribuidor neste estado.
+                        .cmp-tabs__tabpanel
+                             .c-no-result 
+                                .c-no-result__wrap
+                                    span.c-no-result__icon 
+                                    p.font-m-normal-16.font-w-normal-20 Não há nenhum distribuidor neste estado.
+                        .cmp-tabs__tabpanel
+                             .c-no-result 
+                                .c-no-result__wrap
+                                    span.c-no-result__icon 
+                                    p.font-m-normal-16.font-w-normal-20 Não há nenhum distribuidor neste estado.
+                        .cmp-tabs__tabpanel
+                             .c-no-result 
+                                .c-no-result__wrap
+                                    span.c-no-result__icon 
+                                    p.font-m-normal-16.font-w-normal-20 Não há nenhum distribuidor neste estado.
+                        .cmp-tabs__tabpanel
+                             .c-no-result 
+                                .c-no-result__wrap
+                                    span.c-no-result__icon 
+                                    p.font-m-normal-16.font-w-normal-20 Não há nenhum distribuidor neste estado.
+                        .cmp-tabs__tabpanel
+                             .c-no-result 
+                                .c-no-result__wrap
+                                    span.c-no-result__icon 
+                                    p.font-m-normal-16.font-w-normal-20 Não há nenhum distribuidor neste estado.
+
+
+
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" defer type="module")
+
+
+    script(type='text/javascript').
+
+        window.onload = function(){
+            var tabList = document.querySelectorAll('.c-tab__wrap .c-tab__list')
+            Array.prototype.forEach.call(tabList, function(list) {
+                list.children[0].addEventListener('click', function(e) {
+                    e.preventDefault()
+                    var tabContent = document.querySelectorAll('.c-maps__info .cmp-tabs__tabpanel')
+                    var tabNum = this.parentElement.getAttribute('data-tabnum')
+                    var tabListItem = this.parentElement.parentElement.querySelectorAll('.c-tab__list')
+
+                    Array.prototype.forEach.call(tabContent, function(cont, i) {
+                        cont.style.display = 'none'
+                        tabList[i].className = 'c-tab__list'
+                    })
+                    tabContent[tabNum].style.display = 'block'
+                    
+                    tabListItem.forEach(function (e) {
+                        e.classList.remove("active");
+                    });
+                    this.parentElement.classList.add("active");
+                    
+                })
+            })
+        }

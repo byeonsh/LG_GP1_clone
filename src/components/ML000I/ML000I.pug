@@ -1,0 +1,318 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_headline.pug
+include ../_common/_pop-msg.pug
+include ../_common/_product-list.pug
+include ../_common/_link-banner.pug
+
+block meta 
+    - var componentId = "ML000I"
+    - var componentName = "Product Information"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+mixin myItemDetailProduct(params)
+    - let data = { ...params }
+    .my-detail-product
+        .my-detail-product__item
+            .my-detail-product__img
+                if data.modelName 
+                    .c-text-contents__text-box__model
+                        span.font-w-normal-10.font-m-normal-10= data.modelName 
+                .image.c-image
+                    +printLazyImage('https://www.lg.com/uk/images/tvs/md07546594/gallery/GT1.jpg')
+            .my-detail-product__txt
+                .c-text-contents
+                    .c-text-contents__title
+                        span.font-w-normal-32.font-m-normal-20= data.title
+                    if data.serial
+                        .c-text-contents__quantity.font-w-normal-20.font-m-normal-16 Serial No. : !{data.serial}
+                if block
+                    block
+
+mixin myItemDetailLink(params)
+    - let data = { ...params }
+    each set in data
+        .my-order-detail__box
+            .c-text-contents
+                .c-text-contents__title
+                    span.font-w-normal-20.font-m-normal-16= set.title
+                .c-text-contents__bodycopy
+                    span.font-w-normal-16.font-m-normal-16 #{set.desc}
+                    if set.date
+                        span.font-w-normal-16.font-m-normal-16 Valid date : !{set.date}
+            if set.warningText
+                .my-order-detail__warning
+                    span.font-w-normal-16.font-m-normal-12.font-red !{set.warningText}
+            if set.period
+                dl.my-order-detail__period
+                    each item in set.period
+                        dt.font-w-normal-16.font-m-normal-12 #{item.label}
+                        dd.font-w-normal-16.font-m-normal-12 #{item.txt}
+                            if item.product
+                                .name.font-w-normal-16.font-m-normal-12 #{item.product.name}
+                                span.desc.font-w-normal-16.font-m-normal-12  !{item.product.description}
+                                span.no.font-w-normal-16.font-m-normal-12 Warranty no : #{item.product.no}
+                                span.year.font-w-normal-16.font-m-normal-12 Period : #{item.product.year}
+            if set.infoText
+                .my-order-detail__infotxt
+                    span.font-w-normal-16.font-m-normal-12 * #{set.infoText}
+            if set.button 
+                .my-order-detail__button 
+                    .c-button.button
+                        each btnItem in set.button 
+                            +linkButton({type:"text", color:btnItem.btnColor, icon:true, name: btnItem.btnName,})
+
+mixin myOrderDetail(params)
+    - let data = {...params}
+    .my-orderDetail
+        ul
+            each set in data
+                li
+                    .c-text-contents__title
+                        span.font-w-normal-20.font-m-normal-16= set.title
+                    if set.type === "file"
+                        .c-text-contents__bodycopy(class='c-text-contents__bodycopy--file')
+                            a(href=set.fileURL data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").font-w-normal-20.font-m-normal-16 !{set.bodycopy}
+                        .c-text-contents__bodycopy(class='c-text-contents__bodycopy--btnline')
+                            +linkButton({type:"text", color:"black", underline:true, name:"Delete", roleButton:"true"})
+                    else
+                        .c-text-contents__bodycopy
+                            span.font-w-normal-20.font-m-normal-16 !{set.bodycopy}
+
+mixin ML000I
+    .c-wrapper.ML000I
+        .component
+            .fluid-container
+                .my-component.my-page-title
+                    .c-text-contents.my-component__title-section
+                        .c-text-contents__headline
+                            +headline("font-w-light-56 font-m-light-28", "h2", "Product Details")
+
+                .my-component
+                    .my-item-detail
+                        +myItemDetailProduct({
+                            modelName: "ThInQ",
+                            title:"WiFi Connected 10.5kg washing machine",
+                        })
+                            +myOrderDetail([
+                                {
+                                    title:"Name", 
+                                    bodycopy:"Ho** Gild****",
+                                },
+                                {
+                                    title:"Product Category", 
+                                    bodycopy:"TV & Home Enter.",
+                                },
+                                {
+                                    title:"Model Number", 
+                                    bodycopy:"GSXV90MCDE",
+                                },
+                                {
+                                    title:"Serial Number", 
+                                    bodycopy:"503PWJFRFFEES0684",
+                                },
+                                {
+                                    title:"Purchase Date", 
+                                    bodycopy:"01 Mar. 2022",
+                                },
+                                {
+                                    title:"Place of Purchase", 
+                                    bodycopy:"Best Buy",
+                                },
+                                {
+                                    title:"Proof of Purchase", 
+                                    bodycopy:"Receipt.jpeg",
+                                    type: "file",
+                                    fileURL: "#"
+                                },
+                                {
+                                    title:"ThinQ connected Date", 
+                                    bodycopy:"01 Mar. 2022",
+                                },
+                                {
+                                    title:"Proof of Purchase", 
+                                    bodycopy:"Receipt.jpeg",
+                                },
+                                {
+                                    title:"ThinQ connected Date", 
+                                    bodycopy:"01 Mar. 2022",
+                                }
+                            ])
+                            +myItemDetailLink([
+                                {
+                                    title:"Warranty",
+                                    desc:"Manufacturer's limited warranty",
+                                    date:"Until 08 Jul. 2024",
+                                    warningText: "<span class='font-semibold'>Only 90 days</span> left on warranty",
+                                    button:[
+                                        {btnName: "Get Extended Warranty", btnColor: "red",}
+                                    ],
+                                },
+                                {
+                                    title:"Warranty",
+                                    desc:"Manufacturer's limited warranty",
+                                    date:"Until 08 Jul. 2024",
+                                    warningText: "Warranty will be expire soon. Keep your product safe.",
+                                    period: [
+                                        {
+                                            label : "Basic warranty​",
+                                            txt : "Warranty does not exist or has expired",
+                                        },
+                                        {
+                                            label : "Promotion warranty​",
+                                            txt : "07/19/2022 ~ 07/18/2024",
+                                        },
+                                        {
+                                            label : "Extended​ warranty​",
+                                            txt : "07/19/2022 ~ 07/18/2024",
+                                            product : {
+                                                name : "LG Premium Care PLUS 5 years",
+                                                description : "This additional service protects your product for an additional 36months.<br>You will not have to incur additional costs in case of repair.",
+                                                no : "30223555HE",
+                                                year: "3year",
+                                            }
+                                        }
+                                    ],
+                                    infoText: "This is a warranty calculated based on the information you entered.",
+                                    button:[
+                                        {btnName: "Get Extended Warranty", btnColor: "red",}
+                                    ],
+                                },
+                                {
+                                    title:"Warranty",
+                                    desc:"Manufacturer's limited warranty",
+                                    date:"Until 08 Jul. 2024",
+                                    warningText: "Warranty will be expire soon. Keep your product safe.",
+                                    period: [
+                                        {
+                                            label : "Basic warranty​",
+                                            txt : "07/19/2022 ~ 07/18/2024",
+                                        },
+                                        {
+                                            label : "Extended​ warranty​",
+                                            txt : "07/19/2022 ~ 07/18/2024",
+                                            product : {
+                                                name : "LG Premium Care PLUS 5 years",
+                                                description : "This additional service protects your product for an additional 36months.<br>You will not have to incur additional costs in case of repair.",
+                                                no : "30223555HE",
+                                                year: "3year",
+                                            }
+                                        }
+                                    ],
+                                    infoText: "This is a warranty calculated based on the information you entered.",
+                                    button:[
+                                        {btnName: "Get Extended Warranty", btnColor: "red",}
+                                    ],
+                                },
+                                {
+                                    title:"Warranty",
+                                    desc:"Manufacturer's limited warranty",
+                                    date:"Until 08 Jul. 2024",
+                                    warningText: "Warranty will be expire soon. Keep your product safe.",
+                                    period: [
+                                        {
+                                            label : "Basic warranty​",
+                                            txt : "07/19/2022 ~ 07/18/2024",
+                                        },
+                                        {
+                                            label : "Promotion warranty​",
+                                            txt : "07/19/2022 ~ 07/18/2024",
+                                        },
+                                    ],
+                                    infoText: "This is a warranty calculated based on the information you entered.",
+                                    button:[
+                                        {btnName: "Get Extended Warranty", btnColor: "red",}
+                                    ],
+                                },
+                                {
+                                    title:"Repair Request",
+                                    desc:"Need a repair for your LG product or have you requested this product?",
+                                    button:[
+                                        {btnName: "Repair Request", btnColor: "black",},
+                                        {btnName: "View My Request", btnColor: "black",}
+                                    ],
+                                },
+                                {
+                                    title:"Write a Review",
+                                    desc:"Write a review for the product",
+                                    button:[
+                                        {btnName: "Write a Review", btnColor: "black",},
+                                    ],
+                                },
+                            ])
+                        .product-detail__btn-delete 
+                            .c-button.button
+                                +defaultButton({name:"Delete", wSize: 'large', mSize: 'medium'})(href="#productionInformationDelete", class="js-pop-open", roleButton="true")
+                                +defaultButton({name: "Edit", wSize: "large", mSize: "medium", buttonStyle: 'highlight'})
+                .my-component__wrap
+                    .my-component
+                        +linkBanner({
+                            type:"padding-tb",
+                            mobileTextAlignLeft:true,
+                            bgColor:"transparent",
+                            title:[{
+                                text:"Get Manuals & Software",
+                            }],
+                            desc:[{
+                                text:"Do you need the troubleshoot, manuals & software for this product?",
+                                font:"font-w-normal-24 font-m-normal-16"
+                            }], 
+                            button:[{
+                                size:"large",
+                                sizeMobile:"medium",
+                                name: "Find More",
+                                buttonStyle: 'default',
+                                isButton: false
+                            }],
+                        })
+                .my-component__wrap
+                    .my-component.only-pc
+                        +linkBanner({
+                            type:"padding-tb",
+                            mobileTextAlignLeft:true,
+                            bgColor:"transparent",
+                            title:[{
+                                text:"Have a new product?",
+                            }],
+                            desc:[{
+                                text:"Register your product and maintain your LG products with parts and accessories.",
+                                font:"font-w-normal-20 font-m-normal-16"
+                            }], 
+                            button:[{
+                                size:"large",
+                                sizeMobile:"medium",
+                                name: "Register your product",
+                                buttonStyle: 'highlight',
+                                isButton: false
+                            }],
+                        })
+
+block content
+    // Component Markup
+    +ML000I
+
+block modal
+    .ML000I
+        +pop-msg-standard({id : `productionInformationDelete`, headline:"Are you sure?", size: 'full'})
+            // block - text contents
+            .c-text-contents 
+                .text.c-text-contents__bodycopy
+                    .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") If you delete the registered information,
+                    | the associated product and service information will also be deleted.
+                    br
+                    |
+                    br
+                    | Are you sure you wish to delete your product?
+            
+            .button.c-pop-msg__button-wrap
+                +defaultButton({name:"No", wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})(class="c-pop-msg__close-btn js-pop-close" aria-controls="productionInformationDelete")
+                +defaultButton({name:"Yes", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})

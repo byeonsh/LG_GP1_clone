@@ -1,0 +1,85 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+
+block meta 
+    - var componentId = "AL0008"
+    - var componentName = "RU Newsletter subscription"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+
+
+block content
+    mixin RuNewsletter(params)
+        case params
+            when "applied"
+                .c-RU-newsletter--error.c-text-contents
+                    .c-RU-newsletter--error__text.c-RU-newsletter--error__applied.text.c-text-contents__bodycopy
+                        p.cmp-text.font-w-light-56.font-m-light-28(data-cmp-data-layer="") Спасибо, что подписались на рассылку LG!
+                        p.cmp-text.font-w-light-56.font-m-light-28(data-cmp-data-layer="") Пожалуйста, подтвердите подписку в письме у вас на почте.
+                - break
+            when "error01"
+                .c-RU-newsletter--error.c-text-contents
+                    .c-RU-newsletter--error__text.c-RU-newsletter--error__nodata.text.c-text-contents__bodycopy
+                        p.cmp-text.font-w-light-56.font-m-light-28(data-cmp-data-layer="") Вы уже подписаны на рассылку!
+                - break
+            when "error02"
+                .c-RU-newsletter--error.c-text-contents
+                    .c-RU-newsletter--error__text.c-RU-newsletter--error__nodata.text.c-text-contents__bodycopy
+                        p.cmp-text.font-w-light-56.font-m-light-28(data-cmp-data-layer="") Произошла ошибка, попробуйте позднее!
+                - break
+            default
+                .c-RU-newsletter--subscription.c-text-contents
+                    .title.c-text-contents__title
+                        h3.cmp-title.font-w-light-56.font-m-light-28.c-RU-newsletter--subscription__title(data-cmp-data-layer="") Подписаться на рассылку
+                    .text.c-text-contents__bodycopy
+                        .cmp-text.font-w-normal-20.font-m-normal-16.c-RU-newsletter--subscription__text Ваш email будет использоваться только LG.com.
+                            .c-tooltip
+                                span.button
+                                    +iconButton({type:"button", color:"black",class:"", otherClass:"c-tooltip__button", name:"Подробнее", ariaControls:"download", expanded:"false"})
+                                .c-tooltip__container.top-right(id="download")
+                                    .c-tooltip__contents Я согласен на обработку своих персональных данных ООО \"ЛГ Электроникс РУС\" (адрес: 143160, Московская область, Рузский район, Сельское поселение Дороховское, 86 км Минского шоссе, д.9) и ООО \"Лаборатория Инноваций\" (адрес: 115419, г. Москва, 2-й Рощинский проезд, дом 8, строение 5, этаж 2, помещение 13, комната 36) с целью получения информации по маркетинговым акциям, в том числе информацию о новинках, рекламе и скидках. Я согласен с 
+                                        a(href="https://www.lg.com/ru/personaldata" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") ПОЛИТИКОЙ В ОТНОШЕНИИ ОБРАБОТКИ ПЕРСОНАЛЬНЫХ ДАННЫХ 
+                .c-finder
+                    .c-search-box
+                        .cmp-form.c-search-box__body.c-search-box__body--double
+                            .c-search-box__form
+                                +formText("text", "Email", "e-mail-01", false, "Введите свой e-mail", true, true)
+                            .button.c-search-box__button
+                                //- +button({color:"red", type:"box", size:"medium",name:"Подписаться"}, 'submit')
+                                +defaultButton({name: 'Подписаться', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: false})(role="button")
+
+    .c-wrapper.margin-top.margin-bottom(class=componentId)
+        .component
+            .cmp-container
+                .c-RU-newsletter
+                    +RuNewsletter
+
+    .c-wrapper.margin-top.margin-bottom(class=componentId)
+        .component
+            .cmp-container
+                .c-RU-newsletter.error
+                    +RuNewsletter("applied")
+    .c-wrapper.margin-top.margin-bottom(class=componentId)
+        .component
+            .cmp-container
+                .c-RU-newsletter.error
+                    +RuNewsletter("error01")
+    .c-wrapper.margin-top.margin-bottom(class=componentId)
+        .component
+            .cmp-container
+                .c-RU-newsletter.error
+                    +RuNewsletter("error02")
+                    

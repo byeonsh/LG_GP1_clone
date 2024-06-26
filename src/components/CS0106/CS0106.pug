@@ -1,0 +1,308 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_cs-form.pug
+
+block meta 
+    - var componentId = "CS0106"
+    - var componentName = "Call Appointment_contact information"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    -
+        const stepList = [
+            {
+                'eyebrow': 'Contact Information',
+                'stepNumber': 4
+            },
+        ]
+    
+    mixin formCheckbox2(label, linkLabel, label2, linkLabel2, name, val, id, count = "false", disabled = false, link=true)
+        .c-checkbox-item
+            label.checkbox(for=`${id}`)
+                if(disabled)
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="", disabled="disabled")&attributes(attributes)
+                else 
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="")&attributes(attributes)
+
+                if(label)
+                    span.label.font-m-normal-12.font-w-normal-20= label 
+                        a(href="daum.net").link.font-m-normal-12.font-w-normal-20= linkLabel
+                        span.font-m-normal-12.font-w-normal-20= label2
+                        a(href="daum.net").link.font-m-normal-12.font-w-normal-20= linkLabel2
+                        -if(count >= 0 & count != "false") // for filter
+                            sup.count= count 
+                else 
+                    if block 
+                        span.label
+                            block  
+    mixin formCheckbox2_1(label, name, val, id, count = "false", disabled = false, link=true)
+        .c-checkbox-item
+            label.checkbox(for=`${id}`)
+                if(disabled)
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="", disabled="disabled")&attributes(attributes)
+                else
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="")&attributes(attributes)
+
+                if(label)
+                    span.label.font-m-normal-12.font-w-normal-20= label
+                else
+                    if block
+                        span.label
+                            block
+
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${controlsId}` aria-label="")
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+    mixin fileUpload 
+        label(for="attachments").font-m-normal-16.font-w-normal-24 Include attachments
+        .c-btn-upload
+            #preview
+                p   File Name.jpeg
+                    button.file-remove(type="button" aria-label="") X
+            .c-btn-upload__inner 
+                div
+                    label.c-not-required(for='file-input')
+                        .btn-upload.font-m-normal-14i.font-w-normal-14i(role="button" data-link-name) Upload
+                    input#file-input.file(type='file' name='file-input' readonly="readonly" aria-label="" multiple)
+                .c-file-msg.font-m-normal-12.font-w-normal-16 File must be less than 10MB.<br>Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip
+
+    mixin contentsBody(stepNumber)
+        // block - text contents
+        .c-text-contents.c-accordion__body-text
+            case stepNumber 
+                when 1
+                    section
+                        .cs-form    
+                            //- .c-text-box.font-w-normal-20.font-m-normal-16 If we don’t call you, your booking may be canceled. Please enter a valid Phone number.
+                            .cs-form__wrap
+                                .cmp-form
+                                    +csForm_Input({id: 'firstName', label: 'First name', type:"text", placeholder:"Type your first name", require: 'true', requireMsg: 'First name is required.', invalidMsg: "Number or special character can not be used for First name." ,class:'c-subject-rquired-valid' })
+                                .cmp-form
+                                    +csForm_Input({id: 'lastName', label: 'Last name', type:"text", placeholder:"Type your last name", require: 'true', requireMsg: 'Last name is required.', invalidMsg: "Number or special character can not be used for First name." ,class:'c-subject-rquired-valid' })
+                                .cmp-form
+                                    +csForm_Input({id: 'Email', label: 'Email', type:"text", placeholder:"Type an email address", require: 'true', requireMsg: 'Email address is required.', invalidMsg: "This Email address is invalid." ,class:'c-subject-rquired-valid' })                                    
+                                .cmp-form
+                                    +csForm_Input({id: 'TelephoneNumber', label: 'Phone number', type:"text", placeholder:"Enter number only", require: 'true', requireMsg: 'Phone number is required.', invalidMsg: "Phone number Invalid.", class:'c-subject-rquired-valid' })                                                                  
+                                .cmp-form
+                                    +csForm_Input({id: 'mobilePhone', label: 'Mobile phone', type:"text", placeholder:"Enter number only", require: 'false', requireMsg: 'Mobile phone is required.', invalidMsg: "Confirm Phone number invalid."})                                    
+                                .cmp-form
+                                    +fileUpload
+
+                                .cmp-form
+                                    +csForm_Textarea({id: 'message', label: 'Message', placeholder:"Please explain your issue or question", require: 'true', requireMsg: 'Message is required.', maxLength: "1000" , class:"c-subject-rquired-valid"})
+                                .cmp-form
+                            .cs-form__chk         
+                                +formCheckbox2('I have read and understand the', 'privacy policy and cookie policy*', '  ', '', "name", "val5", "privacyPolicyCheck", count="false", false)
+                                .c-warning.c-privacyPolicy-checked Policy agreement is not checked.
+                                +formCheckbox2_1('I wish to receive the latest news and offers from LG Electronics.', "name", "val5", "privacyPolicyCheck", count="false", false)
+
+                when 2
+                    section 
+                        .cs-form        
+                            .c-text-box.font-w-normal-20.font-m-normal-16 If we don’t call you, your booking may be canceled. Please enter a valid Phone number.
+
+                            .cs-form__wrap
+                                .cmp-form
+                                    +csForm_Input({id: 'firstName', label: 'First name', type:"text", placeholder:"Type your first name", require: 'true', requireMsg: 'First name is required.', invalidMsg: "Number or special character can not be used for First name." ,class:'c-subject-rquired-valid' })
+                                .cmp-form
+                                    +csForm_Input({id: 'lastName', label: 'Last name', type:"text", placeholder:"Type your last name", require: 'true', requireMsg: 'Last name is required.', invalidMsg: "Number or special character can not be used for First name." ,class:'c-subject-rquired-valid' })
+                                .cmp-form
+                                    +csForm_Input({id: 'phoneNumber', label: 'Phone number', type:"text", placeholder:"Enter number only", require: 'true', requireMsg: 'Phone number is required.', invalidMsg: "Phone number Invalid." ,class:'c-subject-rquired-valid'})                                    
+                                .cmp-form
+                                    +csForm_Input({id: 'mobilePhone', label: 'Confirm phone number', type:"text", placeholder:"Enter number only", require: 'true', requireMsg: 'Confirm phone number is required.', invalidMsg: "Confirm Phone number invalid." ,class:'c-subject-rquired-valid' })                                    
+                                .cmp-form
+                                    +csForm_Input({id: 'Email', label: 'Email', type:"text", placeholder:"Type an email address", require: 'false', invalidMsg: "This Email address is invalid."})                                    
+                                .cmp-form
+                                    +fileUpload
+                                .cmp-form           
+                                    +csForm_Textarea({id: 'message', label: 'Message', placeholder:"Please explain your issue or question", require: 'true', requireMsg: 'Message is required.', maxLength: "1000" , class:"c-subject-rquired-valid"})
+                                .cmp-form
+                            .c-text-box.font-w-normal-20.font-m-normal-16 The administrator of your personal data processed in connection with with the submitted inquiry and willingness to contact us is LG Electronics Polska sp. z o. o. with its registered office in Warsaw, ul. Wołoska 22, 02-675 Warsaw. Each person has the right to access their personal data, rectify, delete, limit processing, transfer, object to their processing and lodge a complaint to the President of the Office for Personal Data Protection, ul. Stawki 2, 00-193 Warsaw, ul. Stawki 2, 00-193 Warsaw. More information on the processing of your personal data is available at 
+                                a(href="").c-link-text privacy policy - personal data protection.
+
+                            
+                            .cs-form__chk         
+                                +formCheckbox2('I have read and understand the', 'privacy policy and cookie policy*', '  ', '', "name", "val5", "privacyPolicyCheck", count="false", false)
+                                .c-warning.c-privacyPolicy-checked Policy agreement is not checked.
+
+                when 3
+                    section
+                        .cs-form    
+                            .c-text-box.font-w-normal-20.font-m-normal-16 If we don’t call you, your booking may be canceled. Please enter a valid Phone number.
+
+                            .cs-form__wrap
+                                .cmp-form
+                                    +csForm_Input({id: 'firstName', label: 'First name', type:"text", placeholder:"Type your first name", value:"john", require: 'true', requireMsg: 'First name is required.', invalidMsg: "Number or special character can not be used for First name." ,class:'c-subject-rquired-valid' })
+                                .cmp-form
+                                    +csForm_Input({id: 'lastName', label: 'Last name', type:"text", placeholder:"Type your last name", value:"Smith", require: 'true', requireMsg: 'Last name is required.', invalidMsg: "Number or special character can not be used for First name." ,class:'c-subject-rquired-valid' })
+                                .cmp-form
+                                    +csForm_Input({id: 'phoneNumber', label: 'Phone number', type:"text", placeholder:"Enter number only", value: "1231231231",require: 'true', requireMsg: 'Phone number is required.', invalidMsg: "Phone number Invalid." ,class:'c-subject-rquired-valid' })                                    
+                                    //- .c-file-msg.font-m-normal-16.font-w-normal-16 Kindly share the number being used in smart phone.
+                                .cmp-form
+                                    +csForm_Input({id: 'mobilePhone', label: 'Confirm phone number', type:"text", placeholder:"Enter number only", value: "1231231231",require: 'true', requireMsg: 'Confirm phone number is required.', invalidMsg: "Confirm Phone number invalid." ,class:'c-subject-rquired-valid' })                                    
+                                .cmp-form
+                                    +csForm_Input({id: 'Email', label: 'Email', type:"text", placeholder:"Type an email address", require: 'false', invalidMsg: "This Email address is invalid."})                                   
+                                
+                                .cmp-form
+                                    +fileUpload 
+                                
+                                .cmp-form
+                                    +csForm_Textarea({id: 'message', label: 'Message', placeholder:"Please explain your issue or question", require: 'true', requireMsg: 'Message is required.', maxLength: "1000" , class:"c-subject-rquired-valid"})
+                                .cmp-form
+                            .cs-form__chk         
+                                +formCheckbox2_1('Would you like your LG accounts to be updated with the personal information you have entered now?', "name", "val5", "checkId5", count="false", false)
+                                //- .c-warning Policy agreement is not checked.
+
+                when 4
+                    section 
+                        .cs-form        
+                            .cs-form__wrap
+                                .cmp-form
+                                    +csForm_Input({id: 'firstName', label: 'First name', type:"text", placeholder:"Type your first name", require: 'true', requireMsg: 'First name is required.', invalidMsg: "Number or special character can not be used for First name." ,class:'c-subject-rquired-valid' })
+                                .cmp-form
+                                    +csForm_Input({id: 'lastName', label: 'Last name', type:"text", placeholder:"Type your last name", require: 'false', requireMsg: 'Last name is required.', invalidMsg: "Number or special character can not be used for First name."  })
+                                .cmp-form
+                                    +csForm_Input({id: 'Email', label: 'Email', type:"text", placeholder:"Type an email address", require: 'true', requireMsg: 'Email address is required.', invalidMsg: "This Email address is invalid." ,class:'c-subject-rquired-valid' })                                    
+                                .cmp-form
+                                    +csForm_Input({id: 'TelephoneNumber', label: 'Telephone number', type:"text", placeholder:"Enter number only", require: 'false', requireMsg: 'Phone number is required.', invalidMsg: "Phone number Invalid.", info:'true', infoMsg:'(Kindly share the number being used in smart phone)' })                                                         
+                                .cmp-form
+                                    +csForm_Input({id: 'mobilePhone', label: 'Mobile phone', type:"text", placeholder:"Enter number only", require: 'false', requireMsg: 'Mobile phone is required.', invalidMsg: "Confirm Phone number invalid." })                                    
+                                .cmp-form
+                                .cmp-form
+                                    +csForm_Textarea({id: 'message', label: 'Message', placeholder:"Please explain your issue or question", require: 'true', requireMsg: 'Message is required.', maxLength: "1000" , class:"c-subject-rquired-valid"})
+                                .cmp-form
+                            
+                            .cs-form__chk         
+                                +formCheckbox2('I have read and understand the', 'privacy policy and cookie policy*', '  ', '', "name", "val5", "privacyPolicyCheck", count="false", false)
+                                .c-warning.c-privacyPolicy-checked Policy agreement is not checked.
+                                +formCheckbox2_1('I wish to receive the latest news and offers from LG Electronics.', "name", "val5", "privacyPolicyCheck", count="false", false)
+
+                when 5
+                    section
+                        .cs-form    
+                            //- .c-text-box.font-w-normal-20.font-m-normal-16 If we don’t call you, your booking may be canceled. Please enter a valid Phone number.
+
+                            .cs-form__wrap
+                                .cmp-form
+                                    +csForm_Input({id: 'firstName', label: 'First name', type:"text",value:"john", placeholder:"Type your first name", require: 'true', requireMsg: 'First name is required.', invalidMsg: "Number or special character can not be used for First name." ,class:'c-subject-rquired-valid' })
+                                .cmp-form
+                                    +csForm_Input({id: 'lastName', label: 'Last name', type:"text",value:"Smith", placeholder:"Type your last name", require: 'false', requireMsg: 'Last name is required.', invalidMsg: "Number or special character can not be used for First name." , })
+                                .cmp-form
+                                    +csForm_Input({id: 'Email', label: 'Email', type:"text",value:"test@lge.com", placeholder:"Type an email address", require: 'true', requireMsg: 'Email address is required.', invalidMsg: "This Email address is invalid." ,class:'c-subject-rquired-valid' })                                    
+                                .cmp-form
+                                    +csForm_Input({id: 'TelephoneNumber', label: 'Telephone number', type:"text", placeholder:"Enter number only", require: 'false', requireMsg: 'Phone number is required.', invalidMsg: "Phone number Invalid.", info:'true', infoMsg:'(Kindly share the number being used in smart phone)'})                                                                  
+                                .cmp-form
+                                    +csForm_Input({id: 'mobilePhone', label: 'Mobile phone', type:"text", placeholder:"Enter number only", require: 'false', requireMsg: 'Mobile phone is required.', invalidMsg: "Confirm Phone number invalid."})                                    
+                                .cmp-form
+                                .cmp-form
+                                    +csForm_Textarea({id: 'message', label: 'Message', placeholder:"Please explain your issue or question", require: 'true', requireMsg: 'Message is required.', maxLength: "1000" , class:"c-subject-rquired-valid"})
+                                .cmp-form
+                            .cs-form__chk         
+                                +formCheckbox2_1('Do you want to update your entered personal information to your LG accounts?', "name", "val5", "checkId5", count="false", false)
+                                //- .c-warning Policy agreement is not checked.
+
+                when 6
+                    .c-result__txtBox.font-m-normal-12.font-w-normal-16
+                        ul 
+                            li Customer name : uk
+                            li Email : uk@lge.com
+                            li Telephone number : 123456
+                            li Mobile phone : 78901
+                            li Message : There is no light in the refrigerator.
+                            li Attachment : Untitled.png
+                    .button.c-cta
+                        +linkButton({type:"text", color:"black", name: "Edit"})(role="button")
+            if(stepNumber != 6) 
+                .c-button-wrap
+                    .button.c-cta
+                        +defaultButton({name: 'Reset', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(aria-label="")
+                        +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="c-btn-next" aria-label="")
+
+    mixin pack(faq, stepNumber, controlsId)
+        .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+            .c-accordion__head
+                // block - text contents
+                // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+                //- .c-accordion__head-text.c-text-contents.c-step-active
+                .c-accordion__head-text.c-text-contents
+                    span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true") 
+                        span.c-accordion__step 
+                        span.c-accordion__head-flag.font-m-normal-16.font-w-semibold-20
+                +trigger(controlsId)
+            // This area is accordion content. Please include only this area during development.
+            .c-accordion__body(id=`${controlsId}` class=`step4`)
+                +contentsBody(stepNumber)
+
+
+    .guide-text-option Call Appointment_contact information (Common)
+                        br
+                        | Live remote service appointment (CA_EN, CA_FR)
+    .c-wrapper.CS0106.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0106__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(faq, 1, controlsId)
+
+
+    .guide-text-option Call Appointment_contact information : Before logged in (PL)
+    .c-wrapper.CS0106.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0106__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(faq, 2, controlsId)
+
+    .guide-text-option Call Appointment_contact information : After logged in (PL)
+    .c-wrapper.CS0106.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0106__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(faq, 3, controlsId)
+
+    .guide-text-option Video Consultation_contact information : Before logged in (IN)
+    .c-wrapper.CS0106.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0106__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(faq, 4, controlsId)
+
+    .guide-text-option Video Consultation_contact information : After logged in (IN)
+    .c-wrapper.CS0106.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0106__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(faq, 5, controlsId)
+
+    .guide-text-option complete
+    .c-wrapper.CS0106.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0106__container
+                // Add class when displaying complete - .type-accordion__result
+                .c-accordion.js-accordion.type-accordion__result
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(faq, 6, controlsId)
+                        

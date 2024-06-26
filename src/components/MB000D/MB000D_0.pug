@@ -1,0 +1,387 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_toast.pug
+include ../_common/_pop-msg.pug
+
+block meta 
+    - var componentId = "MB000D"
+    - var componentName = "Create Account(DE)"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+    //- recaptcha
+    script(src="https://www.google.com/recaptcha/api.js?render=explicit&onload=onRecaptchaLoadCallback" async)
+    
+    script(type='text/javascript').
+        onRecaptchaLoadCallback = function(){
+            var clientId = grecaptcha.render('security-box', {
+                'sitekey': '6Le3NdgaAAAAAK8TXN0_DHQfP-FtiHoGCdiK1QQT',
+                'badge': 'inline',
+                'size': 'invisible',
+            });
+            grecaptcha.ready(function() {
+                grecaptcha.execute(clientId, {
+                    action: 'homepage'
+                })
+                .then(function(token) {
+                    // token
+                    document.getElementById('g-recaptcha').value = token;
+                });
+            });
+        }
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-16.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-16.font-m-normal-14= infoTextSecond
+
+mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected})
+    .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+        +formSelect(label, id, placeholder, false)
+            if optionVal
+                - for(var i=0; i < optionVal.length; i++)
+                    if selected === i + 1
+                        option(value="" selected)= optionVal[i]
+                    else
+                        option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText})
+
+mixin myCaptcha({label, id, placeholder, warning= false})
+    .c-input-item
+        .my-captcha
+            .my-captcha__container
+                label.font-w-normal-16.font-m-normal-14(for=`${id}`)= label
+                #security-box.my-captcha__area
+
+mixin myVerify(params)
+    - let data = {...params}
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+            if data.validation
+                .input-button__container.input-button__container--validation
+                    .my-button-validation
+                        .my-verify__inner
+                            input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}` value= data.value)&attributes(attributes)
+                            span.my-verify__time.font-m-normal-16.font-w-normal-16= data.time
+                        +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                    .button.c-cta
+                        +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+
+            else
+                .input-button__container
+                    .my-verify__inner
+                        input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}` value= data.value)&attributes(attributes)
+                        span.my-verify__time.font-m-normal-16.font-w-normal-16= data.time
+                    .button.c-cta
+                        +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+
+            if !data.validation
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+    if data.type === 'verify'
+        +myVerify(params)
+    else if data.type === 'select'
+        +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected})
+    else if data.type === 'captcha'
+        +myCaptcha({label: data.label, id: data.id, placeholder: data.placeholder, warning: data.warning})
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+            if data.required
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+            else if data.type === 'textarea'
+                if data.limit
+                    .my-textarea__container
+                        textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class='my-textarea--limit')&attributes(attributes)
+                        .my-count
+                            span.font-w-normal-14.font-m-normal-12 0 / !{data.limit} byte
+                else 
+                    textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder)&attributes(attributes)
+            else if data.button
+                if data.validation
+                    .input-button__container.input-button__container--validation
+                        .my-button-validation
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config)&attributes(attributes)
+                            +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                        .button.c-cta.button-full
+                            +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                else if data.duplicate
+                    .input-button__container.input-button__container--duplicate
+                        .my-button-duplicate
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config)&attributes(attributes)
+                            +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                        .button.c-cta.button-full
+                            +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                else
+                    .input-button__container
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config)&attributes(attributes)
+                        
+                        .button.c-cta.button-full
+                            +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+
+            else 
+                if data.active
+                    input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                    else if data.search 
+                        button(type='button' class='my-form__search__icon')
+                            span.sr-only search
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                    else if data.search 
+                        button(type='button' class='my-form__search__icon')
+                            span.sr-only search
+        if data.validation || data.duplicate
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+            
+                
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin MB000D
+    .c-wrapper.MB000D
+        .component
+            .fluid-container
+                .my-component
+                    .c-text-contents
+                        .title.c-text-contents__headline
+                            +headline('font-w-light-56 font-m-light-28', "h2", "Create account​")
+                .my-component
+                    .my-formbox
+                        +myInputForm([
+                            {
+                                type:"email",
+                                label:"Email",
+                                id:"email",
+                                required:false,
+                                placeholder:"Your Email",
+                                infoText: 'Please note: Your account can only be created with lowercase letters (e.g. "a" instead of "A").',
+                                button: 'Duplicate check',
+                                duplicate: true,
+                            },
+                            {
+                                type:"email",
+                                label:"Email",
+                                id:"emailWarn",
+                                required:false,
+                                placeholder:"Your Email",
+                                warningFirst: ['Email already exists. Please try again.', 'The account is being used abroad. Please enter a different account.', 'Email account address invalid.', 'Email account is required.'],
+                                infoText: 'Please note: Your account can only be created with lowercase letters (e.g. "a" instead of "A").',
+                                button: 'Duplicate check',
+                                duplicate: true,
+                            },
+                            {
+                                type:"verify",
+                                label: 'Verification Code',
+                                id:"verify",
+                                placeholder: 'Verification Code',
+                                time: '10:00',
+                                infoText: "We have sent an activation code to your email address. If you cannot find this email in your inbox, don't forget to check your junk folder.",
+                                button: 'OK',
+                            },
+                            {
+                                type:"verify",
+                                label: 'Verification Code',
+                                id:"verifyCorrect",
+                                placeholder: 'Verification Code',
+                                time: '10:00',
+                                correct: ['Your email address has been confirmed.'],
+                                infoText: "We have sent an activation code to your email address. If you cannot find this email in your inbox, don't forget to check your junk folder.",
+                                button: 'OK',
+                            },
+                            {
+                                type:"verify",
+                                label: 'Verification Code',
+                                id:"verifyWarn",
+                                placeholder: 'Verification Code',
+                                time: '10:00',
+                                warningFirst: ['Verification code is invalid.'],
+                                infoText: "We have sent an activation code to your email address. If you cannot find this email in your inbox, don't forget to check your junk folder.",
+                                button: 'OK',
+                            },
+                            {
+                                type:"password",
+                                label:"Password",
+                                id:"password",
+                                required:false,
+                                placeholder:"Your Password",
+                            },
+                            {
+                                type:"password",
+                                label:"Password",
+                                id:"passwordWarn",
+                                required:false,
+                                placeholder:"Your Password",
+                                correct: ['8-100 characters'],
+                                warning: ['At least 3 of these components: upper and lower cases letters, numbers, and special characters', 'Cannot be identical to the user ID', 'Cannot use serial characters or numbers (i.e. : qwerty, abc, 123)']
+                            },
+                            {
+                                type:"password",
+                                label:"Confirm Password",
+                                id:"confirmPassword",
+                                required:false,
+                                placeholder:"Confirm Password",
+                            },
+                            {
+                                type:"password",
+                                label:"Confirm Password",
+                                id:"confirmPasswordWarn",
+                                required:false,
+                                placeholder:"Confirm Password",
+                                warningFirst: ['Password and confirm password do not match.'],
+                            },
+                            {
+                                type:"text",
+                                label:"First Name",
+                                id:"firstName",
+                                required:false,
+                                placeholder:"First Name",
+                            },
+                            {
+                                type:"text",
+                                label:"First Name",
+                                id:"firstNameWarn",
+                                required:false,
+                                placeholder:"First Name",
+                                warningFirst: ['Please only use letters (a-z or A-Z) and spaces in this field.'],
+                            },
+                            {
+                                type:"text",
+                                label:"Last Name",
+                                id:"lastName",
+                                required:false,
+                                placeholder:"Last Name",
+                            },
+                            {
+                                type:"text",
+                                label:"Last Name",
+                                id:"lastNameWarn",
+                                required:false,
+                                placeholder:"Last Name",
+                                warningFirst: ['Please only use letters (a-z or A-Z) and spaces in this field.'],
+                            },
+                            {
+                                type:"text",
+                                label:"Mobile Number",
+                                id:"mobilNumber",
+                                required:false,
+                                placeholder:"Mobile Number",
+                                infoText: "Please input phone number without space.",
+                            },
+                            {
+                                type:"text",
+                                label:"Mobile Number",
+                                id:"mobilNumberWarn",
+                                required:false,
+                                placeholder:"Mobile Number",
+                                infoText: "Please input phone number without space.",
+                                warningFirst: ['Please only use letters (a-z or A-Z) and spaces in this field.'],
+                            },
+                            {
+                                type:"date",
+                                label:"Date of Birth",
+                                id:"dateOfBirth",
+                                required:false,
+                                placeholder:"Date of Birth",
+                                infoText: "You must be 18 years or older to create an account.",
+                            },
+                            {
+                                type:"captcha",
+                                label:"Security Text",
+                                id:"captcha",
+                                placeholder:"Type the characters",
+                                warningFirst: ['Picture text is incorrect'],
+                            }
+                        ])
+                        .my-check
+                            .button
+                                +formCheckbox('18 Years old or older.', "name", "val1", `checkId1`, count="false")
+                            .button.custom-item
+                                +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                    span I agree with the terms of use.
+                                        +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more'})
+                            .button.custom-item
+                                +formCheckbox('', "name", "val1", `checkId3`, count="false")
+                                    span I have read and understand the privacy policy and cookie policy.
+                                        +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more'})
+                            .button
+                                +formCheckbox('Receipt of marketing messages (optional)', "name", "val1", `checkId4`, count="false")
+                            div.my-check--receipt-text I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE 
+                                +linkButton({type: 'text', color: 'black', underline: true, name: 'Privacy Policy.', href:"#privacyPolicy", class:"js-pop-open", roleButton:"true"})
+                    .button.c-cta.my-button
+                        +defaultButton({name:"Cancel", wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                        +defaultButton({name:"Next", wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="toastBtn")
+                +toastPopup([{type:"success", text:"Congratulations on becoming a LG member!", remove: true}])
+
+block content
+    // Component Markup
+    +MB000D
+
+block modal
+    .mem-modal(class=componentId)
+        +pop-msg-standard({id : `privacyPolicy`, headline:"Privacy Policy"})
+            .mem-scroll 
+                .mem-scroll__container 
+                    .mem-scroll__item
+                        .mem-scroll__title
+                            span.font-w-normal-24.font-m-normal-16 Privacy Policy Highlights
+                        .mem-scroll__desc
+                            p.font-w-normal-16.font-m-normal-16 LG Electronics Inc. (“LGE”),together with its subsidiaries and affiliates (the "LG Group”, “we”, “our” or “us”) respect your privacy. This Privacy Policy applies to the personal information we process through the lg.com website (the “Website”), other websites provided by the LG Group, LG Accounts, our SmartHome services offered via our ThinQ App and the SmartWorld App (collectively, the “Services”). It also applies to any other personal information you provide to your local LG Group member.
+                            br 
+                            p.font-w-normal-16.font-m-normal-16 For LG Smart TV or Smart Media Product users, please see the separate Smart Media Product Membership Privacy Policy for details of how LGE processes personal information in the course of providing its Smart TV / Media Product service. This Privacy Policy does not apply to the processing covered by the Smart Media Product Membership Privacy Policy, although the LG Group may also use personal information collected via the Smart TV / Media Product service as described in this Privacy Policy, and LGE may use personal information collected via the services as described in the Smart Media Product Membership Privacy Policy. For more information, please refer to Smart Media Product Membership Privacy Policy in Account management menu or LG Account menu from settings of Smart TV/ Media Product.
+                    .mem-scroll__item
+                        .mem-scroll__title
+                            span.font-w-normal-20.font-m-normal-16 Overview Of The Privacy Policy
+                        .mem-scroll__desc
+                            p.font-w-normal-16.font-m-normal-16
+                                | In this Privacy Policy, we describe the types of personal information we collect through our Services, how we use this information, for how long we keep it and with which parties we share it. We also explain what choices and rights you have in relation to the use of your information, including a right to object to some of the processing we carry out (if provided by applicable law). More information about your rights, and how to exercise them, is set out in the “Your Rights” section. We also provide our contact details, so that you can contact us if you have questions about this Privacy Policy and our privacy practices.
+            +formCheckbox('I have read and understand the privacy policy and cookie policy.', "name", "popVal1", `popCheckId1`, count="false", false)
+            .button.c-cta
+                +defaultButton({name:"Sign In", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})

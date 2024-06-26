@@ -1,0 +1,243 @@
+@charset "UTF-8";
+
+@use '../../scss/abstract/' as *;
+
+$component: '.PD0035';
+#{$component} {
+  @include lgness-margin('if-headline');
+
+  > .component > .cmp-container {
+    // ...
+  }
+
+  $shop: '.c-online-shop';
+  $search: '.c-search-box';
+  $map-search: '.c-map-search';
+  $map: '.c-map';
+
+  // block : c-online-shop
+  #{$shop} {
+    @include container($design-grid-full, true);
+    @include inset-padding-hz;
+
+    // element
+    &-list {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: rem($gutter-m);
+      @include screen(web) {
+        gap: rem($gutter-w);
+      }
+      @include screen(desktop) {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      @include screen(tablet) {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      // font
+      + .c-online-shop-desc {
+        color: $mid-gray3;
+      }
+    }
+
+    &-item {
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background-color: $white;
+      padding: rem($padding20px $padding28px);
+      @include lgness-radius('default');
+      @include screen(web) {
+        justify-content: space-between;
+        align-items: center;
+        gap: rem($margin30px);
+        padding: rem($padding30px $padding40px);
+      }
+
+      &:hover {
+        text-decoration: none;
+        #{$shop}-name {
+          text-decoration: underline;
+        }
+
+        $imitation-button: '.c-button';
+        #{$imitation-button} {
+          color: $white;
+          background-color: $active-red;
+          border-color: $active-red;
+        }
+      }
+
+      // shop image
+      &__top {
+        flex-shrink: 0;
+        width: rem($width80px);
+        @include screen(web) {
+          width: 100%;
+          max-width: rem($width180px);
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        // block
+        .c-online-image-web {
+          @include screen(mobile) {
+            display: none;
+          }
+        }
+        .c-online-image-mobile {
+          @include screen(web) {
+            display: none;
+          }
+        }
+      }
+      // shop name / cta
+      &__bottom {
+        display: flex;
+        justify-content: space-between;
+        gap: rem($gutter-m);
+        padding-top: rem($padding8px);
+        padding-right: rem(columns(2, false, mobile));
+        @include screen(web) {
+          flex-direction: column;
+          align-items: center;
+          gap: rem($margin8px);
+          width: 100%;
+          border-top: rem($border1) solid $light-gray3;
+          padding-top: rem($padding20px);
+          padding-right: 0;
+        }
+
+        // block
+        .c-button {
+          @include screen(mobile) {
+            position: absolute;
+            right: rem($padding28px);
+            top: 50%;
+            transform: translateY(-50%);
+          }
+        }
+      }
+    }
+    &-name {
+      color: $gray3;
+    }
+    &-bottom {
+      margin-top: rem($margin24px);
+      @include screen(web) {
+        display: none;
+      }
+    }
+  }
+
+  // block
+  .c-search-box {
+    max-width: none;
+    > * {
+      @include container($design-grid-full);
+    }
+  }
+
+  .c-map-tooltip {
+    &.c-tooltip-direction {
+      top: 50%;
+      bottom: auto;
+      margin-top: rem(($margin50px + $margin2px) * -1);
+      z-index: 80;
+      @include screen(web) {
+        margin-top: rem(($margin100px + $margin10px) * -1);
+        transform: translate(-50%, 0);
+      }
+    }
+  }
+
+  .c-map-search {
+    .c-map {
+      .c-map__pin {
+        @include screen(web) {
+          top: rem($margin523px);
+        }
+        &:not(.is-active) {
+          margin-top: rem(-$margin20px);
+          margin-left: rem(($margin60px + $margin10px) * -1);
+        }
+        &.is-active {
+          margin-top: 0;
+          margin-right: 0;
+        }
+        &.c-tooltip-direction {
+          top: 50%;
+          bottom: auto;
+          margin-top: rem($margin50px + $margin6px);
+          margin-left: 0;
+          @include screen(web) {
+            margin-top: 0;
+          }
+          &.is-black {
+            margin-left: rem($margin200px * -2);
+            margin-top: rem(($margin220px + $margin15px) * -1);
+          }
+        }
+      }
+    }
+  }
+
+  .c-form__item {
+    flex: 1;
+  }
+
+  // layout : margin
+  * + #{$shop} {
+    margin-top: rem($component-margin-m);
+    @include screen(web) {
+      margin-top: rem($component-margin-w);
+    }
+  }
+  * + #{$search} {
+    padding-top: rem($component-margin-m);
+    margin-top: rem($component-margin-m);
+    border-top: rem($border1) solid $mid-gray1;
+    @include screen(web) {
+      padding-top: rem($component-margin-w);
+      margin-top: rem($component-margin-w + $margin16px);
+    }
+  }
+  #{$shop} .c-text-contents + * {
+    @include lgness-component-title-margin;
+  }
+  .c-category-filter + .c-online-shop-list {
+    margin-top: rem($margin12px);
+    @include screen(web) {
+      margin-top: rem($margin24px);
+    }
+  }
+  .c-online-shop-list + .c-online-shop-desc {
+    margin-top: rem($margin10px);
+    @include screen(web) {
+      margin-top: rem($margin16px);
+    }
+  }
+
+  &.bg-white {
+    .c-online-shop-item {
+      border: rem($border1) solid $mid-gray1;
+    }
+  }
+  &.bg-darkgray,
+  &.bg-black {
+    .c-online-shop-desc {
+      color: $white;
+    }
+  }
+  body.dark-theme & {
+    &.bg-darkgray,
+    &.bg-black {
+      * + .c-online-shop,
+      * + .c-search-box {
+        border-color: $mid-gray3;
+      }
+    }
+  }
+}

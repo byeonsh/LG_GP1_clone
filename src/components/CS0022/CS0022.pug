@@ -1,0 +1,323 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+//- include ../_common/_carousel.pug
+//- include ../_common/_video.pug
+//- include ../_common/_hero-banner.pug
+//- include ../_common/_spec-info.pug
+
+block meta 
+    - var componentId = "CS0022"
+    - var componentName = "CS Document Upload"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-labelley=`label-${controlsId}` aria-controls=`${controlsId}`)
+                span.c-accordion__button-text.expand.sr-only Learn More
+
+    mixin contentsBody(stepNumber)
+        // block - text contents
+        .c-text-contents.c-accordion__body-text
+            case stepNumber 
+                when 1
+                    p.font-m-normal-12.font-w-normal-16 Please enter the case number provided by your customer service representative to attach documents to your case.
+                    .cs-form.c-flex-type
+                        .cmp-form
+                            label(for="caseNumber").font-m-normal-16.font-w-normal-24 Case number #[em.require *]#[span.sr-only Required Field]
+                            // In case of error, add .c-error class to input tag
+                            input#caseNumber.font-m-normal-16.font-w-normal-20(type="text" required="required" aria-label="" placeholder="Enter case number")
+                            .c-warning Case number is required.
+                            .c-warning Your case number does not exist.
+                        .button.c-cta
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton:true})
+                when 2
+                    p.font-m-normal-12.font-w-normal-16 Please attach a digital copy of your proof of purchase or other documents requested by LG customer service. 
+                        br
+                        | Please make sure all of the document is legible.
+                    .cs-form
+                        .cmp-form
+                            label(for="attachment").font-m-normal-16.font-w-normal-24 Attachment
+                            .c-btn-upload
+                                #preview
+                                    //- p   File name.jpeg
+                                    //-     button.file-remove(type="button" aria-label="") X
+                                .c-btn-upload__inner 
+                                    div
+                                        label.c-not-required(for='file-input')
+                                            input#file-input.file(type='file' name='file-input' readonly="readonly" aria-label="" multiple)
+                                            .btn-upload.font-m-normal-14i.font-w-normal-14i(role="button" data-link-name) Upload
+                                    .c-file-msg.font-m-normal-12.font-w-normal-16 File must be less than 10MB.<br>Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip
+
+                                .c-warning.font-m-normal-14i.font-w-normal-14i File is required.
+    mixin contentsBody2(stepNumber)
+        // block - text contents
+        .c-text-contents.c-accordion__body-text
+            case stepNumber 
+                when 1
+                    .c-result__txtBox.font-m-normal-14.font-w-normal-16Your Your case number is 
+                        span.c-color-red CNU191010987939
+                    .button.c-cta
+                        +textButton({name: 'Edit', wSize: 'small', mSize: 'small', buttonStyle: 'default'})(role="button" data-link-name data-link-destination data-link-menu data-link-page-type)
+                
+                when 2
+                    p.font-m-normal-12.font-w-normal-16 Please attach a digital copy of your proof of purchase or other documents requested by LG customer service. 
+                        br
+                        | Please make sure all of the document is legible.
+                    .cs-form
+                        .cmp-form
+                            label(for="attachment").font-m-normal-16.font-w-normal-24 Attachment
+                            .c-btn-upload
+                                #preview
+                                    p   File name.jpeg
+                                        button.file-remove(type="button" aria-label="") X
+                                    p   File name.jpeg
+                                        button.file-remove(type="button" aria-label="") X
+                                    p   File name.jpeg
+                                        button.file-remove(type="button" aria-label="") X
+                                .c-btn-upload__inner 
+                                    div
+                                        label.c-not-required(for='file-input')
+                                            input#file-input.file(type='file' name='file-input' readonly="readonly" aria-label="" multiple)
+                                            .btn-upload.font-m-normal-14i.font-w-normal-14i(role="button" data-link-name) Upload
+                                    .c-file-msg.font-m-normal-12.font-w-normal-16 File must be less than 10MB.<br>Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip
+
+                                .c-warning.font-m-normal-14i.font-w-normal-14i File is required.
+
+    mixin pack(faq, stepNumber, controlsId)
+        .c-accordion__box.js-accordion-handle-target(class=`${faq.disabled ? "c-accordion__box--disabled" : ""}`)
+            .c-accordion__head
+                // block - text contents
+                // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+                //- .c-accordion__head-text.c-text-contents.c-step-active
+                .c-accordion__head-text.c-text-contents
+                    span.c-accordion__initial(id=`label-${controlsId}`)
+                        span.c-accordion__step.font-w-normal-20.font-m-normal-16 Step #{faq.stepNumber}
+                        span.c-accordion__head-flag.font-m-normal-16.font-w-normal-20 #{faq.eyebrow}
+                            span.c-dot *
+
+                    //- .text.c-text-contents__headline
+                    //-     .cmp-text.font-w-normal-20.font-m-normal-18(data-cmp-data-layer="") 
+                    //-         strong #{faq.headline} 
+                +trigger(controlsId)
+            .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+                +contentsBody(stepNumber)
+
+    mixin pack2(faq, stepNumber, controlsId)
+        // If you need to expand all the accordions on the result page, add a class .c-accordion__box--expand
+        // .c-accordion__box.js-accordion-handle-target.c-accordion__box--expand
+        .c-accordion__box.js-accordion-handle-target(class=`${faq.disabled ? "c-accordion__box--disabled" : ""}`)
+            .c-accordion__head
+                // block - text contents
+                // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+                //- .c-accordion__head-text.c-text-contents.c-step-active
+                .c-accordion__head-text.c-text-contents
+                    span.c-accordion__initial(id=`label-${controlsId}`)
+                        span.c-accordion__step.font-w-normal-20.font-m-normal-16 Step #{faq.stepNumber}
+                        span.c-accordion__head-flag.font-m-normal-16.font-w-normal-20 #{faq.eyebrow}
+                            span.c-dot *
+
+                    //- .text.c-text-contents__headline
+                    //-     .cmp-text.font-w-normal-20.font-m-normal-18(data-cmp-data-layer="") 
+                    //-         strong #{faq.headline} 
+                +trigger(controlsId)
+            .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+                +contentsBody2(stepNumber)
+    -
+        const stepList = [
+            {
+                'eyebrow': 'Case number',
+                'stepNumber': 1
+            },
+            {
+                'eyebrow': 'Attachment',
+                'stepNumber': 2
+            },
+            {
+                'eyebrow': 'Attachment',
+                'stepNumber': 2,
+                'disabled': true
+            },
+        ]   
+
+    mixin roleList2(item)
+        if item 
+            .c-list__item(role="listitem")
+                if block
+                    block
+        else
+            .c-list__item
+                if block
+                    block
+
+    mixin textListItem2(params)
+        - var option={contents:both, useQuote:false, isList:false, headline:'', bodycopy:'', ...params}
+            +roleList2(option.isList)
+                // block : text-contents                 
+                div(class=`c-text-contents ${option.bodycopy}`)
+                    .title.c-text-contents__headline
+                        +headline(`${option.headline}`,h2,'Consumer support')
+                    case option.contents
+                        when "desc"
+                            .text.c-text-contents__bodycopy 
+                                .cmp-text.font-m-normal-12.font-w-normal-16(data-cmp-data-layer="") 
+                                    div
+                                        p Monday - Friday 
+                                            span.font-m-normal-16.font-w-normal-24 9:00am - 5:00pm
+                                        p Saturday 
+                                            span.font-m-normal-16.font-w-normal-24 9:00am - 3:00pm
+                                    div
+                                        p Closed 
+                                            span.font-m-normal-16.font-w-normal-24 Sunday and bank holidays
+                                        p UK 
+                                            span.font-m-normal-16.font-w-normal-24 0344 847 5454
+                                        p IE 
+                                            span.font-m-normal-16.font-w-normal-24 01 686 9454
+                        
+                        default
+                            .text.c-text-contents__bodycopy 
+                                .cmp-text(data-cmp-data-layer="") 
+                                    p Body text can be up to 700 characters. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient. Body text can be up to 200 characters.
+                            // element : list
+                            .text.c-text-contents__bodycopy
+                                .cmp-text(data-cmp-data-layer="")
+                                    ul
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                    .button.c-cta
+                        +defaultButton({name: 'Go to contact us', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})(data-link-destination)
+
+
+                    // element : quote
+                    if option.useQuote
+                        .c-text-contents__quote 
+                            .text.c-text-contents__quote-text
+                                .cmp-text.font-w-semibold-28.font-m-semibold-20(data-cmp-data-layer="") 
+                                    p “Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo”
+                            .text.c-text-contents__quote-name
+                                .cmp-text.font-w-normal-20.font-m-normal-16(data-cmp-data-layer="") 
+                                    p Lorem ipsum dolor sit amet
+
+    .guide-text-type CS Document Upload
+    .guide-text-option STEP1
+
+    // Component Markup
+    .c-wrapper.CS0022.type-text
+        .component.type-accordion
+            .CS0022__container
+                .c-model-content-wrap
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline
+                                +headline('font-w-light-56 font-m-light-28',h2,'Document upload')
+                            .text.c-text-contents__bodycopy
+                                .cmp-text.font-w-normal-20.font-m-normal-12(data-cmp-data-layer="")
+                                    span Provide supporting documents for your LG support services.
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack(faq, faq.stepNumber, controlsId)
+
+                // STEP1 OPEN 
+                .c-button-wrap
+                    .button.c-cta
+                        +defaultButton({name: 'Cancel', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})(role="button")
+                        +defaultButton({name: 'Submit', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight'})(role="button" disabled)
+                // STEP2 OPEN - When step2 is opened, the button changes. You can delete the comment and use it. 
+                //- .c-button-wrap
+                //-     .button.c-cta
+                //-         +defaultButton({name: 'Cancel', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(aria-label="")
+                //-         +defaultButton({name: 'Submit', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(aria-label="")
+    
+    .guide-text-option Step2
+    // Component Markup
+    .c-wrapper.CS0022.type-text
+        .component.type-accordion
+            .CS0022__container
+                .c-model-content-wrap
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline
+                                +headline('font-w-light-56 font-m-light-28',h2,'Document upload')
+                            .text.c-text-contents__bodycopy
+                                .cmp-text.font-w-normal-20.font-m-normal-12(data-cmp-data-layer="")
+                                    span Provide supporting documents for your LG support services.
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+
+                // Add class when displaying result - .type-accordion__result
+                .c-accordion.js-accordion.type-accordion__result
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`; 
+                        +pack2(faq, faq.stepNumber, controlsId)
+
+                // STEP1 OPEN 
+                .c-button-wrap
+                    .button.c-cta
+                        +defaultButton({name: 'Cancel', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})(role="button")
+                        +defaultButton({name: 'Submit', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight'})(role="button" disabled)
+                // STEP2 OPEN - When step2 is opened, the button changes. You can delete the comment and use it. 
+                //- .c-button-wrap
+                //-     .button.c-cta
+                //-         +defaultButton({name: 'Cancel', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(aria-label="")
+                //-         +defaultButton({name: 'Submit', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(aria-label="")
+    
+    .guide-text-option Case 02. complete
+    .c-wrapper.CS0022.type-text
+        .component.c-regist__complete
+            .CS0022__container
+                .c-regist__complete-wrap
+                    // 20230313 Markup change according to LGness
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", h2, "Thanks for your upload!")
+                            .text.c-text-contents__bodycopy
+                                .cmp-text.font-w-normal-20.font-m-normal-12(data-cmp-data-layer="")
+                                    span Your upload has successfully been sent to LG Customer Service.
+                        // 20230313 case1) Countries where membership can be registered (default)
+                        .button__group
+                            .button.c-cta
+                                +defaultButton({name: 'Go to support hub', wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                                +defaultButton({name: 'Share your feedback', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+
+    .guide-text-option Case 03. failed 
+    .c-wrapper.CS0022.type-text
+        .component.c-regist__failed
+            .CS0022__container
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline
+                            +headline('font-w-light-56 font-m-light-28',h2,'Sorry for your inconvenience')
+                        // 20230314 text edit
+                        // Different wording for each process
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-20.font-m-normal-12(data-cmp-data-layer="") Please try again or contact consumer support center to fix this problem.
+                    // 20230314 button markup & position change
+                    .button__group
+                        .button.c-cta
+                            +defaultButton({name: 'Go to support hub', wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                            +defaultButton({name: 'Retry', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})(role="button" data-link-name)
+
+                .c-list(role="desc")
+                    // block : textListItem
+                    +textListItem2({contents:"desc", useQuote:false, isList:false, headline:'font-w-normal-32 font-m-normal-24', bodycopy:'font-w-normal-20 font-m-normal-24'})

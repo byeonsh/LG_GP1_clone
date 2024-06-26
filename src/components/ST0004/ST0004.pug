@@ -1,0 +1,339 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_video.pug
+include ../_common/_headline.pug
+
+block meta 
+    - var componentId = "ST0004"
+    - var componentName = "Block Image - Text Overlay"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //-  script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                        '.c-block-image' : [
+                            {
+                                'name' : 'align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'type-left', 'remove' : 'type-right'},
+                                    {'toggle' : false, 'add' : 'type-right', 'remove' : 'type-left'},
+                                    ]
+                            },
+                        ],
+                        '.c-block-image.c-block-image-4block' : [
+                            {
+                                'name' : 'align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'type-right-image-on-top', 'remove' : 'type-left,type-right'},
+                                    {'toggle' : false, 'add' : 'type-left', 'remove' : 'type-right,type-right-image-on-top'},
+                                    {'toggle' : false, 'add' : 'type-right', 'remove' : 'type-left,type-right-image-on-top'},
+                                    ]
+                            },
+                        ],
+                        '.c-text-contents' : [
+                            {
+                                'name' : 'align',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'font-white'},
+                                ]
+                            },
+                        ],
+                        '.c-text-contents__bodycopy' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            }
+                        ],
+                    };
+
+    mixin image(size1, size2, size3)
+        // block : image
+        .image.c-image
+            +printLazyBpPicture({mobile:`https://via.placeholder.com/${size1}/999999/777777`, tablet:`https://via.placeholder.com/${size2}/999999/777777`, web:`https://via.placeholder.com/${size3}/999999/777777`})
+            if block
+                block
+
+    mixin sub-floating-video(type = "brightcove")
+        // block : media
+        // When the video layer design is complete, some code modifications will be made.
+        .c-media.c-media--floating(data-media="dynamic")
+            .c-media__container
+                .button
+                    button.cmp-button.js-video-play(
+                        class="c-media__button c-media__button--play c-media__button--medium"
+                        type="button"
+                        data-type=`${type}` 
+                        data-video-id="1766152406001" 
+                        data-account-id="1665893145001"
+                        data-player-id="default"
+                        data-sr-text="close video"
+                        data-src="https://www.youtube.com/embed/PetoQo1eUww"
+                        data-cmp-data-layer=""
+                    )
+                        span.cmp-button__text.c-media__button-text.sr-only Play the video
+                if block
+                    block
+
+    mixin main-text-contents
+        dl.c-text-contents
+            dt.text.c-text-contents__eyebrow
+                .cmp-text(class='font-w-normal-24 font-m-normal-14' data-cmp-data-layer="") 
+                    div Television 
+            dd.title.c-text-contents__headline
+                +headline("font-w-light-56 font-m-light-24", 'div', "Lorem ipsum dolor sit amet, Aenean")
+            dd.text.c-text-contents__bodycopy
+                .cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")
+                    div lorem ipsum dolor sit amet, consectetuer adipiscing elit aenean commodo.
+            if block
+                block
+
+    mixin sub-text-contents
+        dl.c-text-contents
+            dt.text.c-text-contents__eyebrow
+                .cmp-text(class='font-w-normal-24 font-m-normal-14' data-cmp-data-layer="") 
+                    div Television 
+            dd.title.c-text-contents__headline
+                +headline("font-w-light-36 font-m-light-24", 'div', "Lorem ipsum dolor sit amet, Aenean")
+            if block
+                block
+
+    mixin block-image-button(params)
+        - const option = {... params}
+        .button.c-cta
+            if option.type === 'button'
+                each item in option.data
+                    +defaultButton({name: item.name, wSize: 'medium', mSize: 'small', buttonStyle: item.style, isButton: false})(href="#")
+            if option.type === 'text'
+                each item in option.data
+                    +textButton({name: item.name, wSize: 'medium', mSize: 'medium', buttonStyle: 'default transparent', isButton: false})(href="#")
+
+    mixin block-image-item(type="main", video=true, text=true, size1, size2, size3)
+        if(video)
+            .c-media-contents
+                +image(size1, size2, size3)
+                    if(type=="main")
+                        +floating-video
+                    if(type=="sub")
+                        +sub-floating-video
+        else
+            +image(size1, size2, size3)
+
+        if(text)
+            if(type=="main")
+                +main-text-contents
+                    if block
+                        block
+            if(type=="sub")
+                +sub-text-contents
+                    if block
+                        block
+
+    .guide-text-type Type 1 : 2 block 
+    .c-wrapper.ST0004.type-overlay.margin-top.margin-bottom.place-cta-inside.place-text-top.bg-default
+        .component
+            .cmp-container 
+                .c-block-image.c-block-image-2block.type-left
+                    .c-block-image__item.area-sub1.area-sub
+                        +block-image-item("main", true, true, '768x512', '952x417', '848x363')
+                            
+                    // When there is no video, there is a link(option: _blank, _self)
+                    // GA4
+                    a(href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-block-image__item.area-sub2.area-sub
+                        +block-image-item("sub", false, true, '768x512', '464x417', '412x363')
+
+    //  Type1. Image (1 to 3) - CTA Overlay
+    .guide-text-type Type 1 : 2 block (with button)
+    .c-wrapper.ST0004.type-overlay.margin-top.margin-bottom.place-cta-inside.place-text-top.bg-default
+        .component
+            .cmp-container 
+                .c-block-image.c-block-image-2block.type-left
+                    .c-block-image__item.area-sub1.area-sub
+                        +block-image-item("main", true, true, '768x512', '952x417', '848x363')
+                    // When there is no video, there is a link(option: _blank, _self)
+                    // GA4
+                    .c-block-image__item.area-sub2.area-sub
+                        +block-image-item("sub", false, true, '768x512', '464x417', '412x363')
+                            +block-image-button({
+                                type:'button', 
+                                data: [
+                                    {name: 'Button text', style: 'highlight'},
+                                    {name: 'Button text', style: 'default'}
+                                ]
+                            }) 
+
+    .guide-text-type Type 2 : 3 block
+    .c-wrapper.ST0004.type-overlay.margin-top.margin-bottom.place-cta-inside.place-text-top.bg-default
+        .component
+            .cmp-container 
+                .c-block-image.c-block-image-3block.type-left
+                    .c-block-image__item.area-main
+                        +block-image-item("main", true, true, '768x720', '681x861', '521x750')
+                    // GA4
+                    a(href="#" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-block-image__item.area-sub1.area-sub
+                        +block-image-item("sub", false, true, '768x512', '464x435', '739x363')
+                    a(href="#" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-block-image__item.area-sub2.area-sub
+                        +block-image-item("sub", false, true, '768x512', '464x435', '739x363')
+
+    .guide-text-type Type 2 : 3 block (with button)
+    .c-wrapper.ST0004.type-overlay.margin-top.margin-bottom.place-cta-inside.place-text-top.bg-default
+        .component
+            .cmp-container 
+                .c-block-image.c-block-image-3block.type-left
+                    .c-block-image__item.area-main
+                        +block-image-item("main", true, true, '768x720', '681x861', '521x750')
+                    // GA4
+                    .c-block-image__item.area-sub1.area-sub
+                        +block-image-item("sub", false, true, '768x512', '464x435', '739x363')
+                            +block-image-button({
+                                type:'button', 
+                                data: [
+                                    {name: 'Button text', style: 'highlight'},
+                                ]
+                            }) 
+                    .c-block-image__item.area-sub2.area-sub
+                        +block-image-item("sub", false, true, '768x512', '464x435', '739x363')
+                            +block-image-button({
+                                type:'text', 
+                                data: [
+                                    {name: 'Button text'},
+                                    {name: 'Button text'},
+                                ]
+                            })
+
+    .guide-text-type Type 3 : 4 block
+    .c-wrapper.ST0004.type-overlay.margin-top.margin-bottom.place-cta-inside.place-text-top.bg-default
+        .component
+            .cmp-container 
+                .c-block-image.c-block-image-4block.type-left
+                    .c-block-image__item.area-main
+                        +block-image-item("main", true, true, '768x720', '681x861', '521x750')
+                    a(href="#" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-block-image__item.area-sub1.area-sub
+                        +block-image-item("sub", false, true, '768x512', '431x417', '412x363')                        
+                    a(href="#" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-block-image__item.area-sub2.area-sub 
+                        +block-image-item("sub", false, true, '768x512', '431x417', '303x363')
+                    a(href="#" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-block-image__item.area-sub3.area-sub
+                        +block-image-item("sub", false, true, '768x512', '1139x417', '739x363')
+
+    .guide-text-type Type 3 : 4 block(with button)
+    .c-wrapper.ST0004.type-overlay.margin-top.margin-bottom.place-cta-inside.place-text-top.bg-default
+        .component
+            .cmp-container 
+                .c-block-image.c-block-image-4block.type-left
+                    .c-block-image__item.area-main
+                        +block-image-item("main", true, true, '768x720', '681x861', '521x750')
+                    .c-block-image__item.area-sub1.area-sub
+                        +block-image-item("sub", false, true, '768x512', '431x417', '412x363')
+                            +block-image-button({
+                                type:'button', 
+                                data: [
+                                    {name: 'Button text', style: 'highlight'},
+                                ]
+                            })
+                    .c-block-image__item.area-sub2.area-sub                         
+                        +block-image-item("sub", false, true, '768x512', '431x417', '303x363')
+                            +block-image-button({
+                                type:'text', 
+                                data: [
+                                    {name: 'Button text'},
+                                ]
+                            })
+                    .c-block-image__item.area-sub3.area-sub
+                        +block-image-item("sub", false, true, '768x512', '1139x417', '739x363')
+                            +block-image-button({
+                                type:'button', 
+                                data: [
+                                    {name: 'Button text', style: 'highlight'},
+                                ]
+                            })
+
+    .guide-text-type Type 4 : 5 block
+    .c-wrapper.ST0004.type-overlay.margin-top.margin-bottom.place-cta-inside.place-text-top.bg-default
+        .component
+            .cmp-container 
+                .c-block-image.c-block-image-5block.type-left
+                    .c-block-image__item.area-main
+                        +block-image-item("main", true, true, '768x720', '681x861', '521x750')
+                    a(href="#" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-block-image__item.area-sub1.area-sub 
+                        +block-image-item("sub", false, true, '768x512', '431x417', '412x363')                        
+                    a(href="#" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-block-image__item.area-sub2.area-sub 
+                        +block-image-item("sub", false, true, '768x512', '431x417', '303x363')
+                    a(href="#" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-block-image__item.area-sub3.area-sub.c-block-image__flex
+                        .c-block-image__flex-item
+                            +block-image-item("sub", true, true, '768x512', '431x417', '412x363', flexItem=true)
+                        .c-block-image__flex-item
+                            +block-image-item("sub", false, true, '768x512', '431x417', '303x363', flexItem=true)
+
+    .guide-text-type Type 4 : 5 block
+    .c-wrapper.ST0004.type-overlay.margin-top.margin-bottom.place-cta-inside.place-text-top.bg-default
+        .component
+            .cmp-container 
+                .c-block-image.c-block-image-5block.type-left
+                    .c-block-image__item.area-main
+                        +block-image-item("main", true, true, '768x720', '681x861', '521x750')
+                    .c-block-image__item.area-sub1.area-sub 
+                        +block-image-item("sub", false, true, '768x512', '412x363', '412x363')
+                            +block-image-button({
+                                type:'button', 
+                                data: [
+                                    {name: 'Button text', style: 'highlight'},
+                                    {name: 'Button text', style: 'default'},
+                                ]
+                            })
+                    .c-block-image__item.area-sub2.area-sub 
+                        +block-image-item("sub", false, true, '768x512', '431x417', '303x363')
+                            +block-image-button({
+                                type:'text', 
+                                data: [
+                                    {name: 'Button text'},
+                                ]
+                            })
+                    .c-block-image__item.area-sub3.area-sub.c-block-image__flex
+                        .c-block-image__flex-item
+                            +block-image-item("sub", true, true, '768x512', '412x363', '412x363', flexItem=true)
+                        .c-block-image__flex-item
+                            +block-image-item("sub", false, true, '768x512', '412x363', '303x363', flexItem=true)
+                                +block-image-button({
+                                    type:'button', 
+                                    data: [
+                                        {name: 'Button text', style: 'default'},
+                                    ]
+                                })

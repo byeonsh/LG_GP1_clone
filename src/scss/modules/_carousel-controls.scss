@@ -1,0 +1,251 @@
+/* stylelint-disable custom-property-pattern */
+@use '../abstract/' as *;
+
+@mixin carousel-controls {
+  $carousel-active: '.swiper-initialized';
+  $bg-tone-black: '.c-carousel#{$carousel-active}.dark-theme';
+
+  .c-carousel-controls {
+    $block: '.c-carousel-controls';
+
+    position: absolute;
+    z-index: $z-index2;
+    left: 0;
+    right: 0;
+    bottom: rem($margin24px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    @include container($design-grid-full, true);
+    @include inset-padding-hz;
+    @include screen(web) {
+      bottom: rem($margin40px);
+    }
+    @include screen(custom, rem($tablet + 1px), min) {
+      align-items: flex-end;
+      gap: rem($margin20px);
+    }
+
+    @at-root .width-content & {
+      $inset: $padding80px;
+
+      // max-width: rem($design-grid-full - $padding80px * 2 + $block-margin-w * 2);
+      padding-left: min(rem($inset), calc(100% * $inset / $design-grid-full));
+      padding-right: min(rem($inset), calc(100% * $inset / $design-grid-full));
+    }
+    // element
+    &__pagination {
+      display: flex;
+      flex-wrap: nowrap;
+      column-gap: rem($margin4px);
+
+      @include screen(custom, rem($tablet + 1px), min) {
+        position: relative;
+        bottom: rem($padding14px);
+        justify-content: flex-end;
+        align-items: flex-end;
+        column-gap: rem($margin8px);
+      }
+    }
+
+    &__bullet {
+      // overwrite aem css
+      position: relative;
+      flex: 1;
+      width: auto;
+      height: auto;
+      margin: 0;
+      border-radius: initial;
+      font-size: inherit;
+      text-indent: initial;
+      background: none;
+      // -- end
+
+      $size: $width20px;
+
+      overflow: hidden; // for progress bar width
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: rem($size);
+      min-height: rem(calc($size * 2 + $padding19px));
+      @include screen(custom, rem($tablet + 1px), min) {
+        justify-content: flex-end;
+        width: rem($width120px);
+      }
+
+      $floor-bar-line: '&:before';
+      $animation-bar-line: '&:after';
+      $bar-height: $height3px;
+      $inset: $margin1px;
+
+      #{$floor-bar-line},
+      #{$animation-bar-line} {
+        content: '';
+        display: block;
+        order: 1;
+      }
+      #{$floor-bar-line} {
+        height: rem($bar-height);
+        margin-bottom: rem($bar-height * -1);
+        background: rgba($black, 0.2);
+        border-radius: ($radius999);
+        #{$bg-tone-black} & {
+          background: rgba($white, 0.2);
+        }
+      }
+      #{$animation-bar-line} {
+        border-radius: rem($radius999);
+        margin: rem($inset);
+        height: rem($height1px);
+      }
+
+      // mark for selected item
+      &.cmp-carousel__indicator--active {
+        #{$animation-bar-line} {
+          // background: $black;
+          // width: calc(100% - rem($inset * 2));
+          width: 100%;
+          background-color: $black;
+          #{$bg-tone-black} & {
+            background-color: $white;
+          }
+        }
+      }
+
+      // marking
+      &.on:not(.paused) {
+        #{$animation-bar-line} {
+          animation: progress-x-axis //
+            var(--heroTimer) // Get from AEM on carousel component at carousel.html
+            linear;
+        }
+      }
+    }
+
+    // bullet text : item name
+    &__item-name {
+      @include ellipsis(2);
+      display: none;
+      opacity: 0;
+      text-align: center;
+      margin-bottom: rem($margin16px);
+      transition: opacity $animation-duration $animation-duration * 0.25;
+
+      @at-root #{$block}__bullet:focus-visible &,
+        #{$block}__bullet:hover & {
+        @include screen(custom, rem($tablet + 1px), min) {
+          display: -webkit-box;
+          opacity: 1;
+        }
+      }
+      #{$bg-tone-black} & {
+        color: $white;
+      }
+    }
+
+    // action element's wrapper
+    &__handler {
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      gap: rem($margin9px);
+      background-color: rgba($white, 0.6);
+      border-radius: rem($radius99);
+      padding: rem($padding6px ($padding10px - $margin2px));
+
+      #{$carousel-active} &,
+      #{$carousel-active} ~ & {
+        display: flex;
+      }
+      #{$bg-tone-black} &,
+      #{$bg-tone-black} ~ & {
+        background-color: rgba($black, 0.6);
+        color: $white;
+      }
+    }
+
+    // arrow, play, pause
+    &__action {
+      cursor: pointer;
+      padding: 0;
+      border: none;
+      background: transparent;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: rem($width16px);
+      min-width: rem($width16px);
+      height: rem($height16px);
+      &[disabled],
+      &:disabled {
+        display: none;
+      }
+
+      $icon: '&:after';
+      #{$icon} {
+        content: '';
+        display: block;
+        width: 100%;
+        height: 100%;
+        background : {
+          repeat: no-repeat;
+          position: 50% 50%;
+        }
+      }
+
+      // modifier
+      // autoplay
+      &--pause,
+      &--play {
+        order: 2;
+        // margin-left: rem($margin5px);
+        // margin-right: rem($margin5px);
+
+        $no-autoplay: '.swiper:not(.autoplay) &';
+        @at-root #{$no-autoplay} {
+          display: none;
+        }
+      }
+      &--pause {
+        #{$icon} {
+          background-image: url($icon-pause-black-16-16);
+          @at-root #{$bg-tone-black} & {
+            background-image: url($icon-pause-white-16-16);
+          }
+        }
+      }
+      &--play {
+        #{$icon} {
+          background-image: url($icon-play-black-16-16);
+          @at-root #{$bg-tone-black} & {
+            background-image: url($icon-play-white-16-16);
+          }
+        }
+      }
+
+      // navigation
+      &--prev,
+      &--next {
+        #{$icon} {
+          background-image: url($icon-arrow-black-right-7-12);
+          @at-root #{$bg-tone-black} & {
+            background-image: url($icon-arrow-white-right-7-12);
+          }
+        }
+      }
+      &--prev {
+        order: 1;
+        #{$icon} {
+          transform: rotate($degree180) #{'/*!rtl:none*/'}; /*! RTL last keep colon */
+        }
+      }
+      &--next {
+        order: 3;
+        transform: none #{'/*!rtl:rotate(180deg)*/'}; /*! RTL last keep colon */
+      }
+    }
+  }
+}

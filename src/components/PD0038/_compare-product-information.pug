@@ -1,0 +1,82 @@
+include ../_common/_image.pug
+include ../_common/_button.pug
+include ../_common/_product-list.pug
+include ../_common/_pagination.pug
+
+mixin compare-price-area(params)
+	- var options = {retailer : false, country : false, ...params}
+	.price-area
+		if options.retailer
+			.price-box
+				.c-price__flag--retail See Retailer for Pricing
+		else
+			if options.country == 'cn'
+				.price-box
+					.c-price
+						span.smallFont ￥
+						span 99990.
+						span.smallFont 00
+			else
+				.price-box 
+					.c-price 
+						| £1,489.98
+		
+
+mixin compare-product-item(params)
+	- var config = {...params}
+	- var useImageLink = false
+	// block - product item 
+	// GA4
+	.c-product-item(data-pim-category1="" data-pim-category2="" data-pim-category3="" data-pim-category4="" data-pim-sku="" data-pim-model-name="" data-pim-model-year="" data-pim-flag="" data-pim-modeltype="" data-shop-stock-status="" data-shop-msrp="" data-shop-price="")
+		.c-product-item__top-container
+			.button.c-compare-product-information__compare-buttons 
+				button.cmp-button.c-compare-product-information__compare-button.c-compare-product-information__compare-button--remove(type="button" data-cmp-data-layer="")
+					span.cmp-button__text.sr-only Remove. On click, product will be deleted and page will refresh.
+			+product_image(
+				config.imageUrl, 
+				useImageLink
+			)
+			+product_name(
+				config.sku, 
+				config.name, 
+				{
+					headline : "font-w-normal-24 font-m-normal-14", 
+					sku : "font-w-normal-16 font-m-normal-12"
+				}
+			)(class="c-product-item__model-display-name")
+			+compare-price-area({
+				retailer: config.retailer,
+				country: config.country,
+			})
+		.c-product-item__bottom-container
+			+product_cta({
+				soldOut: config.soldOut, 
+				outOfStock: config.outOfStock
+			})
+
+mixin add-compare-product 
+	.c-compare-product-information__item-box
+		// GA4
+		a.c-compare-product-information__to-list(href="#" aria-label="Back to previous page" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 
+
+mixin compare-product-information(array)
+	- var list = array || new Array(4)
+	// block - compare product information
+	.c-compare-product-information.js-compare-table
+		//- right : swipe area
+		.c-compare-product-information__container
+			.c-compare-product-information__scroll-wrapper
+				.c-compare-product-information__product-list.js-compare-table-body 
+					each set in list
+						.c-compare-product-information__product-item
+							if set != null 
+								+compare-product-item(set)
+							else
+								+add-compare-product 
+
+		if array != null
+			.c-compare-product-information__controls 
+				button.c-compare-product-information__scroll-left.js-scroll-left(type="button" data-cmp-data-layer="" aria-controls="PD0038ProductList" disabled)
+					span.cmp-button-text.sr-only Scroll Left
+				button.c-compare-product-information__scroll-right.js-scroll-right(type="button" data-cmp-data-layer="" aria-controls="PD0038ProductList" disabled)
+					span.cmp-button-text.sr-only Scroll Right

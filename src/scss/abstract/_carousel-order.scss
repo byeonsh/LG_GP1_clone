@@ -1,0 +1,62 @@
+@use 'variable' as *;
+@use 'mixin' as *;
+
+// carousel Order Change
+@mixin carousel-order-change($width: 768, $height: 512) {
+  $area-margin-m: $margin12px;
+  $area-margin-w: $margin20px;
+  $handler-area-height-m: rem($height32px + $area-margin-m * 2);
+  $handler-area-height-w: rem($height36px + $area-margin-w * 2);
+
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 100%;
+  .swiper-wrapper {
+    grid-area: 1/1/2/2;
+  }
+  .c-carousel__handlers {
+    display: grid;
+    grid-area: 1/1/2/2;
+    grid-template-columns: 100%;
+    grid-template-rows: auto minmax($handler-area-height-m, auto) 1fr;
+
+    @include screen(web) {
+      grid-template-rows: auto minmax($handler-area-height-w, auto) 1fr;
+    }
+
+    $image-space: '&::before';
+    #{$image-space} {
+      content: '';
+      display: block;
+      width: 100%;
+      padding-top: calc($height / $width * 100%);
+    }
+  }
+  .c-carousel__handler {
+    grid-row: 2 / 3;
+    align-self: center;
+    z-index: $z-index1;
+    margin-top: 0;
+  }
+
+  .c-image {
+    // aspect-ratio: calc($width / $height);
+    overflow: hidden;
+  }
+  .c-image + .c-text-contents {
+    margin-top: $handler-area-height-m;
+    @include screen(web) {
+      margin-top: $handler-area-height-w;
+    }
+  }
+
+  &:not(.swiper-initialized) {
+    // 갯수가 1개여서 Carousel 동작이 불필요한 경우
+    .c-image + .c-text-contents {
+      margin-top: rem($area-margin-m);
+      @include screen(web) {
+        margin-top: rem($area-margin-w);
+      }
+    }
+  }
+}

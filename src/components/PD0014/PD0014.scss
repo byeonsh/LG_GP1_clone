@@ -1,0 +1,233 @@
+@charset "UTF-8";
+
+@use '../../scss/abstract/' as *;
+
+$component: '.PD0014';
+#{$component} {
+  // element
+  > .component > .cmp-container {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    // z-index: $stacking-middle * 0.5;
+    z-index: $stacking-floor;
+    background: rgba($black, 0.8);
+    @include screen(mobile) {
+      border-radius: rem($radius20 $radius20 0 0);
+    }
+  }
+  // block
+  .c-carousel {
+    .swiper-slide {
+      height: auto;
+    }
+    &__handler {
+      justify-content: center;
+      margin-top: rem($margin20px);
+      @include screen(desktop) {
+        &#{$precedence} {
+          display: none;
+        }
+      }
+    }
+    &__pagination.swiper-pagination-fraction {
+      // font
+      font-size: rem(14px);
+      line-height: rem(14px);
+      color: inherit;
+    }
+    &__button {
+      &:after {
+        @include screen(mobile) {
+          background-image: url($icon-arrow-white-right-12-7);
+        }
+        @include screen(web) {
+          background-image: url($icon-arrow-white-right-10-16);
+        }
+      }
+    }
+  }
+  .c-compare {
+    color: $white;
+    @include container($design-grid-full, true);
+    @include inset-padding-hz;
+    @include screen(mobile) {
+      padding-top: rem($padding34px);
+    }
+    .compare_ea {
+      display: inline;
+    }
+    &-toggle {
+      // reset
+      border: none;
+      padding: 0;
+      // ---
+
+      cursor: pointer;
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: rem($width18px + $margin12px * 2);
+      height: rem($height10px + $margin12px * 2);
+      background: {
+        image: url($icon-arrow-white-down-18-10);
+        repeat: no-repeat;
+        position: 50% 50%;
+        color: transparent;
+      }
+    }
+    &-item {
+      position: relative;
+      height: 100%;
+      padding: rem($padding16px $padding18px);
+      background-color: $white;
+      @include lgness-radius('default', mobile);
+      @include screen(web) {
+        padding: rem($padding13px ($padding20px + $padding16px) $padding13px $padding20px);
+        min-height: rem($min-height88px);
+        border-radius: rem($radius8);
+      }
+
+      &--link {
+        display: flex;
+        flex-direction: column;
+        gap: rem($margin8px);
+        height: 100%;
+        outline-color: $black;
+        @include screen(web) {
+          flex-direction: row;
+          gap: rem($margin20px);
+        }
+      }
+      &--delete {
+        // reset
+        border: none;
+        padding: 0;
+        // ---
+
+        cursor: pointer;
+        position: absolute;
+        top: rem(6px);
+        right: rem(6px);
+        width: rem(24px);
+        height: rem(24px);
+        outline-color: $black;
+        background: {
+          image: url($icon-close-black-12-12);
+          size: rem($icon12px);
+          color: transparent;
+          repeat: no-repeat;
+          position: center;
+        }
+        @include screen(web) {
+          top: rem(7px);
+          right: rem(7px);
+        }
+      }
+      &--thumbnail {
+        overflow: hidden;
+        flex-shrink: 0;
+        width: rem($width64px);
+        height: rem($width64px);
+        @include screen(mobile) {
+          margin-left: auto;
+          margin-right: auto;
+        }
+      }
+
+      .c-text-contents {
+        flex: 1 auto;
+        display: flex;
+        flex-direction: column;
+        gap: rem($margin8px);
+        .c-compare-item_name {
+          @include ellipsis(2);
+          @include screen(mobile) {
+            line-height: normal;
+          }
+
+          // font
+          color: $gray3;
+          font-size: rem(12px);
+          line-height: rem(12px);
+          @include screen(web) {
+            font-size: rem(16px);
+            line-height: rem(20px);
+          }
+        }
+        .c-price-number {
+          // font
+          font-size: rem(12px);
+          line-height: 1;
+          color: $black;
+          @include screen(web) {
+            font-size: rem(16px);
+          }
+        }
+      }
+
+      &.empty-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        background: $warm-gray;
+        &::before {
+          content: '';
+          display: inline-block;
+          width: rem($width38px);
+          height: rem($height38px);
+          // background-image: url($icon-plus-gray);
+          background-size: 100% auto;
+        }
+      }
+    }
+    &-action {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: rem($margin20px);
+      padding-top: rem($padding12px);
+      padding-bottom: rem($padding12px);
+
+      &--button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: rem($margin20px);
+      }
+
+      .c-text-contents__headline {
+        // font
+        font-size: rem(16px);
+        line-height: rem(18px);
+        @include screen(web) {
+          line-height: rem(20px);
+        }
+      }
+    }
+  }
+
+  // If is panel opened
+  &:not(.is-opened) {
+    .c-compare-action ~ * {
+      display: none;
+    }
+    .c-compare-toggle {
+      transform: translateX(-50%) rotateX(180deg);
+    }
+  }
+  &.is-opened {
+    .c-compare {
+      padding-bottom: rem($padding20px);
+    }
+    .c-compare-toggle {
+      transform: translateX(-50%) rotateX(0deg);
+    }
+  }
+}

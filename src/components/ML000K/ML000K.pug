@@ -1,0 +1,139 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+
+block meta 
+    - var componentId = "ML000K"
+    - var componentName = "Warranty extended preview"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+
+mixin myOption({id="", desc="", optionName="", indicateColor= false, checked=false, type, sale, price, save, tooltip, isTooltip= false, complete=false, nameId, value, month})
+    .c-sibling-option(class=`${complete ? "my-plan__complete" : ""}`)
+        input.c-sibling-option__input.sr-only(type="radio" id=`${id}` name=`processor`, checked=checked, value=`${value}`)
+        .c-sibling-option__detail
+            .c-sibling-option__primary-detail
+                label(for=`${id}` aria-labelledby=`${nameId}`)
+                .my-plan__image
+                    .image.c-image
+                        +printLazyImage(`https://via.placeholder.com/80x80/999999/333333`)
+                .my-plan__info
+                    .c-sibling-option__definition
+                        .text.c-sibling-option__name.my-plan__title(id=`${nameId}` class=`${isTooltip ? "my-plan__title--flex" :""}`)
+                            span.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-text-layer)= optionName
+                            if isTooltip
+                                +exclamTooltip(tooltip, false)
+                        .my-plan__protect Protects your product for an 
+                            br
+                            | additional !{month} months
+                        .cmp-text.font-w-semibold-16.font-m-semibold-16.my-plan__price(data-cmp-text-layer)= price
+
+mixin myOptionList(params)
+    - let data = { ...params }
+    .my-option-list
+        .c-sibling-option-box.c-sibling-option-box--layout-half.my-return__type__option
+            .c-sibling-option-box__contents
+                .c-sibling-option-box__options
+                    each set in data
+                        +myOption(set)
+
+mixin myPremiumCare(params)
+    - let data = { ...params }
+    each set in data
+        .my-premium-care__img
+            .c-text-contents__text-box__model
+                span.font-w-normal-10.font-m-normal-10= set.modelName 
+            .image.c-image
+                +printLazyImage("https://www.lg.com/uk/images/tvs/md07546594/gallery/GT1.jpg")
+        .my-premium-care__text
+            .my-premium-care__title= set.title
+            .my-premium-care__plan 
+                .my-premium-care__plan__title.font-w-normal-24.font-m-normal-16 Select Your Plan
+                .my-plan
+                    +myOptionList(set.plan)
+            .my-premium-care__file
+                .my-premium-care__file__title.font-w-normal-24.font-m-normal-16 Upload Receipt
+                +myFile({id: "fileUpload", option: false})
+    
+mixin myFile({attachments= false, option=true, id})
+    .my-formFile
+        if !option
+            span.font-w-normal-16.font-m-normal-14.my-formFile__title Proof Of Purchase
+        else 
+            span.font-m-semibold-14.font-w-semibold-16.my-formFile__title Proof of purchase (optional)
+        .my-formFile__upload
+            .my-formFile__inner
+                input.file.sr-only(type="file" name="file-input" id= id multiple)
+                label.c-not-required(for=id)
+                    span.btn-upload.font-m-normal-14i.font-w-normal-14i Upload
+            .my-formFile__preview
+                p   File Name.jpeg 
+                    button.my-formFile__preview__btn-delete(type="button")
+                        span.sr-only delete
+                .my-formFile__msg.font-m-normal-14.font-w-normal-16 File must be less than 10MB. Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip
+                    
+mixin ML000K
+    .c-wrapper.ML000K
+        .component
+            .fluid-container
+                .my-component.my-page-title
+                    .c-text-contents.my-component__title-section
+                        .c-text-contents__headline
+                            +headline('font-w-light-56 font-m-light-28', "h2", "LG Premium Care")
+                .my-component
+                    .my-premium-care__box
+                        .my-premium-care
+                            +myPremiumCare([
+                                {
+                                    modelName: "THINQ",
+                                    img:"Manuals",
+                                    title: "WiFi Connected 10.5kg washing machine",
+                                    plan: ([
+                                        {
+                                            type: "plan",
+                                            id: "plan1",
+                                            nameId: "titlePlan1",
+                                            img: "plan",
+                                            optionName: "LG Premium Care 2 Year",
+                                            month: "24",
+                                            price: "£300",
+                                            checked: true,
+                                            value:"radio01",
+                                        },
+                                        {
+                                            type: "plan",
+                                            id: "plan2",
+                                            nameId: "titlePlan2",
+                                            img: "plan",
+                                            optionName: "LG Premium Care 5 Year",
+                                            month: "60",
+                                            price: "£500",
+                                            value:"radio02",
+                                        },
+                                        {
+                                            type: "plan",
+                                            id: "plan3",
+                                            nameId: "titlePlan3",
+                                            img: "plan",
+                                            optionName: "LG Premium Care 7 Year",
+                                            month: "74",
+                                            price: "£700",
+                                            value:"radio03",
+                                        },
+                                    ])
+                                },
+                            ])
+                        .button.c-cta.my-premium-care_button
+                            +defaultButton({name:"Add to Basket", wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                            +defaultButton({name:"Go to Checkout", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+block content
+    // Component Markup
+    +ML000K

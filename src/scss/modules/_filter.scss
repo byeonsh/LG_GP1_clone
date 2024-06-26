@@ -1,0 +1,455 @@
+@use '../abstract/' as *;
+
+@mixin filter() {
+  $dimmed-height: rem($padding40px);
+  $mobile-size: columns(9, false);
+  .c-filter {
+    $block: '.c-filter';
+    position: fixed;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 0;
+    z-index: $z-index3;
+    display: none;
+    transition: top 0.5s;
+    @include screen(custom, rem($mobile-size), max) {
+      &.active {
+        display: block;
+        height: calc(100% - $dimmed-height);
+        z-index: ($stacking-middle + 1);
+        @include lgness-radius('default', mobile);
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        overflow: hidden;
+        &.done {
+          top: $dimmed-height;
+          z-index: ($stacking-middle + 1);
+          &:before {
+            content: '';
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: $black;
+            opacity: 0.5;
+            z-index: -1;
+          }
+        }
+      }
+    }
+    @include screen(custom, rem($mobile-size + 1px), min) {
+      position: relative;
+      display: block;
+      top: auto;
+      left: auto;
+      height: auto;
+      border-top: 0;
+    }
+    .c-form {
+      background: $warm-gray;
+      height: calc(100% - rem($padding42px));
+      overflow-x: hidden;
+      overflow-y: auto;
+      @include screen(custom, rem($mobile-size + 1px), min) {
+        height: auto;
+        background: transparent;
+        overflow: visible;
+      }
+      &__inner {
+        ul.f-list {
+          @include reset-list-style;
+        }
+        padding: 0 rem($block-margin-m);
+        @include screen(custom, rem($mobile-size + 1px), min) {
+          padding: 0;
+        }
+        .clear-all-filters {
+          display: none;
+          @include screen(custom, rem($mobile-size), max) {
+            & + .c-form-box {
+              margin-top: 0;
+            }
+          }
+          @include screen(custom, rem($mobile-size + 1px), min) {
+            display: flex;
+          }
+        }
+      }
+      &__bottom {
+        display: flex;
+        gap: rem($padding8px);
+        justify-content: center;
+        padding: rem($padding16px) rem($block-margin-m);
+        border-top: rem($border1) solid $mid-gray1;
+        margin: rem($margin10px) 0 0 0;
+        @include screen(custom, rem($mobile-size + 1px), min) {
+          display: none;
+        }
+      }
+      &__box {
+        @include screen(custom, (rem($mobile + 1px) rem($mobile-size))) {
+          // 2 rows & mobile filter
+          display: flex;
+          flex-wrap: wrap;
+          .c-form-box {
+            width: 50%;
+          }
+        }
+        display: flex;
+        flex-direction: column;
+        gap: rem($margin12px);
+        @include screen(custom, rem($mobile-size + 1px), min) {
+          gap: rem($margin10px);
+        }
+        .c-form-box + .c-form-box {
+          margin: 0;
+        }
+      }
+    }
+    &__icon {
+      display: none;
+      @include screen(custom, rem($mobile-size + 1px), min) {
+        display: block;
+      }
+    }
+    .c-filter-title .c-filter__close {
+      position: absolute;
+      right: rem($pos20px);
+      top: rem($pos20px);
+      appearance: none;
+      border: 0;
+      margin: 0;
+      padding: 0;
+      width: $icon16px;
+      height: $icon16px;
+      background: $warm-gray;
+      cursor: pointer;
+      &:before {
+        content: '';
+        display: block;
+        width: rem($icon16px);
+        height: rem($icon16px);
+        background : {
+          image: url($icon-close-black-16-16);
+          position: 100% center;
+          size: 100%;
+          repeat: no-repeat;
+        }
+      }
+      @include screen(custom, rem($mobile-size + 1px), min) {
+        display: none;
+      }
+    }
+    // &-bar__button,
+    &__icon {
+      width: rem($width24px);
+      min-width: rem($width24px);
+      height: rem($height24px);
+      padding: 0;
+      border: 0;
+      margin-right: rem($margin8px);
+      background: url($icon-filter) transparent;
+      vertical-align: top;
+    }
+    // &-bar__button {
+    //     appearance: none;
+    //     cursor: pointer;
+    // }
+    &-bar {
+      position: sticky;
+      top: 0;
+      border-bottom: rem($border1) solid $mid-gray1;
+      margin: 0 rem(-$block-margin-m);
+      background: $warm-gray;
+      z-index: 2;
+      &.is-fixed {
+        margin: 0;
+      }
+      @include screen(custom, rem($mobile-size + 1px), min) {
+        display: none;
+      }
+      .button {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: rem($padding8px) rem($block-margin-m);
+        // .c-filter-bar__button,
+        .c-filter__icon {
+          display: block;
+          margin-right: rem($margin18px);
+        }
+      }
+      &__text-button {
+        appearance: none;
+        font-size: rem(14px);
+        line-height: 1;
+        color: $black;
+        background: $warm-gray;
+        border: rem($border1) solid $mid-gray1;
+        border-radius: rem($radius999);
+        padding: rem($padding11px) rem($padding20px);
+        cursor: pointer;
+        outline-offset: 0;
+        white-space: nowrap;
+        + .c-filter-bar__text-button {
+          margin-left: rem($margin6px);
+        }
+        &.active {
+          border-color: $black;
+        }
+      }
+    }
+    &-title {
+      @include screen(custom, rem($mobile-size + 1px), min) {
+        display: flex;
+        height: rem($height76px);
+        align-items: center;
+      }
+      .c-text-contents {
+        display: flex;
+        align-items: center;
+        @include screen(custom, rem($mobile-size), max) {
+          background: $warm-gray;
+          padding: rem($padding16px) rem($block-margin-m) 0;
+        }
+        @include screen(custom, rem($mobile-size + 1px), min) {
+          justify-content: flex-start;
+          padding: 0;
+        }
+        &__headline {
+          strong {
+            font-size: rem(14px);
+            line-height: rem(14px);
+            font-weight: $font-semibold;
+            @include screen(custom, rem($mobile-size), max) {
+              font-weight: normal;
+              font-size: rem(20px);
+              line-height: rem(24px);
+            }
+          }
+        }
+      }
+    }
+    .c-tooltip {
+      margin-left: rem($margin8px);
+    }
+
+    &-fieldset {
+      border-top: rem($border1) solid $mid-gray1;
+      padding-top: rem($padding14px);
+      padding-bottom: rem($padding14px);
+      @include screen(custom, rem($mobile-size), max) {
+        padding-top: rem($padding16px);
+        padding-bottom: rem($padding16px);
+        &:first-child {
+          border-top: 0;
+        }
+      }
+      legend {
+        position: relative;
+        margin-bottom: 0;
+      }
+    }
+    .c-accordion {
+      &__head {
+        position: relative;
+        padding-right: rem($padding16px);
+      }
+      &__head-text {
+        // ..
+      }
+      &__body {
+        padding-top: rem($padding14px);
+        // padding-right: rem($padding18px);
+        @include screen(custom, rem($mobile-size), max) {
+          padding-top: rem($padding16px);
+        }
+      }
+
+      &__button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        // left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        &::after {
+          content: '';
+          display: inline-block;
+          width: rem($width12px);
+          height: rem($height7px);
+          background-image: url($icon-arrow-gray3-down-12-7);
+        }
+      }
+    }
+    .is-hide {
+      display: none;
+    }
+    // ...
+    .c-radio-item,
+    .c-checkbox-item {
+      /* stylelint-disable-next-line no-descending-specificity */
+      .label {
+        display: block;
+        padding-left: rem($padding28px);
+        &::before {
+          background-color: inherit;
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+      }
+    }
+  }
+  .c-productcollection__root {
+    width: 100%;
+    @include screen(custom, rem($mobile-size + 1px), min) {
+      display: flex;
+      // gap: rem($padding40px);
+      gap: rem($gutter-w);
+      .c-filter {
+        // width: rem($width326px);
+        width: rem(columns(3, false));
+        padding-right: rem($padding18px);
+        max-width: 240px; // for test
+      }
+      .c-result-area {
+        flex: 1;
+      }
+    }
+    > .before-element {
+      @include screen(custom, rem($mobile-size + 1px), min) {
+        display: none;
+      }
+    }
+  }
+  .c-result-area {
+    width: 100%;
+    color: $black;
+    // overflow: hidden; -- remove for design
+    &__controls {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: rem($padding8px) 0;
+      font-size: rem(14px);
+      line-height: rem(14px);
+      font-weight: $font-semibold;
+      @include screen(custom, rem($mobile-size + 1px), min) {
+        display: flex;
+        height: rem($height76px);
+        align-items: center;
+        padding: 0;
+      }
+
+      &.c-compare-only {
+        justify-content: flex-end;
+      }
+    }
+    &__result {
+      // line-height: rem($icon24px);
+
+      // font
+      font-size: rem(14px);
+      line-height: rem(14px);
+      font-weight: $font-semibold;
+
+      /* stylelint-disable-next-line no-descending-specificity */
+      strong {
+        font-weight: inherit;
+      }
+    }
+    &__compare {
+      font-size: rem(14px);
+      line-height: rem(16px);
+      span {
+        display: inline-block;
+        vertical-align: top;
+        padding: rem($padding4px) 0;
+      }
+      button {
+        margin-left: rem($margin8px);
+        vertical-align: top;
+      }
+    }
+    &__sort {
+      .c-select-item {
+        display: flex;
+        gap: rem($padding10px);
+        @include screen(custom, rem($mobile-size + 1px), min) {
+          gap: rem($padding8px);
+        }
+        align-items: center;
+        label {
+          margin: 0;
+          white-space: nowrap;
+          font-size: rem(14px);
+          line-height: rem(14px);
+          color: $mid-gray2;
+          font-weight: $font-semibold;
+          @include screen(mobile) {
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+          }
+        }
+        select {
+          color: $black;
+          min-width: rem($min-width166px);
+          height: rem($height44px);
+          border: rem($border1) solid $mid-gray1;
+          font-size: rem(16px);
+          line-height: rem(20px);
+          font-weight: $font-regular;
+          background-size: rem($padding10px) auto;
+          background-color: transparent;
+          @include screen(custom, rem($mobile-size + 1px), min) {
+            min-width: rem($min-width200px);
+          }
+        }
+      }
+    }
+    &__more {
+      width: 100%;
+      text-align: center;
+      padding: rem($padding24px) 0 0;
+      @include screen(custom, rem($mobile-size + 1px), min) {
+        padding: rem($padding32px) 0 0;
+      }
+    }
+    &__multi {
+      padding: rem($padding20px) 0 rem($padding40px);
+      @include screen(web) {
+        padding: rem($padding20px) 0;
+      }
+      &:last-child {
+        padding-bottom: 0;
+      }
+    }
+    &__category-name {
+      text-align: center;
+      padding: rem($padding20px) 0 0;
+      @include screen(mobile) {
+        margin: 0 rem(-$block-margin-m);
+        padding-left: rem($block-margin-m);
+        padding-right: rem($block-margin-m);
+      }
+      @include screen(web) {
+        padding: rem($padding40px) 0 0;
+        text-align: initial;
+      }
+      &:first-child {
+        border-top: rem($border1) solid $mid-gray1;
+      }
+    }
+  }
+}

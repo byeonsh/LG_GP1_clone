@@ -1,0 +1,240 @@
+@charset "UTF-8";
+
+@use 'sass:string';
+@use '../../scss/abstract/' as *;
+
+$component: '.ST0005';
+#{$component} {
+  > .component > .cmp-container {
+    @include inset-padding-hz;
+  }
+
+  // align
+  // fixed align to "center" on mobile
+  @include screen(mobile) {
+    &#{$precedence} {
+      .cmp-container {
+        justify-content: center;
+      }
+      .c-text-contents {
+        text-align: center;
+      }
+      .c-cta {
+        justify-content: center;
+      }
+    }
+  }
+
+  // block
+  $cta-position-w: $padding32px;
+  $cta-position-m: $padding20px;
+
+  .c-list {
+    @include list(nowrap, $gutter-w);
+    @include container($design-grid-full);
+    @include screen(mobile) {
+      display: block;
+    }
+    &__item {
+      position: relative;
+      display: flex;
+      > *:first-child {
+        flex: 1;
+      }
+    }
+  }
+  .c-text-contents {
+    max-width: rem($text-box-width-md);
+  }
+  .c-media {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    &__controls {
+      padding-bottom: rem($cta-position-m);
+      @include screen(web) {
+        padding-bottom: rem($cta-position-w);
+      }
+    }
+  }
+  .c-image {
+    overflow: hidden;
+    @include lgness-radius('default');
+  }
+  video {
+    overflow: hidden;
+    @include lgness-radius('default');
+  }
+
+  // =- layout -=
+  $inside: '&.place-cta-inside';
+  $outside: '&.place-cta-outside';
+  $text-first: '&.place-text-top';
+  $image-first: '&.place-text-bottom';
+  $text: '.c-text-contents';
+  $cta: '.c-cta';
+  $image: '.c-image';
+
+  #{$cta} {
+    align-items: center;
+  }
+
+  // block order
+  #{$text-first} {
+    @include lgness-margin('if-headline');
+    .c-list__item {
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+  }
+  #{$image-first} {
+    .c-list__item {
+      flex-direction: column-reverse;
+      justify-content: flex-end;
+    }
+    #{$cta} {
+      @include screen(mobile) {
+        order: -1;
+      }
+    }
+  }
+
+  // CTA #1 : outside image
+  // ...
+
+  // CTA #2 : inside image
+  #{$inside} {
+    #{$cta} {
+      @include screen(web) {
+        padding: rem((0, $cta-position-w, $cta-position-w));
+      }
+      .c-button {
+        position: relative;
+        z-index: 1;
+      }
+    }
+    #{$text-first} {
+      #{$cta} {
+        @include screen(web) {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          z-index: 10;
+        }
+      }
+    }
+  }
+
+  // margin
+  // common
+  .c-list__item:not(:first-child) {
+    @include screen(mobile) {
+      margin-top: rem($margin24px);
+    }
+  }
+  #{$text}__headline + #{$text}__bodycopy {
+    margin-top: rem($margin8px);
+  }
+
+  // order of block
+  #{$text-first} {
+    #{$image} {
+      margin-top: rem($margin12px);
+      @include screen(web) {
+        margin-top: rem($margin20px);
+      }
+    }
+  }
+  #{$image-first} {
+    #{$text} {
+      margin-top: rem($margin12px);
+      @include screen(web) {
+        margin-top: rem($margin20px);
+      }
+    }
+  }
+
+  // CTA #1 : outside image
+  #{$outside} {
+    * + #{$cta} {
+      margin-top: rem($margin12px);
+      @include screen(web) {
+        margin-top: rem($margin24px);
+      }
+      // min-height: rem($height36px);
+      @include screen(web) {
+        min-height: rem($height44px);
+      }
+    }
+    #{$image-first} {
+      #{$cta} {
+        @include screen(web) {
+          order: -1;
+        }
+      }
+    }
+  }
+
+  // CTA #2 : inside image
+  #{$inside} {
+    * + #{$cta} {
+      @include screen(mobile) {
+        margin-top: rem($margin20px);
+      }
+    }
+    #{$image-first} {
+      #{$cta} {
+        @include screen(web) {
+          margin-top: rem(($padding40px + $cta-position-w) * -1);
+          min-height: rem($height40px + $cta-position-w);
+        }
+      }
+    }
+  }
+
+  // image only type
+  &.type-image-only {
+    .cmp-image {
+      text-align: center;
+    }
+    .cmp-image__image {
+      width: auto !important;
+      height: auto !important;
+    }
+    .c-image {
+      img,
+      picture {
+        overflow: hidden;
+        @include lgness-radius('default');
+      }
+    }
+  }
+  &.type-video-only {
+    &.width-wide {
+      .component {
+        padding: 0;
+      }
+      .cmp-container {
+        max-width: rem($maximum);
+        padding: 0;
+      }
+      .c-image {
+        border-radius: 0;
+      }
+    }
+    &.width-narrow {
+      .cmp-container {
+        @include container($design-full, true);
+      }
+    }
+    &.width-content {
+      .cmp-container {
+        @include container($design-grid-full, true);
+      }
+    }
+  }
+}

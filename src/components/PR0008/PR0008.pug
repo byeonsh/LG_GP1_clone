@@ -1,0 +1,192 @@
+extends ../_common/_layout.pug
+include ../_common/_index.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_title-area.pug
+include ../_common/_countdown.pug
+include ../_common/_carousel.pug
+include ../_common/_promotion.pug
+
+block meta 
+    - var componentId = "PR0008"
+    - var componentName = "Promotion Block"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pr.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                        '.c-floating-contents__floating' : [
+                            {
+                                'name' : 'Banner Text Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-white', 'remove' : 'font-black'},
+                                    {'toggle' : false, 'add' : 'font-black', 'remove' : 'font-white'},
+                                ]
+                            },
+                        ]
+                    };
+
+    
+    mixin text-content(params)
+        - var options = {titleStyle : "font-w-light-56 font-m-light-24", bodyStyle : "font-w-normal-24 font-m-normal-12", ctaUrl: "#", flagType: [], ...params}
+        //- flag
+        .c-text-contents
+            .text.c-text-contents__eyebrow
+                p.cmp-text.font-w-normal-20.font-m-normal-12
+                    each flag in options.flagType
+                        span=flag
+            .title.c-text-contents__headline
+                +headline(options.titleStyle, "h2")
+            .text.c-text-contents__bodycopy(class=options.bodyStyle)
+                p.cmp-text(data-cmp-data-layer="")= options.bodycopy            
+            .text.c-text-contents__date
+                p.cmp-text(data-cmp-data-layer="")= options.date
+            .button.c-cta
+                // GA4
+                +defaultButton({wSize:'medium', mSize : 'small', buttonStyle : 'default', isButton : false, name: options.ctaText})(href="#")
+
+    mixin items(params)
+        each set in params
+            .cmp-carousel__item.swiper-slide.c-list__item.c-floating-contents(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                .c-floating-contents__floor
+                    //- block : image
+                    .c-image
+                        //- countdown
+                        +dateCountDown("25 December 2023 17:30:00","font-w-normal-20 font-normal-16")(class="c-countdown--small")                      
+                        
+                        +printLazyImage("https://via.placeholder.com/1600x1600/999999/333333/?text=1600x1600")
+
+                .c-floating-contents__floating.font-white
+                    +text-content(set)
+
+    mixin blockList(list)
+            if 1 == list.length
+                .c-list(class="c-list--block-list")
+                    +items(list)
+            else if 1 < list.length
+                // block - carousel
+                .carousel.panelcontainer
+                    .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                        .cmp-carousel__content.swiper-wrapper.c-list(class=`c-list--${list.length}block-list`)
+                            +items(list)
+
+                        .c-carousel__handler
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"prev"})
+                            +carouselPagination({isUnder:true})
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"next"})
+    mixin title-area 
+        +component-title-area({
+            headline : {
+                text : "Exclusive offers of all time",
+            },
+        })(class="c-region-header--vacate-side")
+
+    // Component Markup
+    //  Type1. Image (1 to 3)
+    .guide-text-type Type 1 : 3 block
+    .c-wrapper.PR0008.margin-top.margin-bottom.border-top.bg-default
+        .component
+            .cmp-container
+                +title-area
+                +blockList([
+                    {
+                        title: "Get Early Holiday PricesGet Early Holiday Prices Get Early Holiday Prices",
+                        bodycopy: "How are washing machines energy efficie How are washing machines energy efficie How are washing mach in es energy machines energy efficie How are washing machines energy ",
+                        date:"08/10/2024 15:00 ~ 08/10/2024 20:00",
+                        ctaText: "Shop Now",
+                        flagType: ["Time Deal"],
+                    },
+                    {
+                        title: "LG Washtower 2023 Pre-Order",
+                        titleStyle:"font-w-light-36 font-m-light-24",
+                        bodycopy: "Lorem Ipsum is simply dummy text of the printing",
+                        date:"08/10/2024 15:00 ~ 08/10/2024 20:00",
+                        ctaText: "Shop Now",
+                        flagType: ["Pre-Order", "Time Deal"]
+                    },
+                    {
+                        title: "Hot Deals for a while",
+                        titleStyle:"font-w-light-36 font-m-light-24",
+                        bodycopy: "Knock twice and see 23% more of what's inside with the latest generation",
+                        date:"08/10/2024 15:00 ~ 08/10/2024 20:00",
+                        ctaText: "Shop Now",
+                        flagType: ["Time Deal", "Hot-Deal"]
+                    },
+                ])
+
+
+    //  Type2. Image (2)
+    .guide-text-type Type 2 : 2 block
+    .c-wrapper.PR0008.margin-top.margin-bottom.border-top.bg-default
+        .component
+            .cmp-container
+                //- block : region-header
+                +title-area
+                +blockList([
+                    {
+                        title: "Get Early Holiday PricesGet Early Holiday Prices Get Early Holiday Prices",
+                        bodycopy: "How are washing machines energy efficie How are washing machines energy efficie How are washing mach in es energy machines energy efficie How are washing machines energy ",
+                        date:"08/10/2024 15:00 ~ 08/10/2024 20:00",
+                        ctaText: "Shop Now",
+                        flagType: ["Time Deal"],
+                    },
+                    {
+                        title: "Get Early Holiday PricesGet Early Holiday Prices Get Early Holiday Prices",
+                        bodycopy: "How are washing machines energy efficie How are washing machines energy efficie How are washing mach in es energy machines energy efficie How are washing machines energy ",
+                        date:"08/10/2024 15:00 ~ 08/10/2024 20:00",
+                        ctaText: "Shop Now",
+                        flagType: ["Time Deal"],
+                    },
+                ])
+
+    //  Type3. Image (1)
+    .guide-text-type Type 3 : 1 block
+    .c-wrapper.PR0008.margin-top.margin-bottom.border-top.bg-default
+        .component
+            .cmp-container
+                +title-area
+                +blockList([
+                    {
+                        title: "Get Early Holiday Prices",
+                        titleStyle:"font-w-light-56 font-m-light-24",
+                        bodycopy: "How are washing machines energy efficie How are washing machines energy efficie How are washing mach in es energy machines energy efficie How are washing machines energy ",
+                        date:"08/10/2024 15:00 ~ 08/10/2024 20:00",
+                        ctaText: "Shop Now",
+                        flagType: ["Time Deal"],
+                    },
+                ])

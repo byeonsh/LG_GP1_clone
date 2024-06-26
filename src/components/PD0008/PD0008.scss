@@ -1,0 +1,271 @@
+@charset "UTF-8";
+
+@use '../../scss/abstract/' as *;
+
+$component: '.PD0008';
+#{$component} {
+  @include lgness-margin('if-headline');
+  > .component > .cmp-container {
+    @include container($design-grid-full, true);
+    @include inset-padding-hz;
+  }
+
+  // block
+  .c-region-header {
+    @include screen(mobile) {
+      gap: 0;
+    }
+    + * {
+      @include lgness-component-title-margin;
+    }
+    &--justify-w {
+      @include screen(web) {
+        align-items: flex-end;
+      }
+    }
+  }
+  .c-print-area {
+    @include screen(mobile) {
+      display: none;
+    }
+  }
+
+  // layout : margin
+  * + .c-all-specs-area__more,
+  * + .c-all-specs-area__in {
+    margin-top: rem($margin24px);
+    @include screen(web) {
+      margin-top: rem($margin32px);
+    }
+  }
+
+  // keyspec
+  .cmp-container {
+    .c-compare-selling {
+      &__item {
+        padding: rem($padding16px);
+        @include screen(web) {
+          padding: rem($padding32px 0);
+        }
+      }
+      &--all {
+        .c-compare-selling__item {
+          padding: rem($padding8px 0);
+          .c-compare-selling__spec-desc {
+            margin-top: rem($margin4px);
+            @include screen(web) {
+              margin-top: rem($margin8px);
+            }
+          }
+        }
+      }
+    }
+  }
+  .tabs {
+    .cmp-tabs {
+      &__tablist {
+        padding: 0;
+        gap: 0;
+        @include screen(mobile) {
+          overflow-x: initial;
+          overflow-y: initial;
+        }
+        @include screen(web) {
+          gap: rem(24px);
+          margin: 0;
+          overflow: initial;
+        }
+      }
+      &__tab {
+        display: flex;
+        align-items: center;
+        gap: rem(4px);
+        padding: rem($padding10px $padding12px);
+        border-radius: rem(16px);
+        background-color: $white;
+        @include screen(web) {
+          gap: rem(16px);
+          padding: rem($padding14px $padding24px);
+          border-radius: rem(12px);
+          flex-shrink: 1;
+        }
+        &--active {
+          border: rem($border1) solid $black;
+          padding: rem($padding9px $padding11px);
+          &:after {
+            display: none;
+          }
+          @include screen(web) {
+            padding: rem($padding13px 23px);
+          }
+        }
+      }
+      &__inner {
+        @include screen(web) {
+          overflow: initial;
+        }
+        &--qty-2 {
+          .cmp-tabs__tablist {
+            gap: rem(8px);
+            @include screen(web) {
+              gap: rem(16px);
+            }
+          }
+          .cmp-tabs__tab {
+            width: 50%;
+            flex-shrink: 1;
+          }
+        }
+        &--qty-3 {
+          .cmp-tabs__tab {
+            width: 50%;
+            @include screen(tablet) {
+              max-width: 33.333%;
+            }
+            @include screen(web) {
+              max-width: 33.333%;
+            }
+          }
+        }
+        &--qty-4 {
+          .cmp-tabs__tab {
+            width: 50%;
+            @include screen(tablet) {
+              max-width: 25%;
+            }
+            @include screen(web) {
+              max-width: 25%;
+            }
+          }
+        }
+        .c-carousel__handler {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          margin: 0;
+        }
+        .cmp-carousel__actions {
+          background-color: $warm-gray;
+          z-index: 1;
+          position: absolute;
+          left: rem(-16px);
+          top: 50%;
+          transform: translateY(-50%);
+          height: 100%;
+          display: flex;
+          align-items: center;
+          &:last-child {
+            left: initial;
+            right: rem(-16px);
+            top: 50%;
+          }
+          .c-carousel__button[class*='--pagination'].swiper-button-disabled {
+            display: none;
+          }
+        }
+      }
+      &__tabpanel {
+        margin-top: rem($margin24px);
+        @include screen(web) {
+          margin-top: rem(48px);
+        }
+      }
+      .cmp-tabs__tab {
+        .c-image {
+          &__img {
+            border-radius: rem($radius8);
+            min-width: rem(32px);
+            max-width: rem(32px);
+            aspect-ratio: 1;
+            @include screen(web) {
+              min-width: rem(64px);
+              max-width: rem(64px);
+            }
+          }
+        }
+      }
+      .cmp-text {
+        white-space: wrap;
+        @include ellipsis(2);
+        @include screen(web) {
+          @include ellipsis(3);
+        }
+      }
+    }
+  }
+
+  // carousel controler
+  $actions: '.tabs .cmp-tabs__inner .cmp-carousel__actions';
+
+  &.bg-lightgray #{$actions} {
+    background-color: $ivory8;
+  }
+  &.bg-darkgray #{$actions} {
+    background-color: $dark-gray1;
+  }
+  &.bg-black #{$actions} {
+    background-color: $black;
+  }
+  &.bg-white {
+    .tabs .cmp-tabs__tab:not([class*='--active']) {
+      border: rem($border1) solid $mid-gray1;
+    }
+    #{$actions} {
+      background-color: $white;
+    }
+  }
+  &.bg-darkgray,
+  &.bg-black {
+    .tabs .cmp-tabs__tab {
+      color: $black;
+      &--active {
+        border-color: $white;
+      }
+    }
+  }
+  body.dark-theme & {
+    &.bg-darkgray #{$actions} {
+      background-color: $dark-gray2;
+    }
+    &.bg-darkgray,
+    &.bg-black {
+      .tabs .cmp-tabs__tab:not([class*='--active']) {
+        color: $white;
+        background-color: $mid-gray3;
+      }
+    }
+  }
+}
+
+@media print {
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: $white;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .PD0008 {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    border-top: 0 !important;
+    .c-all-specs-area__more {
+      display: none;
+    }
+    .c-all-specs-area {
+      // margin-top: 3.75rem;
+      display: block !important;
+    }
+  }
+  .c-print-wrapper {
+    padding: {
+      right: 0;
+      left: 0;
+    }
+  }
+}

@@ -1,0 +1,303 @@
+@charset "UTF-8";
+// module
+@use '../../scss/abstract/' as *;
+
+$component: '.ST0011';
+#{$component} {
+  > .component > .cmp-container {
+    @include container($design-grid-full, true);
+    @include screen(web) {
+      @include inset-padding-hz;
+      flex-direction: row;
+    }
+  }
+  &.place-text-right {
+    .cmp-container {
+      @include screen(web) {
+        flex-direction: row-reverse #{'/*!rtl:row*/'}; /*! RTL last keep colon */
+      }
+    }
+  }
+  &.place-text-left {
+    .cmp-container {
+      @include screen(web) {
+        flex-direction: row #{'/*!rtl:row-reverse*/'}; /*! RTL last keep colon */
+      }
+    }
+  }
+  // type lef right
+  .type-left-right {
+    .cmp-container {
+      @include screen(web) {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+    }
+    // block : list
+    .c-list {
+      @include screen(web) {
+        width: min(rem(columns(6)), columns(6) / $design-grid-full * 100%);
+      }
+    }
+    // block : c-compare-image
+    .c-compare-image__text-area {
+      @include screen(mobile) {
+        @include inset-padding-hz;
+        margin-top: rem($margin12px);
+      }
+      @include screen(web) {
+        width: min(rem(columns(5)), columns(5) / $design-grid-full * 100%);
+      }
+    }
+  }
+
+  // block : compare image
+  .c-compare-image {
+    $padding-m: $padding10px;
+    $padding-w: $padding32px;
+    &__inner {
+      position: relative;
+      &.with-animation {
+        .c-compare-image__text-inner {
+          bottom: rem($icon24px + $padding-m + $padding12px);
+          @include screen(web) {
+            bottom: rem($icon32px + $padding-w + + $padding24px);
+          }
+        }
+      }
+      &.with-image {
+        .c-compare-image__text-inner {
+          bottom: rem($padding-m);
+          @include screen(web) {
+            bottom: rem($padding-w);
+          }
+        }
+      }
+    }
+    &__text-inner {
+      display: flex;
+      position: absolute;
+      top: rem($padding-m);
+      left: rem($padding-m);
+      right: rem($padding-m);
+      width: calc(100% - rem($padding-m) * 2);
+      @include screen(web) {
+        top: rem($padding-w);
+        left: rem($padding-w);
+        right: rem($padding-w);
+        width: calc(100% - rem($padding-w) * 2);
+      }
+
+      .c-text-contents__bodycopy {
+        z-index: $z-index2;
+        @include lgness-radius('default');
+        padding: rem($padding8px $padding16px);
+        @include screen(web) {
+          padding: rem($padding8px $padding24px);
+        }
+        &.font-black {
+          background-color: $white;
+        }
+        &.font-white {
+          background-color: $black;
+        }
+      }
+    }
+    &__text-bottom {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      width: 100%;
+      padding: rem($padding8px $padding16px);
+      @include screen(web) {
+        padding: rem($padding12px $padding24px);
+      }
+      .c-text-contents__bodycopy {
+        width: 100%;
+      }
+    }
+  }
+  // block : list
+  .c-list {
+    @include reset-list-style;
+    display: flex;
+    flex-direction: row;
+    @include screen(web) {
+      overflow: hidden;
+      @include lgness-radius('default', web);
+    }
+    &__item {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      &:first-child {
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          width: rem($border2);
+          height: 100%;
+          border-right: rem($border2) dashed $white;
+          z-index: $z-index1;
+        }
+      }
+    }
+  }
+  // block : image
+  .c-image {
+    overflow: hidden;
+  }
+  // block : media
+  .c-media {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: $z-index1;
+    &__controls {
+      padding-bottom: rem($padding12px);
+      @include screen(web) {
+        padding-bottom: rem($padding24px);
+      }
+    }
+  }
+  // block : text contents
+  .c-text-contents {
+    // flex: 1;
+    &__eyebrow {
+      font-weight: $font-regular;
+    }
+    &__headline {
+      font-weight: $font-light;
+    }
+    // layout : margin
+    $text-contents: '.c-text-contents';
+    @at-root #{$component} {
+      #{$text-contents}__eyebrow + #{$text-contents}__headline {
+        margin-top: rem($margin8px);
+      }
+      #{$text-contents}__headline + #{$text-contents}__bodycopy {
+        margin-top: rem($margin8px);
+      }
+      * + .c-cta {
+        margin-top: rem($margin12px);
+        @include screen(web) {
+          margin-top: rem($margin24px);
+        }
+      }
+      // font size type
+      .large {
+        #{$text-contents}__eyebrow {
+          font-size: rem(14px);
+          line-height: rem(16px);
+          @include screen(web) {
+            font-size: rem(20px);
+            line-height: rem(24px);
+          }
+        }
+        #{$text-contents}__headline {
+          font-size: rem(36px);
+          line-height: rem(36px);
+          @include screen(web) {
+            font-size: rem(80px);
+            line-height: rem(80px);
+          }
+        }
+        #{$text-contents}__bodycopy {
+          font-size: rem(16px);
+          line-height: rem(18px);
+          @include screen(web) {
+            font-size: rem(24px);
+            line-height: rem(28px);
+          }
+        }
+        * + .c-cta {
+          margin-top: rem($margin12px);
+          @include screen(web) {
+            margin-top: rem($margin24px);
+          }
+        }
+      }
+      .middle {
+        #{$text-contents}__eyebrow {
+          font-size: rem(14px);
+          line-height: rem(16px);
+          @include screen(web) {
+            font-size: rem(16px);
+            line-height: rem(18px);
+          }
+        }
+        #{$text-contents}__headline {
+          font-size: rem(28px);
+          line-height: rem(32px);
+          @include screen(web) {
+            font-size: rem(56px);
+            line-height: rem(60px);
+          }
+        }
+        #{$text-contents}__bodycopy {
+          font-size: rem(16px);
+          line-height: rem(18px);
+          @include screen(web) {
+            font-size: rem(24px);
+            line-height: rem(28px);
+          }
+        }
+      }
+      .small {
+        #{$text-contents}__eyebrow {
+          font-size: rem(14px);
+          line-height: rem(16px);
+          @include screen(web) {
+            font-size: rem(16px);
+            line-height: rem(18px);
+          }
+        }
+        #{$text-contents}__headline {
+          font-size: rem(24px);
+          line-height: rem(28px);
+          @include screen(web) {
+            font-size: rem(36px);
+            line-height: rem(42px);
+          }
+        }
+        #{$text-contents}__bodycopy {
+          font-size: rem(16px);
+          line-height: rem(18px);
+          @include screen(web) {
+            font-size: rem(16px);
+            line-height: rem(20px);
+          }
+        }
+        #{$text-contents}__headline + #{$text-contents}__bodycopy {
+          @include screen(web) {
+            margin-top: rem($margin8px);
+          }
+        }
+      }
+    }
+  }
+  // theme
+  &.bg-darkgray,
+  &.bg-black {
+    .c-compare-image__text-inner {
+      .bg-white,
+      .bg-lightgray {
+        color: initial;
+      }
+    }
+    .c-compare-image__text-bottom {
+      &.bg-white,
+      &.bg-lightgray {
+        .c-text-contents__bodycopy {
+          color: initial;
+        }
+      }
+    }
+  }
+}

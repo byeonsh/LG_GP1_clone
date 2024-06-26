@@ -1,0 +1,306 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_pop-msg.pug
+include ../../components/CT000E/CT502-inc.pug
+include ../_common/_toast.pug
+
+block meta 
+    - var componentId = "ETC000G"
+    - var componentName = "Newsletter"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+mixin title-area(params)
+        - var options = {...params}
+        - var descStyle = "font-w-normal-24 font-m-normal-12"
+        +component-title-area-custom
+            +component-headline({
+                text : "Unsubscribe"
+            })
+            .text.c-region-header__text
+                if options.type == "complete"
+                    .text.font-w-normal-16.font-m-normal-16 Please enter your registered e-mail address and password below to stop receiving our monthly newsletter.
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin myCaptcha({label, id, placeholder, warning= false})
+    .c-input-item
+        .my-captcha
+            .my-captcha__container
+                label.font-w-semibold-16.font-m-semibold-14(for=`${id}`)= label
+                .my-captcha__area
+                    .my-captcha__box
+                    .my-captcha__btnbox
+                        button.sr-only(type='button' class='my-captcha__button my-captcha__button--reload')
+                            span.sr-only refresh
+                        button.sr-only(type='button' class='my-captcha__button my-captcha__button--play')
+                            span.sr-only
+                input(type='text' id=`${id}`, placeholder=`${placeholder}` class=`${warning ? 'my-warn' : ''}`)&attributes(attributes)
+    +myMsg({warning: warning})
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+    if data.type === 'captcha'
+        +myCaptcha({label: data.label, id: data.id, placeholder: data.placeholder, warning: data.warning})
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                    if data.required
+                        em.c-required *
+                            span.sr-only Required fields
+            if data.required
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+            else if data.inputUnderline
+                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`underline` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+            else 
+                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+                    
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+mixin myInputForm(data, column)
+    .my-input(class=`${column ? 'column2-type' : ''}`)
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin complete-msg(params)
+    - var options = {...params}   
+    - var titleStyle = "font-w-light-36 font-m-light-24"
+    - var descStyle = "font-w-normal-16 font-m-normal-16"
+
+    case options.type 
+        when "error:emailaddress"
+            strong(class=titleStyle) 
+                | We are sorry.
+            p.c-message-box__desc(class=descStyle)
+                | Email address is Incorrect.
+                br
+                | Please try again.
+        when "error:emailaddress2"
+            strong(class=titleStyle) 
+                | We are sorry.
+            p.c-message-box__desc(class=descStyle)
+                | We apologize for this inconvenience.
+                br
+                | Please try again.
+
+mixin completion(params)
+    - var options = {...params}   
+    .c-message-box&attributes(attributes)
+        .c-message-box__wrapper
+            .c-message-box__icon
+            .c-text-contents
+                +complete-msg(options)
+            .button
+                +defaultButton({
+                    name: 'OK', 
+                    wSize: 'medium', 
+                    mSize: 'small', 
+                    buttonStyle: 'highlight', 
+                    isButton: false
+                })
+
+
+mixin ETC000G
+    .ETC000G
+        // News letter 구독 해제
+        // Email address
+        .guide-text-type Newsletter 구독 해제
+        //// [SG] Newsletter 구독 해제
+        .guide-text-option [SG] 
+        .my-component__wrap
+            .my-component
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        +headline('font-w-light-56 font-m-light-28', "h2", "Newsletter")
+        .my-component__wrap
+            .my-component
+                .my-contents
+                    .my-form
+                        .my-form__title.font-w-normal-32.font-m-normal-20 Unsubscribe
+                            p.my-form-required.font-w-normal-16.font-m-normal-12
+                                em.c-required * 
+                                    span.sr-only Required fields
+                                | Required fields  
+                            .text.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-16
+                                p.cmp-text(data-cmp-data-layer="") Please enter your registered e-mail address and password below to stop receiving our monthly newsletter.
+                .my-contents
+                    .my-formbox
+                        +myInputForm([
+                            {
+                                type: "email",
+                                label: "Email address",
+                                id: "email",
+                                required: true,
+                                warningFirst: ["Email address is required."],
+                                placeholder: "",
+                                infoText: 'Please enter your email. Try something more like lg@domain.com.',
+                            },
+                        ])
+                    .button.c-cta.my-button
+                        +defaultButton({name: "Cancel", wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                        +defaultButton({name: "Unsubscribe", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+        //// [TR] Newsletter 구독 해제
+        .guide-text-option [TR] 
+        .my-component__wrap
+            .my-component
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        +headline('font-w-light-56 font-m-light-28', "h2", "Bülten")
+                    .text.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-16
+                        p.cmp-text(data-cmp-data-layer="") Aylık bültenimizi almayı durdurmak için lütfen kayıtlı e-posta adresinizi aşağıya girin.
+        .my-component__wrap
+            .my-component
+                .my-contents
+                    .my-form
+                        .my-form__title.font-w-normal-32.font-m-normal-20 boneliğini iptal et.
+                            p.my-form-required.font-w-normal-16.font-m-normal-12
+                                em.c-required * 
+                                    span.sr-only Required fields
+                                | Required fields  
+                            .text.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-16
+                                p.cmp-text(data-cmp-data-layer="") Aylık bültenimizi almayı durdurmak için lütfen kayıtlı e-posta adresinizi aşağıya girin.
+                .my-contents
+                    .my-formbox
+                        +myInputForm([
+                            {
+                                type: "email",
+                                label: "E-posta Adresi",
+                                id: "email",
+                                required: true,
+                                warningFirst: ["Email address is required."],
+                                placeholder: "",
+                                infoText: 'Lütfen Emailnızı giriniz. lg@domain.com gibi bir adres deneyiniz.',
+                            },
+                        ])
+                    .button.c-cta.my-button
+                        +defaultButton({name: "Iptal", wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                        +defaultButton({name: "Aboneliğini iptal et.", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+        //// [KZ] Newsletter 구독 해제
+        .guide-text-option [KZ] 
+        .my-component__wrap
+            .my-component
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        +headline('font-w-light-56 font-m-light-28', "h2", "Новостная Рассылка")
+        .my-component__wrap
+            .my-component
+                .my-contents
+                    .my-form
+                        .my-form__title.font-w-normal-32.font-m-normal-20 Отписаться
+                            p.my-form-required.font-w-normal-16.font-m-normal-12
+                                em.c-required * 
+                                    span.sr-only Required fields
+                                | Required fields  
+                            .text.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-16
+                                p.cmp-text(data-cmp-data-layer="") Нажмите здесь, если Вы больше не хотите получать нашу ежемесячную рассылку.
+                .my-contents
+                    .my-formbox
+                        +myInputForm([
+                            {
+                                type: "email",
+                                label: "Электронный адрес",
+                                id: "email",
+                                required: true,
+                                warningFirst: ["Адрес электронной почты требуется.."],
+                                placeholder: "",
+                                infoText: 'Пожалуйста укажите Ваш email. Попробуйте, что то похожее наlg@domain.com.',
+                            },
+                            {
+                                type: "email",
+                                label: "Пароль",
+                                id: "email",
+                                required: true,
+                                warningFirst: ["Необходим пароль."],
+                                placeholder: "",
+                            },
+                        ])
+                    .button.c-cta.my-button
+                        +defaultButton({name: "Отменить", wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                        +defaultButton({name: "Отписаться", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})
+
+        // [SG] Newsletter 구독 해제
+        // Email address Message Error 1
+        .guide-text-option [SG] Message Error
+        .c-wrapper.BU0001.bg-default
+            .my-component__wrap
+                .my-component
+                    .c-text-contents
+                        .title.c-text-contents__headline
+                            +headline('font-w-light-56 font-m-light-28', "h2", "Newsletter")
+            .my-component__wrap 
+                .component.my-component
+                    .my-contents
+                        .cmp-container
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline('font-w-light-36 font-m-light-28', "h2", "Unsubscribe")
+                                .text.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-16
+                                    p.cmp-text(data-cmp-data-layer="") Please enter your registered e-mail address and password below to stop receiving our monthly newsletter.
+                            //- +title-area({type : "complete"})
+                            +completion({type : "error:emailaddress"})(class="c-message-box--emailaddress-error")
+        
+        // [KZ] Newsletter 구독 해제
+        // Email address Message Error 1
+        .guide-text-option [KZ] Message Error
+        .c-wrapper.BU0001.bg-default
+            .my-component__wrap
+                .my-component
+                    .c-text-contents
+                        .title.c-text-contents__headline
+                            +headline('font-w-light-56 font-m-light-28', "h2", "Новостная Рассылка")
+            .my-component__wrap 
+                .component.my-component
+                    .my-contents
+                        .cmp-container
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline('font-w-light-36 font-m-light-28', "h2", "Отписаться")
+                                .text.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-16
+                                    p.cmp-text(data-cmp-data-layer="") Нажмите здесь, если Вы больше не хотите получать нашу ежемесячную рассылку.
+                            //- +title-area({type : "complete"})
+                            +completion({type : "error:emailaddress2"})(class="c-message-box--emailaddress-error")
+block content
+    // Component Markup
+    .c-wrapper
+        .component
+            .fluid-container
+                +ETC000G

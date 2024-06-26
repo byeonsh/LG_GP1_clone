@@ -1,0 +1,282 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+
+block meta 
+    - var componentId = "CS0029"
+    - var componentName = "Environment"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    //- // An area for testing options when coding. 
+    //- // Please do not use it during development.
+    //- .guide 
+    //-     .grid-1600 
+    //-     .grid-1440
+    //-     .inner
+    //-         .guide-list
+    //-             a(href="../../list-st.html") List 
+    //-         .guide-title #{componentId}. #{componentName}
+    //-         .guide-wrapper
+    //-             script. 
+    //-                 const guideList = {
+    //-                     '.c-wrapper' : [
+    //-                         {
+    //-                             'name' : 'Top margin',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : true, 'add' : 'margin-top'},
+    //-                             ]
+    //-                         },
+    //-                         {
+    //-                             'name' : 'Bottom margin',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : true, 'add' : 'margin-bottom'},
+    //-                             ]
+    //-                         },
+    //-                         {
+    //-                             'name' : 'BG Color',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : false, 'add' : 'bg-white', 'remove' : 'bg-lightgray, bg-darkgray, bg-black'},
+    //-                                 {'toggle' : false, 'add' : 'bg-lightgray', 'remove' : 'bg-white, bg-darkgray, bg-black'},
+    //-                                 {'toggle' : false, 'add' : 'bg-darkgray', 'remove' : 'bg-white, bg-lightgray, bg-black'},
+    //-                                 {'toggle' : false, 'add' : 'bg-black', 'remove' : 'bg-white, bg-lightgray, bg-darkgray'},
+    //-                             ]
+    //-                         }
+    //-                     ],
+    //-                     '.type-text, .type-disclaimer' : [
+    //-                         {
+    //-                             'name' : 'Text Align',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : false, 'add' : 'align-text-left', 'remove' : 'align-text-center, align-text-right'},
+    //-                                 {'toggle' : false, 'add' : 'align-text-center', 'remove' : 'align-text-left, align-text-right'},
+    //-                                 {'toggle' : false, 'add' : 'align-text-right', 'remove' : 'align-text-left, align-text-center'},
+    //-                             ]
+    //-                         }
+    //-                     ],                        
+    //-                     '.type-disclaimer .component' : [
+    //-                         {
+    //-                             'name' : 'Width Size',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : false, 'add' : 'width-1440', 'remove' : 'width-1600'},
+    //-                                 {'toggle' : false, 'add' : 'width-1600', 'remove' : 'width-1440'},
+    //-                             ]
+    //-                         }
+    //-                     ],
+    //-                     '.type-side' : [
+    //-                         {
+    //-                             'name' : 'Align',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : false, 'add' : 'align-left', 'remove' : 'align-right'},
+    //-                                 {'toggle' : false, 'add' : 'align-right', 'remove' : 'align-left'},
+    //-                             ]
+    //-                         }
+    //-                     ],
+    //-                     '.c-text-contents__bodycopy, .c-text-contents__disclaimer' : [
+    //-                         {
+    //-                             'name' : 'Font Options',
+    //-                             'buttons' : [
+    //-                                 {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+    //-                                 {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+    //-                                 {'toggle' : true, 'add' : 'font-italic'},
+    //-                                 {'toggle' : true, 'add' : 'font-underline'},
+    //-                             ]
+    //-                         }
+    //-                     ],
+    //-                 };
+
+    mixin printTab(div, num, selected)
+        if selected
+            li.cmp-tabs__tab.cmp-tabs__tab--active(href="#" role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0" data-cmp-hook-tabs="tab" aria-selected="true")
+                a(role="tab" aria-label="").font-m-normal-16.font-m-normal-32
+                    if block
+                        block
+        else 
+            li.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1" data-cmp-hook-tabs="tab" aria-selected="false")
+                a(role="tab" aria-label="").font-m-normal-16.font-m-normal-32
+                    if block
+                        block
+    mixin printTabPanel(div, num, selected)
+        if selected 
+            .c-tabs__tabpanel.c-tabs__tabpanel--active.cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+                if block
+                    block
+        else 
+            .c-tabs__tabpanel.cmp-tabs__tabpanel(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+                if block
+                    block
+
+    .guide-text-type Environment
+    .guide-text-option Recycling
+    .c-wrapper.CS0029.type-text.margin-top.margin-bottom
+        .component
+            .CS0029__container
+                // block : text-contents
+                .c-text-contents
+                    // __headline Unnecessary by design. Handle display:none to match the component structure
+                    .title.c-text-contents__headline
+                        .cmp-text.font-m-normal-20.font-w-light-36(data-cmp-data-layer="")
+                            strong LG are proud to work in unison with
+                            | WEEE and REPIC to ensure the responsible recycling of electrical goods.
+                    .text.c-text-contents__subcopy
+                        .cmp-text.font-m-normal-20.font-w-light-36(data-cmp-data-layer="") 
+                            p LG are proud to work in unison with
+                            | WEEE and REPIC to ensure the responsible recycling of electrical goods.
+                    .text.c-text-contents__bodycopy
+                        .cmp-text.font-w-normal-20.font-m-normal-16(data-cmp-data-layer="") 
+                            p The WEEE (Waste Electrical and Electronic Equipment) directive is an
+                            | environmental initiative designed to ensure electrical goods are recycled correctly,
+                            | rather than being sent directly to landfill sites.
+                ul.c-registration-number 
+                    li.c-registration-number__item 
+                        p.font-m-normal-16.font-w-normal-20 LG UK registration number
+                        p.c-registration-number__number.font-m-light-28.font-w-light-56 WEE/EE0057TS
+                    li.c-registration-number__item 
+                        p.font-m-normal-16.font-w-normal-20 LG Ireland registration number
+                        p.c-registration-number__number.font-m-light-28.font-w-light-56 IE 00850 WB
+
+                .c-list
+                    dl.c-list__item
+                        div
+                            dt.font-m-normal-16.font-w-light-36 REPIC
+                            dd.font-m-normal-12.font-w-normal-20 Find out more about recycling in the UK, including what can be recycled and where to recycle.
+                            dd.button
+                                +defaultButton({name: 'Learn more', wSize: 'medium', mSize: 'small'})(data-link-name)
+                        dd.c-list__image 
+                            +printLazyImage("https://via.placeholder.com/80x80/000/333/?text=Image")
+
+                    dl.c-list__item
+                        div
+                            dt.font-m-normal-16.font-w-light-36 REPIC
+                            dd.font-m-normal-12.font-w-normal-20 Find out more about recycling in the UK, including what can be recycled and where to recycle.
+                            dd.button
+                                +defaultButton({name: 'Learn more', wSize: 'medium', mSize: 'small'})(data-link-name)
+                        dd.c-list__image 
+                            +printLazyImage("https://via.placeholder.com/80x80/000/333/?text=Image")
+
+    .guide-text-option Slavery Act
+    .c-wrapper.CS0029.type-text.margin-top.margin-bottom
+        .component
+            .CS0029__container
+                .c-cs-header
+                    .c-text-contents
+                        .title.c-text-contents__headline.font-m-light-28.font-w-light-56 UK Modern Slavery Act
+                    // block : text-contents
+                .c-text-contents
+                    // __headline Unnecessary by design. Handle display:none to match the component structure
+                    .title.c-text-contents__headline
+                        .cmp-text.font-m-normal-20.font-w-light-36(data-cmp-data-layer="")
+                            strong Modern Slavery Act –
+                            | anti slavery and human trafficking statement for LG Electronics
+                    .text.c-text-contents__subcopy
+                        .cmp-text.font-m-normal-20.font-w-light-36(data-cmp-data-layer="") 
+                            p Modern Slavery Act –
+                            | anti slavery and human trafficking statement for LG Electronics
+                    .text.c-text-contents__bodycopy
+                        .cmp-text.font-w-normal-20.font-m-normal-16(data-cmp-data-layer="") 
+                            p Pursuant to the United Kingdom (UK) Modern Slavery Act 2015, Chapter 30, Part 6, Section 54, we, LG Electronics confirm we have taken steps during the 2020 financial year (running from 1 January – 31 December) to identify the risks of slavery and human trafficking taking place in our supply chains and business. This will be our fourth Modern Slavery Act statement.
+                .c-text-box 
+                    div
+                        .c-text-box__bold-type.font-m-normal-20.font-w-light-36 About our business
+                    div.c-text-box__list-type 
+                        p LG Electronics European Holding B.V.
+                        ul 
+                            li.font-m-normal-16.font-w-normal-16  LG Electronics European Holding B.V.
+                            li.font-m-normal-16.font-w-normal-16  LG Electronics U.K. Ltd
+                    div 
+                        p LG Electronics is a global innovator in technology and consumer electronics with a presence in almost every country and an international workforce of more than 75,000. LG is a leading manufacturer of consumer and commercial products ranging from TVs, home appliances, air solutions, monitors, service robots, automotive components and its premium LG SIGNATURE and intelligent LG ThinQ brands are familiar names world over. Visit www.LGnewsroom.com for the latest news
+                    div.c-text-box__list-type 
+                        p LG Electronics manufacture and sell electronic and telecommunications goods under the following four business units:
+                        ul 
+                            li.font-m-normal-16.font-w-normal-16  Home entertainment
+                            li.font-m-normal-16.font-w-normal-16  Home entertainment
+                            li.font-m-normal-16.font-w-normal-16  Vehicle Component Solutions
+                            li.font-m-normal-16.font-w-normal-16  Business Solutions
+                    div 
+                        p Any reference to LG Electronics in this statement refers to LG Electronics European Holding B.V. and LG Electronics U.K. Ltd.
+                    div
+                        .c-text-box__bold-type.font-m-normal-20.font-w-light-36 Anti – slavery and human trafficking measures
+                    div 
+                        p We consider the issues of slavery and human trafficking very seriously and have taken measures (especially at our HQ level) to identify and reduce this risk across all our supply chains. As a member of the Responsible Business Alliance (RBA, formerly the EICC)) - a nonprofit coalition of electronics companies committed to supporting the rights and well-being of workers and communities engaged in the global electronics supply chain, we demonstrate our commitment to environmental and social responsibility. RBA members commit publicly to the 
+                            a(href="https://www.responsiblebusiness.org/code-of-conduct/" target="_blank") RBA Code of Conduct 
+                            |  (Code) and are expected to actively pursue conformance to the Code and its standards as a total supply chain initiative. We also publish our own 
+                            a(href="https://www.lg.com/global/social-strategic-task-1-2" target="_blank") Supplier Code of Conduct 
+                            |  based on the RBA Code of Conduct on our corporate website and incorporate its provisions into our standard contracts with suppliers.
+                        a(href="/content/lge/gb/en/") https://www.lg.com/uk
+                    div 
+                        p We are proud of the measures we undertake and the below links give further details on our corporate social responsibility in supply chain management and on our policies on conflict minerals.
+                        a(href="https://www.lg.com/global/social-strategic-task-1-2" target="_blank") https://www.lg.com/global/csr-in-supply-chain-business-partner
+                        a(href="https://www.lg.com/global/conflict-minerals-business-partner" target="_blank") https://www.lg.com/global/conflict-minerals-business-partner
+                    div 
+                        p Our efforts to eradicate slavery and human trafficking in our supply chain and own business include the following:
+                    div 
+                        p 1. Verification and risk assessment:
+                        p We evaluate and address risks of human trafficking and slavery through conformance to the Code, Section A.1, which states, among other standards, that: forced, bonded (including debt bondage) or indentured labour, involuntary prison labour, slavery or trafficking of persons shall not be done. Annually, we are trying to reduce any risks within our supply chain and our 2020 Self- Assessment results show that business sites in 38 locations and 1416 suppliers (these include those in Europe, China, Korea, Asia, the Middle East and Africa and the Americas) were assessed and we continuously look to address any issues that are flagged. Key results from SAQ for own manufacturing sites and suppliers are shown as below. Further details on our supply chain management are available through our 
+                            a(href="https://www.lg.com/global/social-strategic-task-1-2" class="c-text-box__text-in-type" target="_blank") Corporate Social Responsibility in Supply Chains link.[SEL1]
+                    div.c-text-box__list-type 
+                        p We conduct these activities regularly and extensively on the following:
+                        ul 
+                            li.font-m-normal-16.font-w-normal-16  All LG Electronics’ manufacturing facilities – once a year
+                            li.font-m-normal-16.font-w-normal-16  First tier suppliers (of our direct suppliers) – once a year
+                        p The RBA also convenes regular teleconferences, webinars and other meetings that make us better able to understand and monitor risks associated with labour recruitment practices.
+                    div 
+                        p Any reference to LG Electronics in this statement refers to LG Electronics European Holding B.V. and LG Electronics U.K. Ltd.
+                    div 
+                        p 2. Supplier audits:
+                        p We conduct VAP audits on our suppliers or obtain audit reports through RBA’s audit sharing system for major suppliers, these audit reports are considered valid for no more than two years. We also conduct internal on-site audits every year for high risk suppliers identified by an annual SAQ. The tools referenced above help us decide which suppliers to audit after identifying the risk levels for the slave labour or human trafficking practices.
+                    div 
+                        p Both the VAP and internal on-site audits assess suppliers against the entire RBA Code, including: Labour, Health &amp; Safety, Environment, Ethics, and Management Systems. It includes many different components, such as on-site Inspections, Document Reviews, and Worker and Management Interviews.
+                    div 
+                        p In 2020, we undertook 8 external audits including 4 VAP audits for 8 manufacturing sites and found the majority of findings were ‘working hour', 'occupational safety', and 'emergency preparedness’. For suppliers, 20 internal audits for high risk suppliers were conducted by procurement managers. No human trafficking cases were found from both external and internal audits.
+                    div 
+                        p 3. Certification:
+                        p Section E of the RBA Code includes a clause stating that companies should have a management system that contains “a process to communicate the Code requirements and to monitor supplier compliance to the Code.” This does not mean that suppliers submit certifications. However, we pursue full compliance to the Code, Section A.1 for all major suppliers and expect them to monitor their suppliers.
+                    div 
+                        p 4. Internal accountability:
+                        p Non-compliance with the RBA Code on slavery and human trafficking is taken very seriously. It is considered one of the most severe types of non-conformance and corrective action plans to remedy any identified instances of non-conformance are expected to be implemented in the shortest possible timeframe. Furthermore, for our own employees who fail to meet our code on slavery and trafficking, disciplinary action including dismissal will be executed by the disciplinary committee’s decision. For suppliers who refuse to conduct our requested corrective actions, we may terminate business relationships, as specified in the contract.<br>Case Study: We found that wage deduction from trainees' salary occurred at a subsidiary in Asia. This deduction was conducted at the time of hiring by a training institution who manage trainees and four US dollars were deducted as a uniform fee for 182 trainees each. Corrective action on this non-compliance was made including reimbursement of deducted uniform fee to all 182 trainees.
+                    div 
+                        p 5. Capacity-building/Training:
+                        p RBA’s Learning Academy contains online learning modules that cover the RBA Code of Conduct. In addition, there are modules on hiring and related topics that are particularly relevant to these issues. Modules can be assigned to both internal staff and suppliers and learning can be tracked. Members can also upload their own resources to the Learning Academy for their teams. The RBA encourages members to share any resources they may have on these topics with the RBA for sharing in the Learning Academy. The RBA also offers in-person training sessions on a variety of topics. In 2019, we developed a training module on forced labour within our regular Code of Conduct training for employees which was undertaken during 2020. We are committed to good practice, high standards and to being supportive to staff who raise genuine concerns, this is captured under the LGEUK Whistleblowing Policy which encourages employees to raise concerns about any issues, including slavery, human trafficking, threats to customers, third parties or the public generally. This policy applies to all our employees, officers and consultants.
+                    div 
+                        p Measures for responsible mineral sourcing
+                    div
+                        .c-text-box__bold-type.font-m-normal-20.font-w-light-36 LG Electronics’ policy for conflict minerals
+                    div 
+                        p Respect for human rights and the environment are core commitments of LG Electronics (LGE) as a responsible corporate citizen. We are particularly concerned about the human rights abuses that may be associated with extracting, trading, handling and exporting minerals from the Democratic Republic of Congo (“DRC”) and adjoining countries. It is LGE’s policy that tin, tantalum, tungsten and gold (3TG) contained in our products shall not be derived from sources that finance or benefit armed groups in the DRC or adjoining countries. In addition to conflict minerals management, LGE has established responsible mineral sourcing practices for cobalt in response to reports of child labour and other social issues.
+                    div 
+                        p LGE is committed to adopting, widely disseminating and incorporating principles in support of these goals in contracts, agreements and/or communications with suppliers. LGE expects our suppliers to have in place policies and due-diligence measures to facilitate the sourcing of minerals that are “DRC conflict free”. In addition, LGE requires our suppliers to comply with LGE’s Supplier Code of Conduct, based on the Responsible Business Alliance (RBA) Code of Conduct, which sets forth LGE’s broader standards for suppliers and includes provisions relating to human rights, ethical conduct, and environmental protection as well as additional provisions relating to conflict minerals.
+                    div.c-text-box__list-type 
+                        p Pursuant to this policy, LGE will also:
+                        ul 
+                            li.font-m-normal-16.font-w-normal-16  Carry out due diligence with relevant suppliers consistent with the OECD Due Diligence Guidance for Responsible Supply Chains of Minerals from Conflict-Affected and High-Risk Areas and encourage our suppliers to conduct due diligence with their suppliers. 
+                            li.font-m-normal-16.font-w-normal-16  Encourage suppliers to responsibly source tin, tantalum, tungsten and gold from third party conflict-free validated sources in the DRC and adjoining countries in order to prevent an embargo and associated worsening of economic and humanitarian conditions. In addition, all suppliers to LGE must document their efforts to determine the source and provide LGE with evidence as to the origin of any tantalum, tin, tungsten and gold in materials to be supplied to LGE. In other words, all suppliers must register conflict minerals (3TG) information on LGE’s IT system or they are prohibited from supplying their materials to LGE. LGE has been tracing cobalt in its supply chain as well and is supporting industry initiatives to advance due diligence for responsible cobalt supply chains.
+                            li.font-m-normal-16.font-w-normal-16  Establish the expectation that our suppliers’ source 3TG and cobalt from smelters and refiners found conformant to the Responsible Minerals Assurance Process (RMAP), or an alternative facility assessment program, where available. LGE has set a target to source from only RMAP conformant smelters and refiners for conflict minerals (3TG) by 2021.
+                            li.font-m-normal-16.font-w-normal-16  Collaborate with our suppliers and others on industry-wide solutions (RBA, Responsible Minerals Initiative (RMI), etc.) to request smelters and refiners participate in the RMAP or an alternative facility assessment program.
+                            li.font-m-normal-16.font-w-normal-16  Commit to transparency in the implementation of this policy by making available reports on our progress to relevant stakeholders and the public.
+                    div 
+                        p Collaborating to address conflict minerals
+                    div
+                        .c-text-box__bold-type.font-m-normal-20.font-w-light-36 Responsible Minerals Initiative (RMI)
+                    div 
+                        p LG Electronics is a corporate member of the Responsible Minerals Initiative (RMI), an initiative of the RBA to support the sourcing of conflict free minerals. The RMI provides its members with the most up to date information on conflict-free smelters and refiners, tools for conducting due diligence, and offers a forum for exchanging best practices to address conflict-mineral, as well as broader responsible mineral sourcing issues.<br>The RMI also operates the Responsible Minerals Assurance Process (RMAP), a program that uses third party independent auditors to validate that participating smelters and refiners have adequate policies and due diligence processes in place to trace the origin of the minerals that they process and assess whether they were obtained from conflict free sources. This program enables downstream companies, like LG Electronics, to more confidently source conflict free minerals and promote cross industry efforts to drive a conflict free global supply chain in the DRC and adjoining countries.
+                    div 
+                        p LGE is committed to adopting, widely disseminating and incorporating principles in support of these goals in contracts, agreements and/or communications with suppliers. LGE expects our suppliers to have in place policies and due-diligence measures to facilitate the sourcing of minerals that are “DRC conflict free”. In addition, LGE requires our suppliers to comply with LGE’s Supplier Code of Conduct, based on the Responsible Business Alliance (RBA) Code of Conduct, which sets forth LGE’s broader standards for suppliers and includes provisions relating to human rights, ethical conduct, and environmental protection as well as additional provisions relating to conflict minerals.
+                    div
+                        .c-text-box__bold-type.font-m-normal-20.font-w-light-36 Other efforts to support responsible mineral sourcing
+                    div 
+                        p In addition to programs that focus on conflict affected regions, LGE is also engaged with initiatives to better understand emerging challenges in responsible minerals sourcing – such as cobalt, tin and mica – and the ways that the industry can have a positive impact on more sustainable forms of mining to respect human rights and mitigate environmental impacts.<br>For example, LGE was an early collaborator to better understand challenges around cobalt mining and child labor, working with our major battery supplier to contribute sourcing information for the RMI’s initiative to establish the first traceability tool and RMAP audit protocol for cobalt refiners. We provided materials usage data as part of an effort to better understand the role that different industries play as a consumer of mica and its derivatives. And, LGE is in its seventh year as a supporter of sustainable tin mining efforts in Banka-Belitung, Indonesia, working with a multi-stakeholder group co-funded by the European Partnership for Responsible Minerals (EPRM) to launch pilot projects aimed at land reclamation for alternative livelihoods and occupational safety training programs for mine workers.<br>Further expanding our outreach, LG Electronics joined the Public Private Alliance for Responsible Mineral Trade (PPA) in 2018 to further collaborate with key stakeholders in the U.S. government and non-profit community to support in-region sustainable solutions for conflict-free supply chains.
+                .c-sign 
+                    p.font-m-normal-16.font-w-normal-20 This disclosure confirms our efforts to eradicate slavery and human trafficking practices within our supply chain and it shall be reviewed annually and updated accordingly. This current statement was approved by the board on 25 May 2021 and was subsequently signed and uploaded.   
+                    +printLazyPicture("../../mocks/CS0029/signature_CFO_1.svg", "../../mocks/CS0029/signature_CFO_1.svg")

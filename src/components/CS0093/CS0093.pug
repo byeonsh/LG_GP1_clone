@@ -1,0 +1,176 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_cs-form.pug
+
+block meta 
+    - var componentId = "CS0093"
+    - var componentName = "Energy Consumption Calculator"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content                         
+    //- mixin trigger()
+    mixin selectProduct(params)
+        - var option={isResult:false,isNodata:false,isDisabledtype01:false ,isBtn:false, isDisabledAll:false,...params}
+        .cs-form__box
+            p.cs-form__box-title.font-m-normal-20.font-w-normal-32 Select your product specifications
+            .cs-form__inner
+                .cmp-form
+                    if option.isDisabledAll
+                        +csForm_Select({id: 'productType', label: 'Product type', require: 'true', requireMsg: 'Product type is required.', value_01: 'Select product type', value_02: 'Select product type-2' ,disabled: 'true'})
+                    else
+                        +csForm_Select({id: 'productType', label: 'Product type', require: 'true', requireMsg: 'Product type is required.', value_01: 'Select product type', value_02: 'Select product type-2' })
+                .cmp-form
+                    if option.isDisabledtype01 || option.isDisabledAll
+                        +csForm_Select({id: 'capacity', label: 'Capacity(ton)', require: 'true', requireMsg: 'Capacity(ton) is required.', value_01: 'Select capacity', value_02: 'Select capacity-2', disabled: 'true' })
+                    else
+                        +csForm_Select({id: 'capacity', label: 'Capacity(ton)', require: 'true', requireMsg: 'Capacity(ton) is required.', value_01: 'Select capacity', value_02: 'Select capacity-2'})
+                .cmp-form
+                    if option.isDisabledAll
+                        +csForm_Select({id: 'starRation', label: 'Star ration', require: 'true', requireMsg: 'Star ration is required.', value_01: 'Select star ration', value_02: 'Select star ration-2' , disabled: 'true'})
+                    else 
+                        +csForm_Select({id: 'starRation', label: 'Star ration', require: 'true', requireMsg: 'Star ration is required.', value_01: 'Select star ration', value_02: 'Select star ration-2' })
+
+                .cmp-form
+                    if option.isDisabledAll
+                        +csForm_Input({id: 'electricityRate', label: 'Electricity rate(Rs)', type:"text", placeholder:"Put per unit cost", require: 'true', requireMsg: 'Electricity rate(Rs) is required.​​​', invalidMsg: "This subject is invalid.", class: "textInput__nome" ,disabled: 'true' })
+                    else
+                        +csForm_Input({id: 'electricityRate', label: 'Electricity rate(Rs)', type:"text", placeholder:"Put per unit cost", require: 'true', requireMsg: 'Electricity rate(Rs) is required.​​​', invalidMsg: "This subject is invalid.", class: "textInput__nome" })
+
+            .c-button-wrap
+                .button.c-cta
+                    +defaultButton({name: 'Reset', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+                    +defaultButton({name: 'Submit', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(type="submit" class="c-btn-next" aria-label="")
+            if option.isResult
+                .c-prd-info
+                    .c-prd-info__inner 
+                        .c-prd-info__group
+                            p.font-m-normal-20.font-w-normal-24 Result(annual consumption)
+                            dl
+                                dt.font-m-normal-16.font-w-normal-20 Electricity consumption
+                                dd.font-m-normal-16.font-w-normal-20 1220 KWH/Units
+                            dl
+                                dt.font-m-normal-16.font-w-normal-20 Cost of consumption
+                                dd.font-m-normal-16.font-w-normal-20 Rs. 23424.00
+                    if option.isBtn
+                        .c-button-wrap
+                            .button.c-cta
+                                +defaultButton({name: 'Compare the savings', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(aria-label="")
+            if option.isNodata
+                .c-no-result 
+                    .c-no-result__wrap
+                        span.c-no-result__icon 
+                        p.font-m-normal-16.font-w-normal-20 No current data matches your selection.
+
+    mixin selectProductBefore(params)
+        - var option={beforeHidden:'',afterHidden:'',hiddenClass:'',isBtn:true,isDisabled:false,...params}
+        .cs-form__box.cs-form__select(class=`cs-form__select-${option.hiddenClass}`)
+            .cs-form__box-before(class=`${option.beforeHidden}`)
+                p.font-m-normal-16.font-w-normal-24 You can compare product specifications.
+            .cs-form__box-after(class=`${option.afterHidden}`)
+                p.cs-form__box-title.font-m-normal-20.font-w-normal-32 Select compare product specifications
+                button(type="button" class="c-btn-close" aria-label="") close button
+                .cs-form__inner
+                    .cmp-form
+                        +csForm_Select({id: 'productType', label: 'Product type', require: 'true', requireMsg: 'Product type is required.', value_01: 'Select product type', value_02: 'Select product type-2' })
+                    .cmp-form
+                        if  option.isDisabled
+                            +csForm_Select({id: 'capacity', label: 'Capacity(ton)', require: 'true', requireMsg: 'Capacity(ton) is required.', value_01: 'Select capacity', value_02: 'Select capacity-2', disabled: 'true' })
+                        else
+                            +csForm_Select({id: 'capacity', label: 'Capacity(ton)', require: 'true', requireMsg: 'Capacity(ton) is required.', value_01: 'Select capacity', value_02: 'Select capacity-2' })
+
+                    .cmp-form
+                        +csForm_Select({id: 'starRation', label: 'Star ration', require: 'true', requireMsg: 'Star ration is required.', value_01: 'Select star ration', value_02: 'Select star ration-2' })
+                    .cmp-form
+                        if  option.isDisabled
+                            +csForm_Input({id: 'electricityRate', label: 'Electricity rate(Rs)', type:"text", placeholder:"Put per unit cost", require: 'true', requireMsg: 'Electricity rate(Rs) is required.​​​', invalidMsg: "This subject is invalid.", class: "textInput__nome" , disabled: 'true' })
+                        else
+                            +csForm_Input({id: 'electricityRate', label: 'Electricity rate(Rs)', type:"text", placeholder:"Put per unit cost", require: 'true', requireMsg: 'Electricity rate(Rs) is required.​​​', invalidMsg: "This subject is invalid.", class: "textInput__nome" })
+                .c-button-wrap
+                    .button.c-cta
+                        +defaultButton({name: 'Reset', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+                        +defaultButton({name: 'Submit', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(type="submit" aria-label="")
+                .c-prd-info
+                    .c-prd-info__inner 
+                        .c-prd-info__group
+                            p.font-m-normal-20.font-w-normal-24 Result(annual consumption)
+                            dl
+                                dt.font-m-normal-16.font-w-normal-20 Electricity consumption
+                                dd.font-m-normal-16.font-w-normal-20 1220 KWH/Units
+                            dl
+                                dt.font-m-normal-16.font-w-normal-20 Cost of consumption
+                                dd.font-m-normal-16.font-w-normal-20 Rs. 23424.00
+                    if option.isBtn == true
+                        .c-button-wrap
+                            .button.c-cta
+                                +defaultButton({name: 'Compare the savings', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(aria-label="")
+
+    // Component Markup
+    .guide-text-type Energy Consumption Calculator
+
+    .guide-text-option Default
+    .c-wrapper.CS0093
+        .component
+            .CS0093__container
+                .container
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                    .cs-form
+                        .cs-form__wrap
+                            +selectProduct({isDisabledtype01:true})
+                            // select before add class .cs-form__select-before
+                            +selectProductBefore({afterHidden:'hidden',hiddenClass:'before'})
+    
+    .guide-text-option Step1_If there is a calculation result
+    .c-wrapper.CS0093
+        .component
+            .CS0093__container
+                .container
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                    .cs-form
+                        .cs-form__wrap
+                            +selectProduct({isResult:true,isBtn:true})
+                            // select before add class .cs-form__select-before
+                            +selectProductBefore({afterHidden:'hidden',hiddenClass:'before'})
+
+    .guide-text-option Step1_If there is no calculation result
+    .c-wrapper.CS0093
+        .component
+            .CS0093__container
+                .container
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                    .cs-form
+                        .cs-form__wrap
+                            +selectProduct({isNodata:true})
+
+                            // select before add class .cs-form__select-before
+                            +selectProductBefore({afterHidden:'hidden',hiddenClass:'before'})
+                            
+    .guide-text-option Step2, step3
+    .c-wrapper.CS0093
+        .component
+            .CS0093__container
+                .container
+                    .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                    .cs-form
+                        .cs-form__wrap
+                            +selectProduct({isDisabledAll:true,isResult:true,isBtn:true})
+
+                            // select after add class .cs-form__select-after
+                            +selectProductBefore({beforeHidden:'hidden',hiddenClass:'after',isBtn:false,isDisabled:true})
+
+                            .cs-form__box.comparison-block.comparison-text.on
+                                p.font-m-normal-16.font-w-normal-28.c-text-comparison Your product consumes more electricity worth Rs. 
+                                    span 2112.00 
+                                    | per year

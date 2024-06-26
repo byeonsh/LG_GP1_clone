@@ -1,0 +1,684 @@
+extends ../_common/_layout.pug
+include ../_common/_forms.pug
+include ../_common/_button.pug
+include ../_common/_title-area.pug
+include ../_common/_specs.pug
+include ./_compare-product-information.pug
+
+block meta 
+	- var componentId = "PD0038"
+	- var componentName = "Compare Result"
+	- var description = "description text"
+	- var keywords = "keyword list"
+	title #{componentId}. #{componentName}
+	meta(name="description" content=description)
+	meta(name="keywords" content=keywords)
+
+block styles
+	link(rel="stylesheet", href=componentId+".css")
+	style.
+		body {height:1000vh;}
+		.test {position: relative; z-index: 100; padding: 25px 30px; background: #f0ece4; text-align: center; color: black; border-bottom: 1px solid #cbc8c2; }
+		.PD0038 .can-sticky {top:75px!important;}
+
+block scripts
+	script(src=componentId+".js" type="module")
+
+block content
+	.guide 
+		.grid-1600 
+		.grid-1440
+		.inner
+			.guide-list
+				a(href="../../list-pd.html") List 
+			.guide-title #{componentId}. #{componentName}
+			.guide-wrapper
+				script. 
+					const guideList = {
+						'.c-wrapper' : [
+							{
+								'name' : 'Margin',
+								'buttons' : [
+									{'toggle' : true, 'add' : 'margin-top'},
+									{'toggle' : true, 'add' : 'margin-bottom'},
+								]
+							},
+							{
+								'name' : 'Top Border',
+								'buttons' : [
+									{'toggle' : true, 'add' : 'border-top'},
+								]
+							},
+						],
+					};
+	mixin component-header
+		- var headlineStyle = "font-w-light-56 font-m-light-28"
+		- var countStyle = "font-w-normal-24 font-m-normal-16"
+
+		+component-title-area-custom
+			+component-headline({
+				alignment:"",
+				text : "Lorem ipsum dolor sit amet.",
+				style : headlineStyle
+			})
+
+			// block - count text
+			// [Start] 2023-07-07 : UPDATE - update Compare Products
+			- var maxCount = 4
+			// [End] 2023-07-07 : UPDATE - update Compare Products
+			- var count = 3
+			.text.c-count-text
+				.cmp-text(data-cmp-data-layer="" class=countStyle) 
+					span= count
+					|
+					|
+					span Products in Comparison
+
+	// Component Markup
+	- var useImageData = true
+	- var marking = true
+
+	mixin title-area
+		// block - region header
+		+component-title-area({
+			alignment : "",
+			headline : {
+				text : "Compare Result"
+			}
+		})
+			.c-compare-selling__controls.c-compare-selling__controls--dial.hidden
+				button(type='button' class='c-compare-selling__scroll-left js-scroll-left' aria-controls='compareSelling' data-cmp-data-layer)
+					span.cmp-button-text.sr-only Scroll Left
+				button(type='button' class='c-compare-selling__scroll-right js-scroll-right' aria-controls='compareSelling' data-cmp-data-layer)
+					span.cmp-button-text.sr-only Scroll Right
+
+	.can-sticky.test
+		span for Scroll Test
+	// [Start] 2023-07-07 : UPDATE - update Compare Products
+	.guide-text-option Compare Products are less than 4
+	// [End] 2023-07-07 : UPDATE - update Compare Products
+	.c-wrapper.PD0038.margin-top.margin-bottom.no-crop.border-top.bg-default
+		.component
+			.cmp-container
+				+title-area
+				.c-compare-selling(id='compareSelling')
+					- var count = 2
+					.c-compare-selling__inner
+						//- sticky area
+						.c-compare-selling__sticky-area.can-sticky(class="js-compare-scroll-area")
+							.c-compare-selling__product
+								+product-spec({
+									useRemoveItem : true,
+									addCompare : true,
+									count
+								})
+								.c-compare-selling__controls.c-compare-selling__controls--plain.hidden
+									button(type='button' class='c-compare-selling__scroll-left js-scroll-left' aria-controls='compareSelling' data-cmp-data-layer)
+										span.cmp-button-text.sr-only Scroll Left
+									button(type='button' class='c-compare-selling__scroll-right js-scroll-right' aria-controls='compareSelling' data-cmp-data-layer)
+										span.cmp-button-text.sr-only Scroll Right
+						//- key specs
+						.c-compare-selling__spec.c-compare-selling__spec--pick-out
+							+selling-spec-scroll-table({
+								type : "key",
+								count,
+								map : [
+									{
+										name : "Product Type",
+										desc : "-"
+									},
+									{
+										name : "Max Wash Capacity(kg)",
+										desc : "-"
+									},
+									{
+										name : "Body Color",
+										desc : "-"
+									},
+									{
+										marking,
+										name : "Product Dimensions (WxHxD mm)",
+										desc : "-"
+									},
+									{
+										name : "[ESG] Energy Consumption per 100 cycle (kWh)",
+										desc : "-"
+									},
+									{
+										marking,
+										name : "Noise Level for Spinning (sound power level) (dBA)",
+										desc : "-"
+									},
+									{
+										name : "Max spin speed (RPM)",
+										desc : "-"
+									},
+									{
+										name : "Downloaded Cycle",
+										desc : "-"
+									},
+									{
+										name : "ezDispense",
+										desc : "-"
+									},
+									{
+										empty: 2,
+										name : "Inverter DirectDrive",
+										desc : "Yes",
+										useImageData: true
+									},
+								]
+							})
+
+						//- all specs
+						.c-all-specs-area
+							+disclosure-button
+							.c-back__btn
+								+defaultButton({name: 'Back to the List Page', wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})
+							.c-compare-selling__group
+								.c-compare-selling__group-head.title
+									.cmp-title(data-cmp-data-layer="")
+										h3.cmp-title__text All Specs
+								.c-compare-selling__spec.c-compare-selling__spec--all
+									//- display 
+									+selling-spec-scroll-table({
+										type : "all",
+										head : "Display",
+										count,
+										map : [
+											{
+												name : "Type",
+												desc : "4K OLED"
+											},
+											{
+												name : "Screen Size",
+												desc : "65"
+											},
+											{
+												marking,
+												name : "Resolution",
+												desc : "3840 x 2160"
+											},
+											{
+												name : "Colour / Wide Colour Gamut",
+												desc : "Perfect Colour"
+											},
+											{
+												marking,
+												name : "Colour ",
+												desc : "Colour display bits / Billion Rich Colours"
+											},
+											{
+												name : "Contrast / Perfect Black",
+												desc : "Perfect Black"
+											},
+											{
+												name : "Contrast / Dimming",
+												desc : "Pixel Dimming"
+											},
+											{
+												name : "Refresh Rate",
+												desc : "Refresh Rate 120Hz"
+											},
+										]
+									})
+									//- platform
+									+selling-spec-scroll-table({
+										type : "all",
+										head : "Platform",
+										count,
+										map : [
+											{
+												name : "Main Processor",
+												desc : "α9 Gen5 AI Processor 8K"
+											},
+											{
+												name : "Operating System (OS)",
+												desc : "webOS Smart TV"
+											},
+											{
+												name : "Number of CPUs",
+												desc : "Quad"
+											},
+										]
+									})
+									//- video
+									+selling-spec-scroll-table({
+										type : "all",
+										head : "Video",
+										count,
+										map : [
+											{
+												name : "HEVC",
+												desc : "4K@120P, 10bit"
+											},
+											{
+												name : "VP9 (Video Decoder)",
+												desc : "4K@60p, 10bit"
+											},
+											{
+												name : "AV1 (Video Decoder)",
+												desc : "4K@60p, 10bit"
+											},
+											{
+												name : "G-Sync Compatible",
+												desc : "Yes"
+											},
+											{
+												name : "FreeSync Compatible",
+												desc : "Yes"
+											},
+											{
+												name : "HGIG Mode",
+												desc : "Yes"
+											},
+											{
+												name : "Game Optimizer (VRR/ALLM/GameGenre)",
+												desc : "Yes / Yes / Yes"
+											},
+											{
+												name : "Picture Mode",
+												desc : "9 modes (Vivid, Standard, Eco, Cinema, Football, Game, Filmmaker, (ISF)Expert(Bright Room), (ISF)Expert(Dark Room))"
+											},
+											{
+												name : "Dynamic Tone Mapping / Pro",
+												desc : "Dynamic Tone Mapping Pro"
+											},
+										]
+									})  
+					
+					+disclosure-button
+					.c-back__btn
+						+defaultButton({name: 'Back to the List Page', wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})
+	// [Start] 2023-07-07 : UPDATE - update Compare Products
+	//- .guide-text-option Compare Products are 5 or more
+	//- .c-wrapper.PD0038.margin-top.margin-bottom.no-crop.border-top.bg-default
+	//- 	.component
+	//- 		.cmp-container                
+	//- 			+title-area
+	//- 			.c-compare-selling.c-compare-selling--scroll(id='compareSelling')
+	//- 				- var count = 10
+	//- 				.c-compare-selling__inner
+	//- 					//- sticky area
+	//- 					.c-compare-selling__sticky-area.can-sticky(class="js-compare-scroll-area")
+	//- 						.c-compare-selling__product
+	//- 							+product-spec({
+	//- 								useRemoveItem : true,
+	//- 								addCompare : true,
+	//- 								count
+	//- 							})
+	//- 							.c-compare-selling__controls.c-compare-selling__controls--plain.hidden
+	//- 								button(type='button' class='c-compare-selling__scroll-left js-scroll-left' aria-controls='compareSelling' data-cmp-data-layer)
+	//- 									span.cmp-button-text.sr-only Scroll Left
+	//- 								button(type='button' class='c-compare-selling__scroll-right js-scroll-right' aria-controls='compareSelling' data-cmp-data-layer)
+	//- 									span.cmp-button-text.sr-only Scroll Right
+	//- 					//- key specs
+	//- 					.c-compare-selling__spec.c-compare-selling__spec--pick-out
+	//- 						.c-region-header
+	//- 							.c-region-header__container
+	//- 								.title.c-region-header__headline
+	//- 									.cmp-title.font-w-normal-32.font-m-normal-20(data-cmp-data-layer="")
+	//- 										h2.cmp-title__text Key Specs
+	//- 						+selling-spec-scroll-table({
+	//- 							type : "key",
+	//- 							count,
+	//- 							map : [
+	//- 								{
+	//- 									name : "Product Type",
+	//- 									desc : "Washer Only"
+	//- 								},
+	//- 								{
+	//- 									name : "Max Wash Capacity(kg)",
+	//- 									desc : "10.5"
+	//- 								},
+	//- 								{
+	//- 									name : "Body Color",
+	//- 									desc : "Graphite"
+	//- 								},
+	//- 								{
+	//- 									marking,
+	//- 									name : "Product Dimensions (WxHxD mm)",
+	//- 									desc : "600 x 565 x 850"
+	//- 								},
+	//- 								{
+	//- 									name : "[ESG] Energy Consumption per 100 cycle (kWh)",
+	//- 									desc : "61"
+	//- 								},
+	//- 								{
+	//- 									marking,
+	//- 									name : "Noise Level for Spinning (sound power level) (dBA)",
+	//- 									desc : "73 (B)"
+	//- 								},
+	//- 								{
+	//- 									name : "Max spin speed (RPM)",
+	//- 									desc : "1360"
+	//- 								},
+	//- 								{
+	//- 									name : "Downloaded Cycle",
+	//- 									desc : "-"
+	//- 								},
+	//- 								{
+	//- 									name : "ezDispense",
+	//- 									desc : "-"
+	//- 								},
+	//- 								{
+	//- 									name : "Inverter DirectDrive",
+	//- 									desc : "Yes",
+	//- 									useImageData: true
+	//- 								},
+	//- 							]
+	//- 						})
+
+	//- 					//- all specs
+	//- 					.c-all-specs-area
+	//- 						+disclosure-button
+	//- 						.c-compare-selling__group
+	//- 							.c-compare-selling__group-head.title
+	//- 								.cmp-title(data-cmp-data-layer="")
+	//- 									h3.cmp-title__text All Specs
+	//- 							.c-compare-selling__spec.c-compare-selling__spec--all
+	//- 								//- display 
+	//- 								+selling-spec-scroll-table({
+	//- 									type : "all",
+	//- 									head : "Display",
+	//- 									count,
+	//- 									map : [
+	//- 										{
+	//- 											name : "Type",
+	//- 											desc : "4K OLED"
+	//- 										},
+	//- 										{
+	//- 											name : "Screen Size",
+	//- 											desc : "65"
+	//- 										},
+	//- 										{
+	//- 											marking,
+	//- 											name : "Resolution",
+	//- 											desc : "3840 x 2160"
+	//- 										},
+	//- 										{
+	//- 											name : "Colour / Wide Colour Gamut",
+	//- 											desc : "Perfect Colour"
+	//- 										},
+	//- 										{
+	//- 											marking,
+	//- 											name : "Colour ",
+	//- 											desc : "Colour display bits / Billion Rich Colours"
+	//- 										},
+	//- 										{
+	//- 											name : "Contrast / Perfect Black",
+	//- 											desc : "Perfect Black"
+	//- 										},
+	//- 										{
+	//- 											name : "Contrast / Dimming",
+	//- 											desc : "Pixel Dimming"
+	//- 										},
+	//- 										{
+	//- 											name : "Refresh Rate",
+	//- 											desc : "Refresh Rate 120Hz"
+	//- 										},
+	//- 									]
+	//- 								})
+	//- 								//- platform
+	//- 								+selling-spec-scroll-table({
+	//- 									type : "all",
+	//- 									head : "Platform",
+	//- 									count,
+	//- 									map : [
+	//- 										{
+	//- 											name : "Main Processor",
+	//- 											desc : "α9 Gen5 AI Processor 8K"
+	//- 										},
+	//- 										{
+	//- 											name : "Operating System (OS)",
+	//- 											desc : "webOS Smart TV"
+	//- 										},
+	//- 										{
+	//- 											name : "Number of CPUs",
+	//- 											desc : "Quad"
+	//- 										},
+	//- 									]
+	//- 								})
+	//- 								//- video
+	//- 								+selling-spec-scroll-table({
+	//- 									type : "all",
+	//- 									head : "Video",
+	//- 									count,
+	//- 									map : [
+	//- 										{
+	//- 											name : "HEVC",
+	//- 											desc : "4K@120P, 10bit"
+	//- 										},
+	//- 										{
+	//- 											name : "VP9 (Video Decoder)",
+	//- 											desc : "4K@60p, 10bit"
+	//- 										},
+	//- 										{
+	//- 											name : "AV1 (Video Decoder)",
+	//- 											desc : "4K@60p, 10bit"
+	//- 										},
+	//- 										{
+	//- 											name : "G-Sync Compatible",
+	//- 											desc : "Yes"
+	//- 										},
+	//- 										{
+	//- 											name : "FreeSync Compatible",
+	//- 											desc : "Yes"
+	//- 										},
+	//- 										{
+	//- 											name : "HGIG Mode",
+	//- 											desc : "Yes"
+	//- 										},
+	//- 										{
+	//- 											name : "Game Optimizer (VRR/ALLM/GameGenre)",
+	//- 											desc : "Yes / Yes / Yes"
+	//- 										},
+	//- 										{
+	//- 											name : "Picture Mode",
+	//- 											desc : "9 modes (Vivid, Standard, Eco, Cinema, Football, Game, Filmmaker, (ISF)Expert(Bright Room), (ISF)Expert(Dark Room))"
+	//- 										},
+	//- 										{
+	//- 											name : "Dynamic Tone Mapping / Pro",
+	//- 											desc : "Dynamic Tone Mapping Pro"
+	//- 										},
+	//- 									]
+	//- 								})  
+					
+	//- 				+disclosure-button
+	// [End] 2023-07-07 : UPDATE - update Compare Products
+
+	.guide-text-option No has key spec
+	.c-wrapper.PD0038.margin-top.margin-bottom.no-crop.border-top.bg-default
+		.component
+			.cmp-container                
+				+title-area
+				.c-compare-selling.c-compare-selling--scroll.c-compare-selling--no-pick-out(id='compareSelling')
+					// [Start] 2023-07-07 : UPDATE - update Compare Products
+					- var count = 4
+					// [End] 2023-07-07 : UPDATE - update Compare Products
+					.c-compare-selling__inner
+						//- sticky area
+						.c-compare-selling__sticky-area.can-sticky(class="js-compare-scroll-area")
+							.c-compare-selling__product
+								+product-spec({
+									displayVariation : true,
+									useRemoveItem : true,
+									addCompare : true,
+									count
+								})
+								.c-compare-selling__controls.c-compare-selling__controls--plain.hidden
+									button(type='button' class='c-compare-selling__scroll-left js-scroll-left' aria-controls='compareSelling' data-cmp-data-layer)
+										span.cmp-button-text.sr-only Scroll Left
+									button(type='button' class='c-compare-selling__scroll-right js-scroll-right' aria-controls='compareSelling' data-cmp-data-layer)
+										span.cmp-button-text.sr-only Scroll Right
+
+						//- all specs
+						.c-all-specs-area
+							+disclosure-button
+							.c-compare-selling__group
+								.c-compare-selling__group-head.title
+									.cmp-title(data-cmp-data-layer="")
+										h3.cmp-title__text All Specs
+								.c-compare-selling__spec.c-compare-selling__spec--all
+									//- display 
+									+selling-spec-scroll-table({
+										type : "all",
+										head : "Display",
+										count,
+										map : [
+											{
+												name : "Type",
+												desc : "4K OLED"
+											},
+											{
+												name : "Screen Size",
+												desc : "65"
+											},
+											{
+												marking,
+												name : "Resolution",
+												desc : "3840 x 2160"
+											},
+											{
+												name : "Colour / Wide Colour Gamut",
+												desc : "Perfect Colour"
+											},
+											{
+												marking,
+												name : "Colour ",
+												desc : "Colour display bits / Billion Rich Colours"
+											},
+											{
+												name : "Contrast / Perfect Black",
+												desc : "Perfect Black"
+											},
+											{
+												name : "Contrast / Dimming",
+												desc : "Pixel Dimming"
+											},
+											{
+												name : "Refresh Rate",
+												desc : "Refresh Rate 120Hz"
+											},
+										]
+									})
+									//- platform
+									+selling-spec-scroll-table({
+										type : "all",
+										head : "Platform",
+										count,
+										map : [
+											{
+												name : "Main Processor",
+												desc : "α9 Gen5 AI Processor 8K"
+											},
+											{
+												name : "Operating System (OS)",
+												desc : "webOS Smart TV"
+											},
+											{
+												name : "Number of CPUs",
+												desc : "Quad"
+											},
+										]
+									})
+									//- video
+									+selling-spec-scroll-table({
+										type : "all",
+										head : "Video",
+										count,
+										map : [
+											{
+												name : "HEVC",
+												desc : "4K@120P, 10bit"
+											},
+											{
+												name : "VP9 (Video Decoder)",
+												desc : "4K@60p, 10bit"
+											},
+											{
+												name : "AV1 (Video Decoder)",
+												desc : "4K@60p, 10bit"
+											},
+											{
+												name : "G-Sync Compatible",
+												desc : "Yes"
+											},
+											{
+												name : "FreeSync Compatible",
+												desc : "Yes"
+											},
+											{
+												name : "HGIG Mode",
+												desc : "Yes"
+											},
+											{
+												name : "Game Optimizer (VRR/ALLM/GameGenre)",
+												desc : "Yes / Yes / Yes"
+											},
+											{
+												name : "Picture Mode",
+												desc : "9 modes (Vivid, Standard, Eco, Cinema, Football, Game, Filmmaker, (ISF)Expert(Bright Room), (ISF)Expert(Dark Room))"
+											},
+											{
+												name : "Dynamic Tone Mapping / Pro",
+												desc : "Dynamic Tone Mapping Pro"
+											},
+										]
+									})  
+					
+					+disclosure-button
+
+	// RO_CN : Currencies and small decimals size down
+	.guide-text-option RO_CN : Currencies and small decimals size down
+	.c-wrapper.PD0038
+		.component.has-filter
+			.cmp-container
+				//- header 
+				+component-header
+
+				//- sticky area
+				.c-compare-sticky
+					+compare-product-information([
+						{
+							sku:'GSJV70PZTF', 
+							modelid: 'MD07258328',
+							name:'American Fridge Freezer 635L Water & Ice Dispenser',
+							imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+							retailer: true,
+							country : 'cn',
+						},
+						{
+							sku:'GSJV70PZTF', 
+							modelid: 'MD07258328',
+							name:'American Fridge Freezer 635L Water & Ice Dispenser',
+							imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+							soldOut : true,
+							country : 'cn',
+						},
+						{
+							sku:'GSJV70PZTF', 
+							modelid: 'MD07258328',
+							name:'American Fridge Freezer 635L Water & Ice Dispenser',
+							imageUrl:'https://via.placeholder.com/350x350/999999/000000',
+						},
+						null
+					])
+
+	// No Compare result
+	.guide-text-option No Compare result
+	.c-wrapper.PD0038.margin-top.margin-bottom.no-crop.border-top.bg-default
+		.component
+			.cmp-container
+				+component-title-area({
+					alignment : "",
+					headline : {
+						text : "Compare Result"
+					}
+				})
+				.c-no-data-container
+					.c-no-data-wrap 
+						.c-no-data.c-no-data--no-response
+							strong.font-w-normal-24.font-m-normal-20 There is no compare product.
+							.c-no-data__btn
+								+defaultButton({name: 'Back to the List Page', wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})

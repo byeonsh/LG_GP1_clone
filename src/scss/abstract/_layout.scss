@@ -1,0 +1,98 @@
+@use 'sass:list';
+@use 'variable' as *;
+@use 'mixin' as *;
+@use 'grid' as *;
+
+// In this file, only add variables or mixins to be used globally.
+
+// # inset-padding
+@mixin inset-padding-vt($viewport: all) {
+  $padding: rem($component-margin-m);
+  padding-top: $padding;
+  padding-bottom: $padding;
+  @if all == $viewport {
+    @include screen(web) {
+      $padding: rem($component-margin-w);
+      padding-top: $padding;
+      padding-bottom: $padding;
+    }
+    @content;
+  }
+}
+@mixin inset-padding-hz($viewport: all) {
+  $padding: rem($block-margin-m);
+  padding-left: $padding;
+  padding-right: $padding;
+  @if all == $viewport {
+    @include screen(web) {
+      $padding: rem($block-margin-w);
+      padding-left: $padding;
+      padding-right: $padding;
+    }
+    @content;
+  }
+}
+// =- description -=
+// declare element padding all direction.
+// "-vt" inject top and bottom.
+// "-hz" inject side.
+// "-hz" can use only mobile css. when if you needs.
+
+// # text-contents-inset
+@mixin text-contents-inset {
+  $padding: rem($block-margin-m);
+  padding-left: $padding;
+  padding-right: $padding;
+  @include screen(web) {
+    $padding: rem($block-margin-w);
+    padding-left: $padding;
+    padding-right: $padding;
+  }
+}
+// =- description -=
+// feature is similar "inset-padding-hz".
+// declared separately to prevent dependence from it.
+
+// # container
+@mixin container($width, $use-padding: false, $custom-padding: null) {
+  margin-left: auto;
+  margin-right: auto;
+  @if $use-padding {
+    max-width: rem($width + ($block-margin-w * 2));
+  } @else if $use-padding and $custom-padding != null {
+    $cp: $custom-padding;
+    @if number == type-of($cp) {
+      max-width: rem($width + ($cp * 2));
+    } @else if list == type-of($cp) {
+      max-width: rem($width + list.nth($cp, 1) + list.nth($cp, 2));
+    } @else {
+      @warn "#{$cp} is invalid value. Check 3rd parameter.";
+    }
+  } @else {
+    max-width: rem($width);
+  }
+}
+// =- description -=
+// $width : container element width.
+// $use-padding : use when need spacing for resize.
+// $custom-padding : "$use-padding" only declaration "$block-margin-w";30px. if necessary another value, use this parameter. this parameter just allow "number" and "list".
+
+// swiper-inline-style-adjust
+@mixin swiper-inline-style-adjust($view-max-count: 4) {
+  .swiper-wrapper.swiper-steady {
+    justify-content: center;
+    .swiper-slide:nth-child(#{$view-max-count}):last-child {
+      @include screen(desktop) {
+        margin-right: 0 !important;
+      }
+    }
+    .swiper-slide:not([class*='duplicate']):nth-of-type(#{$view-max-count}):last-child {
+      @include screen(desktop) {
+        margin-right: 0 !important;
+      }
+    }
+  }
+}
+// =- description -=
+// when use option "slideBetween", be created unnecessary margin to last slide right side. this mixin is remove that.
+// swiper do insert css by inline. so need "!important" keyword.

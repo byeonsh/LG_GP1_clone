@@ -1,0 +1,33 @@
+//- 믹스인 수정 시, 기존에 개발에 전달했던 페이지의 마크업이 달라지지 않도록 주의 부탁 드립니다. 
+
+//- used carousel
+mixin carouselBtn(params)
+    //- 상위에 .button 클래스 추가해야합니다.
+    //- direction : 'prev' or 'next'
+    - var option={direction:"prev", describedby, ...params}
+    - var type = option.type == undefined ? '' : `--${option.type}`
+    case option.direction
+        when "next"
+            button(type="button" class=`cmp-carousel__action cmp-carousel__action--next c-carousel__button c-carousel__button${type}--next js-carousel-next` data-cmp-hook-carousel="next" aria-describedby=`${option.describedby}`) 
+                span.cmp-carousel__action-text.sr-only Next Slide
+        when "prev"
+            button(type="button" class=`cmp-carousel__action cmp-carousel__action--previous c-carousel__button c-carousel__button${type}--prev js-carousel-prev` data-cmp-hook-carousel="previous" aria-describedby=`${option.describedby}`)
+                span.cmp-carousel__action-text.sr-only Previous Slide
+
+mixin carouselPagination(params)
+    - var option={isBullet: false, isPlay:false, ...params}
+    .c-carousel__indicator
+        // pagination
+        if(option.isBullet)
+            ol(class="cmp-carousel__indicators c-carousel__pagination" data-cmp-hook-carousel="indicators")
+        else
+            div(class="cmp-carousel__indicators c-carousel__pagination" data-cmp-hook-carousel="indicators")
+        if(option.isPlay)
+            // autoplay action button
+            .cmp-carousel__actions
+                div(class="cmp-carousel__action cmp-carousel__action--pause c-carousel__action c-carousel__action--pause" role="button" data-cmp-hook-carousel="pause")
+                    span.sr-only Pause carousel
+                div(class="cmp-carousel__action cmp-carousel__action--play c-carousel__action c-carousel__action--play" role="button" data-cmp-hook-carousel="play" aria-hidden="true")
+                    span.sr-only Play carousel
+                if block
+                    block

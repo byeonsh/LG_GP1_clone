@@ -1,0 +1,53 @@
+mixin inquiryList(data)
+    ul.my-inquiry
+        each set in data
+            li.my-inquiry__item
+                if set.flag === "RECEIPT"
+                    .my-inquiry__flag.my-inquiry__flag--receipt !{set.flag}
+                if set.flag === "PROCESS"
+                    .my-inquiry__flag.my-inquiry__flag--process !{set.flag}
+                if set.flag === "CANCELED"
+                    .my-inquiry__flag.my-inquiry__flag--canceled !{set.flag}
+                if set.flag === "COMPLETED"
+                    .my-inquiry__flag.my-inquiry__flag--completed !{set.flag}
+
+                .c-text-contents
+                    if set.symptom
+                        .c-text-contents__bodycopy
+                            span.font-w-semibold-16.font-m-semibold-14 Symptom :&nbsp;
+                            span.my-inquiry__name.font-w-normal-16.font-m-normal-14 !{set.symptom}
+                    if set.subject
+                        .c-text-contents__bodycopy
+                            span.font-w-semibold-16.font-m-semibold-14 Subject :&nbsp;
+                            span.my-inquiry__name.font-w-normal-16.font-m-normal-14 !{set.subject}
+                    if set.type
+                        .c-text-contents__bodycopy
+                            span.font-w-semibold-16.font-m-semibold-14 Type of Inquiry :&nbsp;
+                            span.my-inquiry__name.font-w-normal-16.font-m-normal-14 !{set.type}
+                    if set.ReceiptNo
+                        .c-text-contents__bodycopy
+                            span.font-w-semibold-16.font-m-semibold-14 Receipt No. :&nbsp;
+                            a(href='#' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                                span.font-w-semibold-16.font-m-semibold-14.my-inquiry__receipt.font-red !{set.ReceiptNo}
+                    if set.ModelNo
+                        .c-text-contents__bodycopy
+                            span.font-w-semibold-16.font-m-semibold-14 Model No. :&nbsp;
+                            span.my-inquiry__name.font-w-normal-16.font-m-normal-14 !{set.ModelNo}
+                    if set.ReceiptDate
+                        .c-text-contents__bodycopy
+                            span.font-w-semibold-16.font-m-semibold-14 Receipt Date :&nbsp;
+                            span.my-inquiry__name.font-w-normal-16.font-m-normal-14 !{set.ReceiptDate}
+    +inquiryListPagination
+
+mixin inquiryListPagination()
+    .c-pagination(role="navigation" aria-label="Pagination" data-aria-pattern="Page #")
+        button(type="button" class="c-pagination__action c-pagination__action--prev" aria-label="Previous page")
+            span.sr-only Prev Page
+        - var n = 1;
+        .c-pagination__fraction
+            span(aria-label=`Page ${1}` aria-current=`${1 && `page`}`).c-pagination__current 1
+            | /
+            span(aria-label=`Page ${5}` aria-current=`${1 && `page`}`).c-pagination__current 4
+
+        button(type="button" class="c-pagination__action c-pagination__action--next" aria-label="Next page")
+            span.sr-only Next Page

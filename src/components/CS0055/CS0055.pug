@@ -1,0 +1,192 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_video.pug
+include ../_common/_hero-banner.pug
+include ../_common/_spec-info.pug
+
+block meta 
+    - var componentId = "CS0055"
+    - var componentName = "Register Form_Manually_B2B"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+
+    mixin buttonVersionItem2(params)
+        - var option = {version: false, extension: '', hasInformation: false, reference: false, hash: 1, ...params}
+
+        .c-resources__item
+            if(option.version) 
+                p.c-resources__version.font-m-semibold-16.font-w-semibold-16 [Program/Win10_64bit] LG Update Center for LG Notebook.(Ver.1.0.1712.1201)
+            if(option.extension == 'pdf' || option.extension == 'txt' || option.extension == 'djvu' || option.extension == 'zip' || option.extension == 'html' || option.extension == 'dwg')
+                div(class=`c-resources__item--extension c-resources__item--extension-${option.extension}`)
+                    span.sr-only= `extension : ${option.extension}`
+            else
+                div(class=`c-resources__item--extension c-resources__item--extension-etc`)
+                    span.sr-only= `extension : ${option.extension}`
+            .c-resources__item--download
+                .c-resources__item--download-info
+                    span.c-resources__item--download-info-name.font-w-normal-16= `English.${option.extension}`
+                    if(option.hasInformation)
+                        .c-resources__item--download-info-wrapper.font-w-normal-14
+                            if(option.reference)
+                                .c-resources__item--download-info-ref
+                                    button(type="button" class="font-underline js-pop-open" aria-controls=`popReference${option.hash}` aria-label="") Reference
+                                
+                            .c-resources__item--download-info-size
+                                span.font-w-normal-14 1,923 KB
+                a(href="#" type="button").c-resources__item--download-button download button
+                        
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${controlsId}`)
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+
+    mixin contentsBody(faq, fileUpload)
+        // block - text contents
+        .c-accordion__body-content
+            p Please download the form and enter your product information and upload the file. It might take times to be registered completely.<br>*If you register image in the form, can upload proof of purchase.
+            .c-resources
+                if fileUpload
+                    +buttonVersionItem2({version: false, extension: 'html', hasInformation: true, reference: false, hash: 1})
+                    .c-resources__item
+                        
+                        .cmp-form
+                            .c-btn-upload
+                                #preview
+                                    p.cs-preview__file File Name.jpeg
+                                        button.file-remove(type="button" aria-label="") X
+                                .c-btn-upload__inner 
+                                    div
+                                        label.c-not-required(for='file-input')
+                                            .btn-upload.font-m-normal-14i.font-w-normal-14i(role="button" data-link-name) Upload
+                                        input#file-input.file(type='file' name='file-input' readonly="readonly" aria-label="" multiple)
+                else    
+                    +buttonVersionItem2({version: false, extension: 'html', hasInformation: true, reference: false, hash: 1})
+                    .c-resources__item
+                        .cmp-form
+                            .c-btn-upload
+                                p.font-w-normal-16 Select a file to upload
+                                
+                                .c-btn-upload__inner 
+                                    div
+                                        label.c-not-required(for='file-input')
+                                            .btn-upload.font-m-normal-14i.font-w-normal-14i(role="button" data-link-name) Upload
+                                        input#file-input.file(type='file' name='file-input' readonly="readonly" aria-label="" multiple)
+            
+    mixin pack(faq, fileUpload, controlsId)
+        .c-accordion__box.js-accordion-handle-target
+                .c-accordion__head
+                    // block - text contents
+                    .c-accordion__head-text.c-text-contents
+                        .text.c-text-contents__headline
+                            .cmp-text.font-m-normal-16.font-w-normal-20(data-cmp-data-layer="") 
+                                strong #{faq.headline} 
+                    +trigger(controlsId)
+                .c-accordion__body(id=`${controlsId}`)
+                    +contentsBody(faq, fileUpload)    
+
+    -
+        const list = [
+            {
+                'headline':'Do you have too many product to type each information? (accordion-default)',
+                'fileUpload': false,
+            },
+            {
+                'headline':'Do you have too many product to type each information? (accordion-file upload)',
+                'fileUpload': true,
+            },
+        ]                    
+
+    .guide-text-type Register Form_Manually_B2B
+
+    // Component Markup 
+    .guide-text-option [B2B] Default
+    // 20230314 full markup change
+    .c-wrapper.CS0055.type-text
+        .component.type-form
+            .CS0055__container
+                .container.responsivegrid
+                    .c-model-content-wrap
+                        .c-model-contents
+                            a(tabindex="0" class="find-number font-m-normal-14 font-w-normal-16" aria-label="" role="dialog") How to find my model number?
+                        .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                    .c-container__inner     
+                        .cs-form
+                            .cs-form__wrap
+                                .cmp-form
+                                    label(for="modelNumber").font-m-normal-16.font-w-normal-24 Model number #[em.require *]#[span.sr-only Required Field]
+                                    // 20230328 modify markup
+                                    .c-modelnumber-input
+                                        input#modelNumber.font-m-normal-16.font-w-normal-20.c-modelNumber-valid(type="text" required="required" aria-label="" placeholder="Select a model number")
+                                        button(type="button" title="search" aria-label="" aria-describedby="").c-modelnumber-input__button.c-modelnumber-input__button--search search button
+                                        button(type="button").c-modelnumber-input__button.c-modelnumber-input__button--delete delete button
+                                    .c-warning.c-modelNumber-required Model number is required.
+                                    .c-warning.c-modelNumber-invalid This model number is invalid.
+                                    // When selecting a model number
+                                    .c-selected-model
+                                        +printLazyPicture('https://via.placeholder.com/48x48/fff/000/?text=48x48', 'https://via.placeholder.com/80x80/fff/000/?text=80x80')
+                                        .c-selected-model__info 
+                                            .c-selected-model__info-wrap
+                                                .c-selected-model__code.font-m-normal-12.font-w-normal-16 GSXV90MCDE
+                                                .c-selected-model__name.font-m-normal-20.font-w-normal-32 InstaView Door-in-Door
+                                            .c-selected-model__info-wrap
+                                                .c-selected-model__warranty.font-m-normal-12.font-w-normal-16 Warranty info
+                                                .c-selected-model__warranty-info
+                                                    .c-selected-model__warranty-labor.font-m-normal-12.font-w-normal-20 Labor 24 months
+                                                    .c-selected-model__warranty-parts.font-m-normal-12.font-w-normal-20 Parts 24 months
+                                        button(type="button" aria-label="").c-btn-close 
+                                            img(src="../../assets/icon/icon-close-black-12-12.svg")
+                                .cmp-form
+                                    label(for="serialNumber").font-m-normal-16.font-w-normal-24 Serial number #[em.require *]#[span.sr-only Required Field]
+                                    input#serialNumber.font-m-normal-14.font-w-normal-14.c-serialNumber-valid(type="text" required="required"  aria-label="" placeholder="Type a 15 digit code")
+                                    .c-warning.c-serialNumber-required Serial number is required.
+                                    .c-warning.c-serialNumber-invalid This serial number is invalid.
+                                .cmp-form
+                                .cmp-form 
+                                    label(for="installDate").font-m-normal-16.font-w-normal-24 Install date #[em.require *]#[span.sr-only Required Field]
+                                    input#installDate.font-m-normal-14.font-w-normal-14.c-installDate-valid(type="date" required="required" data-placeholder='YYYY/MM/DD' value="" aria-describedby='')
+                                    .c-warning.c-installDate-required Purchase date is required.
+                                    .c-warning.c-installDate-invalid This install date is invalid.
+                                .cmp-form
+                                .cmp-form 
+                                    label(for="warrantyExpireDate").font-m-normal-16.font-w-normal-24 Warranty expire date #[em.require *]#[span.sr-only Required Field]
+                                    input#warrantyExpireDate.font-m-normal-14.font-w-normal-14.c-warrantyExpireDate-valid(type="date" required="required" data-placeholder='YYYY/MM/DD' value="" aria-describedby='')
+                                    .c-warning.c-warrantyExpireDate-required Warranty expire date is required.
+                                    .c-warning.c-warrantyExpireDate-invalid This warranty expire date is invalid.
+                                .cmp-form
+                                .cmp-form
+                                    label(for="proofPurchase").font-m-normal-16.font-w-normal-24 Proof of purchase (optional) 
+                                    .c-btn-upload
+                                        #preview
+                                            p.cs-preview__file File Name.jpeg
+                                                button.file-remove(type="button" aria-label="") X
+                                        .c-btn-upload__inner 
+                                            div
+                                                label.c-not-required(for='file-input')
+                                                    .btn-upload.font-m-normal-14i.font-w-normal-14i(role="button" data-link-name) Upload
+                                                input#file-input.file(type='file' name='file-input' readonly="readonly" aria-label="" multiple)
+                                            .c-file-msg.font-m-normal-12.font-w-normal-16 File must be less than 10MB.<br>Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip
+                                .cmp-form
+                .button.c-cta
+                    +defaultButton({name: 'Add more product', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-submit" aria-label="")
+
+                .container.type-accordion
+                    .c-accordion.js-accordion
+                        each faq, index in list
+                            - var controlsId = `faq-set-0${index}`;
+                            +pack(faq, faq.fileUpload, controlsId)    

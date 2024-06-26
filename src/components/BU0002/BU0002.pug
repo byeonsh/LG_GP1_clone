@@ -1,0 +1,523 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_image.pug
+include ../_common/_button.pug
+include ../_common/_pagination.pug
+include ../_common/_resource.pug
+include ../_common/_title-area.pug
+
+
+block meta 
+    - var componentId = "BU0002"
+    - var componentName = "Catalogue & Leaflet & Document Download"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+
+    mixin resourceType(type, img=false, dataSrc, src, alt)
+        if(img === true)
+            div.wrap-country-img
+                img.img-country(data-src= dataSrc, src= src, alt= alt)
+                span= type
+        else 
+            .c-table__type= type
+
+    mixin resourceDownload(name, extension="")
+        // 2023-01-27 : Add role to download link for tagging
+        a(href="#", target="_blank" role="button").c-table__title.font-underline
+            span= `${name}.${extension}`
+            .c-table__title--icon
+                .c-icon-button.c-icon-button--download
+
+    mixin resourceSize(extension, size)
+        .c-table__size
+            if(extension == 'pdf' || extension == 'txt' || extension == 'djvu' || extension == 'zip' || extension == 'html' || extension == 'dwg')
+                span(class=`c-resources__item--extension c-resources__item--extension-${extension}`)
+                    span.sr-only= `extension : ${extension}`
+                span= size
+            else
+                span(class=`c-resources__item--extension c-resources__item--extension-etc`)
+                    span.sr-only= `extension : ${extension}`
+                span= size
+
+    mixin csResultContent(num, control, compare, params)
+        - let data = {...params}
+        .cs-search-result__container
+            if control
+                .c-result-area 
+                    .c-result-area__controls
+                        .c-result-area__result.productcollection__results-count
+                            strong.c-result-area__count
+                                span.page-number 1
+                                |  - 
+                                span.data-page-length.top 10
+                            span  of <em class='data-page-length-total'>14</em> Manuals
+                            +formSelect("", "sort", "", false)
+                                option(value="") 10
+                                option(value="") 20
+                                option(value="") 30
+                                option(value="") 40
+                                option(value="") 50
+                        .c-result-area__sort
+                            +formSelect("", "sort", "", false)
+                                option(value="") Newest
+                                option(value="") Oldest
+                        
+    mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected, required= false, correct= false})
+        .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+            +formSelect(label, id, placeholder, required)
+                if optionVal
+                    - for(var i=0; i < optionVal.length; i++)
+                        if selected === i + 1
+                            option(value="" selected)= optionVal[i]
+                        else
+                            option(value="")= optionVal[i]
+
+
+    mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+        if warningFirst
+            - for(var i=0; i < warningFirst.length; i++)
+                +invalid-warning(warningFirst[i])
+        if correct
+            - for(var i=0; i < correct.length; i++)
+                +valid-msg(correct[i])
+        if infoText
+            ul.my-input__info 
+                li.font-w-normal-14.font-m-normal-14= infoText
+        if warning !==  []
+            - for(var i=0; i < warning.length; i++)
+                +invalid-warning(warning[i])
+        if check
+            - for(var i=0; i < check.length; i++)
+                +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+        if infoTextSecond
+            ul.my-input__info 
+                li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+    mixin myInputForm(data, column)
+        .my-input(class=`${column ? 'column2-type' : ''}`)
+            ul
+                each set in data
+                    li
+                        +myFormText(set)
+
+    mixin myFormText(params)
+        - let data = {...params}
+        - let config = `${data.warning || data.warningFirst ? 'my-warn' : ''}` 
+        if data.type === 'select'
+            +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required,}) 
+        else if data.type === 'radio'
+            +myFormRadio(params)
+        else if data.type === 'captcha'
+            +myCaptcha({label: data.label, id: data.id, placeholder: data.placeholder, warning: data.warning, required: data.required})
+        else
+            .c-input-item(class=`${data.active ? 'active' : ''}`)
+                if data.label
+                    label.font-w-normal-16.font-m-normal-16(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                        if data.required
+                            em.c-required *
+                                span.sr-only Required fields
+                if data.required && !data.button && data.type !== "password"
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+                    if data.type === 'password'
+                            button(type='button' class='my-form__eye')
+                else if data.readonly
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+                else if data.disabled
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)            
+                else if data.button
+                    if data.validation
+                        .input-button__container.input-button__container--validation
+                            .my-button-validation
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required)&attributes(attributes)
+                                +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                            each item in data.button
+                                .button.c-cta.button-full
+                                    +defaultButton({name:item, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                    else
+                        .input-button__container
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required)&attributes(attributes)
+                            // [Start] 2023-05-03 : ADD - email form case
+                            each item in data.button
+                                .button.c-cta.button-full
+                                    +defaultButton({name:item, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                            // [End] 2023-05-03 : ADD - email form case
+                else 
+                    if data.active
+                        input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__keyword ${config}` value= data.value, required)&attributes(attributes)
+                        if data.type === 'password'
+                            button(type='button' class='my-form__eye')
+                                span.sr-only show password
+                        else if data.search 
+                            button(type='button' class='my-form__search__icon')
+                                span.sr-only search
+                    else
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__keyword ${config} ${data.search ? 'my-form__search' : ''}`, required)&attributes(attributes)
+                        if data.type === 'password'
+                            button(type='button' class='my-form__eye')
+                                span.sr-only show password
+                        else if data.search 
+                            button(type='button' class='my-form__search__icon')
+                                span.sr-only search
+            if !data.validation 
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+                    
+    // Component Markup
+    .guide-text-type Type | Global <br>Before Search
+    // block : BU0002
+    .BU0002
+        .c-wrapper.margin-top.margin-bottom.bg-default
+            .component
+                .cmp-container
+                    //- contents
+                    // block : Sort box
+                    .my-component
+                        .my-formbox
+                            +myInputForm([
+                                {                                        
+                                    type: 'select',
+                                    label: 'Region/Country ',
+                                    id: 'regionCountry',
+                                    required:false,
+                                    optionVal: ["Region/Country", "ASIA & PACIFIC", "CENTRAL AMERICA & CARIBBEAN", "CIS", "EUROPE", "MIDDLE EAST & AFRICA", "NORTH AMERICA", "SOUTH AMERICA", "WEST AFRICA", "GULF", "ARGENTINA", "BANGLADESH", "BULGARIA", "BRAZIL", "CANADA", "CHILE", "CHINA", "COLOMBIA", "CZECH REPUBLIC", "GERMANY", "EGYPT", "SPAIN", "FRANCE", "UK", "GREECE", "CENTRAL AMERICA AND CARIBBEAN", "HUNGARY", "INDONESIA", "INDIA", "LEVANT", "EAST AFRICA", "MEXICO", "PANAMA", "PERU", "PHILIPPINES", "POLAND", "SERBIA", "SAUDI ARABIA", "SINGAPORE", "THAILAND", "TÜRKIYE", "UKRAINE", "VIETNAM", "SOUTH AFRICA"],
+                                },
+                                {                                        
+                                    type: 'select',
+                                    label: 'Resource type ',
+                                    id: 'resourceType',
+                                    required: false,
+                                    optionVal: ['All', 'Catalogue', 'Leaflet', 'Spec Sheet', 'Certificate', 'PDB', 'Product Proposal', ], 
+                                },
+                                {                                        
+                                    type: 'text',
+                                    label: 'Keyword ',
+                                    id: 'keyword',
+                                    placeholder: 'Keyword',
+                                    required:false,
+                                },
+                            ])
+                            .c-button-wrap
+                                .button.c-cta
+                                    +defaultButton({name: 'Reset', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(aria-label="")
+                                    +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search" role="button" data-link-name aria-label="")
+
+    .guide-text-type Type | Global <br>Searched
+    .BU0002
+        .c-wrapper.margin-top.margin-bottom.bg-default
+            .component
+                .cmp-container
+                    //- contents
+                    // block : Sort box
+                    .my-component
+                        .my-formbox
+                            +myInputForm([
+                                {                                        
+                                    type: 'select',
+                                    label: 'Region/Country ',
+                                    id: 'regionCountry',
+                                    required:false,
+                                    optionVal: ["Region/Country", "ASIA & PACIFIC", "CENTRAL AMERICA & CARIBBEAN", "CIS", "EUROPE", "MIDDLE EAST & AFRICA", "NORTH AMERICA", "SOUTH AMERICA", "WEST AFRICA", "GULF", "ARGENTINA", "BANGLADESH", "BULGARIA", "BRAZIL", "CANADA", "CHILE", "CHINA", "COLOMBIA", "CZECH REPUBLIC", "GERMANY", "EGYPT", "SPAIN", "FRANCE", "UK", "GREECE", "CENTRAL AMERICA AND CARIBBEAN", "HUNGARY", "INDONESIA", "INDIA", "LEVANT", "EAST AFRICA", "MEXICO", "PANAMA", "PERU", "PHILIPPINES", "POLAND", "SERBIA", "SAUDI ARABIA", "SINGAPORE", "THAILAND", "TÜRKIYE", "UKRAINE", "VIETNAM", "SOUTH AFRICA"],
+                                },
+                                {                                        
+                                    type: 'select',
+                                    label: 'Resource type ',
+                                    id: 'resourceType',
+                                    required: false,
+                                    optionVal: ['All', 'Catalogue', 'Leaflet', 'Spec Sheet', 'Certificate', 'PDB', 'Product Proposal', ], 
+                                },
+                                {                                        
+                                    type: 'text',
+                                    label: 'Keyword ',
+                                    id: 'keyword',
+                                    placeholder: 'Keyword',
+                                    required:false,
+                                },
+                            ])
+                            .c-button-wrap
+                                .button.c-cta
+                                    +defaultButton({name: 'Reset', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(aria-label="")
+                                    +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search" role="button" data-link-name aria-label="")
+        .c-wrapper.margin-top.margin-bottom.border-top.bg-default.c-search-result
+            .component
+                .cmp-container
+                    // block : c-result-area
+                    +csResultContent(50, true, false, [])
+                    // block : c-table
+                    .c-table
+                        table
+                            caption Catalogue & Leaflet & Document download list
+                            colgroup
+                                col.cell-size
+                                col.cell-size
+                                col.cell-title-size
+                                col.cell-size
+                                col.cell-size
+                            thead
+                                tr
+                                    th(scope="col") Region/Country
+                                    th(scope="col") Resource Type
+                                    th(scope="col") Title
+                                    th(scope="col") Date
+                                    th(scope="col") Size
+                            tbody
+                                - for(var x = 0 ; x < 3; x++)
+                                    tr
+                                        td 
+                                            +resourceType("Global", true, 'https://www.lg.com/lg5-common-gp/images/flag/lg.png', 'https://www.lg.com/lg5-common-gp/images/flag/lg.png', 'Global')
+                                        td 
+                                            +resourceType("Catalogue")
+                                        td 
+                                            +resourceDownload('Specs Sheet_File_Name(English)', 'pdf')
+                                        td 
+                                            +resourceType("2023-01")
+                                        td
+                                            +resourceSize('pdf', "8,864K")
+                                    tr
+                                        td 
+                                            +resourceType("Global", true, 'https://www.lg.com/lg5-common-gp/images/flag/lg.png', 'https://www.lg.com/lg5-common-gp/images/flag/lg.png', 'Global')
+                                        td 
+                                            +resourceType("Leaflet")
+                                        td 
+                                            +resourceDownload('2015_MULTI_V_Reference Site Catalogue_Europe')
+                                        td 
+                                            +resourceType("2023-01")                                        
+                                        td
+                                            +resourceSize('pdf', "13,864K")
+                    // block : pagenation
+                    .c-search__pagenation
+                        +pagination
+
+
+    .guide-text-type Type | Global <br>No Data
+    .BU0002
+        .c-wrapper.margin-top.margin-bottom.bg-default
+            .component
+                .cmp-container
+                    //- contents
+                    // block : Sort box
+                    .my-component
+                        .my-formbox
+                            +myInputForm([
+                                {                                        
+                                    type: 'select',
+                                    label: 'Region/Country ',
+                                    id: 'regionCountry',
+                                    required: false,
+                                    optionVal: ["Region/Country", "ASIA & PACIFIC", "CENTRAL AMERICA & CARIBBEAN", "CIS", "EUROPE", "MIDDLE EAST & AFRICA", "NORTH AMERICA", "SOUTH AMERICA", "WEST AFRICA", "GULF", "ARGENTINA", "BANGLADESH", "BULGARIA", "BRAZIL", "CANADA", "CHILE", "CHINA", "COLOMBIA", "CZECH REPUBLIC", "GERMANY", "EGYPT", "SPAIN", "FRANCE", "UK", "GREECE", "CENTRAL AMERICA AND CARIBBEAN", "HUNGARY", "INDONESIA", "INDIA", "LEVANT", "EAST AFRICA", "MEXICO", "PANAMA", "PERU", "PHILIPPINES", "POLAND", "SERBIA", "SAUDI ARABIA", "SINGAPORE", "THAILAND", "TÜRKIYE", "UKRAINE", "VIETNAM", "SOUTH AFRICA"],
+                                },
+                                {                                        
+                                    type: 'select',
+                                    label: 'Resource type ',
+                                    id: 'resourceType',
+                                    required: false,
+                                    optionVal: ['All', 'Catalogue', 'Leaflet', 'Spec Sheet', 'Certificate', 'PDB', 'Product Proposal', ], 
+                                },
+                                {                                        
+                                    type: 'text',
+                                    label: 'Keyword ',
+                                    id: 'keyword',
+                                    placeholder: 'Keyword',
+                                    required:false,
+                                },
+                            ])
+                            .c-button-wrap
+                                .button.c-cta
+                                    +defaultButton({name: 'Reset', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(aria-label="")
+                                    +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search" role="button" data-link-name aria-label="")
+        .c-wrapper.c-no-search-result.border-top
+            .component
+                .cmp-container
+                    // block: No result
+                    .c-no-result 
+                        .c-no-result__wrap
+                            span.c-no-result__icon 
+                            p.c-no-result__headline.font-m-normal-16.font-w-normal-20 No results were found.
+
+    // Type | Local 
+    .guide-text-type Type | Local <br>Before Search
+    // block : BU0002
+    .BU0002
+        .c-wrapper.margin-top.margin-bottom.bg-default
+            .component
+                .cmp-container
+                    //- contents
+                    // block : Sort box
+                    .my-component
+                        .my-formbox.type-02
+                            +myInputForm([
+                                {                                        
+                                    type: 'select',
+                                    label: 'Resource type ',
+                                    id: 'resourceType',
+                                    required:false,
+                                    optionVal: ['All', 'Catalogue', 'Leaflet', 'Spec Sheet', 'Certificate', 'PDB', 'Product Proposal', ], 
+                                },
+                                {                                        
+                                    type: 'text',
+                                    label: 'Keyword ',
+                                    id: 'keyword',
+                                    placeholder: 'Keyword',
+                                    required:false,
+                                },
+                            ])
+                            .c-button-wrap
+                                .button.c-cta
+                                    +defaultButton({name: 'Reset', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(aria-label="")
+                                    +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search" role="button" data-link-name aria-label="")
+    .guide-text-type Type | Local <br>Searched
+    .BU0002
+        .c-wrapper.margin-top.margin-bottom.bg-default.type02
+            .component
+                .cmp-container
+                    //- contents
+                    // block : Sort box
+                    .my-component
+                        .my-formbox.type-02
+                            +myInputForm([
+                                {                                        
+                                    type: 'select',
+                                    label: 'Resource type ', 
+                                    id: 'resourceType',
+                                    required:false,
+                                    optionVal: ['All', 'Catalogue', 'Leaflet', 'Spec Sheet', 'Certificate', 'PDB', 'Product Proposal', ], 
+                                },
+                                {                                        
+                                    type: 'text',
+                                    label: 'Keyword ',
+                                    id: 'keyword',
+                                    placeholder: 'Keyword',
+                                    required:false,
+                                },
+                            ])
+                            .c-button-wrap
+                                .button.c-cta
+                                    +defaultButton({name: 'Reset', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(aria-label="")
+                                    +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search" role="button" data-link-name aria-label="")
+        .c-wrapper.margin-top.margin-bottom.border-top.bg-default.c-search-result
+            .component
+                .cmp-container
+                    // block : c-result-area
+                    +csResultContent(50, true, false, [])
+                    // block : c-table
+                    .c-table
+                        table
+                            caption Catalogue & Leaflet & Document download list
+                            colgroup
+                                col.cell-size
+                                col.cell-size
+                                col.cell-title-size
+                                col.cell-size
+                                col.cell-size
+                            thead
+                                tr
+                                    th(scope="col") Region/Country
+                                    th(scope="col") Resource Type
+                                    th(scope="col") Title
+                                    th(scope="col") Date
+                                    th(scope="col") Size
+                            tbody
+                                - for(var x = 0 ; x < 5; x++)
+                                    tr
+                                        td 
+                                            +resourceType("SINGAPORE", true, 'https://www.lg.com/lg5-common-gp/images/flag/singapore.png', 'https://www.lg.com/lg5-common-gp/images/flag/singapore.png', 'Global')
+                                        td 
+                                            +resourceType("Catalogue")
+                                        td 
+                                            +resourceDownload('Specs Sheet_File_Name(English)', 'pdf')
+                                        td 
+                                            +resourceType("2023-01")
+                                        td
+                                            +resourceSize('pdf', "8,864K")
+                                    tr
+                                        td 
+                                            +resourceType("SINGAPORE", true, 'https://www.lg.com/lg5-common-gp/images/flag/singapore.png', 'https://www.lg.com/lg5-common-gp/images/flag/singapore.png', 'Global')
+                                        td 
+                                            +resourceType("Leaflet")
+                                        td 
+                                            +resourceDownload('2015_MULTI_V_Reference Site Catalogue_Europe')
+                                        td 
+                                            +resourceType("2023-01")                                        
+                                        td
+                                            +resourceSize('pdf', "13,864K") 
+                    // block : pagenation
+                    .c-search__pagenation
+                        +pagination
+
+    .guide-text-type Type | Local <br>No Data
+    .BU0002
+        .c-wrapper.margin-top.margin-bottom.bg-default
+            .component
+                .cmp-container
+                    //- contents
+                    // block : Sort box
+                    .my-component
+                        .my-formbox.type-02
+                            +myInputForm([
+                                {                                        
+                                    type: 'select',
+                                    label: 'Resource type ',
+                                    id: 'resourceType',
+                                    required:false,
+                                    optionVal: ['All', 'Catalogue', 'Leaflet', 'Spec Sheet', 'Certificate', 'PDB', 'Product Proposal', ], 
+                                },
+                                {                                        
+                                    type: 'text',
+                                    label: 'Keyword ',
+                                    id: 'keyword',
+                                    placeholder: 'Keyword',
+                                    required:false,
+                                },
+                            ])
+                            .c-button-wrap
+                                .button.c-cta
+                                    +defaultButton({name: 'Reset', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(aria-label="")
+                                    +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search" role="button" data-link-name aria-label="")
+        .c-wrapper.c-no-search-result.border-top
+            .component
+                .cmp-container
+                    // block: No result
+                    .c-no-result 
+                        .c-no-result__wrap
+                            span.c-no-result__icon 
+                            p.c-no-result__headline.font-m-normal-16.font-w-normal-20 No results were found.
+

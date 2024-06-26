@@ -1,0 +1,393 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_button.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "BU0001"
+    - var componentName = "Inquiry to buy"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-bu.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script.
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                        ],
+                        '.c-region-header__text' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            },
+                        ],
+                    }
+                            
+    mixin title-area(params)
+        - var options = {...params}
+        - var descStyle = "font-w-normal-24 font-m-normal-12"
+        +component-title-area-custom
+            +component-headline({
+                text : "Contact Us"
+            })
+            .text.c-region-header__text
+                if options.type == "complete"
+                    span.cmp-text(data-cmp-data-layer="" class=descStyle)
+                        | Please select Product category you are interested in.
+                if options.type == "form"
+                    span.cmp-text(data-cmp-data-layer="" class=descStyle)
+                        | Please select Product category you are interested in.
+                        br
+                        | For Inquiries related to categories not on this page please move to 
+                        // GA4
+                        a.font-underline(href="#" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Global Inquiry to Buy
+    
+    mixin title-area-link(params)
+        - var options = {...params}
+        +component-title-area-custom
+            +component-headline({
+                text : options.headline
+            })
+            .text.c-region-header__text
+                span.cmp-text(data-cmp-data-layer="" class=descStyle) Bitte wählen Sie die Produktkategorie aus, für die Sie eine Anfrage senden möchten.
+                if options.coltype == 'w-full'
+                    ul.link-list.w-full
+                        li Zum Kontaktformular für Information Display
+                            a(href="https://www.lg.com/global/business/inquiry-to-buy" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")                            
+                        li Zum Kontaktformular für HLK
+                            a(href="https://lgthermav.de/kontakt/" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        li Zum Kontaktformular für Beleuchtung
+                            a(href="https://www.lg.com/global/business/inquiry-to-buy" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        li Zum Kontaktformular für Energiespeichersysteme
+                            a(href="https://www.lg.com/global/business/inquiry-to-buy" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                if options.coltype == 'w-col2'
+                    ul.link-list.w-col2
+                        li Zum Kontaktformular für Information Display
+                            a(href="https://www.lg.com/global/business/inquiry-to-buy" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        li Zum Kontaktformular für Beleuchtung
+                            a(href="https://www.lg.com/global/business/inquiry-to-buy" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        li Zum Kontaktformular für HLK
+                            a(href="https://lgthermav.de/kontakt/" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        li Zum Kontaktformular für Energiespeichersysteme
+                            a(href="https://www.lg.com/global/business/inquiry-to-buy" target="_self" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+    
+    mixin complete-msg(params)
+        - var options = {...params}   
+        - var titleStyle = "font-w-light-36 font-m-light-24"
+        - var descStyle = "font-w-normal-16 font-m-normal-16"
+
+        case options.type 
+            when "error:system"
+                strong(class=titleStyle) 
+                    | System Error.
+                p.c-message-box__desc(class=descStyle)
+                    | We apologize for this inconvenience.
+                    br
+                    | Please try again.
+
+            when "error:fail"
+                strong(class=titleStyle) 
+                    | We are sorry.
+                p.c-message-box__desc(class=descStyle)
+                    | Message transmission has been failed.
+                    br
+                    | Please try again.
+                    
+            when "confirm:send"
+                strong(class=titleStyle) 
+                    | Thank you for Inquiry
+                p.c-message-box__desc(class=descStyle)
+                    | Your message has been sent.
+                    
+            when "confirm:registry"
+                strong(class=titleStyle) 
+                    | Thank you for registering
+                p.c-message-box__desc(class=descStyle)
+                    | Your inquiry have delivered to the person in charge of Enterprise Mobility 
+                    br
+                    | We will get back to you as soon as possible.
+
+    mixin completion(params)
+        - var options = {...params}   
+
+        .c-message-box&attributes(attributes)
+            .c-message-box__wrapper
+                .c-message-box__icon
+                .c-text-contents
+                    +complete-msg(options)
+                .button
+                    +defaultButton({
+                        name: 'OK', 
+                        wSize: 'medium', 
+                        mSize: 'small', 
+                        buttonStyle: 'highlight', 
+                        isButton: false
+                    })
+
+    // Component Markup
+    // DE Header
+    .guide-text-type Type 4. DE Header width full type
+    .c-wrapper.BU0001.bg-default 
+        .component
+            .cmp-container 
+                +title-area-link({headline : "Kaufanfrage Senden", coltype:'w-full'})
+    
+    .guide-text-type Type 4. DE Header width half type
+    .c-wrapper.BU0001.bg-default 
+        .component
+            .cmp-container 
+                +title-area-link({headline : "Kaufanfrage Senden", coltype:'w-col2'})
+
+    // Component Markup
+    // Type 1. Info Page
+    .guide-text-type Type 1. Info Page
+    .c-wrapper.BU0001.bg-default 
+        .component
+            .cmp-container 
+                +title-area({type : "form"})
+
+                +required-text-indicate
+                form.c-post-form(action="#" method="post")
+                    +postFormFieldset({
+                        legend : "Product Category",
+                        required : true
+                    })
+                        .c-post-form__group
+                            .c-post-form__item
+                                // When the select box below is selected, the HTML received from the data-url must be appended to #appendTarget.
+                                // However, the URL below is currently designed in the 5.0 style, so it must be changed to the LGness version.
+                                // If the value contains a url and not a model id, the link is moved
+                                +formSelect("", "productCategory", "Select Product Category", false)(class="invalid")
+                                    option(value='' data-meta-text='' data-url='/de/mkt/ajax/inquirytobuy/inquiryToBuyGp') Select Product Category
+                                    option(value='https://www.lg.com/global/business/inquiry-to-buy')
+                                        | INFORMATION DISPLAY
+                                    option(value='CT40001381' data-meta-text='Notebooks' data-url='/de/mkt/ajax/inquirytobuy/inquiryToBuyIFrameMulti?productCategory=CT40001381')
+                                        | NOTEBOOKS
+                                    option(value='CT00001736' data-meta-text='Projectors' data-url='/de/mkt/ajax/inquirytobuy/inquiryToBuyIFrameMulti?productCategory=CT00001736')
+                                        | BEAMER
+                                    option(value='CT00001362' data-meta-text='Monitor' data-url='/de/mkt/ajax/inquirytobuy/de-monitore?productCategory=CT00001362')
+                                        | MONITORE
+                                    option(value='https://www.lg.com/global/business/inquiry-to-buy')
+                                        | HLK
+                                    option(value='https://www.lg.com/global/business/inquiry-to-buy')
+                                        | BELEUCHTUNG
+                                    option(value='https://www.lg.com/global/business/inquiry-to-buy')
+                                        | LG ENERGIESPEICHERSYSTEM
+                                    option(value='CT00001738' data-meta-text='Solar' data-url='/de/mkt/ajax/inquirytobuy/inquiryToBuyIFrame?productCategory=CT00001738')
+                                        | SOLAR
+                                +postFormMessage("Product Category is required.", "")
+
+                    // Dynamically loaded parts according to selected Product Category
+                    // https://www.lg.com/global/mkt/ajax/inquirytobuy/selectBusinessSolutionsCategory?productCategory=CT00021159
+                    div#appendTarget
+                        +postFormFieldset({
+                            legend : "Select IT Product Category",
+                            required : true
+                        })
+                            .c-post-form__group
+                                .c-post-form__item
+                                    // After changing the below item, the URL of the selected option value should be loaded in the iframe.
+                                    +formSelect("", "ITProductCategory", "Select IT Product Category", false)(onchange="document.querySelector('.gpEloquaForm').src=this.value;")
+                                        option(value='' selected disabled) Select Product Category
+                                        option(value="https://b2bmkt.lge.com/sub_DG_IT_MonitorOther") option1
+                                        option(value="https://b2bmkt.lge.com/sub_DG_IT_Cloud") option2
+                
+                        .iframe-container 
+                            // iframe - just sample
+                            iframe(src="./inquiry-to-buy-iframe-01.html" class="gpEloquaForm" width="100%" height="2200px")
+                            //- .c-post-form__fieldset-group
+                            //-     +postFormFieldset("About your inquiry")
+                            //-         .c-post-form__group
+                            //-             .c-post-form__item
+                            //-                 +formSelect("Product / Solution", "productSolution", "Select Product / Solution", true)
+                            //-                     option(value="" selected) Product / Solution
+                            //-                     option(value="option1") option1
+                            //-                     option(value="option2") option2
+                            //-                 +postFormMessage("Product / Solution is required.", "")
+
+                            //-             .c-post-form__item
+                            //-                 +formSelect("Inquiry Type", "inquiryType", "Select Inquiry Type", true)
+                            //-                     option(value="" selected) Inquiry Type
+                            //-                     option(value="option1") option1
+                            //-                     option(value="option2") option2
+                            //-                 +postFormMessage("Inquiry is required.", "")
+
+                            //-         .c-post-form__item.c-post-form__item--textarea
+                            //-             +formTextarea("text", "Message", "Message", true, "Enter your inquiry or message")(minLength="20", maxlength="5000")
+                            //-             +postFormMessage("Message is required.", "")
+
+                            //-     +postFormFieldset("About you")
+                            //-         .c-post-form__item.c-post-form__item--line.c-post-form__item--radio
+                            //-             p.c-radio-label.font-w-semibold-16.font-m-semibold-14 I am a
+                            //-                 +required-text-sr
+                            //-             .c-radio
+                            //-                 .c-radio-group
+                            //-                     +formRadio('Homeowner', 'aboutRadio', 'Homeowner', 'homeowner')
+                            //-                     +formRadio('Commercial end-user', 'aboutRadio', 'Commercial end-user', 'commercialEndUser')
+                            //-                     +formRadio('Consultant', 'aboutRadio', 'Consultant', 'consultant')
+                            //-                     +formRadio('Installer', 'aboutRadio', 'Installer', 'installer')
+                            //-                     +formRadio('Others', 'aboutRadio', 'Others', 'others')
+                                            
+                            //-         .c-post-form__group
+                            //-             .c-post-form__item
+                            //-                 +formSelect("Your Country", "yourCountry", "Select Your Country", true)
+                            //-                     option(value="" selected) Your Country
+                            //-                     option(value="option1") option1
+                            //-                     option(value="option2") option2
+                            //-                 +postFormMessage("Country is required.", "")
+
+                            //-             .c-post-form__item
+                            //-                 +formText("text", "Region", "region", true, "Region")(maxlength="50")
+                            //-                 +postFormMessage("Region is required.", "")
+
+                            //-             // First Name, Last Name, Phone Number, Work Email Wrapper
+                            //-             +postFormAbout(true)
+
+                            //-             .c-post-form__item
+                            //-                 +formText("text", "Suburb / Locality", "suburb/locality", true, "Suburb / Locality")(maxlength="50")
+                            //-                 +postFormMessage("Suburb/Locality is required.", "")
+
+                            //-             .c-post-form__item
+                            //-                 +formText("text", "State", "state", true, "State")(maxlength="50")
+                            //-                 +postFormMessage("State is required.", "")
+
+                            //-             .c-post-form__item
+                            //-                 +formSelect("Company Type", "companyType", "Select Company Type", true)
+                            //-                     option(value="" selected) Company Type
+                            //-                     option(value="option1") option1
+                            //-                     option(value="option2") option2 
+                            //-                 +postFormMessage("Company Type is required.", "")
+
+                            //-             .c-post-form__item
+                            //-                 +formText("text", "Company Name", "companyName", true, "Company Name")(maxlength="100")
+                            //-                 +postFormMessage("Company Name is required.", "")
+
+                            //-             .c-post-form__item
+                            //-                 +formSelect("Industries", "industries", "Select Industries", false)
+                            //-                     option(value="" selected) Industries
+                            //-                     option(value="option1") option1
+                            //-                     option(value="option2") option2 
+
+                            //-             .c-post-form__item
+                            //-                 +formText("text", "City", "city", true, "City")(maxlength="50")
+                            //-                 +postFormMessage("City is required.", "")
+
+                            //-             .c-post-form__item
+                            //-                 +formSelect("Tell Us Who You Are", "tellUs", "Select Tell Us Who You Are", true)
+                            //-                     option(value="" selected) Tell Us Who You Are
+                            //-                     option(value="option1") option1
+                            //-                     option(value="option2") option2 
+                            //-                 +postFormMessage("Tell Us Who You Are is required.", "")
+                                            
+                            //-             .c-post-form__item
+                            //-                 +formSelect("Vertical Markets", "verticalMarkets", "Select Vertical Markets", false)
+                            //-                     option(value="" selected) Vertical Markets
+                            //-                     option(value="option1") option1
+                            //-                     option(value="option2") option2 
+
+                            //-     +postFormFieldset("Security")
+                            //-         +formCaptcha("text", "Please enter text or try the audio", "captcha", true, "")
+
+                            //-     +postFormFieldset("Privacy Policy")
+                            //-         .c-post-form__item.c-post-form__item--check
+                            //-             .c-input-item
+                            //-                 p.c-check-label.font-w-semibold-16.font-m-semibold-14 Privacy Policy
+                            //-                     +required-text-sr
+                            //-                 .c-form__box
+                            //-                     +formCheckbox(false, "Privacy Policy", "val1", "Policy1")(required = require)
+                            //-                         span.font-w-normal-14.font-m-normal-14.c-pop-msg__gray-form-agree
+                            //-                             | I agree with the data protection policy 
+                            //-                             a.font-red.font-underline(href="#") read privacy policy
+                            //-                     +postFormMessage("Privacy Policy is not checked.", "")
+
+                            //-         .c-post-form__item.c-post-form__item--check
+                            //-             .c-input-item
+                            //-                 p.c-check-label.font-w-semibold-16.font-m-semibold-14 Receive Marketing Information
+                            //-                 .c-form__box
+                            //-                     +formCheckbox(false, "Receive Marketing Information", "val1", "Policy2")
+                            //-                         span.font-w-normal-14.font-m-normal-14.c-pop-msg__gray-form-agree I agree to receive the LGE’s Newsletter for latest updates(optional)
+                            //-         .c-post-form__item--line.c-post-form__item--check
+                            //-             .c-input-item
+                            //-                 p.c-check-label.font-w-semibold-16.font-m-semibold-14 Transfer Outside EEA
+                            //-                     +required-text-sr
+                            //-                 .c-form__box
+                            //-                     +formCheckbox(false, "Transfer Outside EEA", "val1", "Policy3")(required = require)
+                            //-                         span.font-w-normal-14.font-m-normal-14.c-pop-msg__gray-form-agree
+                            //-                             | I agree that LGE may transfer my information (including my Personally Identifiable Information) outside the European
+                            //-                             | Economic Area as described in the Privacy Policy.
+                            //-                     +postFormMessage("Transfer Outside EEA is not checked.", "")
+
+                            //-         .c-post-form__item
+                            //-             p.font-w-normal-14.font-m-normal-14.c-pop-msg__gray-form-agree.c-pop-msg__gray-form-agree--icon-blank
+                            //-                 | If you would like to change your consent, Please 
+                            //-                 a.font-red.font-underline(href="#") Click here    
+
+                            //- .button.c-post-form__button-wrap
+                            //-     +button({type:"box", color:"red", size:"large", name: "submit"}, "submit")
+
+    // Type 2. System Message - confirm
+    // Option1. Message confirm 1
+    .guide-text-type Type 2. System Message - confirm
+    .guide-text-option Option1. Message confirm
+    .c-wrapper.BU0001.bg-default
+        .component
+            .cmp-container
+                +title-area({type : "complete"})
+                +completion({type : "confirm:registry"})(class="c-message-box--confirm")
+    
+    // Option2. Message confirm 2
+    .guide-text-option Option2. Message confirm
+    .c-wrapper.BU0001.bg-default
+        .component
+            .cmp-container
+                +title-area({type : "complete"})
+                +completion({type : "confirm:send"})(class="c-message-box--confirm")
+
+    // Type 3. System Message - Error
+    // Option1. Message Error 1
+    .guide-text-type Type 3. System Message - Error
+    .guide-text-option Option2. Message Error
+    .c-wrapper.BU0001.bg-default
+        .component
+            .cmp-container
+                +title-area({type : "complete"})
+                +completion({type : "error:system"})(class="c-message-box--system-error")
+
+    // Option2. Message Error 2
+    .guide-text-option Option2. Message Error
+    .c-wrapper.BU0001.bg-default
+        .component
+            .cmp-container
+                +title-area({type : "complete"})
+                +completion({type : "error:fail"})(class="c-message-box--sending-error")
+
+    

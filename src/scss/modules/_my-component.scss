@@ -1,0 +1,253 @@
+@use '../abstract/' as *;
+@mixin my-component {
+  // submenu
+  .my-component--sub-menu {
+    position: relative;
+    margin: 0;
+    padding: 0 !important;
+    .title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      @include screen(web) {
+        justify-content: flex-start;
+      }
+      .cmp-title {
+        line-height: 1em;
+      }
+    }
+    .c-text-contents {
+      padding: rem($padding24px $block-margin-m $padding12px);
+      width: 100%;
+      .c-text-contents__headline {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        cursor: pointer;
+      }
+      @include screen(web) {
+        padding: rem($padding24px $block-margin-w);
+        .c-text-contents__headline {
+          align-items: center;
+          justify-content: flex-start;
+          width: fit-content;
+        }
+      }
+    }
+    .c-list {
+      display: none;
+      position: absolute;
+      left: 0;
+      top: 100%;
+      z-index: 1;
+      width: 100%;
+      background: $warm-gray;
+      @include screen(web) {
+        top: 100%;
+        background-color: $white;
+      }
+      &-sub-list {
+        max-height: rem(266px);
+        overflow-y: auto;
+        @include reset-list-style;
+        padding: rem(12px 25px);
+        text-align: left;
+        @include screen(web) {
+          padding: rem(16px 30px);
+          max-height: rem(410px);
+        }
+        a {
+          display: block;
+          color: #000;
+          padding: rem(10px) 0;
+          font-size: rem(16px);
+          line-height: rem(18px);
+          transition: background 0.3s;
+          @include screen(web) {
+            border-radius: rem(8px);
+            padding: rem($padding8px $padding25px);
+            font-size: rem(32px);
+            line-height: rem(36px);
+          }
+          &:hover {
+            text-decoration: none;
+            @include screen(web) {
+              color: $black;
+              background: $light-gray1;
+            }
+          }
+          &:focus {
+            text-decoration: none;
+          }
+          &:active {
+            text-decoration: none;
+          }
+        }
+      }
+      &::after {
+        content: '';
+        display: block;
+        width: 100%;
+        box-shadow: 0 0 4px rgb(0 0 0 / 20%);
+      }
+    }
+    .c-button {
+      line-height: 0;
+      margin-right: rem(-10px);
+      @include screen(web) {
+        margin-left: rem(24px);
+        margin-right: 0;
+      }
+      button {
+        padding: rem(10px);
+        cursor: pointer;
+        border: none;
+        background-color: transparent;
+        &:before {
+          content: '';
+          display: block;
+          width: rem(10px);
+          height: rem(10px);
+          background-image: url($icon-mylg-arrow-down-18-10);
+          background-position: 50%;
+          background-repeat: no-repeat;
+          background-size: 100%;
+          background-color: transparent;
+          @include screen(web) {
+            width: rem(18px);
+            height: rem(18px);
+          }
+        }
+      }
+    }
+    &.active {
+      .c-button {
+        button {
+          &:before {
+            transform: rotate(180deg);
+          }
+        }
+      }
+      .c-list {
+        display: block;
+        @include screen(web) {
+          width: 100%;
+          max-width: rem(1054px);
+          left: 0;
+          box-shadow: rem(2px 4px 12px) rgb(0 0 0 / 14%);
+          @include lgness-radius('all');
+        }
+      }
+      // .my-component--sub-menu-dim {
+      //     width: 100%;
+      //     height: 100%;
+      //     background-color: rgba(0, 0, 0, 0.7);
+      //     position: fixed;
+      //     z-index: 20;
+      //     left: 0;
+      //     top: 0;
+      //     @include screen(web) {
+      //         display: none;
+      //     }
+      // }
+    }
+  }
+
+  // layout
+  .my-component {
+    &.my-page-title {
+      padding-top: rem($padding24px);
+      padding-bottom: rem($padding12px);
+      @include screen(web) {
+        padding-bottom: rem($padding24px);
+      }
+    }
+    &__wrap {
+      border-top: rem($border1) solid $graycb;
+
+      &.border-only-web {
+        @include screen(mobile) {
+          border: none;
+        }
+      }
+    }
+    .headline-m-padding-r {
+      padding-right: rem($width90px + $block-margin-m);
+    }
+    .headline-w-padding-r {
+      @include screen(web) {
+        padding-right: rem($width300px + $block-margin-w);
+      }
+    }
+  }
+
+  // my-com__sort-box (ML F,H,L,U,V)
+  .my-com__sort-box {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: rem($margin12px);
+    @include screen(web) {
+      margin-bottom: rem($margin20px);
+    }
+    .my-input {
+      margin-bottom: rem($margin3px);
+    }
+    ul {
+      @include reset-list-style;
+      display: flex;
+      gap: rem(10px);
+    }
+    li {
+      position: relative;
+    }
+    &-text {
+      position: absolute;
+      top: rem(1px);
+      right: rem(20px);
+      font-size: rem(14px);
+      color: $black;
+      font-weight: $font-regular;
+      width: calc(100% - 25px);
+      height: rem(16px);
+      line-height: rem(16px);
+      text-align: right;
+      pointer-events: none;
+      @include screen(web) {
+        top: rem(1px);
+        height: rem(14px);
+        font-weight: $font-semibold;
+        line-height: rem(14px);
+      }
+      &.active {
+        background: $warm-gray;
+      }
+    }
+    .c-select-item {
+      height: rem(16px);
+      line-height: rem(16px);
+      @include screen(web) {
+        height: rem(14px);
+        line-height: rem(14px);
+      }
+    }
+    .c-select-item select {
+      height: rem(16px);
+      padding: rem(0 $padding20px 0 $padding5px);
+      border: none;
+      font-size: rem(14px);
+      color: $black;
+      font-weight: $font-regular;
+      line-height: rem(16px);
+      background-position: calc(100% - rem(5px)) 50%;
+      background-size: rem(10px) rem(5px);
+      background-color: transparent;
+      @include screen(web) {
+        height: rem(15px);
+        color: $black;
+        font-size: rem(14px);
+        font-weight: $font-semibold;
+        line-height: rem(14px);
+      }
+    }
+  }
+}

@@ -1,0 +1,100 @@
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_title-area.pug
+
+mixin CM0004(option=false)
+    mixin social-indicator(type)
+        // block :-social-information
+        .c-social-information
+            // block : icon
+            .image.c-image.c-social-information__mark
+                +printLazyImage(`../../assets/icon/icon-${type}-color-32-32.svg`, alt=`${type}`)
+            .c-social-information__indicator
+                .c-social-information__date.font-w-normal-24.font-m-normal-16 08.08.2022
+                // 22.11.04 - removed "like it" and "reply".  
+                //- .c-social-information__indicate-box
+                //-     // block - icon
+                //-     .c-icon.w-size20.m-size20.heart
+                //-         span.c-icon__text.sr-only Like it!
+                //-     .c-social-information__count 30
+                //- .c-social-information__indicate-box
+                //-     // block - icon
+                //-     .c-icon.w-size20.m-size20.speech-bubble
+                //-         span.c-icon__text.sr-only Reply
+                //-     .c-social-information__count 12
+    mixin social-item(type)
+        - var bodyStyle = "font-w-normal-24 font-m-normal-16"
+        .cmp-carousel__item.swiper-slide.c-carousel__item(data-item-type=`${type.item}`)
+            // GA4
+            a.c-carousel__linker(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                if type.item == "text"
+                    // block : text-contents
+                    .c-text-contents
+                        .text.c-text-contents__bodycopy
+                            p.cmp-text(data-cmp-data-layer="" class=bodyStyle) Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati dolorum repellat sapiente atque? Beatae recusandae laborum nemo esse rem molestias, molestiae cumque. Iusto ea odio corrupti dicta quibusdam. Quasi, laboriosam sunt quas deleniti laudantium dicta officia libero fugit delectus quae aperiam non, et exercitationem cum itaque earum dolorum cupiditate eum placeat ducimus labore vitae iusto nisi distinctio? Qui blanditiis amet similique ut, reiciendis cum, earum unde, ipsam recusandae laboriosam possimus nam expedita eaque voluptas maiores molestias! Possimus nam architecto earum eligendi facere eos hic impedit, dolor quod soluta quia non saepe ea ullam maiores fugit consequatur! Officiis sit ratione ea.
+                    +social-indicator(type.social)
+                else
+                    // block : image
+                    .image.c-image
+                        +printLazyImage("https://via.placeholder.com/342x260/999/000")
+                    // block : text-contents
+                    .c-text-contents
+                        .text.c-text-contents__bodycopy
+                            p.cmp-text(data-cmp-data-layer="" class=bodyStyle) Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque error, laboriosam, ipsa sapiente alias enim nemo quisquam nobis doloribus dolore animi recusandae natus. Eos voluptate fuga voluptatibus officia incidunt illo.
+                    +social-indicator(type.social)
+
+    - var vendorList = [{social : "youtube", item : "video"},{social : "instagram", item : "text"},{social : "instagram", item : "image"},{social : "facebook", item : "image"},{social : "twitter", item : "text"},{social : "instagram", item : "image"}]
+
+    if(option == 'IFRAME')
+        .c-wrapper.CM0004.margin-top.margin-bottom.bg-default.border-top
+            .component
+                .cmp-container
+                    +component-title-area({
+                        alignment : "",
+                        headline : {
+                            text : "Social",
+                        },
+                        description : {
+                            text : "Life’s good campaign",
+                            style : "font-w-normal-24 font-m-normal-16"
+                        }
+                    })
+
+                    // use iframe 
+                    .iframe-container 
+                        //- migration sample (input value) 
+                        //- "DIV" : 'id="flockler-embed-17b0ac7043a01357c82d373640ce1fe7"'   
+                        //- "Script" : 'src="https://plugins.flockler.com/embed/17abc7b60b50ed7a6b0b221242b85476/17b0ac7043a01357c82d373640ce1fe7"'
+                        div(id="flockler-embed-17b0ac7043a01357c82d373640ce1fe7")
+                        script(src="https://plugins.flockler.com/embed/17abc7b60b50ed7a6b0b221242b85476/17b0ac7043a01357c82d373640ce1fe7", async)
+    else 
+        .c-wrapper.CM0004.margin-top.margin-bottom.bg-default.border-top
+            .component
+                .cmp-container
+                    //- title area
+                    // 23.02.14 - changed markup
+                    +component-title-area({
+                        alignment : "",
+                        headline : {
+                            text : "Social",
+                        },
+                        description : {
+                            text : "Life’s good campaign",
+                            style : "font-w-normal-24 font-m-normal-14"
+                        }
+                    })(class="c-region-header--vacate-side")
+
+                    //- contents
+                    .carousel.panelcontainer
+                        // block - carousel
+                        .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                            .cmp-carousel__content.swiper-wrapper
+                                each option in vendorList
+                                    +social-item(option)
+                            // 23.02.14 modified markup - added ".c-carousel__handler--dial", ".c-carousel__handler--away-from-carousel"
+                            .c-carousel__handler.c-carousel__handler--dial.c-carousel__handler--away-from-carousel
+                                .cmp-carousel__actions
+                                    +carouselBtn({type:"pagination", direction:"prev"})
+                                +carouselPagination
+                                .cmp-carousel__actions
+                                    +carouselBtn({type:"pagination", direction:"next"})

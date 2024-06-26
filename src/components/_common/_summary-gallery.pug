@@ -1,0 +1,139 @@
+include ./_carousel.pug
+include ./_image.pug
+include ./_video.pug
+
+mixin gallery(params)
+	- var options = {...params}
+	.c-summary-gallery
+		//-  && !options.standAlone
+		if(options.isPopup)
+			+gallery-sort(options.galleryFeatures, true)
+		else
+			+gallery-sort(options.galleryFeatures, false)
+		.c-summary-gallery__contents
+			if(options.isPopup)
+				.c-gallery(data-type="image" role="tabpanel" id="tabpanel-image" aria-labelledby="tab-image") 
+					.c-gallery__display
+						+display-item(options.isPopup, '000/888')
+					+thumbnail-carousel('image', options.isPopup, options.galleryList)
+					+gallery-handler
+				.c-gallery.c-media.hidden(data-type="video" data-media="dynamic" role="tabpanel" id="tabpanel-video" aria-labelledby="tab-video")
+					.c-gallery__display
+						.c-gallery__display--iframe.c-media__container
+							//- iframe(data-src="https://www.youtube.com/embed/A1BF1kmkvp8?enablejsapi=1&origin=https%3A%2F%2Fwdev50.lg.com&widgetid=8" title="")
+					+thumbnail-carousel('video', options.isPopup, options.galleryList)
+					+gallery-handler
+				.c-gallery.hidden(data-type="360" role="tabpanel" id="tabpanel-360" aria-labelledby="tab-360") 
+					.c-gallery__display
+						.c-gallery__display--iframe
+							iframe(data-src="https://www.lg.com/ae/images/360view2/html/GN.html" title="")
+				.c-gallery.hidden(data-type="ar" role="tabpanel" id="tabpanel-ar" aria-labelledby="tab-ar") 
+					.c-gallery__display
+						.c-gallery__display--iframe
+							iframe(data-src="https://lgarexperience.com/ha/Refrigerator/instaview" title="") 
+				.c-gallery.hidden(data-type="vr" role="tabpanel" id="tabpanel-vr" vria-labelledby="tab-vr")
+					.c-gallery__display
+						.c-gallery__display--iframe
+							//- 실제 컨텐츠 샘플 필요
+							iframe(data-src="https://www.lg.com/global/3dviewer/index.html#/products/83g2-low" title="")
+				.c-gallery.hidden(data-type="3d" role="tabpanel" id="tabpanel-3d" 3dia-labelledby="tab-3d")
+					.c-gallery__display
+						.c-gallery__display--iframe
+							iframe(data-src="https://www.lg.com/global/3dviewer/index.html#/products/83g2-low" title="")
+			else 
+				.c-gallery.image
+					+display-carousel(options)
+					//- +gallery-sort(options.galleryFeatures, false)
+					+thumbnail-carousel('image', options.isPopup, options.galleryList)
+					+gallery-handler
+	p.disclaimer The images shown are for illustration purposes only
+
+mixin gallery-sort(array = [], isPopup)
+	// block - list
+	.c-list.c-summary-gallery__sort(role="tablist")
+		each feature in array
+			button.c-icon-button(type="button" role=`${(isPopup) ? "tab" : "button"}` class=`c-icon-button--${feature} ${(feature=="image" && isPopup) ? 'active' : ''}` aria-controls=`${(isPopup) ? 'tabpanel-'+feature : 'popSummaryGallery' }` aria-selected=`${(feature=="image") ? 'true' : 'false'}` id=`tab-${feature}` data-type=`${feature}`)
+				- var text = ''
+				case feature 
+					when 'image'
+						span Gallery
+					when 'video'
+						span Movie
+					when '360'
+						span 360&deg;
+					when '3d'
+						span 3D
+					when 'ar'
+						span AR
+					when 'vr'
+						span VR
+
+mixin display-carousel(params)
+	- var options = {...params}
+	.c-gallery__display
+		.carousel.panelcontainer
+			.cmp-carousel.swiper.c-carousel.c-gallery__display--large(data-cmp-data-layer="")
+				.cmp-carousel__content.swiper-wrapper
+					each set in options.galleryList
+						.cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+							// GA4
+							a(href="#" aria-controls="popSummaryGallery" role="button")
+								+display-item(options.isPopup, set.color)
+
+mixin display-item(isPopup, color)
+	//- item size : 100% x 847
+	//- image : 1100 x 730...  
+	//- video : 1280 x 720
+	// 갤러리 이미지 - 1100x730
+	// 갤러리 라지 이미지 - D 1600x1062 M 1044x1334
+	.c-gallery__item.c-gallery__item--display-image
+		// block - image
+		.image.c-image
+			+printLazyImage(`https://via.placeholder.com/1100x730/${color}`)
+		//- zoom in/out
+		if(isPopup)
+			.c-gallery__image-zoom-handler
+				button.c-icon-button.zoom-in
+					span.sr-only zoom in
+				button.c-icon-button.zoom-out
+					span.sr-only zoom out
+
+mixin thumbnail-carousel(type, isPopup, array = [])
+	.c-gallery__thumbnail
+		.carousel.panelcontainer
+			.cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+				.cmp-carousel__content.swiper-wrapper
+					each set, idx in array
+						.cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item" class=`${(idx == 0) ? 'active' : ''}`)
+							case type
+								when "image"
+									if(isPopup)
+										a.c-gallery__item(href="#" role="button" data-large-d=`https://via.placeholder.com/1600x1062/${set.color}` data-large-m=`https://via.placeholder.com/1044x1334/${set.color}`)
+											// block - image
+											.image.c-image
+												+printLazyImage(`https://via.placeholder.com/180x180/${set.color}`)
+									else 
+										.c-gallery__item(role="button")
+											// block - image
+											.image.c-image
+												+printLazyImage(`https://via.placeholder.com/180x180/${set.color}`)
+								when "video"
+									//- popup only
+									if(set.color == '000/888')
+										a.c-gallery__item.c-media__button.c-media__button--play.js-video-play(href="#" role="button" data-type="youtube" data-src="https://www.youtube.com/embed/PetoQo1eUww")
+											// block - image
+											.image.c-image
+												+printLazyImage(`https://via.placeholder.com/180x180/${set.color}`)
+									else 
+										a.c-gallery__item.c-media__button.c-media__button--play.js-video-play(href="#" role="button" data-type="brightcove" data-video-id="1766152406001" data-account-id="1665893145001" data-player-id="default")
+											// block - image
+											.image.c-image
+												+printLazyImage(`https://via.placeholder.com/180x180/${set.color}`)
+
+mixin gallery-handler
+	.c-carousel__handler
+		.cmp-carousel__actions
+			+carouselBtn({type:"pagination", direction:"prev"})
+		+carouselPagination()
+		.cmp-carousel__actions
+			+carouselBtn({type:"pagination", direction:"next"})

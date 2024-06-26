@@ -1,0 +1,416 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_forms.pug
+include ../_common/_carousel.pug
+include ../_common/_toast.pug
+include ../_common/_my-component.pug
+include ../_common/_pagination.pug
+
+block meta 
+    - var componentId = "ML000V"
+    - var componentName = "My coupons"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+                
+mixin myPrintTab(div, num, selected)
+    if selected
+        li.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0" data-cmp-hook-tabs="tab" aria-selected="true")
+            if block
+                block
+    else 
+        li.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1" data-cmp-hook-tabs="tab" aria-selected="false")
+            if block
+                block
+
+mixin myPrintTabPanel(div, num, selected)
+    if selected 
+        .cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+            if block
+                block
+    else 
+        .cmp-tabs__tabpanel(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+            if block
+                block
+
+mixin myInputForm(params)
+    .my-input
+        ul
+            each set in params
+                - let data = {...set}
+                li
+                    .my-com__sort-box-text
+                    .c-search-box__form(class=`${data.warning ? 'my-warn' : ''}`)
+                        +formSelect(data.label='', data.id, data.placeholder, false)
+                            if data.optionVal
+                                - for(var i=0; i < data.optionVal.length; i++)
+                                    if data.selected === i + 1
+                                        option(value="" data.selected)= data.optionVal[i]
+                                    else
+                                        option(value="")= data.optionVal[i]
+
+mixin myCouponsList(data)
+    ul.my-coupons
+        each set in data
+            li.my-coupons__item 
+                .my-coupons__inner
+                    .my-coupons__badge
+                        each dataBadge in set.badge
+                            .my-coupons__badge-item
+                                span.font-w-bold-10.font-m-bold-10 !{dataBadge}
+                    .c-text-contents__top(class=`my-coupons__icon--${set.couponType}`)
+                        .c-text-contents__title
+                            span.font-w-normal-32.font-m-normal-24.font-red !{set.couponTitle}
+                        .c-text-contents__desc
+                            span.font-w-normal-20.font-m-normal-16 !{set.couponDesc}
+                    .c-text-contents__bottom.close
+                        .c-text-contents__valid
+                            span.font-w-normal-16.font-m-normal-14= `Valid : ${set.valid}`
+                        if set.expiringDay
+                            .c-text-contents__warningMsg.font-red
+                                span.font-w-normal-16.font-m-normal-14= `Only ${set.expiringDay} days ` 
+                                span.font-w-normal-16.font-m-normal-14 left on this coupon
+                        if set.code
+                            .c-text-contents__code
+                                span.my-coupons__code.font-w-noraml-16.font-m-normal-14= set.code
+                                +button({type:"box-outlined", color:"black", size:"small", name: "Copy"})
+                        .c-text-contents__info
+                            span.font-w-normal-14.font-m-normal-12 !{set.info}
+                .my-coupons__aside 
+                    .c-button.button 
+                        +button({type:"text",color:"black", icon:true, name:"VIEW DETAIL", class:"my-coupons__icon--arrow"})
+
+mixin ML000V(option = '')
+    if option == 'myCouponsList'
+        .c-wrapper.ML000V
+            .component
+                .fluid-container
+                    +myComponentSubMenu({
+                        title:"My Coupons",
+                        subMenu:['m1', 'm2', 'm3']
+                    })
+                    .my-component.my-component--toast-wrap
+                        +toastPopup([
+                            {
+                                type: "warning",
+                                text: '2 coupon(s) will be expired within 3 months. check the warning message for valid date.',
+                                remove: true,
+                            }
+                        ])
+                    .my-component--maximum.my-component--tab
+                        .tabs.panelcontainer.tabs__wide
+                            .cmp-tabs(data-cmp-data-layer="" data-placeholder-text="true")
+                                .cmp-tabs__inner.c-tab
+                                    ul.cmp-tabs__tablist(role="tablist" aria-multiselectable="true")
+                                        +myPrintTab(1, 1, true) All
+                                        +myPrintTab(1, 2, false) For Basket
+                                        +myPrintTab(1, 3, false) For Product
+                                +myPrintTabPanel(1, 1, true)
+                                    // case : list
+                                    .my-com__sort-box 
+                                        +myInputForm([
+                                            {
+                                                type: 'select',
+                                                optionVal: ['Latest', 'Oldest', 'Immediate Expiring'],
+                                                id: 'select1',
+                                            }
+                                        ])
+                                    // couponType : member, birthday, basket, product
+                                    +myCouponsList([
+                                        {
+                                            badge: ["For multiuse"],
+                                            couponType: "member",
+                                            couponTitle: "Member",
+                                            couponDesc: "Member Days Special <br>Discount Coupon",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected <br>LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: ["For multiuse"],
+                                            couponType: "birthday",
+                                            couponTitle: "Happy Birthday",
+                                            couponDesc: "The gift for the great day, <br>your birthday.",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected <br>LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: ["For multiuse"],
+                                            couponType: "basket",
+                                            couponTitle: "Basket",
+                                            couponDesc: "Buy any 3 or more <br>LG home appliances",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected <br>LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: ["For multiuse"],
+                                            couponType: "product",
+                                            couponTitle: "Product",
+                                            couponDesc: "10% off LG home appliances <br>(buying any 2)",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected <br>LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: ["For multiuse"],
+                                            couponType: "member",
+                                            couponTitle: "Member",
+                                            couponDesc: "Member Days Special <br>Discount Coupon",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected <br>LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: ["For multiuse"],
+                                            couponType: "birthday",
+                                            couponTitle: "Happy Birthday",
+                                            couponDesc: "The gift for the great day, <br>your birthday.",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected <br>LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: ["For multiuse"],
+                                            couponType: "basket",
+                                            couponTitle: "Basket",
+                                            couponDesc: "Buy any 3 or more <br>LG home appliances",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected <br>LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: ["For multiuse"],
+                                            couponType: "product",
+                                            couponTitle: "Product",
+                                            couponDesc: "10% off LG home appliances <br>(buying any 2)",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected <br>LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                    ])
+                                    .my-coupons__pagination
+                                        +pagination
+                                    
+                                +myPrintTabPanel(1, 2, false)
+                                    .my-com__sort-box 
+                                        +myInputForm([
+                                            {
+                                                type: 'select',
+                                                optionVal: ['Latest', 'Oldest', 'Immediate Expiring'],
+                                                id: 'select2',
+                                            }
+                                        ])
+                                    +myCouponsList([
+                                        {
+                                            badge: ["For multiuse"],
+                                            couponType: "member",
+                                            couponTitle: "Member",
+                                            couponDesc: "Member Days <br>Special Discount Coupon",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: false,
+                                            couponType: "basket",
+                                            couponTitle: "Basket",
+                                            couponDesc: "Buy any 3 or more LG home appliances",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: false,
+                                            info: "50% off selected Soundbars when you buy selected LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: false,
+                                            couponType: "birthday",
+                                            couponTitle: "Happy Birthday",
+                                            couponDesc: "The gift for the great day, your <br> birthday.",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: false,
+                                            info: "50% off selected Soundbars when you buy selected LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: ["For multiuse"],
+                                            couponType: "member",
+                                            couponTitle: "Member",
+                                            couponDesc: "Member Days <br>Special Discount Coupon",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: false,
+                                            couponType: "member",
+                                            couponTitle: "Member",
+                                            couponDesc: "Member Days <br>Special Discount Coupon",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: ["For multiuse"],
+                                            couponType: "basket",
+                                            couponTitle: "Basket",
+                                            couponDesc: "Buy any 3 or more LG home appliances",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: false,
+                                            info: "50% off selected Soundbars when you buy selected LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: false,
+                                            couponType: "member",
+                                            couponTitle: "Member",
+                                            couponDesc: "Member Days <br>Special Discount Coupon",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: false,
+                                            couponType: "basket",
+                                            couponTitle: "Basket",
+                                            couponDesc: "Buy any 3 or more LG home appliances",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: false,
+                                            info: "50% off selected Soundbars when you buy selected LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                    ])
+                                    .my-coupons__pagination
+                                        +pagination
+                                +myPrintTabPanel(1, 3, false)
+                                    .my-com__sort-box 
+                                        +myInputForm([
+                                            {
+                                                type: 'select',
+                                                optionVal: ['Latest', 'Oldest', 'Immediate Expiring'],
+                                                id: 'select2',
+                                            }
+                                        ])
+                                    +myCouponsList([
+                                        {
+                                            badge: false,
+                                            couponType: "product",
+                                            couponTitle: "Product",
+                                            couponDesc: "10% off LG home appliances (buying any 2)",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: ["For multiuse"],
+                                            couponType: "product",
+                                            couponTitle: "Product",
+                                            couponDesc: "10% off LG home appliances (buying any 2)",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: false,
+                                            couponType: "product",
+                                            couponTitle: "Product",
+                                            couponDesc: "10% off LG home appliances (buying any 2)",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: ["For multiuse"],
+                                            couponType: "product",
+                                            couponTitle: "Product",
+                                            couponDesc: "10% off LG home appliances (buying any 2)",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: ["For multiuse"],
+                                            couponType: "product",
+                                            couponTitle: "Product",
+                                            couponDesc: "10% off LG home appliances (buying any 2)",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: false,
+                                            couponType: "product",
+                                            couponTitle: "Product",
+                                            couponDesc: "10% off LG home appliances (buying any 2)",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: ["For multiuse"],
+                                            couponType: "product",
+                                            couponTitle: "Product",
+                                            couponDesc: "10% off LG home appliances (buying any 2)",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                        {
+                                            badge: ["For multiuse"],
+                                            couponType: "product",
+                                            couponTitle: "Product",
+                                            couponDesc: "10% off LG home appliances (buying any 2)",
+                                            valid: "02 Jun. 2023",
+                                            expiringDay: "30",
+                                            info: "50% off selected Soundbars when you buy selected LG TVs (48/55/65A2 & 55/65/77B2 & 42/48/55/65/77/83C2 series"
+                                        },
+                                    ])
+                                    .my-coupons__pagination
+                                        +pagination
+
+    if option == 'nodata'
+        .c-wrapper.ML000V
+            .component
+                .fluid-container
+                    +myComponentSubMenu({
+                        title:"My Coupons",
+                        subMenu:['m1', 'm2', 'm3']
+                    })
+                    .my-component--maximum.my-component--tab
+                        .tabs.panelcontainer.tabs__wide
+                            .cmp-tabs(data-cmp-data-layer="" data-placeholder-text="true")
+                                .cmp-tabs__inner.c-tab
+                                    ul.cmp-tabs__tablist(role="tablist" aria-multiselectable="true")
+                                        +myPrintTab(2, 4, true) All
+                                        +myPrintTab(2, 5, false) For Basket
+                                        +myPrintTab(2, 6, false) For Product
+                                +myPrintTabPanel(2, 4, true)
+                                    // case : nodata
+                                    .my-nodata-wrap 
+                                        .c-no-data 
+                                            strong.font-w-light-36.font-m-normal-16 There is no coupon.
+                                    
+                                +myPrintTabPanel(2, 5, false)
+                                    // case : nodata
+                                    .my-nodata-wrap 
+                                        .c-no-data 
+                                            strong.font-w-light-36.font-m-normal-16 There is no backet coupon.
+                                    
+                                +myPrintTabPanel(2, 6, false)
+                                    // case : nodata
+                                    .my-nodata-wrap 
+                                        .c-no-data 
+                                            strong.font-w-light-36.font-m-normal-16 There is no product coupon.
+
+block content
+    // Component Markup
+    .guide-text-type My coupons list
+    +ML000V('myCouponsList')
+
+    .guide-text-type No data
+    +ML000V('nodata')

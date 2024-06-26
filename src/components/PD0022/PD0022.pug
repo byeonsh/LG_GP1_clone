@@ -1,0 +1,143 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_forms.pug
+include ../_common/_carousel.pug
+include ../_common/_pop-msg.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "PD0022"
+    - var componentName = "PDP Compatible Products"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+
+    mixin compatible-slide(data)
+        .compatible-slide
+            .carousel.panelcontainer
+                .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                    .cmp-carousel__content.swiper-wrapper
+                        each set in data
+                            .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                                .compatible-slide__item
+                                    span.font-w-normal-16.font-m-normal-16= set.label
+                    
+                    .c-carousel__handler.mobile-only
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"prev"})
+                        +carouselPagination
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"next"})
+
+    mixin title-area
+        +component-title-area({
+            alignment : "",
+            headline : {
+                text : "Compatible Products",
+            },
+        })
+            +textButton({name: 'Find my model #?', wSize: 'small', mSize: 'small', buttonStyle: 'default', underline: true, isButton: true})(class="js-pop-open", aria-controls="popFindModel")
+
+    // Component Markup
+    .guide-text-type Type1 Compatible Products List
+    .c-wrapper.PD0022.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +title-area
+
+                // blcok : compatible slide
+                +compatible-slide([
+                    {label : 'SKU of Compatible 1'},
+                    {label : "SKU of Compatible 2"},
+                    {label : "SKU of Compatible 3"},
+                    {label : "SKU of Compatible 4"},
+                    {label : "SKU of Compatible 5"},
+                    {label : "SKU of Compatible 6"},
+                    {label : "SKU of Compatible 7"},
+                    {label : "SKU of Compatible 8"},
+                ])
+
+    .guide-text-type Type2 - Compatible Products Search
+    .c-wrapper.PD0022.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +title-area
+
+                // block - search datalist
+                .c-search-datalist
+                    .c-search-datalist__container
+                        form.cmp-form.c-search-datalist__form(action="#" method="get")
+                            .c-search-datalist__field-group.c-search-combobox
+                                .text.c-search-datalist__field-text.c-search-datalist__field-text--count
+                                    span.cmp-text(data-cmp-data-layer="") 99 Models
+                                .c-search-datalist__field
+                                    .c-select-item
+                                        - var required = true 
+                                        - var inLayer = false
+                                        - var labelSrOnly = true
+                                        //- input
+                                        +formText("text", "", "findCompatibleProduct", required, "Find a compatible product", inLayer, labelSrOnly)(onclick="event.currentTarget.closest('.c-search-combobox').querySelector('.c-search-combobox__dropdown-list').classList.toggle('c-search-combobox__dropdown-list--active')")
+                                    +postFormMessage("Model ID is required.", "")
+                                    +postFormMessage("Your model is not compatible with this accessory.", "")
+                                    //- dropdown
+                                    .c-search-combobox__dropdown-list
+                                        - for (var i=0; i < 7; i++)
+                                            .c-search-combobox__dropdown-item(role="button" tabindex="0")
+                                                span.font-w-normal-16.font-m-normal-14 OLED65C26LD
+                                .button.c-search-datalist__button
+                                    +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(type="submit")
+                                
+    .guide-text-option Search result
+    .c-wrapper.PD0022.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +title-area
+
+                // block - message box
+                .c-message-box.c-message-box--success.c-message-box--gray
+                    .c-message-box__wrapper
+                        .c-message-box--icon
+                        .c-text-contents
+                            strong.font-w-normal-24.font-m-normal-16 Your model is compatible with this &lt;accessory&gt;
+                        .button
+                            +defaultButton({name: 'Re-Search', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+
+block modal
+    +printLayerPopup('popFindModel')

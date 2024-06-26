@@ -1,0 +1,111 @@
+@charset "UTF-8";
+
+@use '../../scss/abstract/' as *;
+
+$component: '.ST0017';
+#{$component} {
+  > .component > .cmp-container {
+    display: flex;
+    flex-direction: column;
+    @include container($design-grid-full, true);
+    @include inset-padding-hz;
+  }
+  // block : list
+  .c-list {
+    @include reset-list-style;
+    display: flex;
+    row-gap: rem($padding24px);
+    @include flex-context(column);
+    @include screen(web) {
+      column-gap: rem($gutter-w);
+      @include flex-context;
+    }
+    // large list item
+    &.large {
+      @include screen(tablet) {
+        @include screen(custom, rem($tablet-pro-p), max) {
+          flex-direction: column;
+        }
+      }
+      .c-list__item {
+        @include screen(web) {
+          width: max(rem(columns(6, false)), columns(6, false) / $design-grid-full * 100%);
+        }
+        @include screen(tablet) {
+          @include screen(custom, rem($tablet-pro-p), max) {
+            width: 100%;
+          }
+        }
+      }
+    }
+    // small list item
+    &.small {
+      .c-list__item {
+        @include screen(web) {
+          width: max(rem(columns(3, false)), columns(3, false) / $design-grid-full * 100%);
+        }
+        @include screen(tablet) {
+          width: 100%;
+        }
+      }
+    }
+  }
+  .large-align-right {
+    .c-list.large {
+      flex-direction: column;
+      @include screen(web) {
+        flex-direction: row-reverse #{'/*!rtl:row*/'}; /*! RTL last keep colon */
+      }
+      @include screen(tablet) {
+        @include screen(custom, rem($tablet-pro-p), max) {
+          flex-direction: column-reverse;
+        }
+      }
+    }
+  }
+  .large-align-left {
+    .c-list.large {
+      @include screen(web) {
+        flex-direction: row #{'/*!rtl:row-reverse*/'}; /*! RTL last keep colon */
+      }
+    }
+  }
+
+  // block : image
+  .c-image {
+    overflow: hidden;
+    @include lgness-radius('default');
+  }
+  // block : media
+  .c-media {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: $z-index1;
+    &-contents {
+      display: block;
+    }
+  }
+  // block : text contents
+  .c-text-contents {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-top: rem($margin8px);
+    @include screen(web) {
+      margin-top: rem($margin20px);
+    }
+    // layout : margin
+    $text-contents: '.c-text-contents';
+    @at-root #{$component} {
+      * + .c-cta {
+        margin-top: rem($margin12px);
+        @include screen(web) {
+          margin-top: rem($margin24px);
+        }
+      }
+    }
+  }
+}

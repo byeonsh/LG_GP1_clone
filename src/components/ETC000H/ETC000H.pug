@@ -1,0 +1,89 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_pop-msg.pug
+include ../../components/CT000E/CT502-inc.pug
+include ../_common/_toast.pug
+
+block meta 
+    - var componentId = "ETC000H"
+    - var componentName = "Newsletter"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+
+mixin complete-msg(params)
+    - var options = {...params}   
+    - var titleStyle = "font-w-light-36 font-m-light-24"
+    - var descStyle = "font-w-normal-16 font-m-normal-16"
+
+    case options.type 
+        when "error:emailaddress"
+            strong(class=titleStyle) 
+                | We are sorry.
+            p.c-message-box__desc(class=descStyle)
+                | Email address is Incorrect.
+                br
+                | Please try again.
+        when "error:emailaddress2"
+            strong(class=titleStyle) 
+                | We are sorry.
+            p.c-message-box__desc(class=descStyle)
+                | We apologize for this inconvenience.
+                br
+                | Please try again.
+        when "done:Thankyou2"
+            strong(class=titleStyle) 
+                | Thank you.
+
+mixin completion(params)
+    - var options = {...params}   
+    .c-message-box&attributes(attributes)
+        .c-message-box__wrapper
+            .c-message-box__icon
+            .c-text-contents
+                +complete-msg(options)
+            .button
+                +defaultButton({
+                    name: 'OK', 
+                    wSize: 'medium', 
+                    mSize: 'small', 
+                    buttonStyle: 'highlight', 
+                    isButton: false
+                })
+
+mixin ETC000H
+    .ETC000H
+        .my-component__wrap
+            .my-component
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        +headline('font-w-light-56 font-m-light-28', "h2", "Newsletter")
+        .my-component__wrap 
+            .component.my-component
+                .my-contents
+                    .cmp-container
+                        .c-text-contents
+                            .title.c-text-contents__headline
+                                +headline('font-w-light-36 font-m-light-28', "h2", "Unsubscribe")
+                            .text.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-16
+                                p.cmp-text(data-cmp-data-layer="") Please enter your registered e-mail address and password below to stop receiving our monthly newsletter.
+                        +completion({type : "done:Thankyou2"})(class="c-message-box--done-succees")
+
+
+
+block content
+    // Component Markup
+    .c-wrapper
+        .component
+            .fluid-container
+                +ETC000H

@@ -1,0 +1,161 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_pop-msg.pug
+
+block meta 
+    - var componentId = "MB000B"
+    - var componentName = "ChangePassword"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+    
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                if data.active
+                    input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+                
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin myLinkBtnContent(params)
+    - let data = {...params}
+    .my-link-content
+        .c-text-contents
+            .title.c-text-contents__headline.my-link-content__title
+                +headline("font-w-light-56 font-m-light-28", "h3", data.title)
+            .text.c-text-contents__bodycopy.my-link-content__desc
+                p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") !{data.desc}
+        if data
+            .button.c-cta(class=`${data.margin ? data.margin : ''}`)
+                +defaultButton({name: data.buttonFirst, wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})
+                if data.buttonSecond
+                    +defaultButton({name: data.buttonSecond, wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})
+
+mixin MB000B
+    .MB000B
+        .my-component
+            .c-text-contents
+                .title.c-text-contents__headline
+                    +headline('font-w-light-56 font-m-light-28', "h2", "Reset Password​")
+
+        .my-component__wrap.border-only-web
+            .my-component
+                .my-formbox
+                    +myInputForm([
+                        {
+                            type:"password",
+                            label:"New Password",
+                            id:"NewPassword",
+                            required:false,
+                            placeholder:"New Password"
+                        },
+                        {
+                            type:"password",
+                            label:"New Password",
+                            id:"NewPassword",
+                            required:false,
+                            placeholder:"New Password",
+                            value: 'Lglg1234!@#',
+                            warningFirst: ['Password is required.'],
+                            correct: ['8-100 characters'],
+                            warning: ['At least 3 of these components : upper and lower cases letters, numbers, and special characters', 'Cannot be identical to the user ID', 'Cannot use serial characters or numbers (i.e. : qwerty, abc, 123)']
+                        },
+                        {
+                            type:"password",
+                            label:"Confirm Password",
+                            id:"ConfirmPassword",
+                            required:false,
+                            placeholder:"Confirm Password"
+                        },
+                        {
+                            type:"password",
+                            label:"Confirm Password",
+                            id:"ConfirmPassword",
+                            required:false,
+                            placeholder:"Confirm Password",
+                            value: 'Lglg1234!@#>',
+                            active: true,
+                            warning: ['New password and confirm password do not match.​']
+                        },
+                    ])
+                    .button.c-cta.my-button.my-button__full
+                        +defaultButton({name: "Change Password", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: false})(class="js-pop-open", href="#popSignIn")
+            
+        
+        .my-component__wrap
+            .my-component
+                .my-reset-complete
+                    +myLinkBtnContent({
+                        title: "Your password has been reset successfully.​",
+                        desc: "Sign in to your My LG account with your new password.",
+                        buttonFirst: "Sign In",
+                    })
+
+block content
+    // Component Markup
+    .c-wrapper.margin-top.margin-bottom
+        .component
+            .fluid-container
+                +MB000B
+
+block modal
+    .MB-TimeOutPopup
+        .mem-timeout
+            +pop-msg-standard({id : "popSignIn", headline:"Link Expired"})
+                // block - text contents
+                .c-text-contents 
+                    .text.c-text-contents__bodycopy
+                        .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") 
+                            | Reset password link expired
+
+                .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap--no-divide-on-mobile.my-pop__button
+                    +defaultButton({name: "Confirm", wSize: "large", mSize: "medium", buttonStyle: 'highlight'})

@@ -1,0 +1,194 @@
+include ./CT502-inc.pug
+include ../_common/_toast.pug
+
+mixin myPrintTab(div, num, selected)
+    if selected
+        li.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0" data-cmp-hook-tabs="tab" aria-selected="true")
+            if block
+                block
+    else 
+        li.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1" data-cmp-hook-tabs="tab" aria-selected="false")
+            if block
+                block
+
+mixin myPrintTabPanel(div, num, selected)
+    if selected 
+        .cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+            if block
+                block
+    else 
+        .cmp-tabs__tabpanel(id=`tabs-1-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-1-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+            if block
+                block
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected})
+    .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+        +formSelect(label, id, placeholder, false)
+            if optionVal
+                - for(var i=0; i < optionVal.length; i++)
+                    if selected === i + 1
+                        option(value="" selected)= optionVal[i]
+                    else
+                        option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText})
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+    if data.type === 'select'
+        +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected})
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-20.font-m-normal-16(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+            if data.required
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+            else 
+                if data.active
+                    input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+                
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin CT0501
+    .c-wrapper.CT0501
+        .component
+            .fluid-container
+                .my-component.margin-bottom.my-component--maximum.margin-top--pc40--mo16
+                    .buy-login
+                        .tabs.panelcontainer.tabs__wide.buy-login__tabs
+                            .cmp-tabs(data-cmp-data-layer="" data-placeholder-text="false")
+                                .cmp-tabs__inner.c-tab
+                                    ul.cmp-tabs__tablist(role="tablist" aria-multiselectable="false")
+                                        +myPrintTab(1, 1, true) LOGIN
+                                        +myPrintTab(1, 2, false) GUEST CHCEKOUT
+                                +myPrintTabPanel(1, 1, true)
+                                    .my-formbox.buy-login__form
+                                        +myInputForm([
+                                            {
+                                                type: 'select',
+                                                optionVal: ['County Select', 'County Select', 'County Select'],
+                                                label: 'Location',
+                                                id: 'location',
+                                            },
+                                            {
+                                                type:"email",
+                                                label:"Email Address",
+                                                id:"emailAddress",
+                                                required:false,
+                                                placeholder: 'Email Account (Case Sensitive)',
+                                            },
+                                            {
+                                                type:"password",
+                                                label:"Password",
+                                                id:"password",
+                                                required:false,
+                                                placeholder: 'Password (Case Sensitive)',
+                                            },
+                                            {
+                                                type:"password",
+                                                label:"Password",
+                                                id:"passwordWarn",
+                                                required:false,
+                                                placeholder: 'Password (Case Sensitive)',
+                                                warning: ['Password (case sensitive) is required.']
+                                            },
+                                        ])
+                                        .my-signIn__list__check
+                                            .button.c-cta
+                                                +formCheckbox('Remember Email', "name", "val1", `checkId1`, count="false")
+                                                +linkButton({type: 'text', name: "Forgot your password?", underline: true})
+                                        .buy-login__button 
+                                            .button.c-cta
+                                                //- +linkButton({color: 'red', type: 'box', name: "Sign In", size: 'large',})
+                                                +defaultButton({name:"Sign In", wSize: 'large', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+                                        .text.c-text-contents__bodycopy.align-text-center
+                                            p.c-text-contents__text.cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")
+                                                a(href="#" class="font-underline font-semibold text-link" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" data-cmp-data-layer="") Create Account
+                                    +toastPopup([
+                                        {
+                                            type: "warning",
+                                            text: 'The email or password is incorrect.',
+                                            remove: true,
+                                        }
+                                    ])
+                                    +CT502()
+                                +myPrintTabPanel(1, 2, false)
+                                    .my-link-content
+                                        .c-text-contents
+                                            .title.c-text-contents__headline.my-link-content__title
+                                                h2.cmp-title__text Sign up as a member, 
+                                                    br
+                                                    | given 5% discount coupon.
+                                            .text.c-text-contents__bodycopy.my-link-content__desc
+                                                p.cmp-text.font-w-normal-20.font-m-normal-16(data-cmp-data-layer="") We support free shipping and free return services.
+                                            .button.c-cta.margin--pc40-mo20
+                                                //- +linkButton({type:"box", color:"red", size:"large", name: 'Create Account'})
+                                                +defaultButton({name:"Create Account", wSize: 'large', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+                                    .my-component.margin-top--40
+                                        .buy-login--check
+                                            .buy-login--check__desc.font-w-normal-32.font-m-normal-20 Enter your email address to
+                                                br
+                                                | continue  directly to guest checkout
+                                            .buy-login--check__container
+                                                +myInputForm([
+                                                    {
+                                                        type:"email", 
+                                                        label:"Email Address",
+                                                        id:"guestEmailAddress1",
+                                                        required:false,
+                                                        placeholder: 'Email Account (Case Sensitive)',
+                                                    },
+                                                    {
+                                                        type:"email", 
+                                                        label:"Email Address",
+                                                        id:"guestEmailAddress2",
+                                                        required:false,
+                                                        placeholder: 'Email Account (Case Sensitive)',
+                                                        warning: ['Email is required.','Email address invalid.']
+                                                    },
+                                                ])
+                                            .button.c-cta.my-button__full.buy-login--check__button
+                                                //- +linkButton({type: 'box-outlined', name: "Continue as Guest", size: 'large',})
+                                                +defaultButton({name:"Continue as Guest", wSize: 'large', mSize: 'small', buttonStyle: 'default', isButton: false})

@@ -1,0 +1,32 @@
+//- 
+    type
+        - page 
+        - popup 
+        - accordion 
+    count, font-size
+
+mixin productCategorySelect({type, count=false})
+    case type 
+        when "page"
+            .c-prd-grid
+                each item, index in prdCategoryName
+                    div(class="c-modal-open" aria-controls="CS0013" tabindex="0" role="dialog" data-link-name)
+                        +printLazyImage(`${item.img}`)
+                        // 20230305 tag change (h4 -> .c-category__title / for SEO)
+                        .c-category__title.font-m-normal-16.font-w-normal-24 #{item.prdName}
+
+        when "popup"
+            .c-prd-grid
+                each item, index in prdCategoryName2
+                    - for (var i=0; i<count; i++)
+                        div(tabindex="0" role="button" data-link-name)
+                            p.font-m-normal-16.font-w-normal-20 #{item.prdName}
+                            +printLazyPicture(`${item.pcimg}`, `${item.moimg}`)
+
+mixin productTit(params)
+    - var option = { title: 'title', subtit: 'subtit', ...params }
+    h6.c-modal__content-title.font-m-normal-20.font-w-normal-24 #{option.title}
+    if option.subtit            
+        p.c-modal__content-subtitle #{option.subtit}
+    else 
+        block

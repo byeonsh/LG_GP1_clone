@@ -1,0 +1,293 @@
+extends ../_common/_layout.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "CM0005"
+    - var componentName = "Sitemap"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js" type="module")
+
+block content
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-cm.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                        ],
+                    };
+
+    - var fontSize = {large : "font-w-light-36 font-m-light-28", medium : "font-w-normal-24 font-m-normal-20", small : "font-w-normal-16 font-m-normal-16"}
+
+    mixin link-text(text, font, target)
+        - var targetName = target ? target : "_self"
+        .c-sitemap-list__link
+            if(attributes.role) 
+                a(href="#")&attributes(attributes)
+                    span(class=`${font}`)= text
+            else
+                // GA4
+                a(href="#" target=`${targetName}` data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")&attributes(attributes)
+                    span(class=`${font}`)= text
+
+
+    mixin item-depth3(data)
+        if data.length > 0 
+            ul.c-sitemap-list__depth3 
+                each val in data
+                    - var targetName = val.target ? val.target : "_self"
+                    li.c-sitemap-list__item
+                        +link-text(val.label, fontSize.small, targetName)
+
+    mixin item-depth2(data, column = false)
+        - var state = column ? "c-sitemap-list__depth2--column" : "";
+        ul.c-sitemap-list__depth2(class=`${state}`)
+            each set in data
+                li.c-sitemap-list__item
+                    +link-text(set.label, set.font, set.target)
+                    +item-depth3(set.array)
+                
+    // Component Markup
+    .c-wrapper.CM0005.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                //- title area
+                +component-title-area({
+                    headline : {
+                        text : "Site map"
+                    }
+                })
+
+                //- contents - list
+                // block : c-list
+                ul.c-list.c-sitemap-list
+                    li.c-sitemap-list__depth1
+                        +link-text("Products / Consumalbles", fontSize.large)
+                        +item-depth2([
+                            {
+                                label: "Tv/Audio/Video/Projectors",
+                                font: fontSize.medium,
+                                array: [
+                                    {label: "New & Featured"},
+                                    {label: "TVs"},
+                                    {label: "Lifestyle Screens"},
+                                    {label: "TV Accessories"},
+                                    {label: "Audio"},
+                                    {label: "Video"},
+                                    {label: "Projectors"},
+                                    {label: "Commercial"},
+                                    {label: "Discover"},
+                                ]
+                            },
+                            {
+                                label: "Kitchen",
+                                font: fontSize.medium,
+                                array: [
+                                    {label: "New & Featured"},
+                                    {label: "Refrigerator"},
+                                    {label: "Dishwashers"},
+                                    {label: "Cooking Appliances"},
+                                    {label: "Wine Cellar"},
+                                    {label: "Water Purifier"},
+                                ]
+                            },
+                            {
+                                label: "Living",
+                                font: fontSize.medium,
+                                array: [
+                                    {label: "New & Featured"},
+                                    {label: "Refrigerator"},
+                                    {label: "Dishwashers"},
+                                    {label: "Cooking Appliances"},
+                                    {label: "Wine Cellar"},
+                                    {label: "Water Purifier"},
+                                ]
+                            },
+                            {
+                                label: "Computer Products",
+                                font: fontSize.medium,
+                                array: [
+                                    {label: "New & Featured"},
+                                    {label: "Monitors"},
+                                    {label: "Laptops"},
+                                    {label: "Computer Accessories"},
+                                    {label: "Discover"},
+                                ]
+                            },
+                            {
+                                label: "LG SIGNATURE/LG Objet Collection",
+                                font: fontSize.medium,
+                                array: [
+                                    {label: "Rollable OLED TV"},
+                                    {label: "OLED 8K TV"},
+                                    {label: "Refrigerator"},
+                                    {label: "Wine Cellar"},
+                                    {label: "Washer Dryers"},
+                                ]
+                            },
+                            {
+                                label: "Air Solution",
+                                font: fontSize.medium,
+                                array: [
+                                    {label: "New & Featured"},
+                                    {label: "Residential Air Conditioner"},
+                                    {label: "Air Care"},
+                                    {label: "Heating solution (AWHP)"},
+                                    {label: "Heating System"},
+                                ]
+                            }
+                        ])
+
+                    li.c-sitemap-list__depth1
+                        +link-text("Promotion", fontSize.large)
+
+                    li.c-sitemap-list__depth1
+                        +link-text("Support", fontSize.large, "_blank")
+                        +item-depth2([
+                            {
+                                label: "Product Support (PSP)",
+                                font: fontSize.medium,
+                                array: [
+                                    {label: "Product Support Main"},
+                                    {label: "Manual & Software"},
+                                    {label: "Tutorials"},
+                                    {label: "Warranty"},
+                                ]
+                            },
+                            {
+                                label: "Order Support",
+                                font: fontSize.medium,
+                                array: [
+                                    {label: "Order Support Main"},
+                                    {label: "Track My Order"},
+                                    {label: "FAQ"},
+                                ]
+                            },
+                            {
+                                label: "Search For Topics",
+                                font: fontSize.medium,
+                                array: [
+                                    {label: "Popular"},
+                                    {label: "Latest"},
+                                ]
+                            },
+                            {
+                                label: "Branding (Information)",
+                                font: fontSize.medium,
+                                array: [
+                                    {label: "Smart Diagnosis"},
+                                    {label: "Smart Share"},
+                                    {label: "Announcements List"},
+                                    {label: "Environmental"},
+                                ]
+                            },
+                            {
+                                label: "Contact",
+                                font: fontSize.medium,
+                                array: [
+                                    {label: "Contact Main"},
+                                    {label: "Contact us"},
+                                    {label: "Find Us"},
+                                ]
+                            },
+                            {
+                                label: "Other Support Service",
+                                font: fontSize.medium,
+                                array: [
+                                    {label: "Other Support Service Main"},
+                                    {label: "Repair & Service"},
+                                    {label: "ThinQ", target:"_blank"},
+                                    {label: "Community"},
+                                ],
+                                target: "_blank"
+                            },
+                        ])
+
+                    li.c-sitemap-list__depth1
+                        +link-text("Explore", fontSize.large)
+                        +item-depth2([
+                            {
+                                label: "Up & Coming",
+                                font: fontSize.medium,
+                                array: []
+                            },
+                            {
+                                label: "Helpful hints",
+                                font: fontSize.medium,
+                                array: []
+                            },
+                            {
+                                label: "LG Lab",
+                                font: fontSize.medium,
+                                array: []
+                            },
+                            {
+                                label: "Inspiration",
+                                font: fontSize.medium,
+                                array: []
+                            },
+                            {
+                                label: "Our Stories",
+                                font: fontSize.medium,
+                                array: []
+                            },
+                            {
+                                label: "Virtual Showroom",
+                                font: fontSize.medium,
+                                array: []
+                            },
+                        ], column = true)
+                                
+                    li.c-sitemap-list__depth1
+                        +link-text("LG SIGNATURE", fontSize.large)
+
+                    li.c-sitemap-list__depth1
+                        +link-text("LG ThinQ", fontSize.large)
+
+                    li.c-sitemap-list__depth1
+                        +link-text("About LG", fontSize.large)
+                        +item-depth2([
+                            {
+                                label: "Our Brand",
+                                font: fontSize.medium,
+                                array: []
+                            },
+                            {
+                                label: "Careers",
+                                font: fontSize.medium,
+                                array: []
+                            },
+                            {
+                                label: "Press & Media",
+                                font: fontSize.medium,
+                                array: []
+                            },
+                            {
+                                label: "Sustainability",
+                                font: fontSize.medium,
+                                array: []
+                            },
+                        ], column = true)

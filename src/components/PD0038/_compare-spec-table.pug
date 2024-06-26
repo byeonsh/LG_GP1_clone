@@ -1,0 +1,77 @@
+include ../_common/_forms.pug
+
+mixin accordion-box(params)
+	- var options = {...params}
+	- var controlsId = options.id
+	.c-accordion__box.c-accordion__box--expand.js-accordion-handle-target(data-expand="independent")&attributes(attributes)
+		.c-accordion__head
+			.c-accordion__head-text
+				.cmp-text(data-cmp-data-layer="")= options.title
+			.button
+				button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="true" aria-controls=`${controlsId}`)
+					span.c-accordion__button-text.expand.sr-only Expand
+					span.c-accordion__button-text.collapse.sr-only Collapse
+			
+		.c-accordion__body(id=`${controlsId}`)
+			if block 
+				block
+
+mixin spec-table-line(params)
+	- var options = {list : [], specName : "spec name", ...params}
+	.c-compare-spec-table
+		//- left... fix area
+		.c-compare-spec-table__cell.c-compare-spec-table__cell--head
+			- var label = options.specName
+			- var name = `${options.lineId}Pin`
+			- var val = false
+			- var id = `${options.lineId}SpecLine`
+			+formCheckbox(label, name, val, id)(class="small")
+		//- right... swipe area 
+		.c-compare-spec-table__scroll-wrapper
+			.c-compare-spec-table__body.js-compare-table-body
+				each set, index in options.list
+					.c-compare-spec-table__cell(class={'locked' : null})
+						case set.value
+							when "no data"
+								|
+							when "none"
+								// no available
+								| -
+							when "check"
+								// available
+								+printLazyImage("../../mocks/PD0038/icon-available-green-18-14.svg", "available")
+							default 
+								= set.value
+
+mixin spec-table(params)
+	- var options = {title : "Lorem ipsum.", id : `${new Date().getTime().toString(16)}table`, table : [], ...params}
+	+accordion-box({title : options.title, id : options.id})(class="c-accordion__box--group")
+		each tableData, index in options.table
+			+accordion-box({title : tableData.title, id : `${options.id}-${index}`})
+				each set in tableData.data
+					- var idStr = `${Math.ceil(Math.random() * 10000000).toString(16)}`
+					+spec-table-line({specName : set.name, list : set.values, lineId : idStr})
+
+mixin spec-table-controls 
+	// block - compare table sort
+	.c-compare-table-controls
+		.c-compare-table-controls__container
+			.c-compare-table-controls__sort
+				// sort : diff
+				.c-compare-table-controls__sort-option
+					.text.c-button-label
+						span.cmp-text.c-button-label__text
+							| Differences
+					button.c-toggle-button.js-sort-button(type="button", aria-pressed="false" data-value="different")
+				// sort : selected
+				// When selecting the table of key specs, the same table of all specs must also be checked.
+				// Since we do not know the unique value of each spec - id or hash - the logic may not be accurate.
+				// Please check this part based on the data.
+				// Script related to table check is controlled by "compareTableLineCheck" function of "PD0038.js".
+				.c-compare-table-controls__sort-option.hidden
+					- var usedButton = false
+					button.c-compare-table-controls__line-toggle-button.cmp-button.js-sort-button(type="button" data-cmp-data-layer="" data-value="selected view" disabled) 
+						.cmp-button__text Selection View
+					button.c-compare-table-controls__line-toggle-button.cmp-button.js-sort-button(type="button" data-cmp-data-layer="" data-value="selected clear" disabled)
+						.cmp-button__text Selection Clear
+					+exclamTooltip("Show only specifications you have selected.", usedButton)

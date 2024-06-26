@@ -1,0 +1,90 @@
+//- 믹스인 수정 시, 기존에 개발에 전달했던 페이지의 마크업이 달라지지 않도록 주의 부탁 드립니다. 
+
+mixin bg-video(params)
+	- var options = {useMobileSource : false, loop : true, useMute: true, ...params}
+	// block : media
+	.c-media(data-media="static")
+		.c-media__container
+			if options.useMobileSource
+				if (options.loop)
+					if options.useMute
+						video.c-media__video.js-video(loop muted playsinline preload="none" class="mobile-only" aria-label='Please enter a description of the video')
+							source(src="https://www.lg.com/content/dam/uk/images/sample/videos/sound_sample1.mp4" type="video/mp4")
+						video.c-media__video.js-video(loop muted playsinline preload="none" class="desktop-only" aria-label='Please enter a description of the video')
+							source(src="https://www.lg.com/content/dam/uk/images/sample/videos/sound_sample1.mp4" type="video/mp4")
+					else
+						video.c-media__video.js-video(loop muted playsinline preload="none" class="mobile-only" aria-label='Please enter a description of the video')
+							source(src="https://www.lg.com/us/images/features-Nanocell/TV-NanoCell-11-Sport-Desktop.mp4" type="video/mp4")
+						video.c-media__video.js-video(loop muted playsinline preload="none" class="desktop-only" aria-label='Please enter a description of the video')
+							source(src="https://www.lg.com/us/images/features-Nanocell/TV-NanoCell-11-Sport-Desktop.mp4" type="video/mp4")
+				else 
+					video.c-media__video.js-video(muted playsinline preload="none" class="mobile-only" aria-label='Please enter a description of the video')
+						source(src="https://www.lg.com/us/images/features-Nanocell/TV-NanoCell-11-Sport-Desktop.mp4" type="video/mp4")
+					video.c-media__video.js-video(muted playsinline preload="none" class="desktop-only" aria-label='Please enter a description of the video')
+						source(src="https://www.lg.com/us/images/features-Nanocell/TV-NanoCell-11-Sport-Desktop.mp4" type="video/mp4")
+			else
+				if (options.loop)
+					video.c-media__video.js-video(loop muted playsinline preload="none" aria-label='Please enter a description of the video')
+						source(src="https://www.lg.com/us/images/features-Nanocell/TV-NanoCell-11-Sport-Desktop.mp4" type="video/mp4")
+				else 
+					video.c-media__video.js-video(muted playsinline preload="none" aria-label='Please enter a description of the video')
+						source(src="https://www.lg.com/us/images/features-Nanocell/TV-NanoCell-11-Sport-Desktop.mp4" type="video/mp4")
+
+			.button.c-media__controls
+				button.cmp-button.c-media__button.c-media__button--play.js-video-play(type="button", data-cmp-data-layer="" disabled)
+					span.cmp-button__text.c-media__button-text.sr-only Play video
+				button.cmp-button.c-media__button.c-media__button--pause.js-video-pause(type="button", data-cmp-data-layer="")
+					span.cmp-button__text.c-media__button-text.sr-only Pause video
+				if (options.useMute)
+					button.cmp-button.c-media__button.c-media__button--mute.js-video-mute(type="button", data-cmp-data-layer="" disabled)
+						span.cmp-button__text.c-media__button-text.sr-only Mute video
+					button.cmp-button.c-media__button.c-media__button--unmute.js-video-unmute(type="button", data-cmp-data-layer="")
+						span.cmp-button__text.c-media__button-text.sr-only Unmute video
+			
+			if block
+				block
+mixin floating-video(type = "brightcove")
+	// block : media
+	.c-media.c-media--floating(data-media="dynamic")
+		.c-media__container
+			.button
+				if (type == 'brightcove')
+					button.cmp-button.js-video-play(
+						class="c-media__button c-media__button--play c-media__button--large"
+						type="button"
+						data-type=`${type}` 
+						data-video-id="1766152406001" 
+						data-account-id="1665893145001"
+						data-player-id="default"
+						data-sr-text="close video"
+						data-cmp-data-layer=""
+					)
+						span.cmp-button__text.c-media__button-text.sr-only Play the video
+				else
+					button.cmp-button.js-video-play(
+						class="c-media__button c-media__button--play c-media__button--large"
+						type="button"
+						data-type=`${type}` 
+						data-sr-text="close video"
+						data-src="https://www.youtube.com/embed/PetoQo1eUww"
+						data-cmp-data-layer=""
+					)
+						span.cmp-button__text.c-media__button-text.sr-only Play the video
+					
+			if block
+				block
+
+mixin video-action-button(type= "brightcove")
+	// block - action button
+	button.cmp-button.c-action-button.c-action-button--watch.c-icon.js-video-play(
+		type="button"
+		data-type=`${type}` 
+		data-video-id="1766152406001" 
+		data-account-id="1665893145001"
+		data-player-id="default"
+		data-sr-text="close video"
+		data-src="https://www.youtube.com/embed/PetoQo1eUww"
+		data-cmp-data-layer=""
+	)&attributes(attributes)
+		if block 
+			block

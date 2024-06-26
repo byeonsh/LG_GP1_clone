@@ -1,0 +1,196 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_headline.pug
+include ../_common/_pop-msg.pug
+include ../_common/_link-banner.pug
+
+block meta 
+    - var componentId = "ML000G"
+    - var componentName = "Repair Details"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+mixin myItemDetailProduct(params)
+    - let data = { ...params }
+    .my-detail-product
+        .my-detail-product__item
+            .my-detail-product__img
+                .image.c-image
+                    +printLazyImage('https://www.lg.com/uk/images/tvs/md07546594/gallery/GT1.jpg')
+            .my-detail-product__txt
+                if block
+                    block
+
+mixin myRepairDetail(title, params)
+    - let data = {...params}
+    .my-repairDetail
+        .my-repairDetail__title.font-w-normal-32.font-m-normal-20= title
+        ul
+            each set in data
+                li(class=`${set.full ? 'my-repairDetail--full' : ''}` class=`${set.max ? 'my-repairDetail--max' : ''}`)
+                    if set.type === 'blank'
+                        .c-text-contents__title(class='c-text-contents__title--blank')
+                            a(href=set.url data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").font-w-normal-20.font-m-normal-16= set.title
+                    else
+                        .c-text-contents__title
+                            span.font-w-normal-20.font-m-normal-16= set.title
+                    if set.subTitle
+                        .c-text-contents__sub-title
+                            span.font-w-normal-20.font-m-normal-16= set.subTitle
+                    .c-text-contents__bodycopy(class=`${set.type === "number" ? 'c-text-contents__bodycopy--number' : ''}`)
+                        if set.type === "number"
+                            a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").font-w-normal-20.font-m-normal-16.font-red!= set.bodycopy
+                        else
+                            // [Start] 2023-05-12 : UPDATE- add class 'my-repairDetail__text-status' if title==status
+                            span.font-w-normal-20.font-m-normal-16(class=`${set.title=='Status'? 'my-repairDetail__text-status':''}`)!= set.bodycopy
+                    if set.file
+                        .c-text-contents__bodycopy--file
+                            a(href=set.fileURL data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").font-w-normal-20.font-m-normal-16= set.file
+
+mixin ML000G
+    .c-wrapper.ML000G
+        .component
+            .fluid-container
+                .my-component.my-page-title
+                    .c-text-contents.my-component__title-section
+                        .c-text-contents__headline
+                            +headline("font-w-light-56 font-m-light-28", "h2", "Repair Details")
+
+                .my-component
+                    .my-item-detail
+                        +myItemDetailProduct({
+                            title:"Service Information",
+                        })
+                            +myRepairDetail("Service Information", [
+                                {
+                                    title:"Receipt No", 
+                                    bodycopy:"CNU220821567949",
+                                },
+                                {
+                                    title:"Receipt Date", 
+                                    bodycopy:"12 Aug. 2023",
+                                },
+                                {
+                                    title:"Status", 
+                                    bodycopy:"Canceled",
+                                    type: "status"
+                                },
+                                {
+                                    title:"Service Type", 
+                                    bodycopy:"On Site Service",
+                                },
+                            ])
+                            +myRepairDetail("Request Information", [
+                                {
+                                    title:"Customer Name", 
+                                    bodycopy:"Ro** Par***",
+                                },
+                                {
+                                    title:"Product No.", 
+                                    bodycopy:"GSXV90MCDE",
+                                    type: "number"
+                                },
+                                {
+                                    full: true,
+                                    title:"Symptom", 
+                                    subTitle: "How to Install and Operate > Drain Hose",
+                                    bodycopy:"There is an announcement that the speaker and TV are connected, but the TV sound is not output through the speaker. This phenomenon has been going on for more than 7 days.",
+                                    file: "Receipt.jpeg",
+                                    fileURL: '#'
+                                },
+                            ])
+                            +myRepairDetail("Repair Feedback", [
+                                {
+                                    full: true,
+                                    title:"Your visit appointment", 
+                                    bodycopy:"25 Sep. 2023 1pm ~ 5pm",
+                                },
+                                {
+                                    title:"Pending No.", 
+                                    max: true,
+                                    bodycopy:"001",
+                                },
+                                {
+                                    title:"Pending Date", 
+                                    max: true,
+                                    bodycopy:"25 Sep. 2023",
+                                },
+                                {
+                                    full: true,
+                                    title:"Pending Reason", 
+                                    bodycopy:"Customer Information Need to be changed",
+                                },
+                                {
+                                    title:"Pending No.", 
+                                    max: true,
+                                    bodycopy:"002",
+                                },
+                                {
+                                    title:"Pending Date", 
+                                    max: true,
+                                    bodycopy:"25 Sep. 2023",
+                                },
+                                {
+                                    full: true,
+                                    title:"Pending Reason", 
+                                    bodycopy:"Customer Information Need to be changed",
+                                },
+                            ])
+                            +myRepairDetail("Service Provider", [
+                                {
+                                    full: true,
+                                    title:"LGEIL CIC North Group", 
+                                    bodycopy:"Address : 253A Portobello Rd, London <br> Tel : 7584878787",
+                                    type: 'blank',
+                                    url:'#'
+                                },
+                            ])
+
+                .my-component__wrap
+                    .my-component
+                        +linkBanner({
+                            type:"padding-tb",
+                            mobileTextAlignLeft:true,
+                            title:[{
+                                text:"Do you need the inquiry for this repair request?"
+                            }],
+                            desc:[{
+                                text:"You can send the message.",
+                                font:"font-w-normal-20 font-m-normal-16"
+                            }], 
+                            button:[{
+                                type:"box-outlined",
+                                color:"black",
+                                size:"large",
+                                sizeMobile: "medium",
+                                name: "E-mail Inquiry",
+                            }],
+                        })
+
+block content
+    // Component Markup
+    +ML000G
+
+block modal
+    +pop-msg-standard({id : `productionInformationDelete`, headline:"Are you sure?"})
+        // block - text contents
+        .c-text-contents 
+            .text.c-text-contents__bodycopy
+                .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") If you delete the registered information,
+                | the associated product and service information will also be deleted.
+                br
+                |
+                br
+                | Are you sure you wish to delete your product?
+        
+        .button.c-pop-msg__button-wrap
+            +button({type:"box-outlined", color:"black", size:"medium", name: "No"})(class="c-pop-msg__close-btn js-pop-close" aria-controls="productionInformationDelete")
+            +button({type:"box", color:"red", size:"medium", name: "Yes"})

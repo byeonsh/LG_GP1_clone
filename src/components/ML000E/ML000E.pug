@@ -1,0 +1,1243 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_forms.pug
+include ../_common/_toast.pug
+
+block meta 
+    - var componentId = "ML000E"
+    - var componentName = "Create New Return"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+mixin errorMsg(params)
+    - let data = {...params}
+    ul.error-content-msg
+        each set in data
+            li.error-content-msg__item(class=`error-content-msg__item--${set.title}`)
+                .error-content-msg__container
+                    i.error-content-msg__icon(class=`error-content-msg__icon--${set.title}`)
+                        span.sr-only= set.title
+                    .error-content-msg__title.font-w-normal-12.font-m-normal-12= set.text
+                button(type='button' class='error-content-msg__remove')
+                    span.sr-only remove
+
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin myReturnInfoEdit
+    .my-return-info__edit
+        +myInputForm([
+            {
+                type:"text",
+                label:"Postcode",
+                id:"postCode",
+                required:false,
+                value: "EC4A 4A",
+                placeholder:"Enter ZIP code",
+                button: "FIND ADDRESS",
+            },
+            {
+                type:"text",
+                label:"Street address",
+                id:"streetAddress",
+                required:false,
+                value:"25B, Farringdon Street",
+                readonly : true,
+            },
+            {
+                type:"text",
+                label:"City",
+                id:"city",
+                required:false,
+                value:"London",
+                readonly : true,
+            },
+            {
+                type:"text",
+                label:"Country",
+                id:"country",
+                required:false,
+                value:"United Kingdom",
+                readonly : true,
+            },
+            {
+                type:"tel",
+                label:"Contact mobile number",
+                id:"mobileNumber2",
+                required:false,
+                value:"123-456-7890",
+            },
+            {
+                type:"email",
+                label:"Contact email address",
+                id:"email2",
+                required:false,
+                value:"robertsurrency@gmail.com",
+            }
+        ])
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? "my-warn" : ""}`
+    .my-return-info__item
+        if data.type === "file"
+            +myFile({attachments: data.attachments, option: data.option, label: data.label, id:data.id, fileName:data.fileName})
+        else if data.type === "select"
+            +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected, disabled: data.isDisabled})
+        else
+            .c-input-item(class=`${data.active ? "active" : ""}`)
+                if data.label
+                    label.font-w-normal-24.font-m-normal-16(for= data.id class=`${data.info ? "my-info" : ""}`)= data.label
+                        if data.requiredCZ
+                                em.c-required *
+                                    span.sr-only Required fields
+                if data.required && !data.button && !data.disabled && !data.readonly
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value required)&attributes(attributes)
+                else if data.readonly && data.required
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value readonly required)&attributes(attributes)
+                else if data.readonly
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value readonly)&attributes(attributes)
+                else if data.disabled
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value disabled)&attributes(attributes)
+                else if data.type === "textarea"
+                    if data.limit
+                        .my-textarea__container
+                            textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class="my-textarea--limit")&attributes(attributes)
+                            .my-count
+                                span.font-w-normal-14.font-m-normal-12 0 / !{data.limit} character
+                    else 
+                        textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder)&attributes(attributes)
+                else if data.button
+                    if data.validation
+                        .input-button__container.input-button__container--validation
+                            .my-button-validation
+                                if data.disabled
+                                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config disabled required)&attributes(attributes)
+                                else 
+                                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config required)&attributes(attributes)
+                                +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                            .button.button-full
+                                +linkButton({name: data.button, roleButton:"true"})
+                    else
+                        .input-button__container
+                            if data.disabled
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config disabled required)&attributes(attributes)
+                            else 
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config required)&attributes(attributes)
+                            .button.button-full
+                                +linkButton({name: data.button, roleButton:"true"})
+                else 
+                    if data.active
+                        input(type="text" id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value)&attributes(attributes)
+                        if data.type === "password"
+                            button(type="button" class="my-form__eye")
+                                span.sr-only show password
+                        else if data.search 
+                            button(type="button" class="my-form__search__icon")
+                                span.sr-only search
+                    else
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? "my-form__search" : ""}`,)&attributes(attributes)
+                        if data.type === "password"
+                            button(type="button" class="my-form__eye")
+                                span.sr-only show password
+                        else if data.search 
+                            button(type="button" class="my-form__search__icon")
+                                span.sr-only search
+            if !data.validation 
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, warning: data.warning})
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-16.font-m-normal-14!= infoText
+    // [Start] 2023-04-25 : ADD - warning case
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    // [End] 2023-04-25 : ADD - warning case
+
+mixin myReturnInfo(title, desc, editBtn=false, edit=false, params)
+    - let data = { ...params }
+    if title
+        .c-text-contents
+            .text.c-text-contents__title
+                .cmp-text.font-w-semibold-24(class=`${edit ? "font-m-semibold-14" : "font-m-semibold-16"}`)= title
+            if desc
+                .text.c-text-contents__bodycopy
+                    .cmp-text.font-w-normal-16.font-m-normal-14 !{desc}
+    if edit
+        +myReturnInfoEdit
+    each set in data
+        +myFormText(set)
+
+mixin myFile({attachments= false, option=true, label="", id="", fileName=false})
+    .my-formFile
+        if !option
+            span.my-formFile__title Return Related Image
+                em.c-required *
+        else 
+            span.my-formFile__title Return Related Image (Optional)
+        .my-formFile__upload
+            // [Start] 2023-04-25 : UPDATE - attachments case
+            if attachments
+                .my-formFile__preview
+                    each file in fileName
+                        .my-formFile__preview-item
+                            p
+                                span= file
+                            button.my-formFile__preview__btn-delete(type="button")
+                                span.sr-only delete
+            // [End] 2023-04-25 : UPDATE - attachments case
+            .my-formFile__inner
+                input.file-input.file.sr-only(type="file" name="file-input" id= id multiple)
+                label.c-not-required(for=id)
+                    // [Start] 2023-04-25 : UPDATE - word (Browse -> Upload)
+                    span.my-formFile__btn.my-formFile__btn-upload Upload
+                    // [End] 2023-04-25 : UPDATE - word (Browse -> Upload)
+
+        .my-formFile__msg.font-m-normal-14i.font-w-normal-14 File must be less than 10MB. Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip
+
+mixin mySelect({optionVal=false, warning=false, label="", id="", infoText= false, placeholder="", warn=false, selected, disabled})
+    .c-search-box__form(class=`${warning ? "my-warn" : ""}`)
+        if disabled
+            +formSelect(label, id, placeholder, false)(disabled)
+                if optionVal
+                    - for(var i=0; i < optionVal.length; i++)
+                        if selected === i + 1
+                            option(value="" selected)= optionVal[i]
+                        else
+                            option(value="")= optionVal[i]
+        else 
+            +formSelect(label, id, placeholder, false)
+                if optionVal
+                    - for(var i=0; i < optionVal.length; i++)
+                        if selected === i + 1
+                            option(value="" selected)= optionVal[i]
+                        else
+                            option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText})
+
+mixin myOption({id="", desc="", optionName="", nameId, value,})
+    .c-sibling-option.c-sibling-option--no-gap
+        input.c-sibling-option__input.sr-only(type="radio" id=`${id}` name=`processor`, checked=checked, value=`${value}`)
+        .c-sibling-option__detail
+            .c-sibling-option__primary-detail
+                label(for=`${id}` aria-labelledby=`${nameId}`)
+                .c-sibling-option__definition
+                    .text.c-sibling-option__name(id=`${nameId}`)
+                        span.cmp-text.font-w-semibold-18.font-m-semibold-14(data-cmp-text-layer)= optionName
+                        
+                .c-sibling-option__desc
+                    .text
+                        span.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-text-layer)= desc
+            if block 
+                block
+
+mixin myOptionList(data)
+    .my-option-list
+        .c-sibling-option-box.c-sibling-option-box--layout-half.my-return__type__option
+            .c-sibling-option-box__contents
+                if data[0].type === "single"
+                    .c-sibling-option-box__options.c-sibling-option--single
+                        each set in data
+                            +myOption(set)
+                else
+                    .c-sibling-option-box__options
+                        each set in data
+                            +myOption(set)
+
+mixin myReturnDetailHeadbox(params)
+    - let data = { ...params }
+    .my-return-detail__headbox
+        .my-return-detail__txtbox
+            .my-return-detail__desc
+                each set in data.desc
+                    .my-return-detail__desc-item
+                        span.font-w-normal-16.font-m-normal-14.my-return-detail__title !{set.descTitle} 
+                        span.font-w-semibold-16.font-m-semibold-14.my-return-detail__num !{set.descText}                
+
+//-[only RO_CN] - disclaimer text add
+mixin myDisclaimerMsg(option=false)
+    if(option === "cn")
+        .my-component.my-summary-area.my-return-disclaimer
+            .my-return-disclaimer__txtbox
+                .text
+                    span.font-w-normal-16.font-m-normal-12 在本商城购买的商品，可依相关法律法规申请七天无理由退货。非商品质量问题而由买家发起的退货行为，反向运费由买家承担。
+
+mixin myAccoridon(title, id, innerAccordion=false)
+    .my-accodion(class=`${innerAccordion ? "my-accodion--sub" : "my-accodion--main"}`)
+        if(innerAccordion)
+            .c-accordion
+                details.c-accordion__box
+                    summary.c-accordion__head 
+                        .c-accordion__head-text.c-text-contents
+                            span.font-w-normal-24.font-m-normal-16= title
+                    .c-accordion__body(id=`${id}`)
+                        block
+        else 
+            .c-accordion.js-accordion
+                .c-accordion__box.js-accordion-handle-target
+                    .c-accordion__head
+                        // block - text contents
+                        .c-accordion__head-text.c-text-contents
+                            span.font-w-normal-24.font-m-normal-16(aria-hidden="true")= title
+                        .button
+                            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${id}` class=`${id}`)
+                                span.c-accordion__button-text.expand.sr-only Expand
+                                span.c-accordion__button-text.collapse.sr-only Collapse
+                    .c-accordion__body(id=`${id}`)
+                        block
+            
+
+mixin infoInstructionsImages
+        .my-return-info__text-box
+            .c-text-contents.align-text-left
+                .title.c-text-contents__headline
+                    .font-w-normal-16.font-m-normal-16 For products in general.
+            ul.my-return-info__list.my-return-info__list--dot
+                li
+                    .c-text-contents.align-text-left
+                        .text.c-text-contents__bodycopy
+                            .font-w-normal-16.font-m-normal-16 Photographs of the 6 sides of the box.
+                li
+                    .c-text-contents.align-text-left
+                        .text.c-text-contents__bodycopy
+                            .font-w-normal-16.font-m-normal-16 Photograph of the complete serial number sticker, located on the back of the television or on the inside of the washing machine and refrigerator.
+                li
+                    .c-text-contents.align-text-left
+                        .text.c-text-contents__bodycopy
+                            .font-w-normal-16.font-m-normal-16 Photograph of the accessories
+
+        .my-return-info__text-box
+            .c-text-contents.align-text-left
+                .title.c-text-contents__headline
+                    .font-w-normal-16.font-m-normal-16 For TV and Monitors:
+            ul.my-return-info__list.my-return-info__list--dot
+                li
+                    .c-text-contents.align-text-left
+                        .text.c-text-contents__bodycopy
+                            .font-w-normal-16.font-m-normal-16 Photograph of the full screen on, so that the full frame can be seen.
+                li
+                    .c-text-contents.align-text-left
+                        .text.c-text-contents__bodycopy
+                            .font-w-normal-16.font-m-normal-16 Photograph of the screen off, taken from the front, so that the full frame can be seen.
+                li
+                    .c-text-contents.align-text-left
+                        .text.c-text-contents__bodycopy
+                            .font-w-normal-16.font-m-normal-16 Photographs of the original packaging on all 6 sides of the box.
+                li
+                    .c-text-contents.align-text-left
+                        .text.c-text-contents__bodycopy
+                            .font-w-normal-16.font-m-normal-16 Photograph of the complete serial number sticker, located on the back of the television.
+                li
+                    .c-text-contents.align-text-left
+                        .text.c-text-contents__bodycopy
+                            .font-w-normal-16.font-m-normal-16 Photographs of the accessories (charger, remote, etc.).
+        .my-return-info__text-box
+            .c-text-contents.align-text-left
+                .title.c-text-contents__headline
+                    .font-w-normal-16.font-m-normal-16 For Washing Machines, Dishwashers, Dryers, Refrigerators:
+            ul.my-return-info__list.my-return-info__list--dot
+                li
+                    .c-text-contents.align-text-left
+                        .text.c-text-contents__bodycopy
+                            .font-w-normal-16.font-m-normal-16 Photograph of the product taken from the front.
+                li
+                    .c-text-contents.align-text-left
+                        .text.c-text-contents__bodycopy
+                            .font-w-normal-16.font-m-normal-16 Photographs of the original packaging on all 6 sides of the box.
+                li
+                    .c-text-contents.align-text-left
+                        .text.c-text-contents__bodycopy
+                            .font-w-normal-16.font-m-normal-16 Photograph of the complete serial number sticker, located on the inside.
+        .my-return-info__text-box
+            .c-text-contents.align-text-left
+                .text.c-text-contents__bodycopy
+                    .font-w-normal-16.font-m-normal-16 *If the product has been delivered with packaging. <br>
+                        | If the type of product requires it, one of our technicians will go to the place where the product is located to check its condition
+
+//- [Start] 2024-03-07 : One Type(default) > : Two Type (Add [CZ] type)
+mixin ML000E(option=false)
+    if option == 'default'
+        .c-wrapper.ML000E
+            .component
+                .fluid-container
+                    .my-component.my-page-title
+                        .c-text-contents.my-component__title-section
+                            .c-text-contents__headline
+                                +headline("font-w-light-56 font-m-light-28", 'h3', "Create return")
+                    .my-component--maximum
+                        .my-return-detail__headbox--wrap
+                            +myReturnDetailHeadbox({
+                                desc : [
+                                    {descTitle:'Order NO.', descText:'113000007166'},
+                                    {descTitle:'Customer name', descText:'Robert Surrency'},
+                                ],
+                            })
+                    .my-component.my-summary-area
+                        .my-summary-area__secondary
+                            .font-w-normal-32.font-m-normal-20 Return Information
+                            .my-return-info__container
+                                .my-return-info
+                                    +myInputForm([
+                                        {
+                                            type:"text",
+                                            label:"Return Pickup Address",
+                                            id:"streetAddress",
+                                            value:"25B, Farringdon Street",
+                                            required: true,
+                                            readonly: true,
+                                        },
+                                        {
+                                            type:"tel",
+                                            label:"Contact Mobile Number",
+                                            id:"mobileNumber2",
+                                            required:false,
+                                            value:"123-456-7890",
+                                            warning:['Please enter a valid number.']
+                                        },
+                                        {
+                                            type:"email",
+                                            label:"Contact Email Address",
+                                            id:"email2",
+                                            required:true,
+                                            value:"robertsurrency@gmail.com",
+                                            warning:['Email account address invalid.','Email is reauired.']
+                                        }
+                                    ])
+
+                        .my-summary-area__secondary
+                            .font-w-normal-32.font-m-normal-20 Returns Main item Information
+                            .my-return-info__container
+                                .my-return-info
+                                    +myReturnInfo("LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)", "", false, false, [
+                                        {
+                                            type:"text",
+                                            label:"Serial Number",
+                                            id:"serialnumber1",
+                                            value:"XXXXXXXXXXXXX",
+                                            readonly: true,
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an option", "Choose an option", "Choose an option"],
+                                            label: "Item Condition",
+                                            id: "itemCondition-pick-up",
+                                            placeholder: "Choose an option"
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an option", "Choose an option", "Choose an option"],
+                                            label: "Reason For Return",
+                                            id: "reasonForReturn-pick-up",
+                                            placeholder: "Choose an option"
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an quantity", "Choose an quantity", "Choose an quantity"],
+                                            label: "Quantity to Return",
+                                            id: "quantityToReturn-pick-up",
+                                            placeholder: "Choose an option",
+                                            infoText: ["Remaining quantity : 0"]
+                                        },
+                                        {
+                                            type:"file",
+                                            label: "upload",
+                                            id: "upload",
+                                            fileName: false,
+                                        },
+                                        {
+                                            type:"file",
+                                            label: "upload-add-on",
+                                            id: "upload-add-on",
+                                            fileName: ['filename.jpeg','filename.jpeg'],
+                                            attachments: true
+                                        },
+                                    ])
+
+                        .my-summary-area__secondary
+                            .font-w-normal-32.font-m-normal-20 Returns Add-On Item Information
+                            .my-return-info__container
+                                .my-return-info
+                                    +myReturnInfo("LG Soundbar Éclair QP5", "", false, false, [
+                                        {
+                                            type:"text",
+                                            label:"Serial Number",
+                                            id:"serialnumber1",
+                                            value:"XXXXXXXXXXXXX",
+                                            readonly: true,
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an option", "Choose an option", "Choose an option"],
+                                            label: "Item Condition",
+                                            id: "itemCondition-add-on",
+                                            placeholder: "Choose an option"
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an option", "Choose an option", "Choose an option"],
+                                            label: "Reason For Return",
+                                            id: "reasonToReturn-add-on",
+                                            placeholder: "Choose an option"
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an quantity", "Choose an quantity", "Choose an quantity"],
+                                            label: "Quantity to Return",
+                                            id: "quantityToReturn-add-on",
+                                            placeholder: "Choose an option",
+                                            infoText: ["Remaining quantity : 0"],
+                                            isDisabled: true
+                                        },
+                                        {
+                                            type:"file",
+                                            label: "upload-add-on",
+                                            id: "upload-add-on",
+                                            fileName: false
+                                        },
+                                    ])
+                                .my-return-info
+                                    +myReturnInfo("OLED G2 STAND FOR 55 G2", "", false, false, [
+                                        {
+                                            type:"text",
+                                            label:"Serial Number",
+                                            id:"serialnumber1",
+                                            value:"XXXXXXXXXXXXX",
+                                            readonly: true,
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an option", "Choose an option", "Choose an option"],
+                                            label: "Item Condition",
+                                            id: "itemCondition",
+                                            placeholder: "Choose an option"
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an option", "Choose an option", "Choose an option"],
+                                            label: "Reason for Return",
+                                            id: "reasonForReturn",
+                                            placeholder: "Choose an option"
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an quantity", "Choose an quantity", "Choose an quantity"],
+                                            label: "Quantity to Return",
+                                            id: "quantityToReturn",
+                                            placeholder: "Choose an option",
+                                            infoText: ["Remaining quantity : 0"],
+                                            isDisabled: true
+                                        },
+                                        {
+                                            type:"file",
+                                            label: "upload",
+                                            id: "upload",
+                                            fileName: 'filename.jpeg'
+                                        },
+                                    ])
+                                    .my-return-info__item
+                                        +formTextarea("text", "Reason to Return Details (Optional)", "Message", false, "Please explain your issue or question")(minLength="20", maxlength="1000 Character")
+                    // [only RO_CN] - disclaimer text add
+                    +myDisclaimerMsg('cn')
+                    .my-component.my-summary-area.my-toastPopup
+                        +toastPopup([
+                            {   type:"error", 
+                                remove: true, 
+                                text: 'Sorry, your reqeust cannot be made. Please check later.',
+                            }
+                        ])
+                    .my-component
+                        .button.c-cta
+                            +defaultButton({name: 'Cancel', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                            +defaultButton({name: 'Submit', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(disabled)
+    else if option == 'CZ'
+        .c-wrapper.ML000E
+            .component
+                .fluid-container
+                    .my-component.my-page-title
+                        .c-text-contents.my-component__title-section
+                            .c-text-contents__headline
+                                +headline("font-w-light-56 font-m-light-28", 'h3', "Create return")
+                    .my-component--maximum
+                        .my-return-detail__headbox--wrap
+                            +myReturnDetailHeadbox({
+                                desc : [
+                                    {descTitle:'Order NO.', descText:'113000007166'},
+                                    {descTitle:'Customer name', descText:'Robert Surrency'},
+                                ],
+                            })
+                    .my-component.my-summary-area
+                        .my-summary-area__secondary
+                            .font-w-normal-32.font-m-normal-20 Return Information
+                            .my-return-info__container
+                                .my-return-info
+                                    +myInputForm([
+                                        {
+                                            type:"text",
+                                            label:"Return Pickup Address",
+                                            id:"streetAddress",
+                                            value:"25B, Farringdon Street",
+                                            required: true,
+                                            readonly: true,
+                                        },
+                                        {
+                                            type:"tel",
+                                            label:"Contact Mobile Number",
+                                            id:"mobileNumber2",
+                                            required:false,
+                                            value:"123-456-7890",
+                                            warning:['Please enter a valid number.']
+                                        },
+                                        {
+                                            type:"email",
+                                            label:"Contact Email Address",
+                                            id:"email2",
+                                            required:true,
+                                            value:"robertsurrency@gmail.com",
+                                            warning:['Email account address invalid.','Email is reauired.']
+                                        }
+                                    ])
+
+                        .my-summary-area__secondary
+                            .font-w-normal-32.font-m-normal-20 Bank Information
+                            .my-return-info__container
+                                .my-return-info
+                                    +myInputForm([
+                                        {
+                                            type:"text",
+                                            label:"Bank account number",
+                                            id:"accountNumber",
+                                            requiredCZ:true,   
+                                            value:"",
+                                        },
+                                        {
+                                            type:"text",
+                                            label:"Bank account owner name",
+                                            id:"ownerName",
+                                            requiredCZ:true,   
+                                            value:"",
+                                        },
+                                    ])
+
+                        .my-summary-area__secondary
+                            .font-w-normal-32.font-m-normal-20 Returns Item Information
+                            .my-return-info__container
+                                .my-return-info
+                                    +myReturnInfo("LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)", "", false, false, [
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an option", "Choose an option", "Choose an option"],
+                                            label: "Item Condition",
+                                            id: "itemCondition-add-on",
+                                            placeholder: "Choose an option"
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an option", "Choose an option", "Choose an option"],
+                                            label: "Reason For Return",
+                                            id: "reasonToReturn-add-on",
+                                            placeholder: "Choose an option"
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an quantity", "Choose an quantity", "Choose an quantity"],
+                                            label: "Quantity to Return",
+                                            id: "quantityToReturn-add-on",
+                                            placeholder: "Choose an option",
+                                            infoText: ["Remaining quantity : 0"],
+                                            isDisabled: true
+                                        },
+                                        {
+                                            type:"file",
+                                            label: "upload-add-on",
+                                            id: "upload-add-on",
+                                            fileName: ['Image.jpg'],
+                                            attachments: true
+                                        },
+                                    ])
+                            .my-return-info__container
+                                .my-return-info
+                                    +myReturnInfo("LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)", "", false, false, [
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an option", "Choose an option", "Choose an option"],
+                                            label: "Item Condition",
+                                            id: "itemCondition-add-on",
+                                            placeholder: "Choose an option"
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an option", "Choose an option", "Choose an option"],
+                                            label: "Reason For Return",
+                                            id: "reasonToReturn-add-on",
+                                            placeholder: "Choose an option"
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an quantity", "Choose an quantity", "Choose an quantity"],
+                                            label: "Quantity to Return",
+                                            id: "quantityToReturn-add-on",
+                                            placeholder: "Choose an option",
+                                            infoText: ["Remaining quantity : 0"],
+                                            isDisabled: true
+                                        },
+                                        {
+                                            type:"file",
+                                            label: "upload-add-on",
+                                            id: "upload-add-on",
+                                            fileName: ['Image.jpg'],
+                                            attachments: true
+                                        },
+                                    ])
+                            .my-return-info__container
+                                .my-return-info
+                                    +myReturnInfo("LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)", "", false, false, [
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an option", "Choose an option", "Choose an option"],
+                                            label: "Item Condition",
+                                            id: "itemCondition-add-on",
+                                            placeholder: "Choose an option"
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an option", "Choose an option", "Choose an option"],
+                                            label: "Reason For Return",
+                                            id: "reasonToReturn-add-on",
+                                            placeholder: "Choose an option"
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an quantity", "Choose an quantity", "Choose an quantity"],
+                                            label: "Quantity to Return",
+                                            id: "quantityToReturn-add-on",
+                                            placeholder: "Choose an option",
+                                            infoText: ["Remaining quantity : 0"],
+                                            isDisabled: true
+                                        },
+                                        {
+                                            type:"file",
+                                            label: "upload-add-on",
+                                            id: "upload-add-on",
+                                            fileName: ['Image.jpg'],
+                                            attachments: true
+                                        },
+                                    ])
+                            .my-return-info__container
+                                .my-return-info
+                                    .my-return-info__item
+                                        +formTextarea("text", "Reason to Return Details (Optional)", "Message", false, "Please explain your issue or question")(minLength="20", maxlength="1000 Character")        
+                    .my-component.my-summary-area.my-toastPopup
+                        +toastPopup([
+                            {   type:"error", 
+                                remove: true, 
+                                text: 'Sorry, your reqeust cannot be made. Please check later.',
+                            }
+                        ])
+                    .my-component
+                        .button.c-cta
+                            +defaultButton({name: 'Cancel', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                            +defaultButton({name: 'Submit', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(disabled)
+    else if option == 'ES'
+        .c-wrapper.ML000E
+            .component
+                .fluid-container
+                    .my-component.my-page-title
+                        .c-text-contents.my-component__title-section
+                            .c-text-contents__headline
+                                +headline("font-w-light-56 font-m-light-28", 'h3', "Create return")
+                    .my-component--maximum
+                        .my-return-detail__headbox--wrap
+                            +myReturnDetailHeadbox({
+                                desc : [
+                                    {descTitle:'Order NO.', descText:'113000007166'},
+                                    {descTitle:'Customer name', descText:'Robert Surrency'},
+                                ],
+                            })
+                    .my-component.my-summary-area
+                        .my-summary-area__secondary
+                            .font-w-normal-16.font-m-normal-12.required * Required fields
+                            .title.font-w-normal-32.font-m-normal-20 RIGHT OF WITHDRAWAL EXERCISE FORM
+                            +myAccoridon("Right of withdrawal", "acc01", false)
+                                .my-return-info__container
+                                    .my-return-info
+                                        .my-return-info__text-box 
+                                            .c-text-contents.align-text-left 
+                                                .text.c-text-contents__bodycopy 
+                                                    .font-w-normal-16.font-m-normal-16 In the event that you have purchased products and/or services as a consumer, you have the right to exercise the right of withdrawal from the contract (order) against Search Engine Business SL (authorized seller) without the need for any justification or formality. The period for the withdrawal exercise will end fourteen (14) calendar days from:
+                                            .c-text-contents.align-text-left 
+                                                .text.c-text-contents__bodycopy 
+                                                    .font-w-normal-16.font-m-normal-16 1. In the case of contracting services, the date of conclusion of the contract (confirmation of the order).
+                                            .c-text-contents.align-text-left 
+                                                .text.c-text-contents__bodycopy 
+                                                    .font-w-normal-16.font-m-normal-16 2. In the case of contracting products, the delivery date of the products.
+                            +myAccoridon("Procedure to exercise the right of withdrawal", "acc02", false)
+                                .my-return-info__container
+                                    .my-return-info
+                                        .my-return-info__text-box 
+                                            .c-text-contents.align-text-left 
+                                                .text.c-text-contents__bodycopy 
+                                                    .font-w-normal-16.font-m-normal-16 To exercise the right of withdrawal, whether for products and/or services, it will be enough for you to express your decision to withdraw from the contract through an unequivocal statement within a period of fourteen (14) calendar days, there being no formality to carry it out. just. To meet the deadline, it is sufficient for the communication regarding your exercise of this right to be issued before the corresponding deadline expires.
+                                            .c-text-contents.align-text-left 
+                                                .text.c-text-contents__bodycopy 
+                                                    .font-w-normal-16.font-m-normal-16 Even though there is no formality and in order to facilitate the process, we make this form available to you, although its use is not mandatory.
+                            +myAccoridon("Consequences of withdrawal:", "acc03", false)
+                                .my-return-info__container
+                                    .my-return-info
+                                        .my-return-info__text-box 
+                                            .c-text-contents.align-text-left 
+                                                .text.c-text-contents__bodycopy 
+                                                    .font-w-normal-16.font-m-normal-16 The exercise of the right of withdrawal will imply the reimbursement of all payments received from you for said contract, including, if applicable, the delivery costs (with the exception of additional costs resulting from your choice of a delivery method. different from the least expensive type of ordinary delivery that we offer) without any undue delay and, in any case, no later than within a period of fourteen (14) calendar days from the date on which we are informed of your decision to withdraw from the aforementioned contract. However, the direct shipping costs related to the return of the product will be borne by you, as a customer.
+                                        .my-return-info__text-box 
+                                            .c-text-contents.align-text-left 
+                                                .text.c-text-contents__bodycopy 
+                                                    .font-w-normal-16.font-m-normal-16 The refund of the corresponding amounts will be made in the same payment method with which the product and/or service was purchased unless the client has expressly provided otherwise. In any case, you will not incur any expenses as a result of the refund. Unless we offer to collect the products subject to withdrawal, please note that we may withhold the refund until we have received the goods or until you have presented proof of their return, depending on which condition is met. first.
+                                        .my-return-info__text-box 
+                                            .c-text-contents.align-text-left 
+                                                .text.c-text-contents__bodycopy 
+                                                    .font-w-normal-16.font-m-normal-16 Likewise, you, except in cases where we offer to take back the products subject to withdrawal, keep in mind that you must return or deliver them without any undue delay and, in any case, no later than the deadline. 14 calendar days from the date on which you communicate your decision to withdraw from the contract.
+                            +myAccoridon("Excepciones al derecho de desistimiento:", "acc04", false)
+                                .my-return-info__container
+                                    .my-return-info
+                                        .my-return-info__text-box 
+                                            .c-text-contents.align-text-left 
+                                                .text.c-text-contents__headline
+                                                    .font-w-normal-16.font-m-normal-16 In accordance with the applicable regulations, the right of withdrawal will apply except in the cases set out below:
+                                            ul.my-return-info__list.my-return-info__list--alphabet
+                                                li
+                                                    .my-return-info__list__style
+                                                        .c-text-contents.align-text-left
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 A)
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-14 The provision of services, once the service has been completely executed, and if the contract imposes a payment obligation on the consumer or user, when the execution has begun, with prior express consent of the consumer or user and with the knowledge of his part that, once the employer has fully executed the contract, he will have lost his right of withdrawal.
+                                                li
+                                                    .my-return-info__list__style
+                                                        .c-text-contents.align-text-left
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 B)
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-14 The supply of goods or the provision of services whose price depends on fluctuations in the financial market that the entrepreneur cannot control and that may occur during the withdrawal period.
+                                                li
+                                                    .my-return-info__list__style
+                                                        .c-text-contents.align-text-left
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 C)
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-14 The supply of goods made in accordance with the specifications of the consumer and user or clearly personalized.
+                                                li
+                                                    .my-return-info__list__style
+                                                        .c-text-contents.align-text-left
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 D)
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-14 The supply of goods that may deteriorate or expire quickly.
+                                                li
+                                                    .my-return-info__list__style
+                                                        .c-text-contents.align-text-left
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 E)
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-14 The supply of sealed goods that are not suitable for return for reasons of health protection or hygiene and that have been unsealed after delivery.
+                                                li
+                                                    .my-return-info__list__style
+                                                        .c-text-contents.align-text-left
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 F)
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-14 The supply of goods that, after delivery and taking into account their nature, have been inseparably mixed with other goods.
+                                                li
+                                                    .my-return-info__list__style
+                                                        .c-text-contents.align-text-left
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 G)
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-14 The supply of alcoholic beverages whose price has been agreed upon at the time of entering into the sales contract and which cannot be delivered within 30 days, and whose real value depends on market fluctuations that the businessman cannot control.
+                                                li
+                                                    .my-return-info__list__style
+                                                        .c-text-contents.align-text-left
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 H)
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-14 Contracts in which the consumer and user have specifically requested the businessman to visit them to carry out urgent repair or maintenance operations; If, during that visit, the businessman provides additional services to those specifically requested by the consumer or supplies goods other than the spare parts necessarily used to carry out maintenance or repair operations, the right of withdrawal must apply to said additional services or goods.
+                                                li
+                                                    .my-return-info__list__style
+                                                        .c-text-contents.align-text-left
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 I)
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-14 The supply of sealed sound or video recordings or sealed computer programs that have been unsealed by the consumer and user after delivery.
+                                                li
+                                                    .my-return-info__list__style
+                                                        .c-text-contents.align-text-left
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 J)
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-14 The supply of daily press, periodicals or magazines, with the exception of subscription contracts for the supply of such publications.
+                                                li
+                                                    .my-return-info__list__style
+                                                        .c-text-contents.align-text-left
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 K)
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-14 Contracts concluded through public auctions.
+                                                li
+                                                    .my-return-info__list__style
+                                                        .c-text-contents.align-text-left
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 L)
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-14 The supply of accommodation services for purposes other than housing, transportation of goods, vehicle rental, food or services related to leisure activities, if the contracts provide for a specific date or period of execution.
+                                                li
+                                                    .my-return-info__list__style
+                                                        .c-text-contents.align-text-left
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 M)
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-14 The supply of digital content that is not provided on a material medium when the execution has begun and, if the contract imposes a payment obligation on the consumer or user, when the following conditions are met:
+                                                li
+                                                    .my-return-info__list__style
+                                                        .c-text-contents.align-text-left
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 1.
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-14 The consumer or user has given prior consent to start the execution during the period of the right of withdrawal.
+                                                li
+                                                    .my-return-info__list__style
+                                                        .c-text-contents.align-text-left
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 2.
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-14 The consumer or user has expressed their knowledge that, consequently, they lose their right of withdrawal; and
+                                                li
+                                                    .my-return-info__list__style
+                                                        .c-text-contents.align-text-left
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 3.
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-14 The employer has provided confirmation in accordance with article 98.7 or article 99.2.
+                            +myAccoridon("Conditions of the returned product:", "acc05", false)
+                                .my-return-info__container
+                                    .my-return-info
+                                        .my-return-info__text-box 
+                                            ul.my-return-info__list.my-return-info__list--dot
+                                                li
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-16 Recuerde que el producto deberá estar en perfectas condiciones, en su embalaje original incluyendo manuales, accesorios, regalos promocionales, y en general todo aquello que vaya unido a la compra del mencionado producto.
+                                                li
+                                                    .c-text-contents.align-text-left
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-16 En todo caso, deberá corresponder el número de serie del producto con el que conste en nuestros registros internos.
+                            +myAccoridon("Basic information on personal data processing", "acc06", false)
+                                .my-return-info__container
+                                    .my-return-info
+                                        .my-return-info__text-box 
+                                            .c-text-contents.align-text-left 
+                                                .text.c-text-contents__headline
+                                                    .font-w-normal-16.font-m-normal-16 Responsible
+                                            .my-return-info__text-box__personal-data
+                                                .c-text-contents.align-text-left 
+                                                    .text.c-text-contents__headline
+                                                        .font-w-normal-16.font-m-normal-16 LG Electronics España SAU (hereinafter, "LGEES").
+                                                .my-return-info__list--data  
+                                                    .c-text-contents.align-text-left 
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-16 NIF: A-81304487
+                                                .my-return-info__list--data
+                                                    .c-text-contents.align-text-left 
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-16 Address: Calle Chile 1, 28290, Las Rozas, Madrid.
+                                                .my-return-info__list--data
+                                                    .c-text-contents.align-text-left 
+                                                        .text.c-text-contents__bodycopy
+                                                            .font-w-normal-16.font-m-normal-16 DPO: dpo-eu@lge.com
+                                        +myAccoridon("Purpose", "acc07", true)
+                                            .my-return-info__text-box 
+                                                .c-text-contents.align-text-left 
+                                                    .text.c-text-contents__bodycopy
+                                                        .font-w-normal-16.font-m-normal-14 Manage and respond to your requests regarding the purchase of products and/or services in our electronic commerce (in this case, manage your request for the right of withdrawal), including managing the collection of the product (if applicable), checking that The product subject to withdrawal is in the required conditions, as well as the refund of the price.
+
+                                        +myAccoridon("Rights", "acc08", true)
+                                            .my-return-info__text-box 
+                                                .c-text-contents.align-text-left 
+                                                    .text.c-text-contents__bodycopy
+                                                        .font-w-normal-16.font-m-normal-14 Access, rectification, deletion, limitation, opposition, portability and revocation of consent.
+
+                                        +myAccoridon("Additional Information", "acc09", true)
+                                            .my-return-info__text-box 
+                                                .c-text-contents.align-text-left 
+                                                    .text.c-text-contents__bodycopy
+                                                        .font-w-normal-16.font-m-normal-14 You can consult additional and detailed information about our Privacy Policy by clicking 
+                                                            +textButton({name: 'here', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(target="_blank", href="https://site.amigolg.com/politica-de-privacidad.html")
+
+                    .my-component.my-summary-area
+                        .my-summary-area__secondary
+                            .my-summary-area__secondary__container
+                                .font-w-normal-32.font-m-normal-20 Return information
+                            .my-return-info__container
+                                .my-return-info
+                                    +myReturnInfo(false, "", false, false, [
+                                        {
+                                            type: "text",
+                                            optionVal: "",
+                                            label: "Return pickup address",
+                                            id: "return-pickup-address",
+                                            value: "25B, Farringdon Street​, London, United Kingdom",
+                                            required: true,
+                                            readonly: true,
+                                        },
+                                        {
+                                            type: "text",
+                                            label: "Name and surname",
+                                            value: "",
+                                            id: "name-and-surname",
+                                            placeholder: "",
+                                        },
+                                        {
+                                            type: "text",
+                                            label: "Contact mobile number",
+                                            value: "123-456-7890",
+                                            id: "contact-mobile-number",
+                                            placeholder: "",
+                                            warning:['Please enter a valid number.']
+                                        },
+                                        {
+                                            type: "text",
+                                            label: "Contact email number",
+                                            value: "robertsurrency@gmail.com",
+                                            id: "contact-email-number",
+                                            placeholder: "",
+                                            warning:['Email account address invaild.', 'Email is required.']
+                                        },
+                                    ])
+                                    
+                    .my-component.my-summary-area
+                        .my-summary-area__secondary
+                            .font-w-normal-32.font-m-normal-20 Returns Main item information
+                            .my-return-info__container
+                                .my-return-info
+                                    .my-return-info__item
+                                        +myReturnInfo("LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)", "", false, false, [
+                                            {
+                                                type: "text",
+                                                label: "Serial number",
+                                                value: "405MASXLY150",
+                                                id: "serial-number",
+                                                placeholder: "",
+                                                requiredCZ: true,
+                                                readonly: true,
+                                            },
+                                        ])
+                                    .my-return-info__item
+                                        +myAccoridon("Where to find the serial number", "acc10", false)
+                                            details.c-details-toggle 
+                                                summary.c-details-toggle__head
+                                                    .c-text-contents.align-text-left 
+                                                            .text.c-text-contents__headline
+                                                                .font-w-semibold-16.font-m-semibold-14 Refrigerators
+                                                .c-details-toggle__body
+                                                    .my-return-info__text-box 
+                                                        .c-text-contents.align-text-left 
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 Open the refrigerator door and you will find a sticker on the left side.
+                                                        .c-image
+                                                            +printLazyImage('../../mocks/ML000E/temp-return-information-01.png', 'Refrigerators')
+                                                    .my-return-info__text-box 
+                                                        .c-text-contents.align-text-left 
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 The serial number is the area highlighted in red, the SERIAL NO field . <br>
+                                                                    | You will find the product model above, in the green area, the MODEL field
+                                                        .c-image
+                                                            +printLazyImage('../../mocks/ML000E/temp-return-information-02.png', 'Refrigerators')
+                                            details.c-details-toggle 
+                                                summary.c-details-toggle__head
+                                                    .c-text-contents.align-text-left 
+                                                            .text.c-text-contents__headline
+                                                                .font-w-semibold-16.font-m-semibold-14 Washers, Dryers and Dishwashers
+                                                .c-details-toggle__body
+                                                    .my-return-info__text-box 
+                                                        .c-text-contents.align-text-left 
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 Open the door of the washer or dryer and you will see a sticker with a series of data. <br/>
+                                                                    | In dishwashers it is on the same door, when you open it, the one that is closest to you.
+                                                        .c-image
+                                                            +printLazyImage('../../mocks/ML000E/temp-return-information-03.png', 'Washers, Dryers and Dishwashers')
+                                                    .my-return-info__text-box 
+                                                        .c-text-contents.align-text-left 
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 In the area marked in red you have the product serial number . <br/>
+                                                                    | In the green area you can see the product model .
+                                                        .c-image
+                                                            +printLazyImage('../../mocks/ML000E/temp-return-information-04.png', 'Washers, Dryers and Dishwashers')
+                                            details.c-details-toggle 
+                                                summary.c-details-toggle__head
+                                                    .c-text-contents.align-text-left 
+                                                            .text.c-text-contents__headline
+                                                                .font-w-semibold-16.font-m-semibold-14 Televisores y Monitores
+                                                .c-details-toggle__body
+                                                    .my-return-info__text-box 
+                                                        .c-text-contents.align-text-left 
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 On the back of the equipment you will see a sticker with all the information
+                                                        .c-image
+                                                            +printLazyImage('../../mocks/ML000E/temp-return-information-05.png', 'Televisores y Monitores')
+                                                    .my-return-info__text-box 
+                                                        .c-text-contents.align-text-left 
+                                                            .text.c-text-contents__bodycopy
+                                                                .font-w-normal-16.font-m-normal-14 In it you can find: <br/>
+                                                                    | The product model is the MODEL field <br/>
+                                                                    | The serial number is the SERIAL NO field . 
+                                                        .c-image
+                                                            +printLazyImage('../../mocks/ML000E/temp-return-information-06.png', 'Televisores y Monitores')
+                                    .my-return-info__item
+                                        +myReturnInfo(false, "", false, false, [
+                                            {
+                                                type: "select",
+                                                optionVal: ["Choose an option", "Choose an option", "Choose an option"],
+                                                label: "Item Condition",
+                                                id: "itemCondition-add-on",
+                                                placeholder: "Choose an option"
+                                            },
+                                            {
+                                                type: "select",
+                                                optionVal: ["Choose an option", "Choose an option", "Choose an option"],
+                                                label: "Reason For Return",
+                                                id: "reasonToReturn-add-on",
+                                                placeholder: "Choose an option"
+                                            },
+                                            {
+                                                type: "select",
+                                                optionVal: ["Choose an quantity", "Choose an quantity", "Choose an quantity"],
+                                                label: "Quantity to Return",
+                                                id: "quantityToReturn-add-on",
+                                                placeholder: "Choose an option",
+                                                infoText: ["Remaining quantity : 0"],
+                                            },
+                                            {
+                                                type:"file",
+                                                label: "upload-add-on",
+                                                id: "upload-add-on",
+                                                fileName: ['Image.jpg'],
+                                                attachments: true,
+                                                option: false,
+                                            },
+                                        ])
+                        .my-summary-area__secondary
+                            .font-w-normal-32.font-m-normal-20 Returns Add-On Item Information
+                            .my-return-info__container
+                                .my-return-info
+                                    +myReturnInfo("LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)", "", false, false, [
+                                        {
+                                            type: "text",
+                                            label: "Serial number",
+                                            value: "405MASXLY150",
+                                            id: "serial-number",
+                                            placeholder: "",
+                                            requiredCZ: true,
+                                            readonly: true,
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an option", "Choose an option", "Choose an option"],
+                                            label: "Item Condition",
+                                            id: "itemCondition-add-on",
+                                            placeholder: "Choose an option"
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an option", "Choose an option", "Choose an option"],
+                                            label: "Reason For Return",
+                                            id: "reasonToReturn-add-on",
+                                            placeholder: "Choose an option"
+                                        },
+                                        {
+                                            type: "select",
+                                            optionVal: ["Choose an quantity", "Choose an quantity", "Choose an quantity"],
+                                            label: "Quantity to Return",
+                                            id: "quantityToReturn-add-on",
+                                            placeholder: "Choose an option",
+                                            infoText: ["Remaining quantity : 0"],
+                                        },
+                                        {
+                                            type:"file",
+                                            label: "upload-add-on",
+                                            id: "upload-add-on",
+                                            fileName: ['Image.jpg'],
+                                            attachments: true,
+                                            option: false,
+                                        },
+                                    ])
+                                    .my-return-info__item
+                                        +myAccoridon("Instructions for adding images", "acc11", false)
+                                            +infoInstructionsImages
+                                    .my-return-info__item
+                                        +formTextarea("text", "Reason to Return Details", "Message", true, "Please explain your issue or question")(minLength="20", maxlength="1000 Character")
+                        .my-summary-area__secondary
+                            .my-return-info__container.my-return-info__container--none-bg
+                                .my-return-info
+                                    .my-return-info__item
+                                        .c-checkbox-item&attributes(attributes)
+                                            label.checkbox(for="checkId1")
+                                                input(type="checkbox", name="name", value="val1", id="checkId1" aria-describedby='aria-connection')&attributes(attributes)
+                                                div.label(id='aria-connection') 
+                                                    span.font-w-normal-16.font-m-normal-14 I have read and accept the 
+                                                        +textButton({name: 'Privacy Policy', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})
+                                                        em.c-required *
+                    .my-component.my-summary-area.my-toastPopup
+                        +toastPopup([
+                            {   type:"error", 
+                                remove: true, 
+                                text: 'Sorry, your reqeust cannot be made. Please check later.',
+                            }
+                        ])   
+                    .my-component
+                        .button.c-cta
+                            +defaultButton({name: 'Cancel', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                            +defaultButton({name: 'Submit', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(disabled)
+
+
+block content
+    // Component Markup
+    .guide-text-type Type1. Default
+    +ML000E('default')   
+    .guide-text-type Type2. CZ
+    +ML000E('CZ') 
+    .guide-text-type Type3. ES
+    +ML000E('ES') 
+//- [End] 2024-03-07 : One Type(default) > : Two Type (Add [CZ] type)

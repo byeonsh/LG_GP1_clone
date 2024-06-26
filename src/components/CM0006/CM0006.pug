@@ -1,0 +1,356 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+
+block meta 
+    - var componentId = "CM0006"
+    - var componentName = "glossary"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-cm.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${controlsId}`)
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+
+    mixin sort-box(data)
+        // blcok : glossary sort
+        .c-glossary-sort
+            if block
+                block
+
+            strong.c-glossary-sort__label.desktop-only.font-w-normal-16 To browse through the glossary terms, click one of the letters below.
+
+            ul.c-glossary-sort__finder(role="menu")
+                each set in data
+                    if set.letterData.length > 0
+                        li(data-id=`group_${set.letter}` role="menuitem")
+                            // 2023-01-27 : Add a role to a tag for tagging
+                            a.font-w-normal-16(href=`#group_${set.letter}` role="button")= set.letter
+                    else 
+                        li(data-id=`group_${set.letter}` role="menuitem")
+                            span.font-w-normal-16= set.letter
+
+    mixin accordion-item(data)
+        each set in data
+            dl.c-text-contents(class=`${set.categoryValue}` role="listitem")
+                dt.title.c-text-contents__headline
+                    strong.cmp-title.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")= set.title
+                dd.text.c-text-contents__bodycopy
+                    span.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")= set.bodycopy
+
+    mixin accordion-box(data)
+        // block : accordion
+        ul.c-accordion.js-accordion
+            each set, idx in data
+                if set.letterData.length > 0
+                    li.c-accordion__box.js-accordion-handle-target(role="group" aria-labelledby=`group_${set.letter}` data-expand="independent")
+                        .c-accordion__head
+                                // block - text contents
+                                .c-accordion__head-text.c-text-contents
+                                    .text.c-text-contents__headline
+                                        .cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") 
+                                            strong(id=`group_${set.letter}`)= set.letter
+                                +trigger(`glossary-set-0${idx}`)
+
+                        .c-accordion__body(id=`glossary-set-0${idx}`)
+                            +accordion-item(set.letterData)
+
+    mixin glossary-wrap(data)
+        +sort-box(data.glossaryData)
+            // blcok : select item
+            +formSelect("", "selectSort", "Select Sort", false)
+                option(class="all" value="All" selected) All 
+                each set, idx in data.category
+                    option(class=`${set.class}` value=`${set.value}`)= set.label
+                
+        +accordion-box(data.glossaryData)
+                            
+    // Component Markup
+    .c-wrapper.CM0006.bg-default.margin-top.margin-bottom
+        .component
+            .cmp-container
+
+                // block : text-contents
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        h1.cmp-title(data-cmp-data-layer="") Glossary
+
+                +glossary-wrap({
+                    category: [
+                        {label: "Mobile", value: "CT20154096", class: "option1"},
+                        {label: "TV/Audio/Video", value: "CT20154004", class: "option2"},
+                        {label: "Laundry", value: "CT20154042", class: "option3"},
+                        {label: "Appliance", value: "CT20154087", class: "option4"},
+                    ],
+                    glossaryData: [
+                        {
+                            letter: "A",
+                            letterData: [
+                                {
+                                    title: "Advanced Display",
+                                    bodycopy: "A large LCD display provides instructions and diagnostics while keeping you updated on cycle status and time remaining.",
+                                    categoryValue: "option1"
+                                },
+                                {
+                                    title: "AM/FM Radio Tuner [Shared with Audio]",
+                                    bodycopy: "Tune in to your favourite AM or FM radio stations and enjoy music, talk, news, sports, and more.",
+                                    categoryValue: "option1 option2"
+                                },
+                                {
+                                    title: "AM/FM Tuner",
+                                    bodycopy: "Tune in to your favourite AM or FM radio stations and enjoy music, talk, news, sports and more.",
+                                    categoryValue: "option4"
+                                },
+                                {
+                                    title: "Anti-Crease Function",
+                                    bodycopy: "Anti-Crease mode prevents creases that result when laundry isn’t unloaded soon after the end of the cycle.",
+                                    categoryValue: "option1"
+                                },
+                                {
+                                    title: "Art Cool™ Model",
+                                    bodycopy: "Discerning customers will appreciate the innovation behind a highly energy-efficient, ductless air conditioner that doubles as a frame for their own artwork or photography.",
+                                    categoryValue: "option1"
+                                },
+                            ]
+                        },
+                        {
+                            letter: "B",
+                            letterData: [
+                                {
+                                    title: "Bacteria Protection",
+                                    bodycopy: "LG microwave ovens have an anti-bacterial coating that is proven to reduce the growth of bacteria.",
+                                    categoryValue: "option1"
+                                },
+                                {
+                                    title: "Band",
+                                    bodycopy: "Frequency groups assigned exclusively to wireless communication.",
+                                    categoryValue: "option1"
+
+                                },
+                                {
+                                    title: "Bar Phone",
+                                    bodycopy: "These popular phones get their name from their “candy bar” shape. Their easy-access buttons and prominent screen display add to their popularity.",
+                                    categoryValue: "option1"
+
+                                },
+                                {
+                                    title: "Bio Function",
+                                    bodycopy: "Bio Function heats water to 4º Celsius in the first stages of the cycle to activate enzymes in the detergent, and effectively remove protein-based stains.",
+                                    categoryValue: "option2 option4"
+
+                                },
+                                {
+                                    title: "Bioshield™",
+                                    bodycopy: "The sealant rimming the refrigerator door is made of an anti-bacterial agent that protects the door seal from erosion by preventing the growth of bacteria and mould.",
+                                    categoryValue: "option4"
+
+                                },
+                                {
+                                    title: "Biosilver™",
+                                    bodycopy: "Many of our refrigerators are lined with a silver ion coating that protects against bacteria, fungus, and yeast growth.",
+                                    categoryValue: "option2"
+
+                                },
+                                {
+                                    title: "Bio-Tank with Nano-Silver Technology",
+                                    bodycopy: "This dust container uses tiny silver particles to prevent bacteria and fungus from growing inside. This means that the inside of your LG vacuum is clean, as is the air in your home.",
+                                    categoryValue: "option2"
+
+                                },
+                                {
+                                    title: "Bluetooth®",
+                                    bodycopy: "Bluetooth-enabled televisions let you stream photos wirelessly from your Bluetooth-enabled device to the television, as well as listen to the TV using Bluetooth headphones.",
+                                    categoryValue: "option1"
+
+                                },
+                                {
+                                    title: "Bluetooth® [shared with headsets, phones, laptops]",
+                                    bodycopy: "Bluetooth-enabled headsets let you talk hands-free in the car or anywhere else. Bluetooth also lets you stream music wirelessly, connect to the Web, transfer files, and more.",
+                                    categoryValue: "option2"
+
+                                },
+                                {
+                                    title: "Blu-ray [Shared with Home Cinema, DVD, and Blu-ray Drives]",
+                                    bodycopy: "Blu-ray players and drives use the reigning high-definition DVD format, based on blue-laser technology and sophisticated compression, for ultimate storage capacity. All major manufacturers and movie studios support Blu-ray.",
+                                    categoryValue: "option2"
+
+                                },
+                                {
+                                    title: "Blu-ray Disc Technology [Shared with Video, Optical Drives]",
+                                    bodycopy: "The reigning high-definition DVD format, based on blue-laser technology and sophisticated compression, for ultimate storage-capacity; supported by all major manufacturers and movie studios.",
+                                    categoryValue: "option2"
+
+                                },
+                                {
+                                    title: "BREW",
+                                    bodycopy: "Binary Runtime Environment for Wireless is an application-development platform that allows mobile devices to run many small programs, like games, regardless of the phone’s operating system.",
+                                    categoryValue: "option2"
+
+                                },
+                                {
+                                    title: "Brightness (ANSI-lumens)",
+                                    bodycopy: "A measure of the overall intensity of the image. The lower the brightness value, the darker the image; the higher the value, the lighter the image.",
+                                    categoryValue: "option2"
+
+                                },
+                                {
+                                    title: "Browser",
+                                    bodycopy: "Software used to view web pages.",
+                                    categoryValue: "option2"
+
+                                },
+                                {
+                                    title: "BTUs",
+                                    bodycopy: "A British Thermal Unit (BTU) is a measurement of energy used to power air conditioners and heaters. The more BTUs, the faster the air conditioner/heater cools or heats a room.",
+                                    categoryValue: "option2"
+                                }
+                            ]
+                        },
+                        {
+                            letter: "C",
+                            letterData: [
+                                {
+                                    title: "Advanced Display",
+                                    bodycopy: "A large LCD display provides instructions and diagnostics while keeping you updated on cycle status and time remaining.",
+                                    categoryValue: "option3"
+                                },
+                            ]
+                        },
+                        {
+                            letter: "D",
+                            letterData: [
+                                {
+                                    title: "Advanced Display",
+                                    bodycopy: "A large LCD display provides instructions and diagnostics while keeping you updated on cycle status and time remaining.",
+                                    categoryValue: "option3"
+                                },
+                            ]
+                        },
+                        {
+                            letter: "E",
+                            letterData: [],
+                        },
+                        {
+                            letter: "F",
+                            letterData: [],
+                        },
+                        {
+                            letter: "G",
+                            letterData: [],
+                        },
+                        {
+                            letter: "H",
+                            letterData: [],
+                        },
+                        {
+                            letter: "I",
+                            letterData: [],
+                        },
+                        {
+                            letter: "J",
+                            letterData: [],
+                        },
+                        {
+                            letter: "K",
+                            letterData: [],
+                        },
+                        {
+                            letter: "L",
+                            letterData: [],
+                        },
+                        {
+                            letter: "M",
+                            letterData: [],
+                        },
+                        {
+                            letter: "N",
+                            letterData: [],
+                        },
+                        {
+                            letter: "O",
+                            letterData: [],
+                        },
+                        {
+                            letter: "P",
+                            letterData: [],
+                        },
+                        {
+                            letter: "Q",
+                            letterData: [],
+                        },
+                        {
+                            letter: "R",
+                            letterData: [],
+                        },
+                        {
+                            letter: "S",
+                            letterData: [],
+                        },
+                        {
+                            letter: "T",
+                            letterData: [],
+                        },
+                        {
+                            letter: "U",
+                            letterData: [],
+                        },
+                        {
+                            letter: "V",
+                            letterData: [],
+                        },
+                        {
+                            letter: "W",
+                            letterData: [],
+                        },
+                        {
+                            letter: "X",
+                            letterData: [],
+                        },
+                        {
+                            letter: "Y",
+                            letterData: [],
+                        },
+                        {
+                            letter: "Z",
+                            letterData: [
+                                {
+                                    title: "Advanced Display",
+                                    bodycopy: "A large LCD display provides instructions and diagnostics while keeping you updated on cycle status and time remaining.",
+                                    categoryValue: "option1",
+                                },
+                                {
+                                    title: "AM/FM Radio Tuner [Shared with Audio]",
+                                    bodycopy: "Tune in to your favourite AM or FM radio stations and enjoy music, talk, news, sports, and more.",
+                                    categoryValue: "option4",
+                                },
+                                {
+                                    title: "AM/FM Tuner",
+                                    bodycopy: "Tune in to your favourite AM or FM radio stations and enjoy music, talk, news, sports and more.",
+                                    categoryValue: "option4",
+                                },
+                            ]
+                        },
+                    ]
+                })

@@ -1,0 +1,394 @@
+//- 믹스인 수정 시, 기존에 개발에 전달했던 페이지의 마크업이 달라지지 않도록 주의 부탁 드립니다. 
+
+mixin formCheckbox(label, name, val, id, count = "false", disabled = false, arialabelledby = false, labelledby)
+    .c-checkbox-item&attributes(attributes)
+        label.checkbox(for=`${id}`)
+            if(arialabelledby)
+                if(disabled)
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, disabled="disabled" aria-labelledby=`${labelledby}` aria-describedby='aria-connection')&attributes(attributes)
+                else 
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}` aria-labelledby=`${labelledby}` aria-describedby='aria-connection')&attributes(attributes)
+            else
+                if(disabled)
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, disabled="disabled" aria-describedby='aria-connection')&attributes(attributes)
+                else 
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}` aria-describedby='aria-connection')&attributes(attributes)
+
+            if(label)
+                span.label(id='aria-connection')= label
+                    -if(count >= 0 & count != "false") // for filter
+                        sup.count= count 
+            else 
+                if block 
+                    span.label
+                        block
+
+mixin formRadio(label, name, val, id, addWrapperClasses)
+    if addWrapperClasses !== undefined
+        .c-radio-item(class=`${addWrapperClasses}`)
+            label.radio(for=`${id}`)
+                input(type="radio" name=`${name}`, value=`${val}`, id=`${id}`)&attributes(attributes)
+                span.label= label
+    else
+        .c-radio-item
+            label.radio(for=`${id}`)
+                input(type="radio" name=`${name}`, value=`${val}`, id=`${id}`)&attributes(attributes)
+                span.label= label
+
+mixin formSwatch(label, name, id, val, colorchip)
+    .c-swatch-item
+        label.swatch(for=`${id}`, class=`${label.toLowerCase().split(' ').join('')}`)
+            input(type="checkbox" name=`${name}`, value=`${val}`, id=`${id}`)&attributes(attributes)
+            span.label
+                span.colorchip(class=`${colorchip}`)
+                span.sr-only= label
+
+mixin formRange(label, js,  name1, name2, id1, id2, min, max, minlabel, maxlabel)
+    .c-form-range(data-range=js)
+        label.sr-only(for=`${id1}`)= `${label} Min`
+        label.sr-only(for=`${id2}`)= `${label} Max`
+        input.input-left(type="range", name=`${name1}_fake`, id=`${id1}`, min=`${min}` max=`${max}` value=`${min}`, aria-labelledby=`${id1}_real`, aria-label=`${minlabel}`)&attributes(attributes)
+        input.input-right(type="range", name=`${name2}_fake`, id=`${id2}`, min=`${min}` max=`${max}` value=`${max}`, aria-labelledby=`${id2}_real`, aria-label=`${maxlabel}`)&attributes(attributes)
+        // real value
+        input.real-left(type="hidden", name=`${name1}`, value="")
+        input.real-right(type="hidden", name=`${name2}`, value="")
+        .c-range
+            .c-range-slider
+                .c-range-track
+                .c-range-active
+                .c-range-thumb__left
+                .c-range-thumb__right
+                .c-range-min__box
+                    span.sr-only.hidden Min
+                    .c-range-min(id=`${id1}_real`) Min
+                .c-range-max__box
+                    span.sr-only.hidden Max
+                    .c-range-max(id=`${id2}_real`) Max
+
+mixin exclamTooltip(tooltipText, usedButton = true, direction = 'bottom-left', size = '', describedby, buttonName)
+    - var text = tooltipText || "Lorem ipsum  Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.."
+    if (size == 'large')
+        - var size = 'c-tooltip__contents--large'
+    if (size == 'medium')
+        - var size = 'c-tooltip__contents--medium'
+    .c-tooltip
+        .button
+            button.cmp-button.c-icon-button.c-icon-button--more-info.c-tooltip__button(type="button" aria-expanded="false", data-cmp-data-layer="", aria-describedby=describedby)
+                span.sr-only More information
+        .c-tooltip__container(class=direction)
+            .c-tooltip__contents.has-close(class=size)
+                button.c-tooltip__close(type='button')
+                    span.sr-only Close
+                .c-text-contents
+                    .text.c-text-contents__bodycopy
+                        .cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")
+                            p= text
+                    if usedButton
+                        .button
+                            +textButton({name: buttonName, wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: false})
+
+mixin exclamBorderTooltip(tooltipText, usedButton = true, direction = 'bottom-left', size = '', describedby)
+    - var text = tooltipText || "Lorem ipsum  Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.."
+    if (size == 'large')
+        - var size = 'c-tooltip__contents--large'
+    if (size == 'medium')
+        - var size = 'c-tooltip__contents--medium'
+    .c-tooltip
+        .button
+            button.cmp-button.c-icon.c-icon-button.c-icon-button--information.c-tooltip__button.w-size20.m-size16(type="button" aria-expanded="false", data-cmp-data-layer="" aria-describedby=describedby)
+                span.sr-only More information
+        .c-tooltip__container(class=direction)
+            .c-tooltip__contents.has-close(class=size)
+                button.c-tooltip__close(type='button')
+                    span.sr-only Close
+                .c-text-contents
+                    .text.c-text-contents__bodycopy
+                        .cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")
+                            p= text
+                    if usedButton
+                        .button
+                            +textButton({name: 'Learn More', isButton:false, buttonStyle:"default", wSize: "small", mSize : "small"})
+
+mixin formRating(id)
+    .c-input-item
+        label.font-w-normal-16.font-m-normal-14(class={'sr-only' : labelSrOnly}) Rating
+            +required-text-sr
+        .c-input-item__rating.font-w-normal-14i.font-m-normal-14i
+            span.c-input-item__rating--count
+                span.counting-num 0
+                span /5
+            input(type='radio' name='rating' value="5" id=`${id}-rating-5`)
+            label(for=`${id}-rating-5`)
+            input(type='radio' name='rating' value="4" id=`${id}-rating-4`)
+            label(for=`${id}-rating-4`)
+            input(type='radio' name='rating' value="3" id=`${id}-rating-3`)
+            label(for=`${id}-rating-3`)
+            input(type='radio' name='rating' value="2" id=`${id}-rating-2`)
+            label(for=`${id}-rating-2`)
+            input(type='radio' name='rating' value="1" id=`${id}-rating-1`)
+            label(for=`${id}-rating-1`)  
+
+
+mixin postFormMessage(waring, disclaimerText, id)
+    if waring
+        .c-warning(id= id ? `${id}` : null)= waring
+        
+    if disclaimerText
+        .c-text-contents.c-pop-msg-form__text
+            .text.c-text-contents__disclaimer
+                .cmp-text(data-cmp-data-layer="")= disclaimerText
+
+
+//- Working...
+mixin formCaptcha(type, label, id, required=false, placeholder, inLayer=false, labelSrOnly=false)
+        .c-captcha
+            label(for=`${id}` class="font-w-normal-16 font-m-normal-14")= label
+                if required 
+                    +required-text-sr
+            .c-captcha__wrapper
+                .c-captcha__viewbox
+                    .c-captcha__image
+                        .image.c-image
+                            .cmp-image(data-cmp-data-layer='')
+                                img.c-image__img(src='https://via.placeholder.com/292x86/999999/333333/?text=292x86', alt='', loading="lazy")
+                    .c-captcha__button-wrap.c-cta
+                        button(type="button" class=`cmp-button c-icon-button c-icon-button--refresh` data-cmp-data-layer="")&attributes(attributes)
+                            span.cmp-button__text.c-icon-button__text.sr-only refresh
+                        button(type="button" class=`cmp-button c-icon-button c-icon-button--volume` data-cmp-data-layer="")&attributes(attributes)
+                            span.cmp-button__text.c-icon-button__text.sr-only volume
+                .c-input-item
+                    if required
+                        input(type=`${type}` id=`${id}`, placeholder=`${placeholder}`, required)&attributes(attributes)
+                    else 
+                        input(type=`${type}` id=`${id}`, placeholder=`${placeholder}`)&attributes(attributes)
+                    +invalid-warning("Picture Text is incorrect.")
+
+mixin formText(type, label, id, required=false, placeholder, inLayer=false, labelSrOnly=false, message = false, isError = false, lengthText=false, clearBtn=false, topArea=false)
+    - var labelStyle = "font-w-normal-16 font-m-normal-14"
+    .c-input-item
+        if block
+            block
+        else
+            if topArea
+                .c-input-item__top
+                    label(for=`${id}` class=labelStyle class={'sr-only': !inLayer && labelSrOnly})= label
+                        if(required)
+                            +required-text-sr
+                    if (topArea.tooltip)
+                        +exclamBorderTooltip
+            else
+                label(for=`${id}` class=labelStyle class={'sr-only': !inLayer && labelSrOnly})= label
+                    if(required)
+                        +required-text-sr
+        //- Bad value true for attribute required on element input.
+        if required
+            input(type=`${type}` id=`${id}`, placeholder=`${placeholder}`, class=`${isError ? 'my-warn' : ''}` aria-describedby='aria-error-connection' required)&attributes(attributes)
+        else 
+            input(type=`${type}` id=`${id}`, placeholder=`${placeholder}` class=`${isError ? 'my-warn' : ''}`)&attributes(attributes)   
+        if clearBtn
+            button(type="button" class="c-input-clear js-input-clear" aria-controls=`${id}` data-cmp-data-layer="")
+                span.sr-only= clearBtn
+        // RO test
+        if lengthText
+            // RO
+            .c-input-item--length.font-w-normal-14.font-m-normal-14
+                //- span.length-text 남은문자 : 
+                span.counting-num 12
+                span= `/${attributes.maxlength}`
+                
+        if message
+            +postFormMessage(`${message}`, "")
+
+mixin formTextarea(type, label, id, required=false, placeholder, inLayer=false, labelSrOnly=false, lengthText=false, isError = false)
+    .c-input-item
+        if inLayer 
+            if block
+                block
+            else
+                label.font-w-normal-14i.font-m-normal-14i.font-semibold(for=`${id}`)= label
+                    if(required) 
+                        +required-text-sr
+        else 
+            if block
+                block
+            else
+                label.font-w-normal-16.font-m-normal-14(for=`${id}` class={'sr-only' : labelSrOnly})= label
+                    if(required) 
+                        +required-text-sr
+        //- Bad value true for attribute required on element input.
+        if required
+            textarea(id=`${id}`, placeholder=`${placeholder}`, maxlength=`${maxlength}`, required, class=`${isError ? 'my-warn' : ''}`)&attributes(attributes)
+        else 
+            textarea(id=`${id}`, placeholder=`${placeholder}`, maxlength=`${maxlength}`)&attributes(attributes)
+        // RO test
+        if lengthText
+            // RO
+            .c-input-item--length.font-w-normal-14.font-m-normal-14
+                //- span.length-text 남은문자 : 
+                span.counting-num 12
+                span= `/${attributes.maxlength}`
+        else
+            .c-input-item--length.font-w-normal-14.font-m-normal-14
+                span.counting-num 1
+                span= `/${attributes.maxlength}`
+
+mixin formSelect(label, id, title, required=false, labelSrOnly=false, message = false, disabled=false)
+    .c-select-item
+        if label != ''
+            - var labelStyle = "font-w-normal-16 font-m-normal-14"
+
+            label(for=`${id}` class=labelStyle class={'sr-only' : labelSrOnly})= label
+                if(required) 
+                    +required-text-sr
+        //- Bad value true for attribute required on element input.
+        if required
+            select(id=`${id}`, title=`${title}`, required="required")&attributes(attributes)
+                if block
+                    block
+        else if disabled
+            select(id=`${id}`, title=`${title}` disabled)&attributes(attributes)
+                if block
+                    block
+        else
+            select(id=`${id}`, title=`${title}`)&attributes(attributes)
+                if block
+                    block
+        if message
+            +postFormMessage(`${message}`, "")
+
+mixin required-text-sr
+    // block - required(sr text)
+    em.c-required * 
+        span.sr-only Required fields
+
+mixin required-text-indicate 
+    // block - required area(indicate text)
+    .c-required-area
+        em * 
+        | Required fields
+
+mixin invalid-warning(text = "warning msg", id)
+    .c-warning.font-m-normal-14.font-w-normal-14(id= id)= text
+
+mixin valid-msg(text = "valid msg", id)
+    .c-valid.font-m-normal-14.font-w-normal-14.wa-check(id= id)= text
+
+mixin field-description(text = "")
+    // block - text contents
+    .c-text-contents.c-pop-msg-form__text&attributes(attributes)
+        .text.c-text-contents__form-text
+            .cmp-text.font-w-normal-12.font-m-normal-12(data-cmp-data-layer="")= text
+
+mixin form-disclaimer(text = "", textStyle)
+    // block - text contents
+    .c-text-contents.c-pop-msg-form__text&attributes(attributes)
+        .text.c-text-contents__disclaimer
+            .cmp-text(data-cmp-data-layer="" class=textStyle)= text
+
+//- 이하는 중복 사용되는 조각 
+//- id, password, email, agreement...
+mixin email-field(id, require = true, inLayer = false, description = null)
+    //- text input : email
+    +formText("text", "Email Address", id, require, "Please input your email", inLayer)
+    +invalid-warning("Email Address is Invalid", "aria-error-connection")        
+
+mixin formDatalist(params)
+    - var config = {syncAttr : "samplelist", type : "text", placeholder: "", validationMsg : [], labelSrOnly : false, ...params}
+    label.font-w-normal-16.font-m-normal-14(for=`${config.inputId}` class={'sr-only' : config.labelSrOnly})= label
+        +required-text-sr
+    input(list=`${config.syncAttr}` type=`${config.type}` id=`${config.inputId}`, placeholder=`${config.placeholder}`, required)
+    datalist.c-search-combobox__datalist(id=`${syncAttr}`)
+        - for (var i=0; i < count; i++)
+            option= sku
+    //- validation msg
+    each msg in config.validationMsg
+        +invalid-warning(msg)
+//- sample
+//- +formDatalist(
+//- 	syncAttr : "sku"
+//- 	inputType : "text", 
+//- 	inputId : "PD0003CompatibleProductSearchInput",
+//- 	placeholder : "Find a compatible product", inLayer, 
+//- 	labelSrOnly : true
+//- 	validationMsg : ["Model is Required"]
+//- )
+
+mixin postFormFieldset(params)
+    - var options = params == "[object Object]" ? {...params} : {legend : params}
+    - var legendStyle = "font-w-normal-32 font-m-normal-20"
+    
+    fieldset.c-post-form__fieldset&attributes(attributes)
+        if options.legend
+            .c-post-form__fieldset-title
+                span(class=legendStyle)= options.legend
+                if options.required 
+                    +required-text-sr
+
+        .c-post-form__fieldset-container
+            if block
+                block
+
+
+mixin postFormAbout(work)
+    .c-post-form__item
+        +formText("text", "First Name", "firstName", true, "First Name")(maxlength="50")
+        +postFormMessage("First Name is required.", "")
+    .c-post-form__item
+        +formText("text", "Last Name", "lastName", true, "Last Name")(maxlength="50")
+        +postFormMessage("Last Name is required.", "")
+
+    .c-post-form__item
+        +formText("text", "Phone Number", "phone", true, "Phone Number")(maxlength="12")
+        +postFormMessage("Phone Number is required.", "Please enter your phone number without any spaces.")
+
+    if work === true
+        .c-post-form__item
+            +formText("text", "Work Email", "workEmail", true, "Work Email")(maxlength="100")
+            +postFormMessage("Email Address Invalid.", "Please enter your email. Try something more like lg@domain.com")
+    else 
+        .c-post-form__item
+            +formText("text", "Email", "email", true, "abc@lge.com")(maxlength="100")
+            +postFormMessage("Email Address Invalid.", "Please enter your email. Try something more like lg@domain.com")
+
+mixin agreement-field(id, require = true, isMember = true)
+    //- agreement checkbox
+    if(isMember)
+        - var name = id
+        - var value = ""
+        - var disabled = false
+        - var required = require
+    else 
+        - var name1 = id + "1"
+        - var name2 = id + "2"
+        - var value1 = ""
+        - var value2 = ""
+        - var disabled = false
+        - var required = require
+        //- terms links
+    if(isMember)
+        +formCheckbox(false, name, value, id, disabled)(required = require)
+            span.font-w-normal-16.font-m-normal-14.c-pop-msg__gray-form-agree
+                | I have read and agree to the 
+                // GA4
+                a.font-underline(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Terms and Conditions 
+                | &#32;and 
+                // GA4
+                a.font-underline(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Privacy Policy
+                +required-text-sr
+    else
+        //- +formCheckbox(false, name1, value1, id+"1", disabled)(required = require)
+        //-     span.font-w-normal-16.font-m-normal-14.c-pop-msg__gray-form-agree
+        //-         | I agree to the 
+        //-         // GA4
+        //-         a.font-underline(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Terms &amp; Conditions
+        //-         +required-text-sr
+        +formCheckbox(false, name2 , value2, id+"2", disabled)(required = require)
+            span.font-w-normal-16.font-m-normal-14.c-pop-msg__gray-form-agree
+                //- | I agree with the data protection policy 
+                | I have read and understand the 
+                // GA4
+                //- a.font-underline(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") read privacy policy
+                a.font-underline(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Privacy Policy
+                +required-text-sr
+        //- 
+    +invalid-warning("Agreement check is not checked.", "aria-error-connection")

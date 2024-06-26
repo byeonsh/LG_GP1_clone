@@ -1,0 +1,536 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_pop-msg.pug
+include ../../components/MB000J/MB000J-inc.pug
+
+block meta 
+    - var componentId = "MB000J"
+    - var componentName = "Account Intergration"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-16.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-16.font-m-normal-14= infoTextSecond
+
+mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected})
+    .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+        +formSelect(label, id, placeholder, false)
+            if optionVal
+                - for(var i=0; i < optionVal.length; i++)
+                    if selected === i + 1
+                        option(value="" selected)= optionVal[i]
+                    else
+                        option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText})
+
+mixin myCaptcha({label, id, placeholder, warning= false})
+    .c-input-item
+        .my-captcha
+            .my-captcha__container
+                label.font-w-normal-16.font-m-normal-14(for=`${id}`)= label
+                #security-box.my-captcha__area
+
+mixin myVerify(params)
+    - let data = {...params}
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                if data.required
+                    em.c-required *
+                        span.sr-only Required fields
+            if data.validation
+                .input-button__container.input-button__container--validation
+                    .my-button-validation
+                        .my-verify__inner
+                            if data.required
+                                input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}` value= data.value, required)&attributes(attributes)
+                            else 
+                                input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}` value= data.value)&attributes(attributes)
+                            span.my-verify__time.font-m-normal-16.font-w-normal-16= data.time
+                        +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                    .button.c-cta
+                        +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+
+            else
+                .input-button__container
+                    .my-verify__inner
+                        if data.required
+                            input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}` value= data.value, required)&attributes(attributes)
+                        else 
+                            input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}` value= data.value)&attributes(attributes)
+                        span.my-verify__time.font-m-normal-16.font-w-normal-16= data.time
+                    .button.c-cta
+                        +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+
+            if !data.validation
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+    if data.type === 'verify'
+        +myVerify(params)
+    //- 2023-05-24 Date of birth
+    else if data.type === 'birth'
+        +myBirth(params)
+    else if data.type === 'birth1'
+        +myBirth1(params)
+    else if data.type === 'birth2'
+        +myBirth2(params)
+    //- 2023-05-24
+    else if data.type === 'select'
+        +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected})
+    else if data.type === 'captcha'
+        +myCaptcha({label: data.label, id: data.id, placeholder: data.placeholder, warning: data.warning})
+    else if data.type === 'radio'
+        +languageRadio(params)
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : '', data.notEmail ? 'label--not-email' : ''}`)= data.label
+                    if data.required
+                        em.c-required *
+                            span.sr-only Required fields
+            if data.required && !data.button
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+                if data.type === 'password'
+                    button(type='button' class='my-form__eye')
+                        span.sr-only show password
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+            else if data.type === 'textarea'
+                if data.limit
+                    .my-textarea__container
+                        textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class='my-textarea--limit')&attributes(attributes)
+                        .my-count
+                            span.font-w-normal-14.font-m-normal-12 0 / !{data.limit} byte
+                else 
+                    textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder)&attributes(attributes)
+            else if data.button
+                if data.validation
+                    .input-button__container.input-button__container--validation
+                        .my-button-validation
+                            if data.required
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required)&attributes(attributes)
+                            else 
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config)&attributes(attributes)
+                            +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                        .button.c-cta.button-full
+                            +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                else
+                    .input-button__container(class=`${data.notEmail ? 'input-button__container--not-email' : '' }`)
+                        if data.required
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required)&attributes(attributes)
+                        else if data.notEmail
+                            .font-w-normal-16.font-m-normal-16 abcd1234@lg.com
+                        else 
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config)&attributes(attributes)
+                        .button.c-cta.button-full
+                            +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+
+            else 
+                if data.active
+                    input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                    else if data.search 
+                        button(type='button' class='my-form__search__icon')
+                            span.sr-only search
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                    else if data.search 
+                        button(type='button' class='my-form__search__icon')
+                            span.sr-only search
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+                
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin languageRadio(params)
+    - let data = {...params}
+    each set in data
+        .c-radio-item
+            label.radio(for=`${set.id}`)
+                input(type="radio" name=`languageRadio`, value=`${set.val}`, id=`${set.id}`)&attributes(attributes)
+                span.label= set.label
+                span.language-name First Name
+                    span.font-black= set.firstName
+                span.language-name Last Name
+                    span.font-black= set.lastName
+            
+mixin formCheckbox(label, name, val, id, count = "false", disabled = false, required)
+    .c-checkbox-item&attributes(attributes)
+        label.checkbox(for=`${id}`)
+            if(disabled)
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, disabled="disabled")&attributes(attributes)
+            else 
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`)&attributes(attributes)
+            if(label)
+                span.label= label
+                    -if(count >= 0 & count != "false") // for filter
+                        sup.count= count 
+                    if required
+                        em.c-required *
+                            span.sr-only Required fields
+            else 
+                if block 
+                    span.label
+                        block
+mixin MB000J(option=false)
+    .c-wrapper.MB000J
+        .component
+            .fluid-container
+                .my-component
+                    .c-text-contents
+                        .title.c-text-contents__headline
+                            +headline('font-w-light-56 font-m-light-28', "h2", "Account Intergration")
+                        .text
+                            .font-w-normal-24.font-m-normal-12 By creating a LG account, you can use all LG Electronic's digital services(LG.com, ThinQ, Smart TV, Smartworld).
+                .my-component
+                    p.my-form-required.font-w-normal-16.font-m-normal-12
+                        em.c-required * 
+                            span.sr-only Required fields
+                        | Required fields 
+                    .my-form
+                        //- [Start] 2023-04-07 : UPDATE - title text change 'Country Registration' to 'Country Information'
+                        .my-form__title.font-w-normal-32.font-m-normal-20 Country Information
+                        //- [End] 2023-04-07 : UPDATE - title text change 'Country Registration' to 'Country Information'
+                        .my-formbox
+                            p.my-form__info.font-w-normal-16.font-m-normal-16 The account has been registered in 
+                                span.font-black United Kingdom.
+                    .my-form
+                        .my-form__title.font-w-normal-32.font-m-normal-20 Email Certification
+                        .my-formbox
+                            p.my-form__info.font-w-normal-16.font-m-normal-16 The 
+                                span.font-black abcd1234@lg.com 
+                                | account is already registered with 
+                                span.font-black United Kingdom. 
+                                | Please enter a different email address.
+                            //- +myInputForm([
+                            //-     {
+                            //-         type:"email",
+                            //-         label:"Email",
+                            //-         id:"notEmail",
+                            //-         notEmail: true,
+                            //-         infoText: 'You email address is the account identifier and cannot be changed once registered.<br class="br--pc">Please note it is case sensitive.',
+                            //-         button: 'Send',
+                            //-     }
+                            //- ])
+                            +myInputForm([
+                                {
+                                    type:"email",
+                                    label:"Email",
+                                    id:"emailButton",
+                                    required:true,
+                                    placeholder:"Your email",
+                                    warningFirst: ["The account is being used abroad. Please enter a different account.", "Invalid email address", "Click 'Resend' button after 1 minute."],
+                                    infoText: 'You email address is the account identifier and cannot be changed once registered.<br class="br--pc">Please note it is case sensitive.',
+                                    button: 'Send',
+                                },
+                                {
+                                    type:"email",
+                                    label:"Email",
+                                    id:"emailButton",
+                                    required:true,
+                                    placeholder:"Your email",
+                                    warningFirst: ["The account is being used abroad. Please enter a different account.", "Invalid email address", "Click 'Resend' button after 1 minute."],
+                                    infoText: 'You email address is the account identifier and cannot be changed once registered.<br class="br--pc">Please note it is case sensitive.',
+                                    button: 'Resend',
+                                },
+                                {
+                                    type:"verify",
+                                    label: 'Verification code',
+                                    id:"verify",
+                                    placeholder: 'Verification code',
+                                    required: true,
+                                    time: '00:00',
+                                    warningFirst: ["Verification code is invalid."],
+                                    correct: ["Your email address has been verified."],
+                                    infoText: "We have sent an activat ion code to your email address. If you cannot find this email in your inbox, don't forget to check your Junk folder.",
+                                    button: 'Verify',
+                                },
+                                {
+                                    type:"email",
+                                    label:"Email",
+                                    id:"emailButton",
+                                    required:true,
+                                    placeholder:"Your email",
+                                    warningFirst: ["Click 'Resend' button after 1 minute."],
+                                    button: 'Send',
+                                },
+                                {
+                                    type:"email",
+                                    label:"Email",
+                                    id:"emailButton",
+                                    required:true,
+                                    placeholder:"Your email",
+                                    warningFirst: ["Click 'Resend' button after 1 minute."],
+                                    button: 'Resend',
+                                },
+                                {
+                                    type:"verify",
+                                    label: 'Verification code',
+                                    id:"verify",
+                                    placeholder: 'Verification code',
+                                    required: true,
+                                    time: '00:00',
+                                    warningFirst: ["Verification code is invalid."],
+                                    correct: ["Your email address has been verified."],
+                                    infoText: "We have sent an activat ion code to your email address. If you cannot find this email in your inbox, don't forget to check your Junk folder.",
+                                    button: 'Verify',
+                                },
+                            ])
+                    .my-form
+                        .my-form__title.font-w-normal-32.font-m-normal-20 User Infomation
+                        .my-formbox
+                            //- p.my-form__info.font-w-normal-16.font-m-normal-16 Select the member information for the account.                        
+                            +myInputForm([
+                                {
+                                    type:"text",
+                                    label:"First name",
+                                    id:"firstName",
+                                    required:true,
+                                    placeholder:"First name",
+                                    warningFirst: ["Please only use letters and spaces in this field."],
+                                },
+                                {
+                                    type:"text",
+                                    label:"Last name",
+                                    id:"lastName",
+                                    required:true,
+                                    placeholder:"Last name",
+                                    warningFirst: ["Please only use letters and spaces in this field."],
+                                },
+                            ])
+                            .c-form
+                                label.font-w-normal-16.font-m-normal-14 Select the member information for the account.
+                                    //- em.c-required *
+                                    //-     span.sr-only Required fields
+                                +languageRadio([
+                                    {
+                                        val: "English",
+                                        id: "English",
+                                        label: "English",
+                                        firstName: "Robert",
+                                        lastName: "Surrency"
+                                    },
+                                    {
+                                        val: "Korean",
+                                        id: "Korean",
+                                        label: "Korean",
+                                        firstName: "Robert",
+                                        lastName: "Surrency"
+                                    },
+                                ])
+                            +myInputForm([
+                                {
+                                    type:"text",
+                                    label:"Mobile number",
+                                    id:"mobileNumber",
+                                    required:true,
+                                    placeholder:"Mobile number",
+                                    warningFirst:['Not a valid phone number.'],
+                                    infoText: "Please input phone number without space.",
+                                },
+                                {
+                                    type:"birth1",
+                                    label:"Date of birth",
+                                    id:"month",
+                                    id1:"day",
+                                    id2:"year",                                                                  
+                                    optionVal: ['Month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                                    required:false,
+                                    placeholder:"Month",
+                                    placeholder1:"Day",
+                                    placeholder2:"Year",
+                                    validation:false,      
+                                    warningFirst3: ['You must be 14 years or older to create an account', 'You must be 16 years or older to create an account', 'You must be 18 years or older to create an account', 'You must be 20 years or older to create an account', 'You must be 18 years or older to create an account'],                              
+                                    infoText:'We use your date of birth to verify your identity if you forget your email address.<br class="br--pc">We also use it to make sure you can use services with age restrictions.',
+                                },  
+                                {
+                                    type:"birth",
+                                    label:"Date of birth",
+                                    id:"month",
+                                    id1:"day",
+                                    id2:"year",                                                                  
+                                    optionVal: ['Month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                                    required:false,
+                                    placeholder:"Month",
+                                    placeholder1:"Day",
+                                    placeholder2:"Year",
+                                    validation:false,      
+                                    warningFirst3: ['You must be 14 years or older to create an account', 'You must be 16 years or older to create an account', 'You must be 18 years or older to create an account', 'You must be 20 years or older to create an account', 'You must be 18 years or older to create an account'],                                                            
+                                    infoText:'We use your date of birth to verify your identity if you forget your email address.<br class="br--pc">We also use it to make sure you can use services with age restrictions.',
+                                },
+                                {
+                                    type:"birth2",
+                                    label:"Date of birth",
+                                    id:"month",
+                                    id1:"day",
+                                    id2:"year",                                                                  
+                                    optionVal: ['Month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                                    required:false,
+                                    placeholder:"Month",
+                                    placeholder1:"Day",
+                                    placeholder2:"Year",
+                                    validation:false,
+                                    warningFirst3: ['You must be 14 years or older to create an account', 'You must be 16 years or older to create an account', 'You must be 18 years or older to create an account', 'You must be 20 years or older to create an account', 'You must be 18 years or older to create an account'],                              
+                                    infoText:'We use your date of birth to verify your identity if you forget your email address.<br class="br--pc">We also use it to make sure you can use services with age restrictions.',
+                                },     
+                            ])
+                    .my-form
+                        .my-form__title.font-w-normal-32.font-m-normal-20 Password Modification
+                        .my-formbox
+                            //- [Start] 2023-04-07 : UPDATE - change valid & invalid message
+                            +myInputForm([
+                                {
+                                    type:"password",
+                                    label:"Change password",
+                                    id:"password",
+                                    required:true,
+                                    placeholder:"New password",
+                                    warningFirst: ["Can not identical to the user ID.", "Password violates the password generation rule.", "The password must be at least 8 characters.", "The total length of password digit should be less than or equal to 100 digits.", "You cannot use same character more than 3 times.", "Password contains invalid special character."],
+                                    correct: ["8-100 characters only.", "At least 3 types of character need to be included : upper and lower case letter, number, and special character.", "It can't be identical to the user ID"],
+                                },
+                                {
+                                    type:"password",
+                                    label:"Confirm password",
+                                    id:"confirmPassword",
+                                    required:true,
+                                    placeholder:"Confirm password",
+                                    warning: ["New password and confirm password do not match."]
+                                },
+                            ])
+                            //- [End] 2023-04-07 : UPDATE - change valid & invalid message
+                    .my-form
+                        .my-form__title.font-w-normal-32.font-m-normal-20 Terms of Use for Account Integration
+                        .my-formbox
+                            .my-check
+                                .button
+                                    +formCheckbox('18 Years old or older.', "name", "val1", `checkId1`, count="false", disabled = false, required = true)
+                                .button.custom-item
+                                    +formCheckbox("", "name", "val1", 'checkId2', count="false")
+                                        span I agree with the terms of use.
+                                            em.c-required *
+                                                span.sr-only Required fields
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more'})
+                                .button.custom-item
+                                    +formCheckbox('', "name", "val1", `checkId3`, count="false")
+                                        span I have read and understand the privacy policy and cookie policy.
+                                            em.c-required *
+                                                span.sr-only Required fields
+                                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more'})
+                                .button
+                                    +formCheckbox('Receipt of marketing messages (optional)', "name", "val1", `checkId4`, count="false")
+                                div.my-check--receipt-text I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE 
+                                    +linkButton({type: 'text', color: 'black', underline: true, name: 'Privacy Policy.'})
+                                div.my-check--receipt-info You can access both of your sites using different languages through single sign in.
+                    .button.c-cta.my-button
+                        //- [Start] 2023-04-07 : UPDATE - Cancel button popup
+                        +defaultButton({name:"Cancel", wSize: 'large', mSize: 'medium', buttonStyle: 'default'})(href="#changedTermsAndConditions", class="js-pop-open")
+                        //- [End] 2023-04-07 : UPDATE - Cancel button popup
+                        //- [Start] 2023-04-07 : UPDATE - Submit button disabled
+                        +defaultButton({name:"Submit", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight'})(href="#accountIntergration", class="js-pop-open")
+                        //- [End] 2023-04-07 : UPDATE - Submit button disabled
+        
+
+block content
+    // Component Markup
+    +MB000J()
+
+block modal
+    .MB000J
+        //- [Start] 2023-04-07 : ADD - Changed Terms and Conditions popup
+        .terms-pop
+            //- [Start] 2023-06-08 : UPDATE - changed Popup Title [Changed Terms and Conditions] to [Terms and privacy]
+            +pop-msg-standard({id : `changedTermsAndConditions`, headline:"Terms and privacy", size: 'full'})
+                //- [End] 2023-06-08 : UPDATE - changed Popup Title [Changed Terms and Conditions] to [Terms and privacy]
+                // block - text contents
+                .c-text-contents 
+                    .text.c-text-contents__bodycopy
+                        //- [Start] 2023-06-08 : UPDATE - changed Popup Description
+                        .cmp-text.font-m-normal-12.font-w-normal-16(data-cmp-data-layer="") For enhanced service, parts of the terms and conditions of LGE Service have been changed. Please read and accept the terms and conditions to continue.
+                        //- [End] 2023-06-08 : UPDATE - changed Popup Description
+                p.my-form-required.font-w-normal-16.font-m-normal-12
+                        em.c-required * 
+                            span.sr-only Required fields
+                        | Required fields 
+                .my-check
+                    .button.check-all
+                        +formCheckbox('Accept All', "name", "val1", `popCheckId1`, count="false", disabled = false, required = false)
+                    .button
+                        +formCheckbox('18 Years old or older.', "name", "val1", `popCheckId2`, count="false", disabled = false, required = true)
+                    .button.custom-item
+                        +formCheckbox("", "name", "val1", 'popCheckId3', count="false")
+                            span I agree with the terms of use.
+                                em.c-required *
+                                    span.sr-only Required fields
+                                +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more'})
+                    .button.custom-item
+                        +formCheckbox('', "name", "val1", `popCheckId4`, count="false")
+                            span I have read and understand the privacy policy and cookie policy.
+                                em.c-required *
+                                    span.sr-only Required fields
+                                +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more'})
+                    .button
+                        +formCheckbox('Receipt of marketing messages (optional)', "name", "val1", `popCheckId5`, count="false")
+                    div.my-check--receipt-text I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages. I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE 
+                        +linkButton({type: 'text', color: 'black', underline: true, name: 'Privacy Policy.'})
+                    div.my-check--receipt-info
+                        span I have read and understand the privacy policy and cookie policy.
+                            em.c-required *
+                                span.sr-only Required fields
+                            +linkButton({type: 'text', color: 'black', underline: true, name: 'Read more'})
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({name:"OK", wSize: 'small', mSize: 'medium', buttonStyle: 'default', isButton:true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="changedTermsAndConditions")
+        //- [End] 2023-04-07 : ADD - Changed Terms and Conditions popup
+        +pop-msg-standard({id : `accountIntergration`, headline:"Account Intergration", size: 'medium'})
+            // block - text contents
+            .c-text-contents 
+                .text.c-text-contents__bodycopy
+                    .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") You can manage your LG account and access various LG services. Thank you for intergrating your LG account
+            .button.c-pop-msg__button-wrap
+                +defaultButton({name:"Sign In", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton:true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="accountIntergration")

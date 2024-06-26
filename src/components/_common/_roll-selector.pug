@@ -1,0 +1,104 @@
+include ./_carousel.pug
+
+mixin roll-selector(list = [], useAnchor, type, havDiv)
+	// block - roll selector
+	.c-roll-selector(data-wa-type= type ? `${type}` : '')
+		.c-roll-selector__container.carousel.pannelcontainer
+			.cmp-carousel.swiper.c-carousel(data-cmp-data-layer="" class= autoplay ? "autoplay" : "")&attributes(attributes)
+				if havDiv
+					.cmp-carousel__content.swiper-wrapper
+						each set in list
+							- var activeClass = set.useActiveImage ? "c-roll-selector__item--active" : ""
+							if useAnchor
+								// GA4 - Separate a tag from .swiper-slide due to GA4 Tagging issue
+								.cmp-carousel__item.swiper-slide.c-carousel__item.c-roll-selector__item(class=`${activeClass}`)
+									a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+										+roll-selector-item(set, useAnchor)
+							else
+								button.cmp-carousel__item.swiper-slide.c-carousel__item.c-roll-selector__item(class=`${activeClass}`)
+									+roll-selector-item(set, useAnchor)
+				else 
+					ul.cmp-carousel__content.swiper-wrapper
+						each set in list
+							- var activeClass = set.useActiveImage ? "c-roll-selector__item--active" : ""
+							if useAnchor
+								// GA4 - Separate a tag from .swiper-slide due to GA4 Tagging issue
+								li.cmp-carousel__item.swiper-slide.c-carousel__item.c-roll-selector__item(class=`${activeClass}`)
+									a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+										+roll-selector-item(set, useAnchor)
+							else
+								li.cmp-carousel__item.swiper-slide.c-carousel__item.c-roll-selector__item(class=`${activeClass}`)
+									div
+										+roll-selector-item(set, useAnchor)
+				
+			+roll-selector-handler(handlerType)
+
+mixin roll-selector-pagination(list= [], useAnchor)
+	// block - roll selector
+	.c-roll-selector.c-roll-selector--use-pagination
+		.carousel.panelcontainer 
+			// block - carousel
+			.cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+				.cmp-carousel__content.swiper-wrapper
+					each set in list
+						if useAnchor 
+							.cmp-carousel__item.swiper-slide.c-carousel__item.c-roll-selector__item
+								a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+									+roll-selector-item(set)
+						else
+							.cmp-carousel__item.swiper-slide.c-carousel__item.c-roll-selector__item(role="button", tabindex="0")
+								+roll-selector-item(set)
+			.c-carousel__handler
+				.cmp-carousel__actions
+					+carouselBtn({type:"pagination", direction:"prev"})
+				+carouselPagination({isUnder:true})
+				.cmp-carousel__actions
+					+carouselBtn({type:"pagination", direction:"next"})
+
+mixin roll-selector-item(set, useAnchor)
+	- var options = {useActiveImage : false, useDualImage : false, ...set}
+	- var nameStyle = options.nameFontStyle || "font-w-semibold-18 font-m-normal-14i"
+	//- - var descStyle = options.descFontStyle || "font-w-normal-14 font-m-normal-14"
+	- var displayImage = options.image || 'https://via.placeholder.com/64x64/000000/eee'
+	- if(options.useActiveImage) displayImage = options.image || 'https://via.placeholder.com/64x64/DA0F47/eee';
+	if useAnchor
+		.c-roll-selector__item-image
+			.image.c-image
+				if options.useDualImage
+					+printLazyImage('https://via.placeholder.com/64x64/000000/eee')(aria-hidden='true')
+					+printLazyImage('https://via.placeholder.com/64x64/DA0F47/eee')(class="c-image__img--active", aria-hidden='true')
+				else 
+					+printLazyImage(displayImage)
+		.text.c-roll-selector__item-name
+			.cmp-text(data-cmp-data-layer="" class=`${nameStyle}`)= options.name
+		if options.description
+			.text.c-roll-selector__item-body.c-roll-selector__item-body--description
+				//- .cmp-text(data-cmp-data-layer="" class=`${descStyle}`)= options.description
+				.cmp-text(data-cmp-data-layer="")= options.description
+	else
+		span.c-roll-selector__item-image
+			span.image.c-image
+				if options.useDualImage
+					span.cmp-image(data-cmp-data-layer='')
+						img.cmp-image__image.c-image__img(src=`https://via.placeholder.com/64x64/000000/eee`, alt="picture", loading="lazy")
+					span.cmp-image(data-cmp-data-layer='')
+						img.cmp-image__image.c-image__img.c-image__img--active(src=`https://via.placeholder.com/64x64/000000/eee`, alt="picture", loading="lazy")
+				else 
+					span.cmp-image(data-cmp-data-layer='')
+						img.cmp-image__image.c-image__img(src=displayImage, alt="picture", loading="lazy")
+		span.text.c-roll-selector__item-name
+			span.cmp-text(data-cmp-data-layer="" class=`${nameStyle}`)= options.name
+		if options.description
+			span.text.c-roll-selector__item-body.c-roll-selector__item-body--description
+				//- .cmp-text(data-cmp-data-layer="" class=`${descStyle}`)= options.description
+				span.cmp-text(data-cmp-data-layer="")= options.description
+
+mixin roll-selector-handler
+	.c-roll-selector__handler
+		.cmp-carousel__actions
+			button.c-roll-selector__arrow.c-roll-selector__arrow--prev(type="button" class=`cmp-carousel__action cmp-carousel__action--previous js-carousel-prev` data-cmp-hook-carousel="previous")
+				span.cmp-carousel__action-text.sr-only Previous Slide
+
+		.cmp-carousel__actions
+			button.c-roll-selector__arrow.c-roll-selector__arrow--next(type="button" class=`cmp-carousel__action cmp-carousel__action--next js-carousel-next` data-cmp-hook-carousel="next") 
+				span.cmp-carousel__action-text.sr-only Next Slide

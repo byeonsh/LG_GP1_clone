@@ -1,0 +1,102 @@
+@charset "UTF-8";
+
+@use '../../scss/abstract/' as *;
+
+$component: '.ST0021';
+#{$component} {
+  > .component > .cmp-container {
+    display: flex;
+    @include container($design-grid-full, true);
+    @include inset-padding-hz;
+    @include flex-context($direction: column);
+    @include screen(web) {
+      @include flex-context;
+      justify-content: center;
+    }
+  }
+  // block : list
+  .c-list {
+    @include reset-list-style;
+    @include screen(web) {
+      @include list(nowrap);
+    }
+    &__item {
+      @include screen(web) {
+        padding: 0 rem($padding48px);
+      }
+      &:not(:first-child) {
+        border-top: rem($border1) solid $mid-gray1;
+        @include screen(web) {
+          border-top: 0;
+          border-left: rem($border1) solid $mid-gray1;
+        }
+      }
+    }
+  }
+  // block : text contents
+  .c-text-contents {
+    // variable
+    $text-contents: '.c-text-contents';
+    position: relative;
+    text-align: left;
+    word-break: break-word;
+    color: inherit;
+    // @include screen(web) {
+    //     text-align: center;
+    // }
+    // mobile UI
+    @include screen(mobile) {
+      @include list(nowrap, $margin20px);
+      padding: rem($padding20px $padding18px $padding20px $padding10px);
+      align-items: center;
+      &__headline {
+        flex: 1;
+      }
+      &__bodycopy,
+      &__place {
+        display: none;
+      }
+      @at-root #{$component} {
+        a#{$text-contents} {
+          &::after {
+            content: '';
+            display: inline-block;
+            position: absolute;
+            right: rem($padding10px);
+            width: rem($icon7px);
+            height: rem($icon12px);
+            background : {
+              position: 100% center;
+              size: 100%;
+              repeat: no-repeat;
+              image: url($icon-arrow-gray3-right-7-12);
+            }
+            transform: rotateY(0) #{'/*!rtl:rotateY(#{$degree180})*/'}; /*! RTL last keep colon */
+          }
+        }
+      }
+    }
+    // layout : margin
+    @at-root #{$component} {
+      .c-image + #{$text-contents}__headline {
+        @include screen(web) {
+          margin-top: rem($margin24px);
+        }
+      }
+      #{$text-contents}__headline + #{$text-contents}__bodycopy {
+        margin-top: rem($margin8px);
+      }
+      #{$text-contents}__bodycopy + #{$text-contents}__place {
+        margin-top: rem($margin8px);
+      }
+    }
+  }
+  // block : image
+  .c-image {
+    width: rem($width32px);
+    @include screen(web) {
+      width: rem($width64px);
+      // margin: 0 auto;
+    }
+  }
+}

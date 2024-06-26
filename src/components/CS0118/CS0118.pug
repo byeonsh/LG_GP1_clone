@@ -1,0 +1,83 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_video.pug
+include ../_common/_hero-banner.pug
+include ../_common/_spec-info.pug
+include ../_common/_cs-form.pug
+
+block meta 
+    - var componentId = "CS0118"
+    - var componentName = "Right to Repair_Registration_Inquiry"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    mixin formCheckbox(label, linkLabel, name, val, id, count = "false", disabled = false, link=true)
+        .c-checkbox-item
+            label.checkbox(for=`${id}`)
+                if(disabled)
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="", disabled="disabled")&attributes(attributes)
+                else 
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="")&attributes(attributes)
+
+                if(label)
+                    span.label.font-m-normal-12.font-w-normal-20= label 
+                        a(href="daum.net").link.font-m-normal-12.font-w-normal-20= linkLabel
+                        -if(count >= 0 & count != "false") // for filter
+                            sup.count= count 
+                else 
+                    if block 
+                        span.label
+                            block   
+
+    // Component Markup
+    .guide-text-type BR_LG extended warranty
+    
+    // Component Markup              
+    .c-wrapper.CS0118.type-text
+        .component.type-form
+            .CS0118__container
+                .container.responsivegrid
+                    .c-model-content-wrap
+                        .c-cs-header
+                        .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                    .c-container__inner     
+                        .cs-form
+                            .cs-form__wrap
+                                .cmp-form
+                                    +csForm_Input({id: 'Nome', label: 'Nome', type:"text", placeholder:"Digite seu nome", formDefalut: 'true', requireMsg: 'Este campo é obrigatório.​​​', invalidMsg: "Este campo é obrigatório.", class: "textInput__nome" })
+                                .cmp-form
+                                    //- +csForm_Input({formDefalut:'true',type:'text', class:'', id: 'aprobacionNumber', label: 'Aprobación No', placeholder: 'Aprobación No válido es obligatorio.', requireMsg:'Aprobación No es requerido.',invalidMsg : 'Aprobación No es invalid.' })
+                                    +csForm_Input({id: 'Telefone', label: 'Telefone', type:"text", placeholder:"Digite seu telephone ou celuar", formDefalut: 'true', requireMsg: 'Este campo é obrigatório.​​​', invalidMsg: "Este campo é obrigatório.", class: "textInput__tel c-input-type01" })
+                                .cmp-form
+                                    +csForm_Input({id: 'email', label: 'Email', type:"text", placeholder:"Digit seu e-mail", formDefalut: 'true', requireMsg: 'Este campo é obrigatório.​​​', invalidMsg: "Inclua '@' no seu endereço de e-mail.", class: "textInput__email" })
+                                .cmp-form
+                                    +csForm_Select({id: 'produtoQueDesejaProteger', label: 'Produto que deseja proteger', require: 'true', requireMsg: 'Este campo é obrigatório.​', value_01: 'Selecione o produto', value_02: 'Selecione o produto2' })
+
+                                .cmp-form 
+                                    .cs-form__chk  
+                                        +formCheckbox('Li e concordo com a ', 'Política de Privacidade.*', "name", "val1", "privacyPolicyCheck", count="false", false)
+                                        .c-warning.c-privacyPolicy-checked O acordo da apólice não está marcado.
+                                .cmp-form
+                                .cmp-form
+                                    //- Using reCAPTCHA v3
+                                    //- .cs-form__inner.cs-captcha
+                                    //-     .cs-captcha__area
+                                            // captcha area
+                                .cmp-form
+                .button.c-cta
+                    +defaultButton({name: 'Cancelar', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-submit" aria-label="" role="button")
+                    +defaultButton({name: 'Enviar', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(class="c-submit02" aria-label="" role="button")

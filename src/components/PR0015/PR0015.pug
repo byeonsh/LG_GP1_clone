@@ -1,0 +1,386 @@
+extends ../_common/_layout.pug
+include ../_common/_index.pug
+
+block meta 
+    - var componentId = "PR0015"
+    - var componentName = "New & Upcoming"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pr.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        'body' : [
+                            {
+                                'name' : 'Dark Theme',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'dark-theme'},
+                                ]
+                            }
+                        ],
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'BG Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'bg-default', 'remove' : 'bg-white, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-white', 'remove' : 'bg-default, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-lightgray', 'remove' : 'bg-default, bg-white, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-darkgray', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-black', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-darkgray'},
+                                ]
+                            },
+                        ],
+                        '.contents-area' : [
+                            {
+                                'name' : 'Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-left', 'remove' : 'align-center, align-right'},
+                                    {'toggle' : false, 'add' : 'align-center', 'remove' : 'align-left, align-right'},
+                                    {'toggle' : false, 'add' : 'align-right', 'remove' : 'align-left, align-center'},
+                                ]
+                            },
+                        ],
+                        '.contents-area .c-text-contents' : [
+                            {
+                                'name' : 'Text Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-black', 'remove' : 'font-white'},
+                                    {'toggle' : false, 'add' : 'font-white', 'remove' : 'font-black'},
+                                ]
+                            }
+                        ],
+                    };
+
+
+    mixin cardItem(params)
+        - var option  = {type: 'default', wideClass: '', bgButtons: [], textButtons: [], popupType: '', ...params}
+        - var bgButtonList = option.bgButtons
+        - var textButtonList = option.textButtons
+
+        if option.type === 'popup'
+            .card-item.swiper-slide(class=option.wideClass)
+                .contents-area
+                    .c-text-contents
+                        .eyebrow.font-m-normal-14.font-w-normal-20 
+                            if (option.popupType == 'brightcove')
+                                | Popup Type: brightcove
+                            else
+                                | Popup Type: Youtube
+                        .head-copy.font-m-normal-24.font-w-normal-36 Popup Type item
+                          br
+                          | Lorem ipsum dolor
+                        .body-copy.font-m-normal-16.font-w-normal-16 Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        if (bgButtonList.length >= 1 || textButtonList.length >= 1)
+                            .btn-container.c-cta
+                                each button in bgButtonList
+                                    +defaultButton(button)
+                                each button in textButtonList
+                                    +textButton(button)
+                .back-contents
+                    .image.c-image
+                        if (option.wideClass == 'wide-medium')
+                            +printLazyPicture(`https://via.placeholder.com/572x800/999999/777777?text=572x800_wide-medium`, `https://via.placeholder.com/525x500/999999/777777?text=525x500_wide-medium`)
+                        else if (option.wideClass == 'wide-large')
+                            +printLazyPicture(`https://via.placeholder.com/572x800/999999/777777?text=572x800_wide-large`, `https://via.placeholder.com/830x500/999999/777777?text=830x500_wide-large`)
+                        else
+                            +printLazyPicture(`https://via.placeholder.com/572x800/999999/777777`, `https://via.placeholder.com/403x500/999999/777777`)
+                    if (option.popupType == 'brightcove')
+                        +floating-video("brightcove")
+                    else
+                        +floating-video("youtube")
+
+        else if option.type === 'video'
+            .card-item.swiper-slide.has-video(class=option.wideClass)
+                .contents-area
+                    .c-text-contents
+                        .eyebrow.font-m-normal-14.font-w-normal-20 
+                          if (option.wideClass == 'wide-medium')
+                              | VIDEO Type(Medium)
+                          else if (option.wideClass == 'wide-large')
+                              | VIDEO Type(Large)
+                          else
+                              | VIDEO Type
+                        .head-copy.font-m-normal-24.font-w-normal-36 Video Type item card can have cta button and no full cover link
+                        .body-copy.font-m-normal-16.font-w-normal-16 Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        if (bgButtonList.length >= 1 || textButtonList.length >= 1)
+                            .btn-container.c-cta
+                                each button in bgButtonList
+                                    +defaultButton(button)
+                                each button in textButtonList
+                                    +textButton(button)
+                .back-contents
+                    .video-container
+                        .thumbnail-cover
+                            if (option.wideClass == 'wide-medium')
+                                +printLazyPicture(`https://via.placeholder.com/572x800/444444/777777?text=572x800_thumbnail`, `https://via.placeholder.com/525x500/444444/777777?text=525x500_thumbnail`)
+                            else if (option.wideClass == 'wide-large')
+                                +printLazyPicture(`https://via.placeholder.com/572x800/444444/777777?text=572x800_thumbnail`, `https://via.placeholder.com/830x500/444444/777777?text=830x500_thumbnail`)
+                            else
+                                +printLazyPicture(`https://via.placeholder.com/572x800/444444/777777`, `https://via.placeholder.com/403x500/444444/777777?text=572x800_thumbnail`)
+                            
+                        video(loop playsinline muted aria-hidden="true" data-mo-src="https://www.lg.com/content/dam/uk/images/sample/videos/sound_sample1.mp4" data-pc-src="https://www.lg.com/us/images/features-Nanocell/TV-NanoCell-11-Sport-Desktop.mp4")
+                            source(src="https://www.lg.com/content/dam/uk/images/sample/videos/sound_sample1.mp4" type="video/mp4")
+                        .c-media__controls
+                            button.btn-play.c-media__button.c-media__button--play(type="button", data-cmp-data-layer="")
+                                span.sr-only Play background video
+                            button.btn-pause.c-media__button.c-media__button--pause(type="button", data-cmp-data-layer="" disabled)
+                                span.sr-only Pause background video
+
+        else
+            .card-item.swiper-slide(class=option.wideClass)
+                .contents-area
+                    .c-text-contents
+                        .eyebrow.font-m-normal-14.font-w-normal-20 
+                          if (option.wideClass == 'wide-medium')
+                              | DEFAULT Type(Medium)
+                          else if (option.wideClass == 'wide-large')
+                              | DEFAULT Type(Large)
+                          else
+                              | DEFAULT Type
+                        .head-copy.font-m-normal-24.font-w-normal-36 Default Type item card can have cta button and no full cover link
+                        .body-copy.font-m-normal-16.font-w-normal-16 Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        if (bgButtonList.length >= 1 || textButtonList.length >= 1)
+                            .btn-container.c-cta
+                                each button in bgButtonList
+                                    +defaultButton(button)
+                                each button in textButtonList
+                                    +textButton(button)
+                .back-contents
+                    .image.c-image
+                        if (option.wideClass == 'wide-medium')
+                            +printLazyPicture(`https://via.placeholder.com/572x800/999999/777777?text=572x800_wide-medium`, `https://via.placeholder.com/525x500/999999/777777?text=525x500_wide-medium`)
+                        else if (option.wideClass == 'wide-large')
+                            +printLazyPicture(`https://via.placeholder.com/572x800/999999/777777?text=572x800_wide-large`, `https://via.placeholder.com/830x500/999999/777777?text=830x500_wide-large`)
+                        else
+                            +printLazyPicture(`https://via.placeholder.com/572x800/999999/777777`, `https://via.placeholder.com/403x500/999999/777777`)
+
+
+
+    // Component Markup
+    .guide-text-type Case1. Various Card Sizes
+    .c-wrapper.PR0015.margin-top.margin-bottom.border-top.bg-default
+        .component
+            .cmp-container
+                +component-title-area({
+                    alignment:"",
+                    headline : {
+                        text : "Various Card Sizes",
+                    }
+                })
+                .carousel
+                    .feature-list.c-carousel.swiper
+                        .swiper-wrapper
+                            +cardItem({
+                                type: '', 
+                                bgButtons: [
+                                    {
+                                        name: 'Learn More', 
+                                        wSize: 'medium', 
+                                        mSize: 'small', 
+                                        buttonStyle: 'default', 
+                                        isButton: false
+                                    }
+                                ]
+                            })
+                            +cardItem({
+                              type: '', 
+                              wideClass: 'wide-medium',
+                              textButtons: [
+                                  {
+                                      name: 'Learn More', 
+                                      wSize: 'medium', 
+                                      mSize: 'small', 
+                                      buttonStyle: 'default white', 
+                                      isButton: false
+                                  }
+                              ]
+                            })
+                            +cardItem({
+                              type: 'default',
+                              wideClass: 'wide-large',
+                              textButtons: [
+                                  {
+                                      name: 'Learn More', 
+                                      wSize: 'medium', 
+                                      mSize: 'small', 
+                                      buttonStyle: 'default', 
+                                      isButton: false
+                                  }
+                              ]
+                            })
+                            +cardItem({
+                              type: 'default',
+                              bgButtons: [
+                                  {
+                                      name: 'Learn More', 
+                                      wSize: 'medium', 
+                                      mSize: 'small', 
+                                      buttonStyle: 'default', 
+                                      isButton: false
+                                  }
+                              ]
+                            })
+                        .c-carousel__handler
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"prev"})
+                            +carouselPagination
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"next"})
+            
+
+    .guide-text-type Case2. Various Card Sizes (with.video)
+    .c-wrapper.PR0015.margin-top.margin-bottom.border-top.bg-default
+        .component
+            .cmp-container
+                +component-title-area({
+                    alignment:"",
+                    headline : {
+                        text : "Various Card Sizes (with.video)",
+                    }
+                })
+                .carousel
+                    .feature-list.c-carousel.swiper
+                        .swiper-wrapper
+                            +cardItem({
+                                type: 'video',
+                                wideClass: 'wide-medium',
+                                textButtons: [
+                                    {
+                                        name: 'Learn More', 
+                                        wSize: 'medium', 
+                                        mSize: 'small', 
+                                        buttonStyle: 'default', 
+                                        isButton: false
+                                    }, 
+                                ]
+                            })
+                            +cardItem({
+                                type: '',
+                                wideClass: '',
+                                bgButtons: [
+                                    {
+                                        name: 'Pre-Order', 
+                                        wSize: 'medium', 
+                                        mSize: 'small', 
+                                        buttonStyle: 'highlight', 
+                                        isButton: false
+                                    }
+                                ]
+                            })
+                            +cardItem({
+                                type: 'popup',
+                                popupType: 'brightcove',
+                                wideClass: '',
+                                textButtons: [
+                                    {
+                                        name: 'Learn More', 
+                                        wSize: 'medium', 
+                                        mSize: 'small', 
+                                        buttonStyle: 'default', 
+                                        isButton: false
+                                    }, 
+                                ]
+                            })
+                            +cardItem({
+                                type: 'popup',
+                                wideClass: '',
+                                popupType: '',
+                                textButtons: [
+                                    {
+                                        name: 'Learn More', 
+                                        wSize: 'medium', 
+                                        mSize: 'small', 
+                                        buttonStyle: 'default', 
+                                        isButton: false
+                                    }, 
+                                ]
+                            })
+                            +cardItem({
+                                type: 'video',
+                                wideClass: 'wide-medium',
+                                textButtons: [
+                                    {
+                                        name: 'Learn More', 
+                                        wSize: 'medium', 
+                                        mSize: 'small', 
+                                        buttonStyle: 'default', 
+                                        isButton: false
+                                    }, 
+                                ]
+                            })
+                            +cardItem({
+                                type: '',
+                                bgButtons: [
+                                    {
+                                        name: 'Learn More', 
+                                        wSize: 'medium', 
+                                        mSize: 'small', 
+                                        buttonStyle: 'default', 
+                                        isButton: false
+                                    }, 
+                                ]
+                            })
+                            +cardItem({
+                                type: 'video',
+                                bgButtons: [
+                                    {
+                                        name: 'Learn More', 
+                                        wSize: 'medium', 
+                                        mSize: 'small', 
+                                        buttonStyle: 'default', 
+                                        isButton: false
+                                    }, 
+                                ]
+                            })
+                            +cardItem({
+                                type: '',
+                                wideClass: 'wide-medium',
+                                bgButtons: [
+                                    {
+                                        name: 'Buy Now', 
+                                        wSize: 'medium', 
+                                        mSize: 'small', 
+                                        buttonStyle: 'highlight', 
+                                        isButton: false
+                                    }
+                                ]
+                            })
+                        .c-carousel__handler
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"prev"})
+                            +carouselPagination
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"next"})
+

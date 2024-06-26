@@ -1,0 +1,83 @@
+@use '../abstract/' as *;
+
+@mixin message-box {
+  $container-width: columns(8, false);
+
+  .c-message-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: rem($height350px);
+    background-color: $white;
+    padding: rem($padding40px $padding25px - $block-margin-m);
+    @include lgness-radius('default');
+    @include screen(web) {
+      min-height: rem($height400px);
+      /* stylelint-disable-next-line function-calc-no-unspaced-operator */
+      padding: rem($padding80px) min(rem($padding46px), calc(100% * $padding46px/$container-width));
+    }
+
+    // element
+    &__wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+    &__desc {
+      color: $gray3;
+    }
+
+    &__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: rem($margin20px);
+
+      $icon: '&:before';
+      #{$icon} {
+        content: '';
+        display: inline-flex;
+        width: rem($icon60px);
+        height: rem($icon60px);
+        background : {
+          repeat: no-repeat;
+          size: 100% auto;
+          position: 50% 50%;
+        }
+      }
+    }
+
+    // modify : icon;
+    $icon: '.c-message-box__icon:before';
+
+    &--confirm {
+      #{$icon} {
+        background-image: url($icon-email-mid-gray2-60-60);
+      }
+    }
+    &--system-error {
+      #{$icon} {
+        background-image: url($icon-error-red-60-60);
+      }
+    }
+    &--done-succees {
+      #{$icon} {
+        background-image: url($icon-done-black-60-60);
+      }
+    }
+
+    // layout : margin
+    &__desc {
+      margin-top: rem($margin8px);
+    }
+    .c-button {
+      margin-top: rem($margin12px);
+      @include screen(web) {
+        margin-top: rem($margin24px);
+      }
+    }
+    .c-text-contents#{$precedence} + * {
+      margin-top: 0;
+    }
+  }
+}

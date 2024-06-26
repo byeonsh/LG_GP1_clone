@@ -1,0 +1,735 @@
+@charset "UTF-8";
+@use '../../scss/abstract/' as *;
+@use '../CS0000/CS0000' as *;
+
+// component
+$component: '.CS0019';
+#{$component} {
+  $cs-header: '.c-cs-header';
+  $text-contents: '.c-text-contents';
+  $mobile-width: calc(100% - rem($margin25px * 2));
+  overflow: initial;
+
+  &__container {
+    @include flex-context;
+    @include container($design-grid-full, true);
+    @include screen(tablet) {
+      @include inset-padding-hz;
+    }
+    @include inset-padding-hz(mobile);
+    @include screen(web) {
+      @include flex-context;
+      padding-left: rem($padding24px);
+      padding-right: rem($padding24px);
+    }
+  }
+
+  .my-component {
+    margin: 0 auto;
+    $mycomponent: '.my-component';
+    position: relative;
+    overflow: hidden;
+    @include container($design-grid-full, true);
+    @include inset-padding-hz;
+  }
+
+  // common
+  .c-cta {
+    display: block;
+    margin-top: rem($margin40px);
+    // text-align: center;
+  }
+  .c-print {
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: rem(8px);
+    margin-bottom: rem($margin24px);
+    @include screen(mobile) {
+      display: none;
+    }
+    &::before {
+      content: '';
+      display: inline-block;
+      background-image: url($icon-print-black-24-24);
+      background-repeat: no-repeat;
+      width: rem(24px);
+      height: rem(24px);
+    }
+  }
+  // Support HEADER
+  #{$cs-header} {
+    a {
+      color: $red;
+      text-decoration: underline;
+    }
+    @at-root #{$component} #{$cs-header} {
+      #{$text-contents} {
+        text-align: center;
+      }
+      #{$text-contents}__headline + #{$text-contents}__bodycopy {
+        margin-top: rem($margin6px);
+        @include screen(web) {
+          margin-top: rem($margin10px);
+        }
+      }
+    }
+  }
+
+  // add class c-default-margin component
+  &.c-default-margin {
+    &.c-wrapper {
+      &.margin-top,
+      &.margin-bottom {
+        padding: 0;
+      }
+    }
+    #{$cs-header} {
+      margin-top: rem($margin30px);
+      margin-bottom: rem($margin30px);
+      @include screen(web) {
+        margin-top: rem($margin40px);
+        margin-bottom: rem($margin40px);
+      }
+      .text {
+        margin-bottom: 0;
+      }
+    }
+    &.margin-top {
+      .text {
+        margin-bottom: rem($margin10px);
+        margin-top: rem($margin30px);
+      }
+    }
+  }
+
+  .c-text-contents {
+    &__headline {
+      &.title {
+        width: auto;
+      }
+      color: $black;
+      @include screen(mobile) {
+        width: $mobile-width;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+    &__border-type {
+      padding: rem($padding25px);
+      line-height: rem(18px);
+      border-bottom: 1px solid $grayd;
+      border-top: 1px solid $grayd;
+      @include screen(web) {
+        max-width: $design-grid-full;
+        margin: 0 auto;
+        padding: rem($padding20px);
+      }
+      a {
+        font-weight: $font-semibold;
+        text-decoration: underline;
+        color: $active-red;
+      }
+    }
+  }
+
+  .c-accordion {
+    $block: '.c-accordion';
+    &__head {
+      position: relative;
+      padding: rem($padding20px 0);
+      @include screen(web) {
+        padding: rem($padding24px) 0;
+      }
+      #{$block}__initial {
+        color: $red;
+        margin-right: rem($margin8px);
+        @include screen(web) {
+          margin-right: rem($margin10px);
+        }
+      }
+    }
+    &__head-text {
+      color: $black;
+      display: flex;
+      padding-right: rem(columns(1, false, mobile) * 0.5);
+      line-height: rem(20px);
+      @include screen(web) {
+        line-height: rem(36px);
+        color: $gray3;
+        padding-right: rem(columns(1, true));
+      }
+      .c-text-contents {
+        &__headline {
+          .cmp-text:first-child {
+            margin-bottom: rem($margin4px);
+            color: $gray6;
+          }
+        }
+      }
+    }
+    &__body {
+      padding-bottom: rem($padding20px);
+      @include screen(web) {
+        margin-top: rem(-$margin4px);
+        padding-bottom: rem($padding24px);
+      }
+      .title {
+        @include screen(web) {
+          line-height: rem(22px);
+        }
+      }
+      .title + .text {
+        margin-top: rem($margin4px);
+        @include screen(web) {
+          margin-top: rem($margin12px);
+        }
+      }
+      .text {
+        color: $mid-gray2;
+        & + .title {
+          margin-top: rem($margin16px);
+          @include screen(web) {
+            margin-top: rem($margin20px);
+          }
+        }
+      }
+    }
+    &__body-text {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      @include screen(web) {
+        flex-basis: rem(columns(7, false));
+        min-width: rem(columns(3));
+        &:only-child {
+          flex-basis: rem(columns(9, false));
+        }
+      }
+      .c-text-contents__bodycopy {
+        flex: 1;
+        a {
+          color: $gray3;
+          text-decoration: underline;
+        }
+        strong {
+          font-weight: $font-bold;
+        }
+      }
+      .c-cta {
+        width: 100%;
+      }
+      .c-accordion__initial {
+        margin-right: rem($margin8px);
+        @include screen(web) {
+          margin-right: rem($margin10px);
+        }
+      }
+    }
+    &__body-image {
+      @include screen(web) {
+        flex-basis: rem(columns(5, false));
+      }
+      &:empty {
+        display: none;
+      }
+    }
+    &__button {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      @include screen(web) {
+        align-items: center;
+        padding-right: 0;
+        padding-top: 0;
+      }
+    }
+    &__button:after {
+      width: rem(10px);
+      height: rem(5px);
+      background-image: url($icon-arrow-gray3-down-12-7);
+    }
+  }
+
+  .my-item-detail {
+    @include lgness-radius('default');
+    margin: rem($margin8px) 0 rem($margin20px);
+    padding: rem($padding20px) rem($padding16px) 0;
+    background: $white;
+    @include screen(web) {
+      margin: rem($margin24px) 0;
+      padding: rem($padding24px) rem($padding24px) rem($padding14px);
+      border: rem($border1) solid $graye6;
+    }
+    .my-infoBox {
+      .my-repairdetail-info {
+        padding: rem($padding14px) 0 rem($padding20px);
+        @include screen(web) {
+          padding: rem($padding20px) 0 rem($padding24px);
+        }
+        &:nth-child(1) {
+          padding-top: 0;
+        }
+        &:last-child {
+          padding-bottom: 0;
+        }
+        &__text {
+          padding-top: rem($padding20px);
+          .c-list {
+            // display: flex;
+            flex-wrap: wrap;
+            row-gap: rem(6px);
+            @include screen(web) {
+              row-gap: rem(10px);
+            }
+            &__item {
+              @include screen(web) {
+                width: 25%;
+              }
+            }
+            &--step {
+              @include screen(mobile) {
+                row-gap: rem(4px);
+                .c-text-contents__bodycopy {
+                  margin-top: 0;
+                }
+              }
+            }
+          }
+        }
+        &__receipt {
+          display: flex;
+          flex-wrap: wrap;
+          row-gap: rem(6px);
+          @include screen(web) {
+            row-gap: rem(10px);
+          }
+          @include screen(mobile) {
+            border-bottom: rem($border1) solid $mid-gray1;
+            padding-bottom: rem($padding20px);
+          }
+        }
+        &__desc {
+          display: flex;
+          flex-wrap: wrap;
+          row-gap: rem(6px);
+          @include screen(web) {
+            row-gap: rem(10px);
+            margin-top: rem($margin20px);
+          }
+          @include screen(mobile) {
+            padding-top: rem($padding20px);
+          }
+          .c-list__item {
+            flex-direction: column;
+          }
+        }
+        &__link {
+          text-decoration: underline;
+        }
+        .c-list__item {
+          @include screen(mobile) {
+            width: 100%;
+          }
+          &--fitContent {
+            @include screen(mobile) {
+              width: fit-content;
+              min-width: 50%;
+            }
+          }
+          &--width-auto {
+            width: auto;
+          }
+          &--step {
+            .c-text-contents {
+              @include screen(mobile) {
+                display: flex;
+                align-items: center;
+              }
+            }
+          }
+          .c-text-contents {
+            @include screen(web) {
+              max-width: rem(424px);
+            }
+            &__title {
+              span {
+                display: block;
+                line-height: rem(20px);
+                @include screen(web) {
+                  display: block;
+                  line-height: rem(22px);
+                }
+              }
+            }
+            &__bodycopy {
+              color: $mid-gray2;
+              @include screen(mobile) {
+                line-height: rem(20px);
+              }
+              @include screen(web) {
+                margin-top: rem($margin12px);
+              }
+              span {
+                display: block;
+                @include screen(web) {
+                  line-height: rem(22px);
+                }
+              }
+            }
+            .c-button__text {
+              color: $gray6;
+            }
+            .c-button__text::after {
+              background-image: url($icon_my_products2_m);
+            }
+          }
+          & + .delivery-step {
+            margin-top: rem($margin4px);
+          }
+        }
+        .c-list__colon {
+          height: rem($height18px);
+          line-height: rem(18px);
+          font-size: rem(14px);
+          @include screen(web) {
+            display: none;
+          }
+        }
+        .my-product-box {
+          background-color: $ivory6;
+          margin-top: rem($margin8px);
+          padding: rem($padding10px);
+          border-radius: rem($radius8);
+          @include screen(web) {
+            margin-top: rem($margin10px);
+            padding: rem($margin10px) rem($margin14px);
+          }
+          .c-text-contents__bodycopy {
+            color: $gray6;
+            display: flex;
+            flex-direction: column;
+            @include screen(web) {
+              flex-direction: row;
+              justify-content: space-between;
+              align-items: center;
+            }
+            @include screen(mobile) {
+              row-gap: rem(4px);
+            }
+          }
+          .c-image {
+            display: flex;
+            gap: rem(8px);
+            &__img {
+              border-radius: rem($radius6);
+              width: rem($width64px);
+              @include screen(web) {
+                width: rem($width120px);
+              }
+            }
+          }
+          &__zip {
+            color: $black;
+          }
+        }
+        & + .button {
+          margin-top: rem($margin30px);
+          justify-content: center;
+          @include screen(mobile) {
+            display: none;
+          }
+        }
+        &__btn {
+          margin-bottom: rem($margin6px);
+          .c-button[class*='-text'][class*='-icon']:after {
+            text-transform: initial;
+            width: rem(12px);
+            height: rem(12px);
+            background-image: url($icon-blank-gray6-16-16);
+          }
+          & + .c-text-contents__bodycopy {
+            margin-top: rem($margin6px);
+            @include screen(web) {
+              margin-top: rem($margin10px);
+            }
+          }
+        }
+        & + .my-repairdetail-info {
+          border-top: rem($border1) solid $graye6;
+          @include screen(web) {
+            border-top: rem($border1) solid $graye;
+          }
+        }
+      }
+      .c-button.download {
+        width: fit-content;
+        display: flex;
+        margin-top: rem($margin6px);
+        @include screen(web) {
+          margin-top: rem($margin10px);
+        }
+        span {
+          font-size: rem(14px);
+          line-height: rem(16px);
+          height: rem($height16px);
+          color: $black;
+        }
+        &:after {
+          content: '';
+          display: inline-block;
+          background-position: 100% center;
+          background-size: 100%;
+          background-repeat: no-repeat;
+          width: rem($width16px);
+          height: rem($height16px);
+          background-image: url($icon-download-black-24-24);
+          margin-left: rem($margin2px);
+          @include screen(web) {
+            margin-left: rem($margin4px);
+          }
+        }
+      }
+      &__accordion {
+        border-top: rem($border1) solid $mid-gray1;
+        &:last-child {
+          .c-accordion__body {
+            padding-bottom: rem($padding30px);
+          }
+        }
+      }
+    }
+  }
+
+  // c-receipt
+  .c-receipt {
+    $c-receipt: '.c-receipt';
+
+    padding: rem($padding20px);
+    text-align: left;
+    background: $white;
+    border-radius: rem($radius20);
+
+    @include screen(web) {
+      padding: rem($padding24px);
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &__item {
+      padding-bottom: rem($padding24px);
+
+      @include screen(web) {
+        padding-bottom: rem($padding48px);
+      }
+
+      &:last-child {
+        padding-bottom: 0;
+      }
+
+      & > p {
+        margin-bottom: rem($margin12px);
+
+        @include screen(web) {
+          margin-bottom: rem($margin8px);
+        }
+      }
+    }
+
+    &__head {
+      margin-bottom: rem($margin12px);
+
+      @include screen(web) {
+        margin-bottom: rem($margin14px);
+      }
+    }
+
+    &__content {
+      flex: 1 1 20%;
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+      display: flex;
+      flex-wrap: wrap;
+      border-top: 1px solid $light-gray2;
+      gap: rem(0 32px);
+
+      &:nth-child(1),
+      &:nth-child(4) {
+        position: relative;
+        &:before {
+          content: '';
+          display: block;
+          position: absolute;
+          left: rem(-100px);
+          top: 0;
+          bottom: 0;
+          width: 1px;
+          height: 100%;
+          background: $graye;
+        }
+      }
+
+      dl {
+        text-align: left;
+        margin: 0;
+        border-bottom: 1px solid $light-gray2;
+        display: flex;
+        padding: rem($padding8px 0);
+        width: 100%;
+
+        @include screen(web) {
+          gap: rem(0 32px);
+          .c-button {
+            height: auto;
+          }
+        }
+        dt {
+          line-height: rem(22px);
+          color: $black;
+          // margin-bottom: rem($margin4px);
+          width: 50%;
+        }
+        dd {
+          color: $mid-gray2;
+          font-weight: $font-regular;
+          margin-bottom: 0;
+        }
+        &:last-child {
+          border-bottom: none;
+
+          dd {
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+        }
+        &:nth-last-child(2) {
+          border-bottom: 1px solid $light-gray2;
+        }
+      }
+
+      @include screen(desktop) {
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 0;
+        margin-bottom: 0;
+        border-radius: rem($radius32);
+        border-top: 0;
+
+        dl {
+          width: calc(50% - rem(16px));
+          padding: rem($padding10px 0);
+
+          dd {
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+          &:first-child,
+          &:nth-child(2) {
+            border-top: 1px solid $light-gray2;
+          }
+
+          &:last-child {
+            border-bottom: 1px solid $light-gray2;
+          }
+        }
+      }
+    }
+
+    &__txt {
+      margin-bottom: rem($margin4px);
+
+      &.c-type2 {
+        span {
+          display: block;
+
+          @include screen(web) {
+            display: inline-block;
+          }
+        }
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      span {
+        &:first-child {
+          font-weight: $font-semibold;
+        }
+
+        &:last-child {
+          color: $gray6;
+        }
+      }
+
+      a {
+        color: $active-red;
+        text-decoration: underline;
+      }
+
+      @include screen(web) {
+        margin-bottom: 0;
+        position: relative;
+        padding-left: rem($padding12px);
+        margin-left: rem($margin12px);
+      }
+    }
+
+    &__question,
+    &__answer {
+      display: flex;
+      align-items: flex-start;
+      gap: rem(4px);
+
+      @include screen(web) {
+        gap: rem(8px);
+      }
+    }
+
+    &__question {
+      padding-top: rem($padding12px);
+      border-top: 1px solid $mid-gray1;
+
+      @include screen(web) {
+        padding-top: rem($padding20px);
+      }
+
+      span {
+        font-weight: 600;
+      }
+    }
+
+    &__date {
+      margin-top: rem($margin8px);
+      color: $mid-gray2;
+
+      @include screen(web) {
+        margin-top: rem($margin9px);
+      }
+    }
+
+    &__answer {
+      margin-top: rem($margin12px);
+      padding: rem($padding12px $padding18px);
+      background-color: $light-gray1;
+      border-radius: rem($radius20);
+
+      @include screen(web) {
+        margin-top: rem($margin20px);
+        padding: rem($padding24px);
+        border-radius: rem($radius28);
+      }
+    }
+  }
+}

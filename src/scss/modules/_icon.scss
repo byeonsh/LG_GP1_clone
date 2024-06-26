@@ -1,0 +1,67 @@
+@use 'sass:string';
+@use 'sass:list';
+@use '../abstract/' as *;
+
+@mixin icon {
+  $block: '.c-icon';
+  .c-icon {
+    display: flex;
+    align-items: center;
+    // justify-content: center;
+
+    &__sr-text {
+      // ...
+    }
+
+    $icon: '&:before';
+    #{$icon} {
+      content: '';
+      display: inline-block;
+      background : {
+        repeat: no-repeat;
+        size: 100% auto;
+        position: 50% 50%;
+        // color: rgba($black, 0.2);
+      }
+    }
+
+    // variation
+    // shape
+    // &.speech-bubble {
+    //     &.w-size20,
+    //     &.m-size20 {
+    //         #{$icon} {
+    //             background-image: url($icon-speech-bubble-gray3-20-20);
+    //         }
+    //     }
+    // }
+    // &.heart {
+    //     &.w-size20,
+    //     &.m-size20 {
+    //         #{$icon} {
+    //             background-image: url($icon-heart-gray3-20-20);
+    //         }
+    //     }
+    // }
+
+    // size
+    $size: (16px, 20px, 24px, 28px, 32px, 36px, 40px, 48px, 56px, 60px, 140px);
+    @each $s in $size {
+      $start: 1;
+      $end: string.index(#{$s}, 'px') - 1;
+      $selector-w: '&.w-size#{string.slice(#{$s}, $start, $end)}:before';
+      $selector-m: '&.m-size#{string.slice(#{$s}, $start, $end)}:before';
+      // @debug string.slice(#{$s}, $start, $end);
+      #{$selector-m} {
+        width: rem($s);
+        height: rem($s);
+      }
+      @include screen(web) {
+        #{$selector-w} {
+          width: rem($s);
+          height: rem($s);
+        }
+      }
+    }
+  }
+}

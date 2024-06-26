@@ -1,0 +1,186 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+
+block meta 
+    - var componentId = "ST0059"
+    - var componentName = "Text"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+
+block content
+
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                            {
+                                'name' : 'BG Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'bg-default', 'remove' : 'bg-white, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-white', 'remove' : 'bg-default, bg-lightgray, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-lightgray', 'remove' : 'bg-default, bg-white, bg-darkgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-darkgray', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-black', 'remove' : 'bg-default, bg-white, bg-lightgray, bg-darkgray'},
+                                ]
+                            },
+                        ],
+                        '.type-text, .type-disclaimer' : [
+                            {
+                                'name' : 'Text Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-text-left', 'remove' : 'align-text-center, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-center', 'remove' : 'align-text-left, align-text-right'},
+                                    {'toggle' : false, 'add' : 'align-text-right', 'remove' : 'align-text-left, align-text-center'},
+                                ]
+                            }
+                        ],                        
+                        '.type-disclaimer' : [
+                            {
+                                'name' : 'Width Size',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'width-1440', 'remove' : 'width-1600'},
+                                    {'toggle' : false, 'add' : 'width-1600', 'remove' : 'width-1440'},
+                                ]
+                            }
+                        ],
+                        '.type-side' : [
+                            {
+                                'name' : 'Align',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'align-left', 'remove' : 'align-right'},
+                                    {'toggle' : false, 'add' : 'align-right', 'remove' : 'align-left'},
+                                ]
+                            }
+                        ],
+                        '.c-text-contents__bodycopy, .c-text-contents__disclaimer' : [
+                            {
+                                'name' : 'Font Options',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'font-regular', 'remove' : 'font-bold'},
+                                    {'toggle' : false, 'add' : 'font-bold', 'remove' : 'font-regular'},
+                                    {'toggle' : true, 'add' : 'font-italic'},
+                                    {'toggle' : true, 'add' : 'font-underline'},
+                                ]
+                            }
+                        ],
+                    };
+
+    // Component Markup
+
+    mixin roleList(item)
+        if item 
+            .c-list__item(role="listitem")
+                if block
+                    block
+        else
+            .c-list__item
+                if block
+                    block
+
+    mixin textListItem(params)
+        - var option={contents:both, useQuote:false, isList:false, headline:'', bodycopy:'', ...params}
+            +roleList(option.isList)
+                //- block : text-contents                 
+                div(class=`c-text-contents ${option.bodycopy}`)
+                    .title.c-text-contents__headline
+                        +headline(`${option.headline}`)
+                    case option.contents
+                        when "list"
+                            .text.c-text-contents__bodycopy
+                                .cmp-text(data-cmp-data-layer="")
+                                    //- element : list
+                                    ul
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+
+                        when "desc"
+                            .text.c-text-contents__bodycopy 
+                                .cmp-text(data-cmp-data-layer="") 
+                                    p Body text can be up to 700 characters. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient. Body text can be up to 200 characters.
+                        
+                        default
+                            .text.c-text-contents__bodycopy 
+                                .cmp-text(data-cmp-data-layer="") 
+                                    p Body text can be up to 700 characters. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient. Body text can be up to 200 characters.
+                            //- element : list
+                            .text.c-text-contents__bodycopy
+                                .cmp-text(data-cmp-data-layer="")
+                                    ul
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                    //- block :cta 
+                    .button.c-cta
+                        +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                    //- block :cta 
+                    .button.c-cta
+                        +textButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+                    //- element : quote
+                    if option.useQuote
+                        .c-text-contents__quote 
+                            .text.c-text-contents__quote-text
+                                .cmp-text.font-w-light-36.font-m-light-24(data-cmp-data-layer="") 
+                                    p “Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo”
+                            .text.c-text-contents__quote-name
+                                .cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") 
+                                    p Lorem ipsum dolor sit amet
+
+    .guide-text-type LG.com Landing page
+    .guide-text-option (VN)
+    .c-wrapper.ST0059.bg-default
+        .component
+            .cmp-container
+                // block : text-contents
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        .cmp-title.font-w-light-36.font-m-light-24(data-cmp-data-layer="")
+                            strong Bạn có muốn hủy đăng ký và từ chối nhận các tin nhắn quảng cáo từ chúng tôi không?
+                    // block cta 
+                    .button.c-cta
+                        +defaultButton({name: 'Unsubscribe', wSize: 'large', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+    .guide-text-option unsubscribe success page (VN)
+    .c-wrapper.ST0059.bg-default
+        .component
+            .cmp-container.align-container
+                // block : text-contents
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        .cmp-title.font-w-light-36.font-m-light-24(data-cmp-data-layer="")
+                            strong Bạn sẽ không còn nhận được các tin nhắn quảng cáo của chúng tôi nữa, 
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") 
+                                p tuy nhiên, bạn luôn có thể đăng ký lại để tiếp tục nhận các tin nhắn quảng cáo trên 
+                                    +linkButton({type: 'text', color: 'black', underline: true, name: 'Trang của tôi', href:"#",})(target='_blank')

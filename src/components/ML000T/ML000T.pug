@@ -1,0 +1,125 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+
+block meta 
+    - var componentId = "ML000T"
+    - var componentName = "Delete My Account"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+    
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-16.font-m-normal-14= infoTextSecond
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                if data.active
+                    input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+                
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin ML000T
+    .c-wrapper.ML000T
+        .component
+            .fluid-container
+                
+                .my-component.my-page-title
+                    .c-text-contents.my-check-msg__title
+                        // tag heading tag  
+                        .title.c-text-contents__headline
+                            .font-w-light-56.font-m-light-28 Are you sure you want to delete your account?
+                    .my-check-msg
+                        .my-check-msg__container
+                            ul.my-check-msg__list
+                                li.my-check-msg__item
+                                    span.font-w-normal-24.font-m-normal-16 Membership withdrawal will only affect LG.com, not other LG services.
+                                li.my-check-msg__item
+                                    span.font-w-normal-24.font-m-normal-16 All the product information and service log of your account will be deleted.
+                                li.my-check-msg__item
+                                    span.font-w-normal-24.font-m-normal-16 Please note, once deleted, none of this information can be recovered.
+                .my-component__wrap.border-only-web
+                    .my-component
+                        .my-formbox
+                            +myInputForm([
+                                {
+                                    type:"password", 
+                                    label:"Password", 
+                                    id:"password",
+                                    required:false,
+                                    value:"",
+                                    placeholder:"Input the Password",
+                                    infoTextSecond: ['Enter your password to confirm your account deletion.'],
+                                },
+                            ])
+                            .button.c-cta.my-button
+                                +defaultButton({name: "Cancel", wSize: "large", mSize: "medium"})
+                                +defaultButton({name: "Delete account", wSize: "large", mSize: "medium", buttonStyle: 'highlight'})(disabled="disabled")
+                        
+                        .my-formbox
+                            +myInputForm([
+                                {
+                                    type:"password", 
+                                    label:"Password", 
+                                    id:"password",
+                                    required:false,
+                                    value:"Your password",
+                                    placeholder:"Input the Password",
+                                    infoTextSecond: ['Enter your password to confirm your account deletion.'],
+                                    warning: ['Password is incorrect.'],
+                                },
+                            ])
+                            .button.c-cta.my-button
+                                +defaultButton({name: "Cancel", wSize: "large", mSize: "medium"})
+                                +defaultButton({name: "Delete Account", wSize: "large", mSize: "medium", buttonStyle: 'highlight'})
+
+block content
+    // Component Markup
+    +ML000T

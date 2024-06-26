@@ -1,0 +1,134 @@
+extends ../_common/_layout.pug
+include ../_common/_image.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+
+block meta 
+    - var componentId = "ST0028"
+    - var componentName = "Article List"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+    
+    mixin main-article(text)
+        .c-article-card__thumbnail
+            // GA4
+            a.c-article-card__linker(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                // block - image
+                .image.c-image
+                    +printLazyPicture('https://via.placeholder.com/690x460/f7f8f9/eee', 'https://via.placeholder.com/1440x640/f7f8f9/eee?text=1440x640')
+        // block - text contents
+        .c-text-contents
+            .title.c-text-contents__headline
+                - var pass = false
+                +headline("font-w-light-56 font-m-light-28", pass, text)
+
+    mixin rest-article(text)
+        // GA4
+        a.c-article-card__linker(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 
+            .c-article-card__thumbnail
+                // block - image
+                .image.c-image
+                    +printLazyImage('https://via.placeholder.com/690x460/f7f8f9/eee')
+            // block - text contents
+            .c-text-contents
+                .text.c-text-contents__subcopy 
+                    .cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="")= text
+
+    mixin articles(list)
+        // block - list
+        - var lengthMobile = 3;
+        - var lengthDesktop = 8;
+        .c-list(role="list", data-length-mobile=lengthMobile, data-length-desktop=lengthDesktop)
+            each set, index in list
+                - var primaryItem = set.primary 
+                .c-list__item(role="listitem", class=`${primaryItem ? "c-list__item--primary" : ""} ${index > lengthDesktop ? "hidden" : ""}`)
+                    +article-card(set)
+
+    mixin article-card({title, primary})
+        // block - article card
+        .c-article-card
+            if primary
+                +main-article(title)
+            else
+                +rest-article(title)
+
+    // Component Markup
+    .c-wrapper.ST0028.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +articles([
+                    {primary : true, title : "LG SIGNATURE at American Ballet Theatre"},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Possimus, quam"},
+                    {primary : false, title : "Lorem ipsum dolor sit amet consectetur, adipisicing elit."},
+                    {primary : false, title : "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Possimus, quam"},
+                    {primary : false, title : "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Possimus, quam voluptatum eveniet saepe quasi consequuntur sit"},
+                    {primary : false, title : "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Possimus, quam voluptatum eveniet saepe quasi consequuntur sit, voluptas tenetur quaerat molestias"},
+                    {primary : false, title : "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Possimus, quam voluptatum eveniet."},
+                    {primary : false, title : "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Possimus, quam voluptatum eveniet saepe quasi consequuntur sit, Veniam voluptatibus praesentium cupiditate."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                    {primary : false, title : "Lorem ipsum, dolor sit amet consectetur adipisicing."},
+                ])
+
+                .c-load-more.align-center.hidden
+                    // block - cta
+                    .button.c-cta
+                        // block cta
+                        +textButton({name: 'More', wSize: 'large', mSize: 'medium', buttonStyle: 'down', isButton: true})

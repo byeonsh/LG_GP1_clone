@@ -1,0 +1,1620 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_pop-msg.pug
+
+block meta 
+    - var componentId = "ML000O"
+    - var componentName = "Edit Profile"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-16.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected, required, disabled})
+    .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+        +myFormSelect(label, id, placeholder, required, disabled)
+            if optionVal
+                - for(var i=0; i < optionVal.length; i++)
+                    if selected === i + 1
+                        option(value="" selected)= optionVal[i]
+                    else
+                        option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText})
+            
+mixin myFormSelect(label, id, placeholder, required, disabled)
+    .c-select-item
+        if label != ''
+            label.font-w-normal-16.font-m-normal-14(for=`${id}` class={'sr-only' : labelSrOnly})= label
+                if(required) 
+                    +required-text-sr
+        //- Bad value true for attribute required on element input.
+        if required && disbled
+            select(id=`${id}`, title=`${title}`, required="required" disabled="disabled")&attributes(attributes)
+                if block
+                    block
+        else if disabled
+            select(id=`${id}`, title=`${title}`, disabled="disabled")&attributes(attributes)
+                if block
+                    block       
+        else if required
+            select(id=`${id}`, title=`${title}`, required="required")&attributes(attributes)
+                if block
+                    block
+        else
+            select(id=`${id}`, title=`${title}`)&attributes(attributes)
+                if block
+                    block
+
+//- mixin inquiryDetailPack(params)
+//-     - let data = {...params}
+//-     .my-infoBox__accordion
+//-         .c-accordion.js-accordion
+//-             .c-accordion__box.js-accordion-handle-target.c-accordion__box--expand
+//-                 .c-accordion__head
+//-                     // block - text contents
+//-                     .c-accordion__head-text.c-text-contents
+//-                         span.font-w-normal-32.font-m-normal-20.font-semibold(aria-hidden="true") !{data.title}
+//-                     +trigger(params)
+//-                 .c-accordion__body(id=`${data.controlsId}`)
+//-                     if block
+//-                         block
+mixin trigger(params)
+    - let data = {...params}
+    .button
+        button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="true" aria-controls=`${data.controlsId}` class=`${data.controlsId}`)
+            span.c-accordion__button-text.expand.sr-only Expand
+            span.c-accordion__button-text.collapse.sr-only Collapse
+            
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? "my-warn" : ""}`
+        //- 2023-05-24 Date of Birth
+        if data.type === 'birth'
+            +myBirth(params)
+            if data.isRadio 
+                .c-form__box.c-form__radio-box
+                    .c-form-box
+                        +formRadio("Natural Person","sort", "Natural Person", "Natural Person", "NaturalPerson")(aria-label="" checked)
+                    .c-form-box
+                        +formRadio("Legal Entity","sort", "Legal Entity", "Legal Entity", "LegalEntity")(aria-label="")
+        else if data.type === 'select'
+            .c-input-item(class=`${data.active ? "active" : ""}`)
+                +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required:data.required, disabled: data.disabled})
+        else
+            .c-input-item(class=`${data.active ? "active" : ""}${data.hasCountryTelLabel ? "c-input-item--tel" : ""}`)
+                if data.label
+                    label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? "my-info" : ""}`)= data.label
+                        if data.required
+                            em.c-required *
+                                span.sr-only Required fields
+                if data.required && !data.button && !data.readonly && !data.disabled
+                    if data.format
+                        input(type= data.type id= data.id class="input-format" data-format= data.dataformat placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value)&attributes(attributes)
+                    else
+                        input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value required)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                else if data.readonly && data.required &&!data.button
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value readonly required)&attributes(attributes)
+                else if data.readonly && !data.button
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value readonly)&attributes(attributes)
+                else if data.disabled && data.required && !data.button
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value disabled required)&attributes(attributes)
+                else if data.disabled && !data.button
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value disabled)&attributes(attributes)
+                else if data.button
+                    if data.validation
+                        .input-button__container.input-button__container--validation
+                            .my-button-validation
+                                if data.readonly
+                                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config readonly required)&attributes(attributes)
+                                else if data.disabled
+                                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config disabled required)&attributes(attributes)
+                                else 
+                                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config required)&attributes(attributes)
+                                +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                            .button.c-cta.button-full
+                                +defaultButton({name: data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: false})(class="js-pop-open", href="#findAddress")
+                    else
+                        .input-button__container
+                            if data.readonly
+                                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config readonly required)&attributes(attributes)                           
+                            else if data.disabled
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config disabled required)&attributes(attributes)
+                            else 
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config required)&attributes(attributes)
+                            .button.c-cta.button-full
+                                +defaultButton({name: data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: false})(class="js-pop-open", href="#findAddress")
+                else if data.format
+                    input(type= data.type id= data.id class="input-format" data-format= data.dataformat placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value)&attributes(attributes)
+                else if data.hasCountryTelLabel === true
+                    .c-input-item
+                        input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+                        .my-form-number.font-w-normal-16.font-m-normal-16=data.countryTelLabel
+                else 
+                    if data.active
+                        input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value)&attributes(attributes)
+                        if data.type === 'password'
+                            button(type='button' class='my-form__eye')
+                                span.sr-only show password
+                        else if data.search 
+                            button(type='button' class='my-form__search__icon')
+                                span.sr-only search
+                    else
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+                        if data.type === 'password'
+                            button(type='button' class='my-form__eye')
+                                span.sr-only show password
+                        else if data.search 
+                            button(type='button' class='my-form__search__icon')
+                                span.sr-only search
+            if !data.validation
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+//- mixin myFormText(params)
+//-     - let data = {...params}
+//-     - let config = `${data.warning || data.warningFirst ? 'my-warn' : ''}`
+//-     if data.type === 'select'
+//-         +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected})
+//-     else
+//-         .c-input-item(class=`${data.active ? 'active' : ''}`)
+//-             if data.label
+//-                 label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+//-                 input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+//-                 if data.type === 'password'
+//-                     button(type='button' class='my-form__eye')
+//-                         span.sr-only show password
+//-         if !data.validation 
+//-             +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+//-         else
+//-             +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+//- 2023-05-24 Date of Birth (mm/dd/yyyy)
+mixin myBirth(params)
+    - let data = {...params}
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                if data.required
+                    em.c-required *
+                        span.sr-only Required fields
+            if data.validation
+                .my-birth__container.my-birth__container--validation
+                    .my-birth-validation
+                        .my-birth__inner
+                            +mySelect({optionVal: data.optionVal, warning: data.warning, id: data.id, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required})
+                    .my-birth-validation
+                        .my-birth__inner
+                            input(type='text' id= data.id1 placeholder= data.placeholder1 data-placeholder= data.placeholder1 class=`${data.warning1 || data.warningFirst1 && !data.correct1 ? 'my-warn' : ''}` value= data.value1)&attributes(attributes)
+                        +myMsg({correct: data.correct1, warning: data.warning1, check: data.check1, warningFirst: data.warningFirst1}) 
+                    .my-birth-validation
+                        .my-birth__inner
+                            input(type='text' id= data.id2 placeholder= data.placeholder2 data-placeholder= data.placeholder2 class=`${data.warning2 || data.warningFirst2 && !data.correct2 ? 'my-warn' : ''}` value= data.value2)&attributes(attributes)                        
+                        +myMsg({correct: data.correct2, warning: data.warning2, check: data.check2, warningFirst: data.warningFirst2})    
+            else
+                .my-birth__container
+                    .my-birth__inner
+                        +mySelect({optionVal: data.optionVal, warning: data.warning, id: data.id, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required})
+                    .my-birth__inner
+                        input(type='text' id= data.id1 placeholder= data.placeholder1 data-placeholder= data.placeholder1 class=`${data.warning1 || data.warningFirst1 && !data.correct1 ? 'my-warn' : ''}` value= data.value1)&attributes(attributes)
+                    .my-birth__inner
+                        input(type='text' id= data.id2 placeholder= data.placeholder2 data-placeholder= data.placeholder2 class=`${data.warning2 || data.warningFirst2 && !data.correct2 ? 'my-warn' : ''}` value= data.value2)&attributes(attributes)
+            if !data.validation
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct3, warning: data.warning3, check: data.check3, warningFirst: data.warningFirst3})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+                        
+mixin myAccountLinkedLoginList(params)
+    - let data = {...params}
+    .my-linkedlogin
+        ul.my-linkedlogin__list
+            each set in data
+                li
+                    a.my-linkedlogin__item(href='#' role="button" title=`${set.apps}` data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        .my-linkedlogin__container
+                            span(class=`my-linkedlogin__ico my-linkedlogin__ico--${set.ico}`)= set.apps
+                            .my-linkedlogin__desc(class=`${set.link ? 'my-linkedlogin__desc--linked' : '' }`)
+                                .my-linkedlogin__link
+                                    span.font-w-normal-16.font-m-semibold-14 !{set.link ? 'Disconnect' : 'Connect'}
+                        span.sr-only= set.apps
+mixin ML000O(option=false)
+    if option == 'default'
+        .c-wrapper.ML000O
+            .component
+                .fluid-container
+                    .my-component__wrap
+                        .my-component
+                            .c-text-contents
+                                .title.c-text-contents__headline.font-w-light-56.font-m-light-28
+                                    +headline('font-w-light-56 font-m-light-28', "h2", "Profile")
+                                //- .text.c-text-contents__bodycopy.font-w-normal-24.font-m-normal-16
+                                //-     p.cmp-text(data-cmp-data-layer="") Update your personal information to get personalized service and latest product information.
+                    .my-component.my-edit-profile
+                        p.my-form-required.font-w-normal-16.font-m-normal-12
+                            em.c-required * 
+                                span.sr-only Required fields
+                            | Required fields                
+                        //- p.my-edit-profile-text.font-w-normal-12.font-m-normal-12 Update your personal information to get personalized service and latest product information.
+                        .my-edit-profile__title Second Email Address
+                        .my-edit-profile__box
+                            +formCheckbox('I want to receive the result of repair and inquiry to the other email address.', "name", "val1", `checkId3`, count="false")                        
+                    .my-component
+                        .my-edit-profile__title Social Media Account
+                        .my-edit-profile__box
+                            +myAccountLinkedLoginList([
+                                {
+                                    href:"#",
+                                    ico:"apple",
+                                    apps:"Apple", 
+                                    link:false,
+                                },
+                                {
+                                    href:"#",
+                                    ico:"amazon",
+                                    apps:"Amazon", 
+                                    link:true,
+                                },
+                                {
+                                    href:"#",
+                                    ico:"google", 
+                                    apps:"Google", 
+                                    link:false,
+                                },
+                                {
+                                    href:"#",
+                                    ico:"facebook",
+                                    apps:"Facebook", 
+                                    link:true,
+                                },
+                            ])
+                            .my-edit-profile__desc.font-w-normal-16.font-m-normal-14 Your privacy is of great importance to us. Please read our 
+                                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").font-red Privacy Policy
+                                | .
+                    .my-component.my-topBorder
+                        //- .my-edit-profile__title Personal Information
+                        //- +inquiryDetailPack({
+                        //-     controlsId:"id1",
+                        //-     title:"Personal Information",
+                        //- })
+                        .my-edit-profile__title Personal Information
+                        .my-edit-profile__box
+                            .my-formbox
+                                +myInputForm([
+                                    {
+                                        type:"text",
+                                        label:"First Name",
+                                        id:"firstName",
+                                        required:true,   
+                                        value:"Robert",
+                                        placeholder:"First Name",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"First Name",
+                                        id:"firstNameWarn",
+                                        required:true,
+                                        value:"Robert",
+                                        warning: ["First name is required."],
+                                        placeholder:"First Name",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Last Name",
+                                        id:"lastName",
+                                        required:true,
+                                        value:"Surrency",
+                                        placeholder:"Last Name",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Last Name",
+                                        id:"lastNameWarn",
+                                        required:true,
+                                        value:"Surrency",
+                                        warning: ["Last name is required."],
+                                        placeholder:"Last Name",
+                                    },
+                                    { 
+                                        type:"tel",
+                                        label:"Telephone",
+                                        id:"TelNumber",
+                                        required:false,
+                                        value:"2839393939",
+                                        placeholder:"Telephone",
+                                    },
+                                    { 
+                                        type:"tel",
+                                        label:"Telephone",
+                                        id:"mobileTelWarn",
+                                        required:false,
+                                        value:"123-45",
+                                        warning: ["Enter up to 10 digits only."],
+                                        placeholder:"Telephone",
+                                    },
+                                    { 
+                                        type:"tel",
+                                        label:"Mobile Phone",
+                                        id:"mobilePhoneNumber",
+                                        required:false,
+                                        value:"2839393939",
+                                        placeholder:"Mobile Number",
+                                    },
+                                    { 
+                                        type:"tel",
+                                        label:"Mobile Phone",
+                                        id:"mobilePhoneNumberWarn",
+                                        required:false,
+                                        value:"123-45",
+                                        warning: ["Enter up to 10 digits only."],
+                                        placeholder:"Mobile Number",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Postcode",
+                                        id:"postcode",
+                                        required:true,
+                                        value:"W11 1LR",
+                                        placeholder:"Postcode",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Postcode",
+                                        id:"postcodeWarn",
+                                        required:true,
+                                        value:"111",
+                                        warning: ["Post code is required."],
+                                        placeholder:"Postcode",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Address",
+                                        id:"streetAddress",
+                                        placeholder:"Address",
+                                        readonly: false,
+                                        required:true,
+                                        value: "253A Portobello Rd",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Address",
+                                        id:"streetAddress",
+                                        placeholder:"Address",
+                                        readonly: false,
+                                        required:true,
+                                        value: "253A Portobello Rd",
+                                        warning: ["Address is required."],
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"City",
+                                        id:"city",
+                                        required:true,
+                                        value:"London",
+                                        placeholder:"City",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"City",
+                                        id:"city",
+                                        required:true,
+                                        value:"London",
+                                        warning: ["City is required."],
+                                        placeholder:"City",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"County",
+                                        id:"county",
+                                        placeholder:"England",
+                                        readonly: false,
+                                        required: false,
+                                        placeholder:"County",
+                                    },
+                                    {
+                                        type:"select",
+                                        label:"Country",
+                                        id:"companyCountry",
+                                        value:"U.K.",
+                                        optionVal: ['U.K.', 'U.K.', 'U.K.'],
+                                        placeholder:"Country",
+                                        required:true,
+                                        disabled:true
+                                    },
+                                ])
+                    .my-component.my-topBorder
+                        //- .my-edit-profile__title Company Information
+                        //- +inquiryDetailPack({
+                        //-     controlsId:"id2",
+                        //-     title:"Company Information",
+                        //- })
+                        .my-edit-profile__title Company Information
+                        .my-edit-profile__box
+                            .my-formbox
+                                +myInputForm([
+                                    {
+                                        type:"text",
+                                        label:"Company Name",
+                                        id:"companyName",
+                                        required:false,
+                                        value:"LG amazing co., ltd.",
+                                        placeholder:"Company Name",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Job Title",
+                                        id:"jobTitle",
+                                        required:false,
+                                        value:"manager",
+                                        placeholder: "Job Title",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"First Name",
+                                        id:"companyFirstName",
+                                        required:false,
+                                        value:"jung",
+                                        placeholder: "First Name",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Last Name",
+                                        id:"companyLastName",
+                                        required:false,
+                                        value:"park",
+                                        placeholder: "Last Name",
+                                    },
+                                    { 
+                                        type:"tel",
+                                        label:"Mobile Phone",
+                                        id:"companyMobilePhoneNumber",
+                                        required:false,
+                                        value:"28292929292",
+                                        placeholder: "Mobile Number",
+                                    },
+                                    { 
+                                        type:"tel",
+                                        label:"Mobile Phone",
+                                        id:"companyMobilePhoneNumberWarn",
+                                        required:false,
+                                        value:"075-123-45678",
+                                        warning: ["Enter up to 10 digits only."],
+                                        placeholder: "Mobile Number",
+                                    },
+                                    { 
+                                        type:"tel",
+                                        label:"Office Phone",
+                                        id:"OfficePhone",
+                                        required:false,
+                                        placeholder:"Office phone",
+                                    },
+                                    { 
+                                        type:"tel",
+                                        label:"Office Phone",
+                                        id:"OfficePhoneWarn",
+                                        required:false,
+                                        value:"020-894-95588",
+                                        warning: ["Enter up to 10 digits only."],
+                                        placeholder:"Office phone",
+                                    },
+                                    { 
+                                        type:"email",
+                                        label:"Company Email",
+                                        id:"CompanyEmail",
+                                        required:false,
+                                        placeholder:"Company email",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Postcode",
+                                        id:"companyPostCode",
+                                        required:false,
+                                        placeholder:"W11 1LR",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Company Address",
+                                        id:"companyAddress",
+                                        required:false,
+                                        value:"253A Portobello Rd",
+                                        placeholder:"Company Address",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"City",
+                                        id:"companyCity",
+                                        required:false,
+                                        value:"London",
+                                        placeholder:"City",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"County",
+                                        id:"companyCounty",
+                                        required:false,
+                                        value:"England",
+                                        placeholder:"County",
+                                        readonly: false,
+                                    },
+                                    {
+                                        type:"select",
+                                        label:"Country",
+                                        id:"companyCountry",
+                                        value:"U.K.",
+                                        optionVal: ['U.K.', 'Ireland'],
+                                        placeholder:"Country",
+                                        required:false,
+                                        disabled:false,
+                                    },
+                                    {
+                                        type:"password",
+                                        label:"Current Password",
+                                        id:"CurrentPassword",
+                                        required:false,
+                                        value: "Lglg1234!@#",
+                                        active: true,
+                                        required:true,
+                                        placeholder:"Current Password",
+                                        warning: ["Wrong Password!"],
+                                    },
+                                    { 
+                                        type:"tel",
+                                        label:"Telephone (has country code)",
+                                        id:"OfficePhone1",
+                                        required:false,
+                                        placeholder:"Telephone (has country code)",
+                                        hasCountryTelLabel:true,
+                                        countryTelLabel:"+7",
+                                    },
+                                ])
+                        .button.c-cta.my-button
+                            //- +defaultButton({name: "CANCEL", size: "large", roleButton:"true"})
+                            +defaultButton({name: "Cancel", wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                            //- +defaultButton({type:"box", size: "large", color:"red", name:"Save", roleButton:"true"})
+                            +defaultButton({name: "Save", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+    else if option == 'brazil'
+        .c-wrapper.ML000O
+            .component
+                .fluid-container
+                    .my-component__wrap
+                        .my-component
+                            .c-text-contents
+                                .title.c-text-contents__headline.font-w-light-56.font-m-light-28
+                                    +headline('font-w-light-56 font-m-light-28', "h2", "Profile")
+                                //- .text.c-text-contents__bodycopy.font-w-normal-24.font-m-normal-16
+                                //-     p.cmp-text(data-cmp-data-layer="") Update your personal information to get personalized service and latest product information.
+                    .my-component.my-edit-profile
+                        p.my-form-required.font-w-normal-16.font-m-normal-12
+                            em.c-required * 
+                                span.sr-only Required fields
+                            | Required fields                
+                        //- p.my-edit-profile-text.font-w-normal-12.font-m-normal-12 Update your personal information to get personalized service and latest product information.
+                        .my-edit-profile__title Second Email Address
+                        .my-edit-profile__box
+                            +formCheckbox('I want to receive the result of repair and inquiry to the other email address.', "name", "val1", `checkId3`, count="false")
+                    .my-component
+                        .my-edit-profile__title Social Media Account
+                        .my-edit-profile__box
+                            +myAccountLinkedLoginList([
+                                {
+                                    href:"#",
+                                    ico:"apple",
+                                    apps:"Apple", 
+                                    link:false,
+                                },
+                                {
+                                    href:"#",
+                                    ico:"amazon",
+                                    apps:"Amazon", 
+                                    link:true,
+                                },
+                                {
+                                    href:"#",
+                                    ico:"google", 
+                                    apps:"Google", 
+                                    link:false,
+                                },
+                                {
+                                    href:"#",
+                                    ico:"facebook",
+                                    apps:"Facebook", 
+                                    link:true,
+                                },
+                            ])
+                            .my-edit-profile__desc.font-w-normal-16.font-m-normal-14 Your privacy is of great importance to us. Please read our 
+                                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").font-red Privacy Policy
+                                | .
+                    .my-component.my-topBorder
+                        //- .my-edit-profile__title Personal Information
+                        //- +inquiryDetailPack({
+                        //-     controlsId:"id1",
+                        //-     title:"Personal Information",
+                        //- })
+                        .my-edit-profile__title Personal Information
+                        .my-edit-profile__box
+                            .my-formbox
+                                +myInputForm([
+                                    {
+                                        type:"text",
+                                        label:"First Name",
+                                        id:"firstName",
+                                        required:true,
+                                        value:"Robert",
+                                        placeholder:"First Name",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"First Name",
+                                        id:"firstNameWarn",
+                                        required:true,
+                                        value:"Robert",
+                                        warning: ["First name is required."],
+                                        placeholder:"First Name",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Last Name",
+                                        id:"lastName",
+                                        required:true,
+                                        value:"Surrency",
+                                        placeholder:"Last Name",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Last Name",
+                                        id:"lastNameWarn",
+                                        required:true,
+                                        value:"Surrency",
+                                        warning: ["Last name is required."],
+                                        placeholder:"Last Name",
+                                    },
+                                    {
+                                        type:"select",
+                                        label:"Gender",
+                                        id:"gender",
+                                        value:"BR",
+                                        optionVal: ['BR', 'BR', 'BR'],
+                                        placeholder:"Gender",
+                                        required:true,
+                                        disabled:true
+                                    },
+                                    {
+                                        type:"birth",
+                                        label:"Date of Birth",
+                                        id:"month",
+                                        id1:"day",
+                                        id2:"year",                                                                
+                                        optionVal: ['Month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December '],
+                                        required:true,
+                                        placeholder:"Month",
+                                        placeholder1:"Day",
+                                        placeholder2:"Year",                                        
+                                        isRadio:true,
+                                        infoText: "We use your date of birth to verify your identity if you forget your email address. We also use it to make sure you can use services with age restrictions.",
+                                    },                                
+                                    {
+                                        type:"birth",
+                                        label:"Date of Birth",
+                                        id:"month",
+                                        id1:"day",
+                                        id2:"year",                                                                  
+                                        optionVal: ['Month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December '],
+                                        required:true,
+                                        placeholder:"Month",
+                                        placeholder1:"Day",
+                                        placeholder2:"Year",                                        
+                                        isRadio:true,
+                                        warning3:['We use your date of birth to verify your identity if you forget your email address. We also use it to make sure you can use services with age restrictions.'],
+                                    },
+                                    {
+                                        type:"birth",
+                                        label:"Date of Birth",
+                                        id:"month",
+                                        id1:"day",
+                                        id2:"year",                                                                  
+                                        optionVal: ['Month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December '],
+                                        required:true,
+                                        placeholder:"Month",
+                                        placeholder1:"Day",
+                                        placeholder2:"Year",
+                                        validation:true,
+                                        isRadio:true,
+                                        warning:['Month is incorrect.'],
+                                        warning1:['Day is incorrect.'],
+                                        warning2:['Year is incorrect.'],
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"CPF",
+                                        id:"CPF",
+                                        required:true,
+                                        value:"2839393939",
+                                        placeholder:"CPF",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"CNPJ",
+                                        id:"CNPJ",
+                                        required:true,
+                                        value:"2839393939",
+                                        placeholder:"CNPJ",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"State Registration",
+                                        id:"State Registration",
+                                        required:false,
+                                        value:"",
+                                        check: ["Free"],
+                                        placeholder:"State Registration",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Zip Code",
+                                        id:"Zip Code",
+                                        required:true,
+                                        value:"2839393939",
+                                        placeholder:"Zip Code",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Address",
+                                        id:"Address",
+                                        required:true,
+                                        value:"253A Potrobello Rd",
+                                        placeholder:"Address",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Number",
+                                        id:"Number",
+                                        required:true,
+                                        value:"2839393939",
+                                        placeholder:"Number",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Complement",
+                                        id:"Complement",
+                                        required:false,
+                                        value:"",
+                                        placeholder:"Complement",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Neighborhood",
+                                        id:"Neighborhood",
+                                        required:true,
+                                        value:"",
+                                        placeholder:"Neighborhood",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"City",
+                                        id:"city",
+                                        required:true,
+                                        value:"",
+                                        placeholder:"City",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"State",
+                                        id:"State",
+                                        required:true,
+                                        value:"",
+                                        placeholder:"State",
+                                    },
+                                    {
+                                        type:"tel",
+                                        label:"Telephone",
+                                        id:"Telephone",
+                                        required:true,
+                                        value:"2839393939",
+                                        infoTextSecond: ["Please enter the phone number without spaces."],
+                                        placeholder:"Telephone",
+                                    },
+                                    {
+                                        type:"tel",
+                                        label:"Mobile Phone",
+                                        id:"Mobile Phone",                                    
+                                        required:false,
+                                        value:"1234567890",
+                                        placeholder:"Country",
+                                    },
+                                    {
+                                        type:"select",
+                                        label:"Nation",
+                                        id:"Nation",
+                                        value:"Vietnam",
+                                        optionVal: ['Vietnam', 'Ireland'],
+                                        placeholder:"Nation",
+                                        required:true,
+                                        disabled:true,
+                                    },
+                                    {
+                                        type:"password",
+                                        label:"Current Password",
+                                        id:"CurrentPassword",
+                                        value: "Lglg1234!@#",
+                                        required:true,
+                                        placeholder:"Current Password",
+                                    },
+                                ])
+                    .my-component.my-topBorder
+                        //- .my-edit-profile__title Company Information
+                        //- +inquiryDetailPack({
+                        //-     controlsId:"id2",
+                        //-     title:"Company Information",
+                        //- })
+                        .my-edit-profile__title Company Information
+                        .my-edit-profile__box 
+                            .my-formbox
+                                +myInputForm([
+                                    {
+                                        type:"text",
+                                        label:"Company Name",
+                                        id:"companyName",
+                                        required:false,
+                                        value:"LG amazing co., ltd.",
+                                        placeholder:"Company Name",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Name",
+                                        id:"Name",
+                                        required:false,
+                                        value:"Robert",
+                                        placeholder: "Name",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Position",
+                                        id:"Position",
+                                        required:false,
+                                        value:"",
+                                        placeholder: "Position",
+                                    },
+                                    { 
+                                        type:"tel",
+                                        label:"Mobile(cell) number",
+                                        id:"MobilecellNumber",
+                                        format:true,
+                                        dataformat:"(__)___-____",
+                                        required:false,
+                                        value:"",
+                                        placeholder: "Mobile(cell) number",
+                                    },
+                                    { 
+                                        type:"tel",
+                                        label:"Mobile Phone",
+                                        id:"companyMobilePhoneNumberWarn",
+                                        required:false,
+                                        value:"075-123-45678",
+                                        warning: ["Enter up to 10 digits only."],
+                                        placeholder: "Mobile Number",
+                                    },
+                                    { 
+                                        type:"tel",
+                                        label:"Commercial Phone / Business Phone",
+                                        id:"TelNumber",
+                                        format:true,
+                                        dataformat:"(__)___-____",
+                                        required:false,
+                                        placeholder:"Commercial Phone / Business Phone",
+                                    },
+                                    { 
+                                        type:"email",
+                                        label:"Company Email",
+                                        id:"CompanyEmail",
+                                        required:false,
+                                        placeholder:"Company email",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Postcodetext",
+                                        id:"postcodetext",
+                                        format:true,
+                                        dataformat:"_____-___",
+                                        required:true,
+                                        value:"",
+                                        placeholder:"Postcode",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"postcodetextca",
+                                        id:"postcodetextca",
+                                        format:true,
+                                        dataformat:"___ ___",
+                                        required:true,
+                                        value:"",
+                                        placeholder:"Postcode",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Postcode",
+                                        id:"companyPostCode",
+                                        required:false,
+                                        placeholder:"W11 1LR",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Company Address",
+                                        id:"companyAddress",
+                                        required:false,
+                                        value:"253A Portobello Rd",
+                                        placeholder:"Company Address",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Number/Complement",
+                                        id:"Number/Complement",
+                                        required:false,
+                                        value:"",
+                                        placeholder:"Number/Complement",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"State",
+                                        id:"companyState",
+                                        required:false,
+                                        value:"BR",
+                                        placeholder:"State",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"City",
+                                        id:"companyCity",
+                                        required:false,
+                                        value:"BR",
+                                        placeholder:"City ",
+                                    },
+                                ])
+                    .my-component.my-topBorder
+                        .my-edit-profile__box
+                            .my-formbox
+                                +myInputForm([
+                                    {
+                                        type:"password",
+                                        label:"Current Password",
+                                        id:"CurrentPassword",
+                                        required:false,
+                                        value: "Lglg1234!@#",
+                                        active: true,
+                                        required:true,
+                                        placeholder:"Current Password",
+                                        warning: ["Wrong Password!"],
+                                    },
+                                ])
+                        .button.c-cta.my-button
+                            //- +defaultButton({name: "CANCEL", size: "large", roleButton:"true"})
+                            +defaultButton({name: "Cancel", wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                            //- +defaultButton({type:"box", size: "large", color:"red", name:"Save", roleButton:"true"})
+                            +defaultButton({name: "Save", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+    else if option == 'vietnam'
+        .c-wrapper.ML000O
+            .component
+                .fluid-container
+                    .my-component__wrap
+                        .my-component
+                            .c-text-contents
+                                .title.c-text-contents__headline.font-w-light-56.font-m-light-28
+                                    +headline('font-w-light-56 font-m-light-28', "h2", "Profile")
+                                //- .text.c-text-contents__bodycopy.font-w-normal-24.font-m-normal-16
+                                //-     p.cmp-text(data-cmp-data-layer="") Update your personal information to get personalized service and latest product information.
+                    .my-component.my-edit-profile
+                        p.my-form-required.font-w-normal-16.font-m-normal-12
+                            em.c-required * 
+                                span.sr-only Required fields
+                            | Required fields                
+                        //- p.my-edit-profile-text.font-w-normal-12.font-m-normal-12 Update your personal information to get personalized service and latest product information.
+                        .my-edit-profile__title Second Email Address
+                        .my-edit-profile__box
+                            +formCheckbox('I want to receive the result of repair and inquiry to the other email address.', "name", "val1", `checkId3`, count="false")
+                    .my-component
+                        .my-edit-profile__title Social Media Account
+                        .my-edit-profile__box
+                            +myAccountLinkedLoginList([
+                                {
+                                    href:"#",
+                                    ico:"apple",
+                                    apps:"Apple", 
+                                    link:false,
+                                },
+                                {
+                                    href:"#",
+                                    ico:"amazon",
+                                    apps:"Amazon", 
+                                    link:true,
+                                },
+                                {
+                                    href:"#",
+                                    ico:"google", 
+                                    apps:"Google", 
+                                    link:false,
+                                },
+                                {
+                                    href:"#",
+                                    ico:"facebook",
+                                    apps:"Facebook", 
+                                    link:true,
+                                },
+                            ])
+                            .my-edit-profile__desc.font-w-normal-16.font-m-normal-14 Your privacy is of great importance to us. Please read our 
+                                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").font-red Privacy Policy
+                                | .
+                    .my-component.my-topBorder
+                        //- .my-edit-profile__title Personal Information
+                        //- +inquiryDetailPack({
+                        //-     controlsId:"id1",
+                        //-     title:"Personal Information",
+                        //- })
+                        .my-edit-profile__title Personal Information
+                        .my-edit-profile__box
+                            .my-formbox
+                                +myInputForm([
+                                    {
+                                        type:"text",
+                                        label:"First Name",
+                                        id:"firstName",
+                                        required:true,
+                                        value:"Robert",
+                                        placeholder:"First Name",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"First Name",
+                                        id:"firstNameWarn",
+                                        required:true,
+                                        value:"Robert",
+                                        warning: ["First name is required."],
+                                        placeholder:"First Name",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Last Name",
+                                        id:"lastName",
+                                        required:true,
+                                        value:"Surrency",
+                                        placeholder:"Last Name",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Last Name",
+                                        id:"lastNameWarn",
+                                        required:true,
+                                        value:"Surrency",
+                                        warning: ["Last name is required."],
+                                        placeholder:"Last Name",
+                                    },
+                                    {
+                                        type:"birth",
+                                        label:"Date of Birth",
+                                        id:"month",
+                                        id1:"day",
+                                        id2:"year",                                                                
+                                        optionVal: ['Month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December '],
+                                        required:true,
+                                        placeholder:"Month",
+                                        placeholder1:"Day",
+                                        placeholder2:"Year",                                        
+                                        isRadio:true,
+                                        infoText: "We use your date of birth to verify your identity if you forget your email address. We also use it to make sure you can use services with age restrictions.",
+                                    },                                
+                                    {
+                                        type:"birth",
+                                        label:"Date of Birth",
+                                        id:"month",
+                                        id1:"day",
+                                        id2:"year",                                                                  
+                                        optionVal: ['Month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December '],
+                                        required:true,
+                                        placeholder:"Month",
+                                        placeholder1:"Day",
+                                        placeholder2:"Year",                                        
+                                        isRadio:true,
+                                        warning3:['We use your date of birth to verify your identity if you forget your email address. We also use it to make sure you can use services with age restrictions.'],
+                                    },
+                                    {
+                                        type:"birth",
+                                        label:"Date of Birth",
+                                        id:"month",
+                                        id1:"day",
+                                        id2:"year",                                                                  
+                                        optionVal: ['Month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December '],
+                                        required:true,
+                                        placeholder:"Month",
+                                        placeholder1:"Day",
+                                        placeholder2:"Year",
+                                        validation:true,
+                                        isRadio:true,
+                                        warning:['Month is incorrect.'],
+                                        warning1:['Day is incorrect.'],
+                                        warning2:['Year is incorrect.'],
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"CPF",
+                                        id:"CPF",
+                                        required:true,
+                                        value:"2839393939",
+                                        placeholder:"CPF",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"CNPJ",
+                                        id:"CNPJ",
+                                        required:true,
+                                        value:"2839393939",
+                                        placeholder:"CNPJ",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"State Registration",
+                                        id:"State Registration",
+                                        required:false,
+                                        value:"",
+                                        check: ["Free"],
+                                        placeholder:"State Registration",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Zip Code",
+                                        id:"Zip Code",
+                                        required:true,
+                                        value:"2839393939",
+                                        placeholder:"Zip Code",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Address",
+                                        id:"Address",
+                                        required:true,
+                                        value:"253A Potrobello Rd",
+                                        placeholder:"Address",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Number",
+                                        id:"Number",
+                                        required:true,
+                                        value:"2839393939",
+                                        placeholder:"Number",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Complement",
+                                        id:"Complement",
+                                        required:false,
+                                        value:"",
+                                        placeholder:"Complement",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Neighborhood",
+                                        id:"Neighborhood",
+                                        required:true,
+                                        value:"",
+                                        placeholder:"Neighborhood",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"City",
+                                        id:"city",
+                                        required:true,
+                                        value:"",
+                                        placeholder:"City",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"State",
+                                        id:"State",
+                                        required:true,
+                                        value:"",
+                                        placeholder:"State",
+                                    },
+                                    {
+                                        type:"tel",
+                                        label:"Telephone",
+                                        id:"Telephone",
+                                        required:true,
+                                        value:"2839393939",
+                                        infoTextSecond: ["Please enter the phone number without spaces."],
+                                        placeholder:"Telephone",
+                                    },
+                                    {
+                                        type:"tel",
+                                        label:"Mobile(cell) number",
+                                        id:"Mobile(cell)number",                                    
+                                        required:false,
+                                        value:"1234567890",
+                                        placeholder:"Mobile(cell) number",
+                                    },
+                                ])
+                    .my-component.my-topBorder
+                        .my-edit-profile__box
+                            .my-formbox
+                                +myInputForm([
+                                    {
+                                        type:"password",
+                                        label:"Current Password",
+                                        id:"CurrentPassword",
+                                        required:false,
+                                        value: "Lglg1234!@#",
+                                        active: true,
+                                        required:true,
+                                        placeholder:"Current Password",
+                                        warning: ["Wrong Password!"],
+                                    },
+                                ])
+                        .button.c-cta.my-button
+                            //- +defaultButton({name: "CANCEL", size: "large", roleButton:"true"})
+                            +defaultButton({name: "Cancel", wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                            //- +defaultButton({type:"box", size: "large", color:"red", name:"Save", roleButton:"true"})
+                            +defaultButton({name: "Save", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+    else if option == 'mexico'
+        .c-wrapper.ML000O
+            .component
+                .fluid-container
+                    .my-component__wrap
+                        .my-component
+                            .c-text-contents
+                                .title.c-text-contents__headline.font-w-light-56.font-m-light-28
+                                    +headline('font-w-light-56 font-m-light-28', "h2", "Profile")
+                                //- .text.c-text-contents__bodycopy.font-w-normal-24.font-m-normal-16
+                                //-     p.cmp-text(data-cmp-data-layer="") Update your personal information to get personalized service and latest product information.
+                    .my-component.my-edit-profile
+                        p.my-form-required.font-w-normal-16.font-m-normal-12
+                            em.c-required * 
+                                span.sr-only Required fields
+                            | Required fields                
+                        //- p.my-edit-profile-text.font-w-normal-12.font-m-normal-12 Update your personal information to get personalized service and latest product information.
+                        .my-edit-profile__title Second Email Address
+                        .my-edit-profile__box
+                            +formCheckbox('I want to receive the result of repair and inquiry to the other email address.', "name", "val1", `checkId3`, count="false")
+                    .my-component
+                        .my-edit-profile__title Social Media Account
+                        .my-edit-profile__box
+                            +myAccountLinkedLoginList([
+                                {
+                                    href:"#",
+                                    ico:"apple",
+                                    apps:"Apple", 
+                                    link:false,
+                                },
+                                {
+                                    href:"#",
+                                    ico:"amazon",
+                                    apps:"Amazon", 
+                                    link:true,
+                                },
+                                {
+                                    href:"#",
+                                    ico:"google", 
+                                    apps:"Google", 
+                                    link:false,
+                                },
+                                {
+                                    href:"#",
+                                    ico:"facebook",
+                                    apps:"Facebook", 
+                                    link:true,
+                                },
+                            ])
+                            .my-edit-profile__desc.font-w-normal-16.font-m-normal-14 Your privacy is of great importance to us. Please read our 
+                                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").font-red Privacy Policy
+                                | .
+                    .my-component.my-topBorder
+                        //- .my-edit-profile__title Personal Information
+                        //- +inquiryDetailPack({
+                        //-     controlsId:"id1",
+                        //-     title:"Personal Information",
+                        //- })
+                        .my-edit-profile__title Personal Information
+                        .my-edit-profile__box
+                            .my-formbox
+                                +myInputForm([
+                                    {
+                                        type:"text",
+                                        label:"First Name",
+                                        id:"firstName",
+                                        required:true,
+                                        value:"Robert",
+                                        placeholder:"First Name",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"First Name",
+                                        id:"firstNameWarn",
+                                        required:true,
+                                        value:"Robert",
+                                        warning: ["First name is required."],
+                                        placeholder:"First Name",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Last Name",
+                                        id:"lastName",
+                                        required:true,
+                                        value:"Surrency",
+                                        placeholder:"Last Name",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Last Name",
+                                        id:"lastNameWarn",
+                                        required:true,
+                                        value:"Surrency",
+                                        warning: ["Last name is required."],
+                                        placeholder:"Last Name",
+                                    },
+                                    {
+                                        type:"select",
+                                        label:"Gender",
+                                        id:"gender",
+                                        value:"BR",
+                                        optionVal: ['BR', 'BR', 'BR'],
+                                        placeholder:"Gender",
+                                        required:true,
+                                        disabled:true
+                                    },
+                                    {
+                                        type:"birth",
+                                        label:"Date of Birth",
+                                        id:"month",
+                                        id1:"day",
+                                        id2:"year",                                                                
+                                        optionVal: ['Month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December '],
+                                        required:true,
+                                        placeholder:"Month",
+                                        placeholder1:"Day",
+                                        placeholder2:"Year", 
+                                        infoText: "We use your date of birth to verify your identity if you forget your email address. We also use it to make sure you can use services with age restrictions.",
+                                    },                                
+                                    {
+                                        type:"birth",
+                                        label:"Date of Birth",
+                                        id:"month",
+                                        id1:"day",
+                                        id2:"year",                                                                  
+                                        optionVal: ['Month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December '],
+                                        required:true,
+                                        placeholder:"Month",
+                                        placeholder1:"Day",
+                                        placeholder2:"Year",  
+                                        warning3:['We use your date of birth to verify your identity if you forget your email address. We also use it to make sure you can use services with age restrictions.'],
+                                    },
+                                    {
+                                        type:"birth",
+                                        label:"Date of Birth",
+                                        id:"month",
+                                        id1:"day",
+                                        id2:"year",                                                                  
+                                        optionVal: ['Month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December '],
+                                        required:true,
+                                        placeholder:"Month",
+                                        placeholder1:"Day",
+                                        placeholder2:"Year",
+                                        validation:true,
+                                        warning:['Month is incorrect.'],
+                                        warning1:['Day is incorrect.'],
+                                        warning2:['Year is incorrect.'],
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"Address",
+                                        id:"Address",
+                                        required:true,
+                                        value:"253A Potrobello Rd",
+                                        placeholder:"Address",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"City",
+                                        id:"City",
+                                        required:true,
+                                        value:"AU",
+                                        placeholder:"City",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"County",
+                                        id:"County",
+                                        required:true,
+                                        value:"BR",
+                                        placeholder:"County",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"County",
+                                        id:"County",
+                                        required:false,
+                                        value:"U.K",
+                                        disabled:true,
+                                        placeholder:"County",
+                                    },
+                                    { 
+                                        type:"text",
+                                        label:"postcodetextmx",
+                                        id:"postcodetextmx",
+                                        required:true,
+                                        value:"",
+                                        placeholder:"Postcode",
+                                    },
+                                    {
+                                        type:"tel",
+                                        label:"Telephone number",
+                                        id:"Telephone number",
+                                        required:true,
+                                        value:"2839393939",
+                                        infoTextSecond: ["Please enter the phone number without spaces."],
+                                        placeholder:"Telephone number",
+                                    },
+                                    {
+                                        type:"tel",
+                                        label:"Mobile(cell) number",
+                                        id:"Mobile(cell) number",                                    
+                                        required:true,
+                                        value:"1234567890",
+                                        placeholder:"Mobile(cell) number",
+                                    },
+                                ])
+                    .my-component.my-topBorder
+                        //- .my-edit-profile__title Company Information
+                        //- +inquiryDetailPack({
+                        //-     controlsId:"id2",
+                        //-     title:"Company Information",
+                        //- })
+                        .my-edit-profile__title Company Information
+                        .my-edit-profile__box 
+                            .my-formbox
+                                +myInputForm([
+                                    {
+                                        type:"text",
+                                        label:"Company Name",
+                                        id:"companyName",
+                                        required:false,
+                                        value:"LG amazing co., ltd.",
+                                        warning: ["Company Name is required."],
+                                        placeholder:"Company Name",
+                                    },
+                                    {
+                                        type:"text",
+                                        label:"Tax Code",
+                                        id:"Name",
+                                        required:true,
+                                        value:"",
+                                        warning: ["The Tax Code is mandatory."],
+                                        placeholder: "Tax Code",
+                                    },
+                                    {
+                                        type:"select",
+                                        label:"Business Sector(Level 1)",
+                                        id:"Business Sector(Level 1)",
+                                        value:"Business Sector(Level 1)",
+                                        optionVal: ['Business Sector(Level 1)', 'Business Sector(Level 1)'],
+                                        warning: ["The Business Sector (Level 1) is mandatory."],
+                                        required:true,
+                                    },
+                                    {
+                                        type:"select",
+                                        label:"Business Sector(Level 2)",
+                                        id:"Business Sector(Level 2)",
+                                        value:"Business Sector(Level 2)",
+                                        optionVal: ['Business Sector(Level 2)', 'Business Sector(Level 2)'],
+                                        required:false,
+                                    },
+                                    {
+                                        type:"select",
+                                        label:"Customer type",
+                                        id:"Customer type",
+                                        value:"Customer type",
+                                        optionVal: ['Customer type', 'Customer type'],
+                                        warning: ["The Client Type is mandatory."],
+                                        required:true,
+                                    },
+                                    {
+                                        type:"select",
+                                        label:"Sub-Client Type",
+                                        id:"Sub-Client Type",
+                                        value:"Sub-Client Type",
+                                        optionVal: ['Sub-Client Type', 'Sub-Client Type'],
+                                        required:false,
+                                    },
+                                    {
+                                        type:"select",
+                                        label:"Turn of the Company",
+                                        id:"Turn of the Company",
+                                        value:"Turn of the Company",
+                                        optionVal: ['Turn of the Company', 'Turn of the Company'],
+                                        required:true,
+                                        warning: ["The Turn of the Company is mandatory."]                                       
+                                    },
+                                    {
+                                        type:"select",
+                                        label:"Work position",
+                                        id:"Work position",
+                                        value:"Work position",
+                                        optionVal: ['Work position', 'Work position'],
+                                        required:true,                                        
+                                    },
+                                ])
+                    .my-component.my-topBorder
+                        .my-edit-profile__box
+                            .my-formbox
+                                +myInputForm([
+                                    {
+                                        type:"password",
+                                        label:"Current Password",
+                                        id:"CurrentPassword",
+                                        required:false,
+                                        value: "Lglg1234!@#",
+                                        active: true,
+                                        required:true,
+                                        placeholder:"Current Password",
+                                        warning: ["Wrong Password!"],
+                                    },
+                                ])
+                        .button.c-cta.my-button
+                            //- +defaultButton({name: "CANCEL", size: "large", roleButton:"true"})
+                            +defaultButton({name: "Cancel", wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                            //- +defaultButton({type:"box", size: "large", color:"red", name:"Save", roleButton:"true"})
+                            +defaultButton({name: "Save", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+block content
+    // Component Markup
+    .guide-text-type Type1. Default
+    +ML000O('default')   
+    .guide-text-type Type2. Brazil
+    +ML000O('brazil') 
+    .guide-text-type Type3. VNB2B
+    +ML000O('vietnam')
+    .guide-text-type Type4. MXB2B
+    +ML000O('mexico')
+block modal
+    .buy-find-address
+        +pop-msg-standard({id : `findAddress`, headline:"Find address", size:"full"})
+            .buy-find-address__form
+                +formRadio("Savills,57 Buckingham Gate, ,London","name", "val1", "radioId1")
+                +formRadio("Flat 1-6, 57 Buckingham Gate, ,London","name", "val2", "radioId2")
+                +formRadio("58 Buckingham Gate, ,London","name", "val3", "radioId3")
+                +formRadio("Cathy Pacific, Swire House, 59 Buckingham Gate, ,London","name", "val4", "radioId4")
+                +formRadio("Savills,57 Buckingham Gate, ,London","name", "val5", "radioId5")
+            .button.c-cta
+                +defaultButton({type:"box", color:"red", name:'SAVE'})

@@ -1,0 +1,630 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_cs-form.pug
+
+block meta
+    - var componentId = "CS0084"
+    - var componentName = "Step_Type of Repair"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+
+    mixin trigger(controlsId)
+        .button
+            button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${controlsId}` aria-label="")
+                span.c-accordion__button-text.expand.sr-only Expand
+                span.c-accordion__button-text.collapse.sr-only Collapse
+    
+    mixin printTab(div, num, selected)
+        if selected
+            li.swiper-slide.cmp-tabs__tab.cmp-tabs__tab--active.font-m-normal-16(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0" data-cmp-hook-tabs="tab" aria-selected="true")
+                a(role="tab" aria-label="")
+                    if block
+                        block
+        else 
+            li.swiper-slide.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1" data-cmp-hook-tabs="tab" aria-selected="false")
+                a(role="tab" aria-label="")
+                    if block
+                        block
+
+    mixin printTabPanel(div, num, selected)
+        if selected 
+            .c-tabs__tabpanel.c-tabs__tabpanel--active.cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+                if block
+                    block
+        else 
+            .c-tabs__tabpanel.cmp-tabs__tabpanel(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+                if block
+                    block
+
+    //- s --- 230905 mixin edit
+    
+    mixin printTabList(tabDiv, tabTitles, params)
+        - options = {tabDiv: tabDiv, tabTitles: tabTitles, ...params} 
+        ul.c-tabs__tablist.cmp-tabs__tablist
+            - for (let i=0; i < options.tabTitles.length; i++)
+                - var isActive = i == 0 ? true : false
+                +printTab(`${options.tabDiv}`, `${i+1}`, isActive)
+                    | #{options.tabTitles[i]}
+
+    mixin scheduleForm(number= 1, time= false, invalidMsg= false, blank=false, params)
+        //- params : Object type 
+        //- options : number, time, invalidMsg(if it has invalid message), blank(add blank)
+        - let options = {number: number, time: time, invalidMsg: invalidMsg, blank: blank, ...params}
+        .cs-form
+            .cs-form__wrap
+                - for (let i=0; i < options.number; i++)
+                    .cmp-form
+                        +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: `${ i == 0 ? `1st` : i == 1 ? `2nd` :  i == 2 ? `3rd` : `${i+1}th`} choice`, placeholder: 'YYYY/MM/DD', 
+                        requireMsg:`${ i == 0 ? `1st` : i == 1 ? `2nd` :  i == 2 ? `3rd` : `${i+1}th`} choice is required.` })
+                        if options.invalidMsg
+                            .c-center-box
+                                .c-warning.c-after-modelNumber-invalid.c-display Reservation date is required.
+                    if options.time
+                        .cmp-form
+                            +csForm_Select({id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+                            if options.invalidMsg
+                                .c-center-box
+                                    .c-warning.c-after-modelNumber-invalid.c-display Time Schedule is required.
+                if options.blank 
+                    .cmp-form
+
+    mixin buttonWrap(btn= [{title: `Next`, class: `c-btn-next`, style: `default`, aria: false}], params)
+        //- params : Array type
+        //- button options : title, class, style, aria(add aria-label attribute)
+        -let options = {btn: btn || params}
+        .c-button-wrap
+            .button.c-cta
+                - for (let i=0; i < options.btn.length; i++)
+                    - let attribute = {}
+                    - options.btn[i].aria ? attribute = {'aria-label' : ''} : attribute = {}
+                    if options.btn[i].class !== undefined
+                        +defaultButton({name: `${options.btn[i].title}`, wSize: 'medium', mSize: 'small', buttonStyle: `${options.btn[i].style || 'default'}`, isButton: true})(class=`${options.btn[i].class}`)&attributes(attribute)
+                    else
+                        +defaultButton({name: `${options.btn[i].title}`, wSize: 'medium', mSize: 'small', buttonStyle: `${options.btn[i].style || 'default'}`, isButton: true})&attributes(attribute)
+
+    mixin contentsBody(typeNumber, params)
+        //- params : Object type
+        //- options : tab(if it contains tabs), tabDiv, tabTitles(Array type), complete(publish complete page), schedule(Object type) : number, time, invalidMsg(if it has invalid message), blank(add blank), btn(Array type) : title, class, style, aria(add aria-label attribute)
+        - let options = {tabDiv: `1`, tab: false, tabTitles: [`Onsite nonreal title`, `Installation unreal title`], complete: false, schedule: {number: 1, time: false, invalidMsg: false, blank: false}, btn: [{title: `Next`, class: `c-btn-next`, aria: false}], btnWrapExceedsSection: false, addTabClass: false,  ...params}
+        // block - text contents
+        .c-text-contents.c-accordion__body-text(class=`${options.tab ? `type-tabs` : options.complete ? `c-complete__body` : options.addTabClass ? `type-tabs` : ``}`)
+            if options.tab
+                section                        
+                    .c-tabs.tabs.panelcontainer
+                        .cmp-tabs(data-cmp-data-layer="" data-placeholder-text="false")
+                            .c-tabs__inner.swiper
+                                +printTabList(options.tabDiv, options.tabTitles)
+                            if block
+                                block
+                +buttonWrap(options.btn)
+            else if options.complete
+                //- publish complete page
+                div
+                    .c-result__txtBox.font-m-normal-12.font-w-normal-16
+                        span On site service : 
+                        .date-text
+                            p 03/15/2023 09:00 ~ 17:00
+                            p 03/15/2023 09:00 ~ 17:00
+                            p 03/15/2023 09:00 ~ 17:00
+                .button.c-cta
+                    +linkButton({type:"text", color:"black", name: "Edit"})(role="button")
+            else if options.btnWrapExceedsSection
+                //- Situation where the button exceeds the section tag
+                section                        
+                    .c-info-box 
+                        if block
+                            block
+                    +scheduleForm(options.schedule.number, options.schedule.time, options.schedule.invalidMsg, options.schedule.blank)
+                +buttonWrap(options.btn)
+            else
+                section                        
+                    .c-info-box 
+                        if block
+                            block
+                    +scheduleForm(options.schedule.number, options.schedule.time, options.schedule.invalidMsg, options.schedule.blank)
+                    +buttonWrap(options.btn)
+
+
+    
+
+    //- mixin contentsBody(stepNumber)
+    //-     // block - text contents
+    //-     .c-text-contents.c-accordion__body-text
+    //-         case stepNumber
+    //-             when 3
+    //-                 section                        
+    //-                     .c-info-box 
+    //-                         .c-info-box-text.font-m-normal-12.font-w-normal-16 Read and approve the privacy policy for repairs, then choose a useful date.
+
+    //-                     .cs-form
+    //-                         .cs-form__wrap
+    //-                             .cmp-form
+    //-                                 +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: '1st choice', placeholder: 'YYYY/MM/DD', 
+    //-                                 requireMsg:'1st choice is required.' })
+    //-                             .cmp-form
+    //-                                 +csForm_Select({id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+
+    //-                             .cmp-form
+    //-                                 +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: '2nd choice', placeholder: 'YYYY/MM/DD', 
+    //-                                 requireMsg:'2nd choice is required.' })
+    //-                             .cmp-form
+    //-                                 +csForm_Select({id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+    //-                             .cmp-form
+    //-                                 +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: '3rd choice', placeholder: 'YYYY/MM/DD', 
+    //-                                 requireMsg:'3rd choice is required.' })
+    //-                             .cmp-form
+    //-                                 +csForm_Select({id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+
+    //-                     .c-button-wrap
+    //-                         .button.c-cta
+    //-                             //+defaultButton({name: 'Reset', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})(aria-label="")
+    //-                             +defaultButton({name: 'Next', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-next" aria-label="")
+    //- e --- 230905 mixin edit
+    
+    //- mixin contentsBody_de(stepNumber)
+    //-     // block - text contents
+    //-     .c-text-contents.c-accordion__body-text
+    //-         case stepNumber
+    //-             when 3
+    //-                 section   
+    //-                     .c-info-box 
+    //-                         .c-info-box-text.font-m-normal-12.font-w-normal-16 
+    //-                         | Please select at least one desired date for the repair. We will endeavor to accommodate your request, subject to the availability of a service representative.
+    //-                         | Please note that there are no public holidays stored in our global system. When planning your desired date, please check whether there is a public holiday in your region. On-site repairs are not performed on public holidays.
+                     
+    //-                     .cs-form
+    //-                         .cs-form__wrap
+    //-                             .cmp-form
+    //-                                 +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: '1st choice', placeholder: 'YYYY/MM/DD', 
+    //-                                 requireMsg:'1st choice is required.' })
+    //-                             .cmp-form
+    //-                                 +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: '2nd choice', placeholder: 'YYYY/MM/DD', 
+    //-                                 requireMsg:'2nd choice is required.' })
+    //-                             .cmp-form
+    //-                                 +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: '3rd choice', placeholder: 'YYYY/MM/DD', 
+    //-                                 requireMsg:'3rd choice is required.' })
+    //-                             .cmp-form
+    //-                     .c-button-wrap
+    //-                         .button.c-cta
+    //-                             //+defaultButton({name: 'Reset', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})(aria-label="")
+    //-                             +defaultButton({name: 'Next', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-next" aria-label="")
+
+    //- mixin contentsBody3(stepNumber)
+    //-     // block - text contents
+    //-     .c-text-contents.c-accordion__body-text
+    //-         case stepNumber
+    //-             when 3
+    //-                 section                        
+    //-                     .c-info-box 
+    //-                         .c-info-box-text.font-m-normal-12.font-w-normal-16 Read and approve the privacy policy for repairs, then choose a useful date.
+    //-                         a(href="" tabindex="0" class="font-m-normal-12 font-w-normal-16" aria-label="") text link
+
+    //-                     .cs-form
+    //-                         .cs-form__wrap
+    //-                             .cmp-form
+    //-                                 +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: '1st choice', placeholder: 'YYYY/MM/DD', 
+    //-                                 requireMsg:'1st choice is required.' })
+    //-                             .cmp-form
+    //-                                 +csForm_Select({id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+
+    //-                             .cmp-form
+    //-                                 +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: '2nd choice', placeholder: 'YYYY/MM/DD', 
+    //-                                 requireMsg:'2nd choice is required.' })
+    //-                             .cmp-form
+    //-                                 +csForm_Select({id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+
+    //-                             .cmp-form
+    //-                                 +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: '3rd choice', placeholder: 'YYYY/MM/DD', 
+    //-                                 requireMsg:'3rd choice is required.' })
+    //-                             .cmp-form
+    //-                                 +csForm_Select({id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+
+
+    //-                 .c-button-wrap
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Next', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-next")
+
+    //- mixin contentsBody4(stepNumber)
+    //-     // block - text contents
+    //-     .c-text-contents.c-accordion__body-text.type-tabs
+    //-         case stepNumber
+    //-             when 3
+    //-                 section                        
+    //-                     .c-tabs.tabs.panelcontainer
+    //-                         .cmp-tabs(data-cmp-data-layer="" data-placeholder-text="false")
+    //-                             .c-tabs__inner.swiper
+    //-                                 ul.c-tabs__tablist.cmp-tabs__tablist
+    //-                                     +printTab(2, 1, true) 
+    //-                                         | Onsite nonreal title
+    //-                                     +printTab(2, 2, false) 
+    //-                                         | Installation unreal title
+
+    //-                             +printTabPanel(2, 1, true)
+    //-                                 .tab-panels
+    //-                                     section.tab-panel
+    //-                                         .c-info-box 
+    //-                                             .c-info-box-text.font-m-normal-12.font-w-normal-16 The repair request form will be forwarded to a customer service representative for verification. An LG consultant will contact you as soon as possible. Below you can indicate your preferred date and time - we will do our best to contact you as soon as possible. 
+
+    //-                                         .cs-form
+    //-                                             .cs-form__wrap
+    //-                                                 // Onsite nonreal title tab (PL) = 1 row
+    //-                                                 .cmp-form
+    //-                                                     +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: '1st choice', placeholder: 'YYYY/MM/DD', 
+    //-                                                     requireMsg:'Reservation date is required' })
+    //-                                                     //- .c-center-box
+    //-                                                     //-     .c-warning.c-after-modelNumber-invalid.c-display Reservation date is required.
+    //-                                                 .cmp-form
+    //-                                                     +csForm_Select({id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+
+    //-                                                     //- .c-center-box
+    //-                                                     //-     .c-warning.c-after-modelNumber-invalid.c-display Time Schedule is required.
+    //-                                                 // Onsite Nonreal Title tab (CN), Installation Unreal Title (CN / PL) =  3 rows
+
+    //-                             +printTabPanel(2, 2, false)
+    //-                                 .tab-panels
+    //-                                     section.tab-panel
+    //-                                         .c-info-box 
+    //-                                             .c-info-box-text.font-m-normal-12.font-w-normal-16 The repair request form will be forwarded to a customer service representative for verification. An LG consultant will contact you as soon as possible. Below you can indicate your preferred date and time - we will do our best to contact you as soon as possible. 
+
+    //-                                         .cs-form
+    //-                                             .cs-form__wrap
+    //-                                                 // Onsite nonreal title tab (PL) = 1 row
+    //-                                                 .cmp-form
+    //-                                                     +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: '1st choice', placeholder: 'YYYY/MM/DD', 
+    //-                                                     requireMsg:'1st choice is required.' })
+    //-                                                     .c-center-box
+    //-                                                         .c-warning.c-after-modelNumber-invalid.c-display Reservation date is required.
+    //-                                                 .cmp-form
+    //-                                                     +csForm_Select({id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+
+    //-                                                     .c-center-box
+    //-                                                         .c-warning.c-after-modelNumber-invalid.c-display Time Schedule is required.
+    //-                                                 // Onsite nonreal title tab (CN), Installation unreal title (CN / PL) =  3 rows
+    //-                                                 .cmp-form
+    //-                                                     +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: '2nd choice', placeholder: 'YYYY/MM/DD', 
+    //-                                                     requireMsg:'2nd choice is required.' })
+    //-                                                     .c-center-box
+    //-                                                         .c-warning.c-after-modelNumber-invalid.c-display Reservation date is required.
+    //-                                                 .cmp-form
+    //-                                                     +csForm_Select({id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+
+    //-                                                     .c-center-box
+    //-                                                         .c-warning.c-after-modelNumber-invalid.c-display Time Schedule is required.
+    //-                                                 .cmp-form
+    //-                                                     +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: '3rd choice', placeholder: 'YYYY/MM/DD', 
+    //-                                                     requireMsg:'3rd choice is required.' })
+    //-                                                     .c-center-box
+    //-                                                         .c-warning.c-after-modelNumber-invalid.c-display Reservation date is required.
+    //-                                                 .cmp-form
+    //-                                                     +csForm_Select({id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+
+    //-                                                     .c-center-box
+    //-                                                         .c-warning.c-after-modelNumber-invalid.c-display Time Schedule is required.
+                                                    
+                        
+    //-                 .c-button-wrap
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Next', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-next")
+
+    //- mixin contentsBody5(stepNumber)
+    //-     // block - text contents
+    //-     .c-text-contents.c-accordion__body-text.type-tabs
+    //-         case stepNumber
+    //-             when 3
+    //-                 section                        
+    //-                     .c-info-box 
+    //-                         .c-info-box-text.font-m-normal-12.font-w-normal-16 The repair request form will be forwarded to a customer service representative for verification. An LG consultant will contact you as soon as possible. Below you can indicate your preferred date and time - we will do our best to contact you as soon as possible. 
+
+    //-                     .cs-form
+    //-                         .cs-form__wrap
+    //-                             .cmp-form
+    //-                                 +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: '1st choice', placeholder: 'YYYY/MM/DD', 
+    //-                                 requireMsg:'1st choice is required.' })
+    //-                             .cmp-form
+    //-                                 +csForm_Select({id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+    //-                     //- .c-info-box                
+    //-                     //-     .c-info-box__text.font-m-normal-12.font-w-normal-16 * Depending on the density of our authorized services, the appointment time varies.
+    //-                     //-     .c-info-box__text.font-m-normal-12.font-w-normal-16 
+    //-                     //-         span * Our Authorized Service is rand before the service. 
+    //-                     //-         a(href="#") https://www.lg.com/tr/destek/teknik-servis/montaj-talebi
+    //-                     //-         span  Evu will contact you with your contact number regarding the time.
+    //-                 .c-button-wrap
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Next', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-next")
+    
+    //- mixin contentsBody6(stepNumber)
+    //-     // block - text contents
+    //-     .c-text-contents.c-accordion__body-text.type-tabs
+    //-         case stepNumber
+    //-             when 3
+    //-                 section                        
+    //-                     .c-info-box 
+    //-                         .c-info-box-text.font-m-normal-12.font-w-normal-16 The repair request form will be forwarded to a customer service representative for verification. An LG consultant will contact you as soon as possible. Below you can indicate your preferred date and time - we will do our best to contact you as soon as possible. 
+
+    //-                     .cs-form
+    //-                         .cs-form__wrap
+    //-                             .cmp-form
+    //-                                 +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: '1st choice', placeholder: 'YYYY/MM/DD', 
+    //-                                 requireMsg:'1st choice is required.' })
+    //-                             .cmp-form
+    //-                 .c-button-wrap
+    //-                         .button.c-cta
+    //-                             +defaultButton({name: 'Next', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-next")
+    
+    //- mixin contentsBody7(stepNumber)
+    //-     // block - text contents
+    //-     .c-text-contents.c-accordion__body-text.c-complete__body
+    //-         div
+    //-             .c-result__txtBox.font-m-normal-12.font-w-normal-16
+    //-                 span On site service : 
+    //-                 .date-text
+    //-                     p 03/15/2023 09:00 ~ 17:00
+    //-                     p 03/15/2023 09:00 ~ 17:00
+    //-                     p 03/15/2023 09:00 ~ 17:00
+    //-         .button.c-cta
+    //-             +linkButton({type:"text", color:"black", name: "Edit"})(role="button")
+    -
+        const stepList = [
+            {
+                'eyebrow': 'Type of Repair',
+                'stepNumber': 3
+            },
+        ]
+    mixin pack(faq, stepNumber, controlsId, params)
+        .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+            .c-accordion__head
+                // block - text contents
+                // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+                //- .c-accordion__head-text.c-text-contents.c-step-active
+                .c-accordion__head-text.c-text-contents
+                    span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true")
+                        span.c-accordion__step
+                        span.c-accordion__head-flag.font-m-normal-16.font-w-semibold-20
+                +trigger(controlsId)
+            // This area is accordion content. Please include only this area during development.
+            .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+                +contentsBody(stepNumber, params)
+                    if block
+                        block
+
+
+    //- mixin pack(faq, stepNumber, controlsId)
+    //-     .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+    //-         .c-accordion__head
+    //-             // block - text contents
+    //-             // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+    //-             //- .c-accordion__head-text.c-text-contents.c-step-active
+    //-             .c-accordion__head-text.c-text-contents
+    //-                 span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true")
+    //-                     span.c-accordion__step
+    //-                     span.c-accordion__head-flag.font-m-normal-16.font-w-semibold-20
+    //-             +trigger(controlsId)
+    //-         // This area is accordion content. Please include only this area during development.
+    //-         .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+    //-             +contentsBody(stepNumber)
+
+    //- mixin pack_de(faq, stepNumber, controlsId)
+    //-     .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+    //-         .c-accordion__head
+    //-             // block - text contents
+    //-             // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+    //-             //- .c-accordion__head-text.c-text-contents.c-step-active
+    //-             .c-accordion__head-text.c-text-contents
+    //-                 span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true")
+    //-                     span.c-accordion__step
+    //-                     span.c-accordion__head-flag.font-m-normal-16.font-w-semibold-20
+    //-             +trigger(controlsId)
+    //-         .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+    //-             +contentsBody_de(stepNumber)
+
+    //- mixin pack3(faq, stepNumber, controlsId)
+    //-     .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+    //-         .c-accordion__head
+    //-             // block - text contents
+    //-             // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+    //-             //- .c-accordion__head-text.c-text-contents.c-step-active
+    //-             .c-accordion__head-text.c-text-contents
+    //-                 span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true")
+    //-                     span.c-accordion__step
+    //-                     span.c-accordion__head-flag.font-m-normal-16.font-w-semibold-20
+    //-             +trigger(controlsId)
+    //-         // This area is accordion content. Please include only this area during development.
+    //-         .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+    //-             +contentsBody3(stepNumber)
+    //- -
+    //-     const stepList = [
+    //-         {
+    //-             'eyebrow': 'Type of Repair',
+    //-             'stepNumber': 3
+    //-         },
+    //-     ]
+
+    //- mixin pack4(faq, stepNumber, controlsId)
+    //-     .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+    //-         .c-accordion__head
+    //-             // block - text contents
+    //-             // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+    //-             //- .c-accordion__head-text.c-text-contents.c-step-active
+    //-             .c-accordion__head-text.c-text-contents
+    //-                 span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true")
+    //-                     span.c-accordion__step
+    //-                     span.c-accordion__head-flag.font-m-normal-16.font-w-semibold-20
+    //-             +trigger(controlsId)
+    //-         // This area is accordion content. Please include only this area during development.
+    //-         .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+    //-             +contentsBody4(stepNumber)
+    
+    //- mixin pack5(faq, stepNumber, controlsId)
+    //-     .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+    //-         .c-accordion__head
+    //-             // block - text contents
+    //-             // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+    //-             //- .c-accordion__head-text.c-text-contents.c-step-active
+    //-             .c-accordion__head-text.c-text-contents
+    //-                 span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true")
+    //-                     span.c-accordion__step
+    //-                     span.c-accordion__head-flag.font-m-normal-16.font-w-semibold-20
+    //-             +trigger(controlsId)
+    //-         // This area is accordion content. Please include only this area during development.
+    //-         .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+    //-             +contentsBody5(stepNumber)
+
+    //- mixin pack6(faq, stepNumber, controlsId)
+    //-     .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+    //-         .c-accordion__head
+    //-             // block - text contents
+    //-             // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+    //-             //- .c-accordion__head-text.c-text-contents.c-step-active
+    //-             .c-accordion__head-text.c-text-contents
+    //-                 span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true")
+    //-                     span.c-accordion__step
+    //-                     span.c-accordion__head-flag.font-m-normal-16.font-w-semibold-20
+    //-             +trigger(controlsId)
+    //-         // This area is accordion content. Please include only this area during development.
+    //-         .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+    //-             +contentsBody6(stepNumber)
+
+    //- mixin pack7(faq, stepNumber, controlsId)
+    //-     .c-accordion__box.js-accordion-handle-target.c-mobile-accordion.c-accordion__box--expand
+    //-         .c-accordion__head
+    //-             // block - text contents
+    //-             // Add a class when a step is passed by validation check or expanded .c-step-active // default : remove class
+    //-             //- .c-accordion__head-text.c-text-contents.c-step-active
+    //-             .c-accordion__head-text.c-text-contents
+    //-                 span.c-accordion__initial.font-w-normal-20.font-m-normal-18.font-semibold(aria-hidden="true")
+    //-                     span.c-accordion__step
+    //-                     span.c-accordion__head-flag.font-m-normal-16.font-w-semibold-20
+    //-             +trigger(controlsId)
+    //-         // This area is accordion content. Please include only this area during development.
+    //-         .c-accordion__body(id=`${controlsId}` class=`step${stepNumber}`)
+    //-             +contentsBody7(stepNumber)
+                            
+
+    .guide-text-type Step_Type of Repair
+        br
+        | Repair Request - BR(B2B), CL, CO, CAC_EN, VN, TH, KZ, HK_EN, HK, JP, SG, DE(B2B), IT, FR, PT
+    // Component Markup
+    .c-wrapper.CS0084.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0084__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        //- +pack(faq, faq.stepNumber, controlsId)  //- 230905 mixin edit
+                        +pack(faq, faq.stepNumber, controlsId, {schedule: {number: 3, time: true}, btn: [{title: `Next`, class: `c-btn-next`, aria: true}]}, )
+                            .c-info-box-text.font-m-normal-12.font-w-normal-16 
+                                | Read and approve the privacy policy for repairs, then choose a useful date.
+
+
+    .guide-text-type Repair Request - DE(B2C)
+    // Component Markup
+    .c-wrapper.CS0084.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0084__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        //- +pack_de(faq, faq.stepNumber, controlsId)  //- 230905 mixin edit
+                        +pack(faq, faq.stepNumber, controlsId, {schedule: {number: 3, blank: true}, btn: [{title: `Next`, class: `c-btn-next`, aria: true}] })
+                            .c-info-box-text.font-m-normal-12.font-w-normal-16 
+                            | Please select at least one desired date for the repair. We will endeavor to accommodate your request, subject to the availability of a service representative.
+                            | Please note that there are no public holidays stored in our global system. When planning your desired date, please check whether there is a public holiday in your region. On-site repairs are not performed on public holidays.
+
+    .guide-text-option CN(B2B)
+    .c-wrapper.CS0084.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0084__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        //- +pack3(faq, faq.stepNumber, controlsId) //- 230905 mixin edit
+                        +pack(faq, faq.stepNumber, controlsId, {schedule: {number: 3, time: true}, btnWrapExceedsSection: true })
+                            .c-info-box-text.font-m-normal-12.font-w-normal-16 Read and approve the privacy policy for repairs, then choose a useful date.
+                            a(href="" tabindex="0" class="font-m-normal-12 font-w-normal-16" aria-label="") text link
+    
+    .guide-text-option CN(B2C), PL
+    .c-wrapper.CS0084.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0084__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        //- +pack4(faq, faq.stepNumber, controlsId)  //- 230905 mixin edit
+                        +pack(faq, faq.stepNumber, controlsId, {tab: true, tabDiv: 2, tabTitles: [`Onsite nonreal title`, `Installation unreal title`],})
+                            +printTabPanel(2, 1, true)
+                                .tab-panels
+                                    section.tab-panel
+                                        .c-info-box 
+                                            .c-info-box-text.font-m-normal-12.font-w-normal-16 The repair request form will be forwarded to a customer service representative for verification. An LG consultant will contact you as soon as possible. Below you can indicate your preferred date and time - we will do our best to contact you as soon as possible. 
+                                        //- +scheduleForm(1, true, true)
+                                        .cs-form
+                                            .cs-form__wrap
+                                                // Onsite nonreal title tab (PL) = 1 row
+                                                .cmp-form
+                                                    +csForm_Input({formDefalut:'true',type:'date', class:'', id: 'firstChoice', label: '1st choice', placeholder: 'YYYY/MM/DD', requireMsg:'Reservation date is required' })
+                                                .cmp-form
+                                                    +csForm_Select({id: 'scheduleTime', label: 'Schedule time', require: 'true', requireMsg: 'Schedule time is required.', value_01: 'Schedule time', value_02: 'Schedule time-2' })
+                            +printTabPanel(2, 2, false)
+                                .tab-panels
+                                    section.tab-panel
+                                        .c-info-box 
+                                            .c-info-box-text.font-m-normal-12.font-w-normal-16 The repair request form will be forwarded to a customer service representative for verification. An LG consultant will contact you as soon as possible. Below you can indicate your preferred date and time - we will do our best to contact you as soon as possible. 
+                                        // Onsite Nonreal Title tab (CN), Installation Unreal Title (CN / PL) =  3 rows
+                                        +scheduleForm(3, true, true)
+    
+    .guide-text-option Type4
+        br
+        | Repair Request - MX, EG_EN, TR, PL
+        br
+        | Installation Request - CO, PE, MX
+        br
+        | Assembly Request - TR
+    .c-wrapper.CS0084.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0084__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        //- +pack5(faq, faq.stepNumber, controlsId) //- 230905 mixin edit
+                        +pack(faq, faq.stepNumber, controlsId, {schedule: {number: 1, time: true}, addTabClass: true, btnWrapExceedsSection: true})
+                            .c-info-box-text.font-m-normal-12.font-w-normal-16 The repair request form will be forwarded to a customer service representative for verification. An LG consultant will contact you as soon as possible. Below you can indicate your preferred date and time - we will do our best to contact you as soon as possible. 
+                        
+    .guide-text-option Type4
+        br
+        | Repair Request - IN
+        br
+        | Installation Request - EG_EN
+    .c-wrapper.CS0084.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0084__container
+                .c-accordion.js-accordion
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        //- +pack6(faq, faq.stepNumber, controlsId) //- 230905 mixin edit
+                        +pack(faq, faq.stepNumber, controlsId, {schedule: {number: 1, time: false, blank: true}, addTabClass: true, btnWrapExceedsSection: true})
+                            .c-info-box-text.font-m-normal-12.font-w-normal-16 The repair request form will be forwarded to a customer service representative for verification. An LG consultant will contact you as soon as possible. Below you can indicate your preferred date and time - we will do our best to contact you as soon as possible.  
+
+    .guide-text-option complete(default)
+    .c-wrapper.CS0084.type-text.margin-top.margin-bottom
+        .component.type-accordion
+            .CS0084__container
+                .c-accordion.js-accordion.type-accordion__result
+                    each faq, index in stepList
+                        - var controlsId = `faq-set-0${index}`;
+                        //- +pack7(faq, faq.stepNumber, controlsId) //- 230905 mixin edit
+                        +pack(faq, faq.stepNumber, controlsId, {complete: true,})
+                        

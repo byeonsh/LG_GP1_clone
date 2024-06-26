@@ -1,0 +1,1082 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_headline.pug
+include ../_common/_product-list.pug
+include ../_common/_pagination.pug
+include ../_common/_filter.pug
+include ../_common/_hero-banner.pug
+
+block meta 
+    - var componentId = "SE-SearchResults"
+    - var componentName = "SE-SearchResults"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+
+block scripts
+    //- script(src="./SE-Compare.js" type="module")
+    script(src="./SE-Accordion.js" type="module")
+    script(src="./SE-BuyOnline.js" type="module")
+    script(src=componentId+".js" type="module")
+
+mixin filter(showDiscontinued=true, filterId)
+    .c-filter-bar.can-sticky
+        .button
+            .c-filter__icon
+            if filterId === "filterArea02"
+                //- button.c-filter-bar__text-button(type="button" aria-expanded="false" aria-controls=`${filterId}-filter-set-00`) Sort By
+                button.c-filter-bar__text-button(type="button" aria-expanded="false" aria-controls=`${filterId}-filter-set-01`) Product
+                button.c-filter-bar__text-button(type="button" aria-expanded="false" aria-controls=`${filterId}-filter-set-02`) Category
+                button.c-filter-bar__text-button(type="button" aria-expanded="false" aria-controls=`${filterId}-filter-set-03`) Price
+                button.c-filter-bar__text-button(type="button" aria-expanded="false" aria-controls=`${filterId}-filter-set-04`) Screen size
+            if filterId === "filterArea03"
+                //- button.c-filter-bar__text-button(type="button" aria-expanded="false" aria-controls=`${filterId}-filter-set-00`) Sort By
+                button.c-filter-bar__text-button(type="button" aria-expanded="false" aria-controls=`${filterId}-filter-set-01`) Type
+            if filterId === "filterArea04"
+                //- button.c-filter-bar__text-button(type="button" aria-expanded="false" aria-controls=`${filterId}-filter-set-00`) Sort By
+                button.c-filter-bar__text-button(type="button" aria-expanded="false" aria-controls=`${filterId}-filter-set-01`) Type
+
+    .c-filter.productcollection__filters(id=`${filterId}`)
+        .c-filter-title
+            .c-text-contents
+                .c-filter__icon
+                .text.c-text-contents__headline.font-w-semibold-16.font-m-semibold-20.c-filter__title-web
+                    strong Filter
+                .text.c-text-contents__headline.font-w-semibold-16.font-m-semibold-20.c-filter__title-mobile
+                    strong Filter
+                    button.c-filter__close(type="button")
+                        span.sr-only Close
+        form.c-form.cmp-form
+            .c-form__inner.cmp-options
+                if filterId === "filterArea02"
+                    //- +filterPack("Sort By", `${filterId}-filter-set-00`)
+                    //-     .c-form__box(role="list")
+                    //-         .c-form-box(role="listitem")
+                    //-             +formRadio("Newest","sort", `${filterId}_FT00000000`, `${filterId}_FV00000101`, `${filterId}_FT00000000_FV00000101`)(aria-controls=`${filterId}`)
+                    //-         .c-form-box(role="listitem")
+                    //-             +formRadio("Most Popular","sort", `${filterId}_FT00000000`, `${filterId}_FV00000102`, `${filterId}_FT00000000_FV00000102`)(aria-controls=`${filterId}`)
+                    //-         .c-form-box(role="listitem")
+                    //-             +formRadio("Consumer Rating","sort", `${filterId}_FT00000000`, `${filterId}_FV00000103`, `${filterId}_FT00000000_FV00000103`)(aria-controls=`${filterId}`)
+                    //-         .c-form-box(role="listitem")
+                    //-             +formRadio("Price: Lowest to Highest","sort", `${filterId}_FT00000000`, `${filterId}_FV00000104`, `${filterId}_FT00000000_FV00000104`)(aria-controls=`${filterId}`)
+                    //-         .c-form-box(role="listitem")
+                    //-             +formRadio("Price: Highest to Lowest","sort", `${filterId}_FT00000000`, `${filterId}_FV00000105`, `${filterId}_FT00000000_FV00000105`)(aria-controls=`${filterId}`)
+                            
+                    +filterPack("Product", `${filterId}-filter-set-01`)
+                        .c-form__box(role="list")
+                            .c-form-box(role="listitem")
+                                +formCheckbox("TV", `${filterId}_FT00000001`, `${filterId}_FV00000001`, `${filterId}_FT00000001_FV00000001`, 22)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Lifestyle Screens", `${filterId}_FT00000001`, `${filterId}_FV00000002`, `${filterId}_FT00000001_FV00000002`, 50)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Projector", `${filterId}_FT00000001`, `${filterId}_FV00000003`, `${filterId}_FT00000001_FV00000003`, 14)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Sound barl", `${filterId}_FT00000001`, `${filterId}_FV00000004`, `${filterId}_FT00000001_FV00000004`, 45)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Home Cinema System", `${filterId}_FT00000001`, `${filterId}_FV00000005`, `${filterId}_FT00000001_FV00000005`, 65)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Wireless earbuds", `${filterId}_FT00000001`, `${filterId}_FV00000006`, `${filterId}_FT00000001_FV00000006`, 62)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Blu-ray & DVD Player", `${filterId}_FT00000001`, `${filterId}_FV00000007`, `${filterId}_FT00000001_FV00000007`, 62)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Laptop", `${filterId}_FT00000001`, `${filterId}_FV00000008`, `${filterId}_FT00000001_FV00000008`, 72)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Monitor", `${filterId}_FT00000001`, `${filterId}_FV00000009`, `${filterId}_FT00000001_FV00000009`, 14)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Fridge Freezer", `${filterId}_FT00000001`, `${filterId}_FV00000010`, `${filterId}_FT00000001_FV00000010`, 45)(aria-controls=`${filterId}`)
+                            
+                    +filterPack("Category", `${filterId}-filter-set-02`)
+                        .c-form__box(role="list")
+                            .c-form-box(role="listitem")
+                                +formCheckbox("TVs", `${filterId}_FT00000002`, `${filterId}_FV00000011`, `${filterId}_FT00000002_FV00000011`, 12)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Accessories", `${filterId}_FT00000002`, `${filterId}_FV00000012`, `${filterId}_FT00000002_FV00000012`, 10)(aria-controls=`${filterId}`)
+
+                    +filterPack("Price", `${filterId}-filter-set-03`)
+                        .c-form__box(role="list")
+                            +formRange("Price", "priceOption", `${filterId}_FT00000005`, `${filterId}_FT00000051`, `${filterId}_FT00000005`, `${filterId}_FT00000051`, 0, 5)(aria-controls="resultTarget")
+
+                    +filterPack("Screen size", `${filterId}-filter-set-04`)
+                        .c-form__box(role="list")
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Over 83”", `${filterId}_FT00000004`, `${filterId}_FV00000013`, `${filterId}_FT00000004_FV00000013`, 12)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("75”-82”", `${filterId}_FT00000004`, `${filterId}_FV00000014`, `${filterId}_FT00000004_FV00000014`, 10)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("65”-74”", `${filterId}_FT00000004`, `${filterId}_FV00000015`, `${filterId}_FT00000004_FV00000015`, 10)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("55”-64”", `${filterId}_FT00000004`, `${filterId}_FV00000016`, `${filterId}_FT00000004_FV00000016`, 10)(aria-controls=`${filterId}`)
+
+                    script. 
+                        const dragbarVal = {
+                            priceOption:[
+                                {'Min':''}, 
+                                {'£500 - 1199':'RG00044272'},
+                                {'£1200 - 1999':'RG00044273'},
+                                {'£2000 - 2999':'RG00044274'},
+                                {'£3000<':'RG00044275'},
+                                {'Max':''}
+                            ],
+                            screenOption:[
+                                {'Min':''}, 
+                                {'25”':'RG00044272'},
+                                {'26”':'RG00044273'},
+                                {'27”':'RG00044274'},
+                                {'28”':'RG00044275'},
+                                {'Max':''}
+                            ]
+                        }
+                        if(dragbarVal.screenOption){
+                            dragbarVal.screenOption = JSON.parse(JSON.stringify(dragbarVal.screenOption).replace(/\&nbsp;/g, " "));
+                        }
+
+                    fieldset.c-filter-fieldset
+                        legend.sr-only
+                        .c-form__box(role="list")
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Show in stock products only", "FT00000007", "FV00000025", "FT00000007_FV00000025", 8)(aria-controls="resultTarget")
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Show promotions only", "FT00000007", "FV00000026", "FT00000007_FV00000026", 8)(aria-controls="resultTarget")
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Show bundles only", "FT00000007", "FV00000027", "FT00000007_FV00000027", 8)(aria-controls="resultTarget")
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Show VIP price only", "FT00000007", "FV00000028", "FT00000007_FV00000028", 8)(aria-controls="resultTarget")
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Show Business products only", "FT00000007", "FV00000029", "FT00000007_FV00000029", 8)(aria-controls="resultTarget")
+                    fieldset.c-filter-fieldset
+                        legend.sr-only
+                        .c-form__box(role="list")
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Show discontinued only", "FT00000008", "FV00000030", "FT00000008_FV00000030", 8)(aria-controls="resultTarget")
+
+                    if(showDiscontinued)
+                        // Case 1
+                        .c-filter-fieldset
+                            .c-form__box(role="list")
+                                .c-form-box(role="listitem").clear-all-filters
+                                    .button.c-button-item
+                                        +button({type:"text",color:"black", underline:true, name:"Clear all filters"})
+                                .c-form-box(role="listitem")
+                                    +linkButton({type:"text", color:"black", icon: true, name: "Discontinued Products", comment:false})(data-link-name data-link-destination)
+                    else 
+                        // Case 2
+                        .c-filter-fieldset.desktop-only
+                            .c-form__box(role="list")
+                                .c-form-box(role="listitem").clear-all-filters
+                                    .button.c-button-item
+                                        +button({type:"text",color:"black", underline:true, name:"Clear all filters"})
+                if filterId === "filterArea03"
+                    //- +filterPack("Sort By", `${filterId}-filter-set-00`)
+                    //-     .c-form__box(role="list")
+                    //-         .c-form-box(role="listitem")
+                    //-             +formRadio("Newest","sort", `${filterId}_FT00000000`, `${filterId}_FV00000101`, `${filterId}_FT00000000_FV00000101`)(aria-controls=`${filterId}`)
+                    //-         .c-form-box(role="listitem")
+                    //-             +formRadio("Most Popular","sort", `${filterId}_FT00000000`, `${filterId}_FV00000102`, `${filterId}_FT00000000_FV00000102`)(aria-controls=`${filterId}`)
+                    //-         .c-form-box(role="listitem")
+                    //-             +formRadio("Consumer Rating","sort", `${filterId}_FT00000000`, `${filterId}_FV00000103`, `${filterId}_FT00000000_FV00000103`)(aria-controls=`${filterId}`)
+                    //-         .c-form-box(role="listitem")
+                    //-             +formRadio("Price: Lowest to Highest","sort", `${filterId}_FT00000000`, `${filterId}_FV00000104`, `${filterId}_FT00000000_FV00000104`)(aria-controls=`${filterId}`)
+                    //-         .c-form-box(role="listitem")
+                    //-             +formRadio("Price: Highest to Lowest","sort", `${filterId}_FT00000000`, `${filterId}_FV00000105`, `${filterId}_FT00000000_FV00000105`)(aria-controls=`${filterId}`)
+                                            
+                    +filterPack("Type", `${filterId}-filter-set-01`)
+                        .c-form__box(role="list")
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Manuals & Software", `${filterId}_FT00000002`, `${filterId}_FV00000011`, `${filterId}_FT00000002_FV00000011`, 22)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Operation", `${filterId}_FT00000002`, `${filterId}_FV00000012`, `${filterId}_FT00000002_FV00000012`, 50)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Troubleshooting", `${filterId}_FT00000002`, `${filterId}_FV00000013`, `${filterId}_FT00000002_FV00000013`, 14)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Installation", `${filterId}_FT00000002`, `${filterId}_FV00000014`, `${filterId}_FT00000002_FV00000014`, 45)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Repair", `${filterId}_FT00000002`, `${filterId}_FV00000015`, `${filterId}_FT00000002_FV00000015`, 65)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("FAQ", `${filterId}_FT00000002`, `${filterId}_FV00000016`, `${filterId}_FT00000002_FV00000016`, 62)(aria-controls=`${filterId}`)
+                    if(showDiscontinued)
+                        // Case 1
+                        .c-filter-fieldset
+                            .c-form__box(role="list")
+                                .c-form-box(role="listitem").clear-all-filters
+                                    .button.c-button-item
+                                        +button({type:"text",color:"black", underline:true, name:"Clear all filters"})
+                                .c-form-box(role="listitem")
+                                    +linkButton({type:"text", color:"black", icon: true, name: "Discontinued Products", comment:false})(data-link-name data-link-destination)
+                    else 
+                        // Case 2
+                        .c-filter-fieldset.desktop-only
+                            .c-form__box(role="list")
+                                .c-form-box(role="listitem").clear-all-filters
+                                    .button.c-button-item
+                                        +button({type:"text",color:"black", underline:true, name:"Clear all filters"})
+                if filterId === "filterArea04"
+                    //- +filterPack("Sort By", `${filterId}-filter-set-00`)
+                    //-     .c-form__box(role="list")
+                    //-         .c-form-box(role="listitem")
+                    //-             +formRadio("Newest","sort", `${filterId}_FT00000000`, `${filterId}_FV00000101`, `${filterId}_FT00000000_FV00000101`)(aria-controls=`${filterId}`)
+                    //-         .c-form-box(role="listitem")
+                    //-             +formRadio("Most Popular","sort", `${filterId}_FT00000000`, `${filterId}_FV00000102`, `${filterId}_FT00000000_FV00000102`)(aria-controls=`${filterId}`)
+                    //-         .c-form-box(role="listitem")
+                    //-             +formRadio("Consumer Rating","sort", `${filterId}_FT00000000`, `${filterId}_FV00000103`, `${filterId}_FT00000000_FV00000103`)(aria-controls=`${filterId}`)
+                    //-         .c-form-box(role="listitem")
+                    //-             +formRadio("Price: Lowest to Highest","sort", `${filterId}_FT00000000`, `${filterId}_FV00000104`, `${filterId}_FT00000000_FV00000104`)(aria-controls=`${filterId}`)
+                    //-         .c-form-box(role="listitem")
+                    //-             +formRadio("Price: Highest to Lowest","sort", `${filterId}_FT00000000`, `${filterId}_FV00000105`, `${filterId}_FT00000000_FV00000105`)(aria-controls=`${filterId}`)
+                                            
+                    +filterPack("Type", `${filterId}-filter-set-01`)
+                        .c-form__box(role="list")
+                            .c-form-box(role="listitem")
+                                +formCheckbox("UP & COMING", `${filterId}_FT00000002`, `${filterId}_FV00000011`, `${filterId}_FT00000002_FV00000011`, 22)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Helpful Hints", `${filterId}_FT00000002`, `${filterId}_FV00000012`, `${filterId}_FT00000002_FV00000012`, 50)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("LG LAB", `${filterId}_FT00000002`, `${filterId}_FV00000013`, `${filterId}_FT00000002_FV00000013`, 14)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Inspiration", `${filterId}_FT00000002`, `${filterId}_FV00000014`, `${filterId}_FT00000002_FV00000014`, 45)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Our Stories", `${filterId}_FT00000002`, `${filterId}_FV00000015`, `${filterId}_FT00000002_FV00000015`, 65)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Newsroom", `${filterId}_FT00000002`, `${filterId}_FV00000016`, `${filterId}_FT00000002_FV00000016`, 62)(aria-controls=`${filterId}`)
+                            .c-form-box(role="listitem")
+                                +formCheckbox("Promotions", `${filterId}_FT00000002`, `${filterId}_FV00000017`, `${filterId}_FT00000002_FV00000017`, 62)(aria-controls=`${filterId}`)
+                    if(showDiscontinued)
+                        // Case 1
+                        .c-filter-fieldset
+                            .c-form__box(role="list")
+                                .c-form-box(role="listitem").clear-all-filters
+                                    .button.c-button-item
+                                        +button({type:"text",color:"black", underline:true, name:"Clear all filters"})
+                                .c-form-box(role="listitem")
+                                    +linkButton({type:"text", color:"black", icon: true, name: "Discontinued Products", comment:false})(data-link-name data-link-destination)
+                    else 
+                        // Case 2
+                        .c-filter-fieldset.desktop-only
+                            .c-form__box(role="list")
+                                .c-form-box(role="listitem").clear-all-filters
+                                    .button.c-button-item
+                                        +button({type:"text",color:"black", underline:true, name:"Clear all filters"})
+            .c-form__bottom.button
+                +button({color:'black', type:'box-outlined', size:'medium', class: '', uppercase : true, name : 'Clear All Filters'})
+                button.c-filter__close.cmp-button.c-button.c-button--box.medium.red(type='button' data-cmp-data-layer='') 
+                    span.cmp-button__text.c-button__text View 
+                        span.count 30
+
+mixin filterPack(title, controlsId)
+    fieldset.c-filter-fieldset
+        legend.sr-only= title
+        .c-accordion.js-accordion
+            if(controlsId.indexOf('filter-set-01') < 0)
+                .c-accordion__box.js-accordion-handle-target(data-expand="independent")
+                    .c-accordion__head
+                        .font-w-normal-16.font-m-normal-16= title
+                        .button
+                            button.cmp-button.c-accordion__button.js-accordion-trigger(type="button" aria-expanded="false" aria-controls=`${controlsId}` data-independent="true")
+                                span.c-accordion__button-text.expand.sr-only Expand
+                                span.c-accordion__button-text.collapse.sr-only Collapse
+                    .c-accordion__body(id=`${controlsId}`)
+                        if block
+                            block
+            else
+                .c-accordion__box.js-accordion-handle-target.c-accordion__box--expand(data-expand="independent")
+                    .c-accordion__head
+                        .font-w-normal-16.font-m-normal-16= title
+                        .button
+                            button.cmp-button.c-accordion__button.js-accordion-trigger(type="button" aria-expanded="true" aria-controls=`${controlsId}` data-independent="true")
+                                span.c-accordion__button-text.expand.sr-only Expand
+                                span.c-accordion__button-text.collapse.sr-only Collapse
+                    .c-accordion__body(id=`${controlsId}`)
+                        if block
+                            block
+
+//- [Start] LGCOMCI-635 : add search box
+mixin searchField(params)
+    .cs-search-area
+        .cs-search-bar
+            .searchbar
+                #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                    .searchBar__searchInner
+                        form.searchBar__form(autocomplete='off' action='#')
+                            span.fieldIcons__root
+                                span.fieldIcons__input
+                                    input.textInput__input.field__input.font-w-normal-20.font-m-normal-16(name='search_query' value='' role='searchbox' placeholder='What can we help you find today?' title="search bar" autofocus="autofocus")
+                                    +iconButton({type:"button",color:"black", class:"delete", otherClass:"searchbar__delete", name:"delete"})
+                                    a(title="search" href="#" role='button').fieldIcons__before
+                                        span.icon__root.sr-only Search
+        .button.c-cta.desktop-only
+            +defaultButton({name: 'Search', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: false})
+        .button.c-cta.mobile-only
+            +circleButton({name: 'Search', wSize: 'large', mSize: 'medium', buttonStyle: 'search', isButton: false})
+//- [End] LGCOMCI-635 : add search box
+
+//- printTab
+mixin csPrintTab(div, num, selected)
+    if selected
+        li.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0" data-cmp-hook-tabs="tab" aria-selected="true")
+            if block
+                block
+    else 
+        li.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1" data-cmp-hook-tabs="tab" aria-selected="false")
+            if block
+                block
+
+mixin csPrintTabPanel(div, num, selected)
+    if selected 
+        .cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+            if block
+                block
+    else 
+        .cmp-tabs__tabpanel(id=`tabs-1-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-1-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+            if block
+                block
+
+//- 기존에 없고 새로 제작한 컴포넌트.
+
+mixin csRecentList(list)
+    ul.cs-search-bar__recent-list
+        each set in list
+            li.cs-search-bar__recent-item
+                a(href='#' data-link-name data-link-destination).font-w-normal-14.font-m-normal-14= set.list
+                button(type="button" class='cs-search-bar__close' data-cmp-data-layer='')
+                    span.sr-only close
+        +button({type:"text",color:"black", underline:true, name:"Clear all filters"})
+
+mixin csButtonbox(set)
+    .cs-search-result__all-buttonbox&attributes(attributes)
+        .table-row
+            if Boolean(set.productBtn)
+                .table-cell
+                    +iconButton({type:"link",color:"black",class:"product",otherClass:"c-tooltip__button", name:"Product Registration", ariaControls:"product", expanded:"false", describedby:`label_Pd_${index}`})(data-link-name data-link-destination)
+            if Boolean(set.supportBtn)
+                .table-cell
+                    +iconButton({type:"link",color:"black",class:"support",otherClass:"c-tooltip__button", name:"Product Support", ariaControls:"support", expanded:"false", describedby:`label_Pd_${index}`})(data-link-name data-link-destination)
+            if Boolean(set.manualBtn)
+                .table-cell
+                    +iconButton({type:"link",color:"black",class:"manual",otherClass:"c-tooltip__button", name:"Manual & Software", ariaControls:"manual", expanded:"false", describedby:`label_Pd_${index}`})(data-link-name data-link-destination)
+            if Boolean(set.requestBtn)
+                .table-cell
+                    +iconButton({type:"link",color:"black",class:"request",otherClass:"c-tooltip__button", name:"Request a Repair", ariaControls:"request", expanded:"false", describedby:`label_Pd_${index}`})(data-link-name data-link-destination)
+
+mixin csTagbox(set)
+    - var count = set.tags.length
+    .cs-search-result__all-tagbox&attributes(attributes)
+        - for (var i = 0; i < count; i++)
+            if (i > 0)
+                span.cs-search-result__tag.font-w-normal-16.font-m-normal-12= ">"
+            span.cs-search-result__tag.font-w-normal-16.font-m-normal-12
+                if (set.tagsLink)
+                    a(href="#")= set.tags[i]
+                else
+                    = set.tags[i]
+    //-     if Boolean(set.tagBefore2)
+    //-         span.cs-search-result__tag.font-w-normal-16.font-m-normal-12
+    //-             a(href="#")= set.tagBefore2
+    //-         span.cs-search-result__tag.font-w-normal-16.font-m-normal-12= ">"
+    //-     if Boolean(set.tagBefore)
+    //-         span.cs-search-result__tag.font-w-normal-16.font-m-normal-12
+    //-             a(href="#")= set.tagBefore
+    //-         span.cs-search-result__tag.font-w-normal-16.font-m-normal-12= ">"
+    //-     span.cs-search-result__tag.font-w-normal-16.font-m-normal-12
+    //-         a(href="#")= set.tag
+
+mixin csResultContent(num, control, compare, params)
+    - let data = {...params}
+    .cs-search-result__container
+        if control
+            .c-result-area 
+                .c-result-area__controls
+                    .c-result-area__result.productcollection__results-count
+                        strong.c-result-area__count= num
+                        span Results
+                    .c-result-area__sort
+                        +formSelect("Sort by", "sort", "", false)
+                            option(value="") Best match
+                            option(value="") Newest
+                            option(value="") Popular
+                            option(value="") High to Low
+                            option(value="") Low to High
+
+            //- .cs-search-result__controls.cs-search-result__controls-all
+            //-     .cs-search-result__result.cs-search-result__result-all.font-w-semibold-16.font-m-semibold-14
+            //-         strong.cs-search-result__count.font-red= num
+            //-         span Results
+            //-     .cs-search-result__compare
+            //-         //- if compare
+            //-         //-     .c-result-area__compare
+            //-         //-         span Compare
+            //-         //-         button.c-toggle-button(type="button", aria-pressed="false")
+            //-         //-             span.sr-only Toggle Compare Buttons
+            //-         span.cs-search-result__sort.font-w-normal-14 Sort By
+            //-         +myInputForm([
+            //-             {
+            //-                 type: 'select',
+            //-                 optionVal: ['Best match', 'Newest', 'Popular', 'High to Low', 'Low to High'],
+            //-                 id: 'location',
+            //-             },
+            //-         ])
+            //- if compare
+            //-     +csRecentList([
+            //-         { 
+            //-             list:"TV",
+            //-         },
+            //-         { 
+            //-             list:"Lifestyle Screens",
+            //-         },
+            //-         { 
+            //-             list:"TVs",
+            //-         },
+            //-         { 
+            //-             list:"75”-82”",
+            //-         },
+            //-     ])
+        .cs-search-result__all-container
+            ul.cs-search-result__all(class=`${compare ? 'c-product-list' : ''}` role="list").show-compare
+                each set, index in data
+                    li.cs-search-result__all-item(role="listitem")
+                        if compare
+                            .c-product-item__tag
+                                // c-product-item__compare is only used if there is a c-toggle-button (compare) button.
+                                // i.e.) PD0001, PD0015, Search Result 
+                                .c-product-item__compare.font-w-normal-14i.font-m-normal-14i 
+                                    .c-checkbox-item
+                                        label.checkbox
+                                            input(type="checkbox" aria-describedby=`label_Pd_${index}`)
+                                            span.label Compare
+                        .cs-search-result__all-left
+                            .cs-search-result__all-content(class=`${set.tag ? 'cs-search-result__all-content-tag' : ''}`)
+                                if Boolean(set.imageUrl)
+                                    a(href="" data-link-name data-link-destination).cs-search-result__all-image
+                                        +printLazyImage(set.imageUrl)
+                                .cs-search-result__all-text
+                                    if set.flag || set.normalFlag || set.eyebrow
+                                        .cs-search-result__all-flagbox
+                                            if Boolean(set.flag)
+                                                span.cs-search-result__all-flag.font-red= set.flag
+                                            if Boolean(set.normalFlag)
+                                                span.cs-search-result__all-normalflag.font-red= set.normalFlag
+                                            if Boolean(set.eyebrow)
+                                                .text.c-text-contents__eyebrow
+                                                    span= set.eyebrow
+                                    a(href="" data-link-name data-link-destination id=`label_Pd_${index}`).title.c-text-contents__headline
+                                        if Boolean(set.play)
+                                            .button
+                                        span.font-w-normal-32.font-m-normal-16 !{set.name}
+                                    if Boolean(set.context)
+                                        .text.c-text-contents__bodycopy
+                                            span.font-w-normal-16.font-m-normal-12= set.context
+                                    if Boolean(set.priceNow)
+                                        .price-area
+                                            .price-box
+                                                .c-price.font-w-semibold-32.font-m-semibold-18
+                                                    .c-price__purchase !{set.priceNow}
+                                                .product-price.font-w-normal-20.font-m-normal-12
+                                                    if Boolean(set.ab)
+                                                        .c-price
+                                                            .c-price__price.label-ab Ab
+                                                    .c-price
+                                                        .c-price__previous !{set.priceLast}
+                                                        if set.priceInfo
+                                                            span.c-price__use-otherinfo.font-w-normal-16.font-m-normal-12 *
+                                                    .c-price(class=`${set.priceRate ? 'c-price__rate' : ''}`)
+                                                        .c-price__discount
+                                                            if set.priceRate
+                                                                span !{set.priceRate}%
+                                                                span Risparmia
+                                                            else
+                                                                span Save
+                                                                span !{set.priceSave}
+                                                if set.priceInfo
+                                                    .c-price__otherinfo.mobile-only * Prezzo più basso recente
+                                                if Boolean(set.productLabel)
+                                                    // [Start] 2023-05-26 : change common mixin(product_rating)
+                                                    .product-label__container
+                                                        +product_rating(set.productLabel, modelid='MD07546559', specsheet=true, rating=false, catalog=false, summary=false, labels=false)
+                                                    // [End] 2023-05-26 : change common mixin(product_rating)
+                                                if set.priceInfo
+                                                    .c-price__otherinfo.desktop-only * Prezzo più basso recente
+                                    if Boolean(set.tags)
+                                        +csTagbox(set)(class="desktop-only")
+                                    if Boolean(set.iconBtn)
+                                        +csButtonbox(set)(class="desktop-only")
+                                            //- .table-row
+                            if Boolean(set.button)
+                                .cs-search-result__all-bottom
+                                    .cs-search-result__all-button
+                                        .button.cs-search-result__all-learn
+                                            //- +linkButton({type:"box-outlined", name: "Learn More"})
+                                            +defaultButton({name: 'Learn More', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})(data-link-name data-link-destination aria-describedby=`label_Pd_${index}`)
+                                        if Boolean(!set.nonObsButton)
+                                            .button.cs-search-result__all-buy
+                                                //- +defaultButton({name: 'Buy Now', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})        
+                                                +defaultButton({name: 'Buy Now', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(data-link-name data-link-destination aria-describedby=`label_Pd_${index}`)
+                                                //- +linkButton({type:"box", color:"red", name: "Buy Now"})
+                            //- if Boolean(set.nonObsButton)
+                            //-     .cs-search-result__all-bottom
+                            //-             .cs-search-result__all-button
+                            //-                 .button.cs-search-result__all-learn
+                            //-                     //- +linkButton({type:"box-outlined", name: "Learn More"})
+                            //-                     +defaultButton({name: 'Learn More', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})(data-link-name data-link-destination aria-describedby=`label_Pd_${index}`)
+                            //-                 //- .button.cs-search-result__all-buy
+                            //-                 //-     //- +defaultButton({name: 'Buy Now', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})        
+                            //-                 //-     +defaultButton({name: 'Buy Now', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+                            //-                 //-     //- +linkButton({type:"box", color:"red", name: "Buy Now"})
+                        if Boolean(set.tags)
+                            +csTagbox(set)(class="mobile-only")
+                        if Boolean(set.iconBtn)
+                            +csButtonbox(set)(class="mobile-only")
+
+        //- .button.align-text-center
+        //-     +button({type:"box-outlined", color:"black", size:"medium", icon: true, name: "more"})
+        .c-result-area__more 
+            //- +button({type:"box-outlined", color:"black", size:"medium", icon: true, name: "More"})
+            +pagination            
+
+mixin csResultRelated(list)
+    .cs-search-result__suggest
+        .c-text-contents
+            .title.c-text-contents__headline
+                +headline("font-w-light-56 font-m-light-28", "h3", "Related Searches") 
+        ul.cs-search-result__suggest-list(role="list")
+            each set in list
+                li.cs-search-result__suggest-item(role="listitem")
+                    a(href='#' data-link-name data-link-destination).font-w-normal-20.font-m-normal-14= set.list
+
+mixin csResultSuggest(list)
+    .cs-search-result__suggest
+        .c-text-contents
+            .title.c-text-contents__headline.align-text-center
+                +headline("font-w-semibold-40 font-m-semibold-26", "h3", "Suggested Searches") 
+        ul.cs-search-result__suggest-list(role="list")
+            each set in list
+                li.cs-search-result__suggest-item(role="listitem")
+                    a(href='#' data-link-name data-link-destination).font-w-normal-14.font-m-normal-14= set.list
+
+mixin csResultEmpty(linktext, params)
+    - let data = {...params}
+    .cs-search-result__empty
+        .c-text-contents
+            //- .title.c-text-contents__headline
+            //-     +headline("font-w-semibold-40 font-m-semibold-24", "h4", "We are sorry, your search did not return any results on our site.") 
+            .text.c-text-contents__bodycopy
+                span.font-w-normal-24.font-m-normal-16 We are sorry,
+                |
+                <br/>
+                |
+                span.font-w-normal-24.font-m-normal-16 your search did not return any results on our site.
+            .text.c-text-contents__bodycopy
+                span.font-w-light-36.font-m-light-28 Did you mean
+                    +linkButton({type:"text", underline:true, name:linktext})(data-link-name data-link-destination)
+                    span.font-w-light-36.font-m-light-28 ?
+            ul.cs-search-result__empty-list
+                each set in data
+                    li
+                        span.font-w-normal-16.font-m-normal-14= set.context
+
+//- 하단 메세지 부분
+mixin csActiveMsg(params)
+    - let data = {...params}
+    .cs-active-msg
+        .cs-active-msg__box
+            .cs-active-msg__content
+                .cs-active-msg__txt
+                    span.font-w-semibold-16.font-m-semibold-14= data.msgtitle
+                    span.font-w-normal-14.font-m-normal-14= data.msgtxt
+                +linkButton({type:"box", color:"red", size:"small", name: "SIGN UP"})(data-link-name data-link-destination)
+            button.cs-active-msg__close
+                span.sr-only close
+
+mixin csResultBanner(params)
+    - let data = {...params}
+    .c-summary-recommended-promotion
+        .c-text-contents
+            .title.c-text-contents__headline.align-text-center
+                +headline("font-w-semibold-40 font-m-semibold-26", "h3", "Related Promtion") 
+        .c-summary-recommended-promotion__carousel
+            .carousel.panelcontainer
+                .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                    .cmp-carousel__content.swiper-wrapper
+                        each set in data
+                            .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-hook-carousel="item")
+                                +csResultBannerItem(set)
+                    .c-carousel__handler
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"prev"})
+                        +carouselPagination
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"next"})
+
+mixin csResultBannerItem(set)
+    ul.c-summary-banner.c-summary-banner--overlay-side
+        li.c-summary-banner__visual
+            .iamge.c-image
+                +printLazyPicture(`https://via.placeholder.com/310x380/333/999`, `https://via.placeholder.com/708x450/333/999`)
+        li.c-summary-banner__contents
+            .c-text-contents
+                .text.c-text-contents__subcopy
+                    span.cmp-text.font-w-semibold-40.font-m-semibold-24(data-cmp-data-layer="") !{set.title}
+                .c-cta 
+                    +linkButton({type:"box", color:"white", size: "medium", name :"Learn More"})(data-link-name data-link-destination)
+
+//- inpur form
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected})
+    .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+        +formSelect(label, id, placeholder, false)
+            if optionVal
+                - for(var i=0; i < optionVal.length; i++)
+                    if selected === i + 1
+                        option(value="" selected)= optionVal[i]
+                    else
+                        option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText})
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+    if data.type === 'select'
+        +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected})
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-semibold-16.font-m-semibold-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+            if data.required
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+            else 
+                if data.active
+                    input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+                
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+block content
+    // Component Markup
+    .c-wrapper.c-wrapper.margin-top.margin-bottom
+        .component
+            .SE-SearchResults
+                +searchField()
+                .cs-search-result
+                    //- .cs-search-result__searchbar
+                    //-     .searchbar
+                    //-         #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                    //-             .searchBar__searchInner
+                    //-                 form.searchBar__form(autocomplete='off' action='#')
+                    //-                     span.fieldIcons__root
+                    //-                         span.fieldIcons__input
+                    //-                             input.textInput__input.field__input.font-w-normal-16.font-m-normal-14(name='search_query' value='TV' role='searchbox' placeholder='' title='searchbox' disabled)
+                    //-                         a(title="search" href="#" data-link-url="").fieldIcons__before
+                    //-                             span.icon__root
+                    //-                         +iconButton({type:"button",color:"black", class:"delete", otherClass:"searchbar__delete", name:"delete"})
+                    .tabs.panelcontainer.tabs__wide
+                            .cmp-tabs(data-cmp-data-layer="" data-placeholder-text="false")
+                                .cmp-tabs__inner.c-tab
+                                    ul.cmp-tabs__tablist(role="tablist" aria-multiselectable="false")
+                                        +csPrintTab(1, 1, true) All(1,000)
+                                        +csPrintTab(1, 2, false) Product(700)
+                                        +csPrintTab(1, 3, false) Support(250)
+                                        +csPrintTab(1, 4, false) Experience(50)
+                                        //- +csPrintTab(1, 5, false) FIND A STORE
+
+                    +csPrintTabPanel(1, 1, true)                  
+                        .has-filter
+                            .c-content-area.c-content-area__all
+                                .productlist.productcollection
+                                    .c-category__root
+                                        .c-productcollection__root.productcollection__root(data-cmp-is="productcollection", data-cmp-data-layer)
+                                            +csResultContent('1,000', false, false, [
+                                                {
+                                                    button:true,
+                                                    iconBtn:true,
+                                                    manualBtn:true,
+                                                    requestBtn:true,
+                                                    productBtn:true,
+                                                    supportBtn:true,
+                                                    flag:"New",
+                                                    imageUrl: "https://via.placeholder.com/180x180/999999/000000",
+                                                    eyebrow:"OLED77B26LA",
+                                                    name:"LG OLED evo C2 83'' 4K Smart TV",
+                                                    priceNow:"£2,099.98",
+                                                    priceLast:"£2,399.98",
+                                                    priceInfo:true,
+                                                    priceRate:"3.23",
+                                                    productLabel:'a',
+                                                },
+                                                {
+                                                    button:true,
+                                                    iconBtn:true, 
+                                                    manualBtn:true,
+                                                    requestBtn:true,
+                                                    productBtn:true,
+                                                    supportBtn:true,
+                                                    imageUrl: "https://via.placeholder.com/180x180/999999/000000",
+                                                    eyebrow:"OLED77B26LA",
+                                                    name:"LG SIGNATURE OLED TV 65'' Series R1 - OLED Rollable Design",
+                                                    priceNow:"£2,099.98",
+                                                    priceLast:"£2,399.98",
+                                                    priceRate:"3.23",
+                                                    productLabel:'f',
+                                                },
+                                                {
+                                                    button:true,
+                                                    iconBtn:true,
+                                                    manualBtn:true,
+                                                    requestBtn:true,
+                                                    productBtn:true,
+                                                    supportBtn:true,
+                                                    imageUrl: "https://via.placeholder.com/180x180/999999/000000",
+                                                    eyebrow:"OLED55C37LA.DS80QY",
+                                                    name:'55" LG 4K OLED evo TV C3 + 3.1.3 Dolby Atmos® Soundbar mit 480 Watt | kabelloser Subwoofer',
+                                                    priceNow:"1.699,00 €",
+                                                    priceLast:"3.298,00 €",
+                                                    priceSave:"1.599,00 €",
+                                                    productLabel:'g',
+                                                    ab:true,
+                                                },
+                                                {
+                                                    imageUrl: "https://via.placeholder.com/180x116/999999/000000",
+                                                    name:"[LG TV] Watch Disney + on LG TV + LG",
+                                                    tags: ["Support", "Video Tutorials"],
+                                                    tagsLink: true,
+                                                },
+                                                {
+                                                    name:"Connecting & Using Headphones with Smart TV",
+                                                    context:"Connecting your audio to Bluetooth headphones is possible with models supporting LG sound sync (wireless) function. - Firstly, check if your headset is supported by LG sound sync (wireless) function. - Available headset products vary depending on models, so please refer to headset model names on user guide.",
+                                                    tags: ["Support"],
+                                                },
+                                                {
+                                                    imageUrl: "https://via.placeholder.com/180x116/999999/000000",
+                                                    name:"LG TVs are More connected than ever – thanks to Google, Amazon and Apple",
+                                                    context:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                                                    tags: ["LG Experience", "Helpful Hints"],
+                                                    tagsLink: true,
+                                                },
+                                                {
+                                                    name:"Cleaning Your LG 4K, OLED, or LED TV",
+                                                    context:"Cleaning your 4K, OLED, or LED TV screen with a soft, dry cloth is recommended. If you have already used liquid on the screen, dry it as quickly as possible (it may not be too late). These guidelines apply to the TV's screen, as well as the housing (Frame, Body and Case). Moisture on or near the TV should be avoided as it could cause short ...",
+                                                    tags: ["LG Experience", "Helpful Hints"],
+                                                    tagsLink: true,
+                                                }                       
+                                            ])
+                    +csPrintTabPanel(1, 2, false)
+                        .has-filter
+                            .c-content-area.c-content-area__product-list
+                                .productlist.productcollection
+                                    .c-category__root
+                                        .c-productcollection__root.productcollection__root(data-cmp-is="productcollection", data-cmp-data-layer)
+                                            +filter(false, "filterArea02")
+                                            +csResultContent('700', true, true, [
+                                                {
+                                                    flag:"New",
+                                                    imageUrl: "https://via.placeholder.com/180x180/999999/000000",
+                                                    eyebrow:"OLED77B26LA",
+                                                    name:"LG <em>OL</em>ED evo C2 83'' 4K Smart TV",
+                                                    priceNow:"£2,099.98",
+                                                    priceLast:"£2,399.98",
+                                                    priceSave:"£233.00",
+                                                    button:true,
+                                                    productLabel:'c',
+                                                },
+                                                {
+                                                    flag:"Sale",
+                                                    imageUrl: "https://via.placeholder.com/180x180/999999/000000",
+                                                    eyebrow:"OLED77B26LA",
+                                                    name:"LG <em>OL</em>ED evo C2 77'' 4K Smart TV",
+                                                    priceNow:"£2,099.98",
+                                                    priceLast:"£2,399.98",
+                                                    priceSave:"£233.00",
+                                                    button:true,
+                                                    productLabel:'c',
+                                                    ab:true,
+                                                },
+                                                {
+                                                    flag:"Promotion",
+                                                    imageUrl: "https://via.placeholder.com/180x180/999999/000000",
+                                                    eyebrow:"OLED77B26LA",
+                                                    name:"LG <em>OL</em>ED evo C2 55'' 4K Smart TV",
+                                                    priceNow:"£2,099.98",
+                                                    priceLast:"£2,399.98",
+                                                    priceSave:"£233.00",
+                                                    button:true,
+                                                    productLabel:'c',
+                                                },
+                                                {
+                                                    flag:"Business Product",
+                                                    imageUrl: "https://via.placeholder.com/180x180/999999/000000",
+                                                    eyebrow:"OLED77B26LA",
+                                                    name:"LG <em>OL</em>ED evo C2 83'' 4K Smart TV",
+                                                    priceNow:"£2,099.98",
+                                                    priceLast:"£2,399.98",
+                                                    priceSave:"£233.00",
+                                                    button:true,
+                                                    productLabel:'c',
+                                                },
+                                                {
+                                                    imageUrl: "https://via.placeholder.com/180x180/999999/000000",
+                                                    eyebrow:"OLED77B26LA",
+                                                    name:"LG <em>OL</em>ED evo C2 77'' 4K Smart TV",
+                                                    priceNow:"£2,099.98",
+                                                    priceLast:"£2,399.98",
+                                                    priceSave:"£233.00",
+                                                    button:true,
+                                                    productLabel:'c',
+                                                },
+                                                {
+                                                    flag:"Pre-order",
+                                                    imageUrl: "https://via.placeholder.com/180x180/999999/000000",
+                                                    eyebrow:"OLED77B26LA",
+                                                    name:"LG <em>OL</em>ED evo C2 65'' 4K Smart TV",
+                                                    priceNow:"£2,099.98",
+                                                    priceLast:"£2,399.98",
+                                                    priceSave:"£233.00",
+                                                    button:true,
+                                                    productLabel:'c',
+                                                },
+                                                {
+                                                    flag:"New",
+                                                    imageUrl: "https://via.placeholder.com/180x180/999999/000000",
+                                                    eyebrow:"OLED77B26LA",
+                                                    name:"LG SIGNATURE <em>OL</em>ED TV 65'' Series R1 - <em>OL</em>ED Rollable Design",
+                                                    priceNow:"£2,099.98",
+                                                    priceLast:"£2,399.98",
+                                                    priceSave:"£233.00",
+                                                    button:true,
+                                                    nonObsButton:true,
+                                                    productLabel:'c',
+                                                },
+                                            ])
+                    +csPrintTabPanel(1, 3, false)
+                        .has-filter
+                            .c-content-area.c-content-area__product-list
+                                .productlist.productcollection
+                                    .c-category__root
+                                        .c-productcollection__root.productcollection__root(data-cmp-is="productcollection", data-cmp-data-layer)
+                                            +filter(false, "filterArea03")
+                                            +csResultContent('250', true, false, [
+                                                {
+                                                    iconBtn:true,
+                                                    manualBtn:true,
+                                                    requestBtn:true,
+                                                    productBtn:true,
+                                                    supportBtn:true,
+                                                    imageUrl: "https://via.placeholder.com/180x180/999999/000000",
+                                                    eyebrow:"OLED77B26LA",
+                                                    name:`LG SIGNATURE OLED TV 65'' Series R1 - OLED Rollable Design`,
+                                                },
+                                                {
+                                                    imageUrl: "https://via.placeholder.com/180x116/999999/000000",
+                                                    name:"[LG TV] Watch Disney + on LG TV",
+                                                    tags: ["SUPPORT", "Troubleshoot", "Operation"],
+                                                    tagsLink: true,
+                                                },
+                                                {
+                                                    name:"How do I turn my TV on or off without a remote control?",
+                                                    context:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, w hen an unknown printer took a galley of type and scrambled it to make a type special special",
+                                                    tags: ["SUPPORT", "Troubleshoot", "Troubleshooting"],
+                                                    tagsLink: true,
+                                                },
+                                                {
+                                                    name:"How do I register the product after purchasing the TV?",
+                                                    context:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, w hen an unknown printer took a galley of type and scrambled it to make a type special special",
+                                                    tags: ["SUPPORT", "Troubleshoot", "Operation"],
+                                                    tagsLink: true,
+                                                },
+                                                {
+                                                    imageUrl: "https://via.placeholder.com/180x180/999999/000000",
+                                                    eyebrow:"OLED83C14LA",
+                                                    name:'LG OLED C1 48" 4K Smart TV',
+                                                    tags: ["SUPPORT", "Manuals & Software"],
+                                                    tagsLink: true,
+                                                },
+                                                {
+                                                    name:"Q. How do I turn my TV on or off without a remote control?",
+                                                    context:"A. We recommend that safety precautions are taken place when mounting your LG TV. We will also help you on a step by step guide on unboxing incase you arestrictly",
+                                                    tags: ["SUPPORT", "FAQ"],
+                                                    tagsLink: true,
+                                                },
+                                            ])
+                    +csPrintTabPanel(1, 4, false)
+                        .has-filter
+                            .c-content-area.c-content-area__product-list
+                                .productlist.productcollection
+                                    .c-category__root
+                                        .c-productcollection__root.productcollection__root(data-cmp-is="productcollection", data-cmp-data-layer)
+                                            +filter(false, "filterArea04")
+                                            +csResultContent('50', true, false, [
+                                                {
+                                                    name:"How do I turn my TV on or off without a remote control?",
+                                                    context:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, w hen an unknown printer took a galley of type and scrambled it to make a type speci...",
+                                                    tags: ["LG Experience", "LG Lab"],
+                                                    tagsLink: true,
+                                                },
+                                                {
+                                                    imageUrl: "https://via.placeholder.com/180x116/999999/000000",
+                                                    name:"Connecting Smart Phone to Smart TV",
+                                                    context:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, w hen an unknown printer",
+                                                    tags: ["LG Experience", "Up & Coming"],
+                                                    tagsLink: true,
+                                                },
+                                                {
+                                                    name:"Get 3 months of Apple TV+ free*",
+                                                    context:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, w hen an unknown printer",
+                                                    tags: ["Promotions"],
+                                                },
+                                                {
+                                                    name:"Connecting & Using Headphones with Smart TV",
+                                                    context:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, w hen an unknown printer",
+                                                    tags: ["About LG", "Newsroom"],
+                                                    tagsLink: true,
+                                                },
+                                                {
+                                                    imageUrl: "https://via.placeholder.com/180x116/999999/000000",
+                                                    name:"LG TVs are More connected than ever – thanks to Google, Amazon and Apple",
+                                                    context:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, w hen an unknown printer ...",
+                                                    tags: ["LG Experience", "Helpful Hints"],
+                                                    tagsLink: true,
+                                                },
+                                                {
+                                                    imageUrl: "https://via.placeholder.com/180x116/999999/000000",
+                                                    name:"Searching & Downloading Apps on Smart TV",
+                                                    context:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, w hen an unknown printer ...",
+                                                    tags: ["LG Experience", "INSPIRATION"],
+                                                    tagsLink: true,
+                                                },
+                                            ])                                            
+                    +csResultEmpty("OLED", [
+                        {
+                            context:"Check your search words or use search suggestions",
+                        },
+                    ])
+                    +csResultRelated([
+                        { 
+                            list:"OLED TV",
+                        },
+                        { 
+                            list:"LG OLED FLEX-B",
+                        },
+                        { 
+                            list:"TVs",
+                        },
+                        { 
+                            list:"32 inch smart",
+                        },
+                        { 
+                            list:"screen split",
+                        },     
+                        { 
+                            list:"4K tv",
+                        },                   
+                        { 
+                            list:"Software & Drivers",
+                        },
+                        { 
+                            list:"Oled",
+                        },
+                        { 
+                            list:"TV Software",
+                        },
+                    ])
+                    //- +csResultSuggest([
+                    //-     { 
+                    //-         list:"OLED TV",
+                    //-     },
+                    //-     { 
+                    //-         list:"LG OLED FLEX-B",
+                    //-     },
+                    //-     { 
+                    //-         list:"32 inch smart",
+                    //-     },
+                    //-     { 
+                    //-         list:"TVs",
+                    //-     },
+                    //-     { 
+                    //-         list:"screen split",
+                    //-     },     
+                    //-     { 
+                    //-         list:"4K tv",
+                    //-     },                   
+                    //-     { 
+                    //-         list:"Software & Drivers",
+                    //-     },
+                    //-     { 
+                    //-         list:"OLED",
+                    //-     },
+                    //-     { 
+                    //-         list:"TV Software",
+                    //-     },
+                    //-     { 
+                    //-         list:"Smart TV",
+                    //-     },
+                    //- ])
+
+                    //- +csResultBanner([
+                    //-     {
+                    //-         title:"Join Now <br> Black Friday Sale"
+                    //-     },
+                    //-     {
+                    //-         title:"Lorem ipsum <br> Lorem ipsum dolor sit amet"
+                    //-     },
+                    //- ])
+                            
+                    +csActiveMsg({
+                            msgtitle: "Welcome to LG!",
+                            msgtxt : "Sign up and get a 5% discount on your first purchase!",
+                        },
+                    )
+
+    .guide-text-option Option : Searchbar + no result
+    .c-wrapper.margin-top.margin-bottom
+        .component
+            .SE-SearchResults
+                +searchField()
+                .cs-search-result.cs-search-result__none
+                    +csResultEmpty("OLED", [
+                        {
+                            context:"Check your search words or use search suggestions",
+                        },
+                    ])

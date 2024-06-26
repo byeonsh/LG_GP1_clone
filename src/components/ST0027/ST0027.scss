@@ -1,0 +1,227 @@
+@charset "UTF-8";
+
+@use '../../scss/abstract/' as *;
+
+$component: '.ST0027';
+$cmp-carouse: '.cmp-carousel';
+$text-contents: '.c-text-contents';
+$image: '.c-image';
+$summary-box: '.c-summary-box';
+$carousel: '.c-carousel';
+
+#{$component} {
+  @include lgness-margin('if-headline');
+  > .component > .cmp-container {
+    position: relative;
+    @include container($design-grid-full, true);
+    @include inset-padding-hz;
+  }
+
+  // block : summary box
+  .c-summary-box {
+    margin-top: rem($margin12px);
+    @include screen(web) {
+      margin-top: rem($margin20px);
+    }
+    #{$cmp-carouse}__content {
+      @include screen(mobile) {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(1, auto);
+        gap: rem($margin20px) rem($margin10px);
+
+        > * {
+          margin: 0 !important;
+        }
+      }
+    }
+
+    #{$text-contents} {
+      margin-top: rem($margin12px);
+      @include screen(web) {
+        margin-top: rem($margin20px);
+      }
+      // change align css according to flex main axis
+      &.pos-top {
+        align-items: initial;
+        justify-content: flex-start;
+      }
+      &.pos-middle {
+        align-items: initial;
+        justify-content: center;
+      }
+      &.pos-bottom {
+        align-items: initial;
+        justify-content: flex-end;
+      }
+
+      .cmp-title,
+      .cmp-text {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      &__bodycopy {
+        margin-top: rem($margin8px);
+      }
+      &__subcopy {
+        margin-top: rem($margin8px);
+        color: $gray3;
+      }
+      #{$image} {
+        border-radius: initial;
+        overflow: initial;
+        // margin-top: rem($margin20px);
+        // @include screen(web) {
+        //     margin-top: rem($margin24px);
+        // }
+
+        .cmp-image {
+          display: block;
+          min-height: initial;
+        }
+
+        &__img {
+          max-width: initial;
+          width: auto;
+          height: auto;
+          position: initial;
+          transform: initial;
+        }
+      }
+    }
+
+    &__item {
+      &--large {
+        #{$text-contents}__bodycopy {
+          margin-top: rem($margin8px);
+        }
+      }
+      &--gradient::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        // border-radius: rem($radius8);
+        @include lgness-radius('default');
+      }
+
+      @at-root #{$component} #{$summary-box}__item--gradient {
+        &.font-black::after {
+          background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #fff0), to(#fffc));
+          background-image: linear-gradient(0deg, #fff0 0, #fffc 100%);
+        }
+        &.font-white::after {
+          background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #0000), to(#000c));
+          background-image: linear-gradient(0deg, #0000 0, #000c 100%);
+        }
+      }
+    }
+
+    &--overlay {
+      #{$text-contents} {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: rem($margin20px);
+        bottom: rem($margin20px);
+        left: rem($margin20px);
+        right: rem($margin20px);
+        z-index: $z-index1;
+        margin-top: 0;
+        @include screen(web) {
+          top: rem($margin40px);
+          bottom: rem($margin40px);
+          left: rem($margin40px);
+          right: rem($margin40px);
+        }
+      }
+      #{$image} .cmp-image {
+        min-height: rem($min-height240px);
+        @include screen(web) {
+          min-height: rem($min-height480px);
+        }
+      }
+    }
+
+    &--odd {
+      #{$summary-box}__item:first-of-type {
+        @include screen(mobile) {
+          width: auto !important;
+          grid-column: 1/3;
+
+          #{$text-contents}__subcopy,
+          #{$text-contents}__bodycopy {
+            margin-top: rem($margin8px);
+          }
+        }
+      }
+    }
+  }
+
+  // block : image
+  .c-image {
+    // border-radius: rem($radius8);
+    @include lgness-radius('default');
+    overflow: hidden;
+    text-align: left;
+
+    .cmp-image {
+      display: flex;
+      // justify-content: center;
+      min-height: rem($min-height150px);
+      @include screen(web) {
+        min-height: rem($min-height340px);
+      }
+      img,
+      picture {
+        @include lgness-radius('default');
+        overflow: hidden;
+      }
+    }
+
+    &__img {
+      max-width: initial;
+      width: auto;
+      height: 100%;
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .fit-content {
+      background-color: #fff;
+      .cmp-image__image {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: auto;
+        height: fit-content;
+        @include screen(web) {
+          height: fit-content;
+          max-height: fit-content;
+        }
+      }
+      .image-frame {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+  }
+
+  // block : carousel
+  #{$carousel} {
+    position: static;
+    overflow-y: visible;
+    @at-root #{$component} {
+      &.bg-black #{$carousel}__pagination,
+      &.bg-darkgray #{$carousel}__pagination {
+        color: $white;
+      }
+    }
+  }
+}

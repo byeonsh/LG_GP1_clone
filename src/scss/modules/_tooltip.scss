@@ -1,0 +1,183 @@
+@use '../abstract/' as *;
+
+@mixin tooltip() {
+  .c-tooltip {
+    position: relative;
+    &__container {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: rem($width1px);
+      height: rem($height1px);
+      display: none;
+      z-index: $z-index2 * -1;
+      &.active {
+        display: flex;
+        z-index: $z-index2;
+      }
+      &:before {
+        position: absolute;
+        display: block;
+        content: '';
+        width: rem($width12px);
+        height: rem($width12px);
+        margin: rem($margin4px * -1 calc($width12px / -2));
+        border-style: solid;
+        border-color: $mid-gray1;
+        border-width: rem(0 0 $border1 $border1);
+
+        background-color: $white;
+        z-index: $stacking-floor;
+      }
+      &.top-left,
+      &.top-center,
+      &.top-right {
+        margin-top: rem($margin20px);
+        &:before {
+          transform: rotate($degree135) skew(-7deg, -7deg);
+          border-radius: 0 0 0 rem($radius2);
+        }
+      }
+      &.bottom-left,
+      &.bottom-center,
+      &.bottom-right {
+        margin-top: rem($margin20px * -1);
+        &:before {
+          transform: rotate($degree45 * -1) skew(-7deg, -7deg);
+          border-radius: rem(0 $radius2 0 0);
+        }
+      }
+    }
+    &__contents {
+      overflow: hidden;
+      position: absolute;
+
+      width: rem($width280px);
+      border: rem($border1) solid $mid-gray1;
+      padding: rem($padding32px) rem($padding24px) rem($padding24px);
+      box-shadow: rem(0 $shadow8 $shadow12) rgba($black, 0.06);
+      background-color: $white;
+      @include lgness-radius('default');
+
+      &.has-close {
+        padding-right: rem($padding36px);
+      }
+
+      .c-text-contents__bodycopy,
+      .c-text-contents {
+        + .button {
+          margin: rem($margin12px) 0 0 0;
+        }
+      }
+
+      // modifier
+      &--small {
+        width: rem($width139px);
+        padding: rem($padding12px) rem($padding16px);
+        .c-text-contents__bodycopy,
+        .c-text-contents {
+          + .button {
+            margin: rem($margin6px) 0 0 0;
+          }
+        }
+        .c-button[class*='-underline'] {
+          font-size: rem(14px);
+          line-height: 1;
+        }
+      }
+      &--large {
+        width: rem($width380px);
+      }
+      .c-button--text-icon {
+        &.default {
+          color: $black;
+        }
+      }
+    }
+    // contents area - position
+    $pos-lr: -30px;
+    $pos-tb: 2px;
+    &__container {
+      &.top-left {
+        .c-tooltip__contents {
+          /*! rtl:ignore */
+          left: rem($pos-lr);
+          top: rem($pos-tb);
+        }
+      }
+      &.top-center {
+        .c-tooltip__contents {
+          /*! rtl:ignore */
+          left: rem(-1 * calc($width280px/2));
+          top: rem($pos-tb);
+        }
+      }
+      &.top-right {
+        .c-tooltip__contents {
+          /*! rtl:ignore */
+          right: rem($pos-lr);
+          top: rem($pos-tb);
+        }
+      }
+      &.bottom-left {
+        .c-tooltip__contents {
+          /*! rtl:ignore */
+          left: rem($pos-lr);
+          bottom: rem(-$pos-tb);
+        }
+      }
+      &.bottom-center {
+        .c-tooltip__contents {
+          /*! rtl:ignore */
+          left: rem(calc(-1 * $width280px/2));
+          bottom: rem(-$pos-tb);
+        }
+      }
+      &.bottom-right {
+        .c-tooltip__contents {
+          /*! rtl:ignore */
+          right: rem($pos-lr);
+          bottom: rem(-$pos-tb);
+        }
+      }
+    }
+    // close
+    &__close {
+      $icon-size: $icon12px;
+      $icon-image: $icon-close-black-12-12;
+      $icon-margin: $margin16px;
+      $size: rem($icon-margin * 2);
+
+      // reset
+      border: 0;
+      padding: 0;
+      // ---
+
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      position: absolute;
+      top: rem(5px);
+      right: rem(5px);
+
+      width: $size;
+      height: $size;
+      background-color: inherit;
+
+      &:before {
+        content: '';
+        display: block;
+        width: rem($icon-size);
+        height: rem($icon-size);
+        background : {
+          image: url($icon-image);
+          position: 100% center;
+          size: 100% auto;
+          repeat: no-repeat;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,460 @@
+@use 'sass:color';
+@use 'sass:map';
+@use '../abstract/' as *;
+
+// Defines the background color to be provided as an option and the font color accordingly.
+
+$lightgray-potion: color.blackness($ivory8);
+
+// # match-color
+@mixin match-color($bg) {
+  // @debug $bg '|' color.blackness($bg);
+  // set color by blackness
+  @if 50% < color.blackness($bg) {
+    // darkgray, black
+    color: $white;
+  } @else if $lightgray-potion == color.blackness($bg) {
+    // lightgray
+    color: $black;
+  } @else {
+    // white
+    color: $black;
+  }
+  // set bg color
+  background-color: $bg;
+}
+// =- description -=
+// $bg : theme color.
+// find contrast color only differ brightness of given value.
+
+// # lightgray-theme-style
+@mixin lightgray-theme-style {
+  :focus-visible {
+    outline-color: $black;
+  }
+  .item-border-graye6-thick1 {
+    border-color: $white;
+  }
+}
+
+// # warmgray-theme-style
+@mixin warmgray-theme-style {
+  :focus-visible {
+    outline-color: $black;
+  }
+  .item-border-graye6-thick1 {
+    border-color: $white;
+  }
+}
+
+// # dark-theme-style
+@mixin dark-theme-style {
+  :focus-visible {
+    outline-color: $white;
+  }
+  .c-button {
+    $small: '&.small';
+    $medium: '&.medium';
+    $large: '&.large';
+    $color-black: '&.black';
+    $box: '&[class*="-box"]';
+    $outline: '&[class*="-box-outlined"]';
+    $text: '&[class*="-text"]';
+    $link: '&[class*="-link"]';
+    $underline: '&[class*="-underline"]';
+    $fake: '&[class*="-fake"]';
+    $icon: '&[class*="-icon"]';
+    #{$box} {
+      &:not(#{$outline}) {
+        #{$color-black} {
+          color: $gray3;
+          background-color: $white;
+          // &:focus,
+          &:hover {
+            background-color: $graye;
+          }
+        }
+      }
+    }
+    #{$outline} {
+      color: $white;
+      border-color: $white;
+      // &:focus,
+      &:hover {
+        color: $gray3;
+        background-color: $white;
+      }
+      // icon
+      #{$icon} {
+        &:after {
+          background-image: url($icon-arrow-white-down-12-7);
+        }
+        &:disabled,
+        &[disabled] {
+          &:after {
+            background-image: url($icon-arrow-gray9-down-12-7);
+          }
+        }
+        #{$small} {
+          &:after {
+            background-image: url($icon-arrow-white-down-10-6);
+          }
+          &:disabled,
+          &[disabled] {
+            &:after {
+              background-image: url($icon-arrow-gray9-down-10-6);
+            }
+          }
+        }
+      }
+    }
+    #{$text} {
+      color: $white;
+      #{$icon} {
+        &:after {
+          background-image: url($icon-arrow-white-right-5-8);
+          @include screen(web) {
+            background-image: url($icon-arrow-white-right-6-10);
+          }
+        }
+        &[class*='-small'] {
+          &:after {
+            background-image: url($icon-arrow-white-right-7-12);
+          }
+        }
+        &[class*='-medium'] {
+          &:after {
+            background-image: url($icon-arrow-white-right-9-14);
+          }
+        }
+        &[class*='-large'] {
+          &:after {
+            background-image: url($icon-arrow-white-right-11-18);
+          }
+        }
+        &.down {
+          &[class*='-small'] {
+            &:after {
+              background-image: url($icon-arrow-white-down-12-7);
+            }
+          }
+          &[class*='-medium'] {
+            &:after {
+              background-image: url($icon-arrow-white-down-12-7);
+            }
+          }
+          &[class*='-large'] {
+            &:after {
+              background-image: url($icon-arrow-white-down-17-10);
+            }
+          }
+        }
+      }
+    }
+    #{$underline} {
+      box-shadow: 0 rem($shadow2) $white;
+    }
+    #{$fake} {
+      background-color: $white;
+    }
+  }
+  .c-text-contents {
+    // case from st0005
+    &__date#{$precedence} {
+      color: $grayb;
+    }
+    &__bodycopy {
+      color: $white;
+    }
+    &__disclaimer {
+      color: $white;
+    }
+  }
+}
+// =- description -=
+// $font-color : inject to child elements color. value depend on theme.
+// a common style declaration with a dark theme.
+
+// skin : "theme-"
+@mixin theme-white($use-padding) {
+  @include match-color($white);
+  // @if $use-padding {
+  //     @include inset-padding-vt;
+  // }
+}
+@mixin theme-lightgray($use-padding) {
+  @include match-color($ivory8);
+  // @if $use-padding {
+  //     @include inset-padding-vt;
+  // }
+}
+@mixin theme-warmgray($use-padding) {
+  @include match-color($warm-gray);
+}
+@mixin theme-black($use-padding) {
+  @include match-color($black);
+  // @if $use-padding {
+  //     @include inset-padding-vt;
+  // }
+}
+@mixin theme-darkgray($use-padding) {
+  @include match-color($gray3);
+  // @if $use-padding {
+  //     @include inset-padding-vt;
+  // }
+}
+@mixin theme-darkwarmgray($use-padding) {
+  @include match-color($light-gray3);
+  // @if $use-padding {
+  //     @include inset-padding-vt;
+  // }
+}
+// =- description -=
+// $use-padding : element's option what have padding top and bottom. this parameter check for that.
+// recognize background color and find match font color and all declare this by "match-color" mixin.
+
+// # theme
+@mixin theme {
+  .bg-white {
+    @include theme-white(true);
+    .c-button {
+      &:focus-visible {
+        outline-color: $black;
+      }
+    }
+  }
+  .bg-lightgray {
+    @include theme-lightgray(true);
+    @include lightgray-theme-style;
+  }
+  .bg-warmgray {
+    @include theme-warmgray(true);
+    @include lightgray-theme-style;
+  }
+  .bg-darkgray {
+    @include theme-darkgray(true);
+    &:not(.subtract-color) {
+      @include dark-theme-style;
+    }
+  }
+  .bg-darkwarmgray {
+    @include theme-darkwarmgray(true);
+    &:not(.subtract-color) {
+      @include dark-theme-style;
+    }
+  }
+  .bg-black {
+    @include theme-black(true);
+    &:not(.subtract-color) {
+      @include dark-theme-style;
+    }
+  }
+
+  // .bg-white {
+  //     > .component {
+  //         @include theme-white(true);
+  //     }
+  //     &:not(.c-wrapper) {
+  //         @include theme-white(false);
+  //     }
+  //     .c-button {
+  //         &:focus-visible {
+  //             outline-color: $black;
+  //         }
+  //     }
+  // }
+  // .bg-lightgray {
+  //     > .component {
+  //         @include theme-lightgray(true);
+  //     }
+  //     &:not(.c-wrapper) {
+  //         @include theme-lightgray(false);
+  //     }
+  //     @include lightgray-theme-style;
+  // }
+  // .bg-warmgray {
+  //     > .component {
+  //         @include theme-warmgray(true);
+  //     }
+  //     &:not(.c-wrapper) {
+  //         @include theme-warmgray(false);
+  //     }
+  //     @include lightgray-theme-style;
+  // }
+  // .bg-darkgray {
+  //     > .component {
+  //         @include theme-darkgray(true);
+  //     }
+  //     &:not(.c-wrapper) {
+  //         @include theme-darkgray(false);
+  //     }
+  //     &:not(.subtract-color) {
+  //         @include dark-theme-style;
+  //     }
+  // }
+  // .bg-black {
+  //     > .component {
+  //         @include theme-black(true);
+  //     }
+  //     &:not(.c-wrapper) {
+  //         @include theme-black(false);
+  //     }
+  //     &:not(.subtract-color) {
+  //         @include dark-theme-style;
+  //     }
+  // }
+
+  // .inside-component {
+  //     // 현재는 ST0020 밖에 없지만 추후 추가될 것을 대비하여
+  //     // 이곳에 스타일 적용합니다.
+  //     // inside 컴포넌트로 사용될 때 디자인이 나오면
+  //     // 업데이트 하겠음.
+  //     .bg-white,
+  //     .bg-lightgray,
+  //     .bg-darkgray,
+  //     .bg-black {
+  //         .component {
+  //             padding: 0;
+  //             background: transparent;
+  //             .c-icon-block-contents:not(.c-carousel),
+  //             .carousel {
+  //                 margin: 0;
+  //             }
+  //         }
+  //     }
+  // }
+}
+
+// # lgness
+$lgness-colors: (
+  'warmgray': (
+    bg-default: $warm-gray,
+    bg-darken: $light-gray3,
+    bg-lighten: $white,
+    font-red: $heritage-red,
+    font-color1: $black,
+    font-color2: $gray3,
+    font-color3: $mid-gray3,
+    line-color1: $mid-gray1,
+    line-lighten: $white,
+  ),
+  'white': (
+    bg-default: $white,
+    bg-darken: $ivory6,
+    bg-lighten: $white,
+    font-red: $heritage-red,
+    font-color1: $black,
+    font-color2: $gray3,
+    font-color3: $mid-gray3,
+    line-color1: $graye6,
+    line-lighten: $graye6,
+  ),
+  'lightgray': (
+    bg-default: $ivory8,
+    bg-darken: $graye6,
+    bg-lighten: $white,
+    font-red: $heritage-red,
+    font-color1: $black,
+    font-color2: $gray3,
+    font-color3: $mid-gray3,
+    line-color1: $mid-gray1,
+    line-lighten: $white,
+  ),
+  'black': (
+    bg-default: $black,
+    bg-darken: $gray1,
+    bg-lighten: $black,
+    font-red: $white,
+    font-color1: $white,
+    font-color2: $graycb,
+    font-color3: $gray9,
+    line-color1: $gray9,
+    line-lighten: $gray1,
+  ),
+  'darkgray': (
+    bg-default: $gray3,
+    bg-darken: $gray2,
+    bg-lighten: $black,
+    font-red: $white,
+    font-color1: $white,
+    font-color2: $graycb,
+    font-color3: $gray9c,
+    line-color1: $mid-gray1,
+    line-lighten: $gray1,
+  ),
+);
+@mixin lgness-color-variation($theme) {
+  color: map.get(map.get($lgness-colors, $theme), 'font-color1');
+  background: map.get(map.get($lgness-colors, $theme), 'bg-default');
+  &,
+  .bg-default {
+    color: map.get(map.get($lgness-colors, $theme), 'font-color1');
+    background: map.get(map.get($lgness-colors, $theme), 'bg-default');
+  }
+  &.border-top,
+  .border-top {
+    border-top: rem($border1) solid map.get(map.get($lgness-colors, $theme), 'line-color1');
+  }
+  &.border-bottom,
+  .border-bottom {
+    border-bottom: rem($border1) solid map.get(map.get($lgness-colors, $theme), 'line-color1');
+  }
+  .color-font-0 {
+    color: map.get(map.get($lgness-colors, $theme), 'font-red');
+  }
+  .color-font-1 {
+    color: map.get(map.get($lgness-colors, $theme), 'font-color1');
+  }
+  .c-region-header__text,
+  .color-font-2 {
+    color: map.get(map.get($lgness-colors, $theme), 'font-color2');
+  }
+  .color-font-3 {
+    color: map.get(map.get($lgness-colors, $theme), 'font-color3');
+  }
+  .box-type-1 {
+    background: map.get(map.get($lgness-colors, $theme), 'bg-darken');
+  }
+  .box-type-2 {
+    background: map.get(map.get($lgness-colors, $theme), 'bg-lighten');
+    border: rem($border1) solid map.get(map.get($lgness-colors, $theme), 'line-lighten');
+  }
+}
+@mixin lgness {
+  body {
+    // default
+    @include lgness-color-variation('warmgray');
+    // warmgray (default)
+    & .c-wrapper.bg-default {
+      @include lgness-color-variation('warmgray');
+    }
+    // white
+    & .c-wrapper.bg-white {
+      @include lgness-color-variation('white');
+    }
+    // black
+    & .c-wrapper.bg-black {
+      @include lgness-color-variation('black');
+    }
+
+    & .c-wrapper.bg-lightgray {
+      @include lgness-color-variation('lightgray');
+    }
+    & .c-wrapper.bg-darkgray {
+      @include lgness-color-variation('darkgray');
+    }
+
+    // dark-theme
+    &.dark-theme {
+      .c-wrapper.bg-darkgray {
+        background-color: $dark-gray2 !important;
+      }
+      .c-wrapper.bg-black,
+      .c-wrapper.bg-darkgray {
+        &.border-top {
+          border-color: $mid-gray3 !important;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,64 @@
+extends ../../components/_common/_layout-template.pug
+include ../../components/_common/_index.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+
+block meta 
+    - var CM0007 = "CM0007"
+    - var componentId = "MB000D_3"
+    - var componentName = "The Confirmation is invalid(Mail)"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+    link(rel="stylesheet", href="../../components/CM0001/CM0001.css")
+    link(rel="stylesheet", href="../../components/CM0002/CM0002.css")
+    link(rel="stylesheet", href="../../components/CM0007/CM0007.css")
+
+block scripts
+    script(src="../../components/CM0001/CM0001.js" type="module")
+    script(src="../../components/CM0002/CM0002.js" type="module")
+    script(src="../../components/CM0007/CM0007.js" type="module")
+
+block header
+    include ../../components/CM0001/CM0001-inc.pug
+    +CM0001()
+
+mixin myLinkBtnContent(params)
+    - let data = {...params}
+    .my-link-content
+        .c-text-contents
+            .title.c-text-contents__headline.my-link-content__title
+                +headline("font-w-light-56 font-m-light-28", "h3", data.title)
+            .text.c-text-contents__bodycopy.my-link-content__desc
+                p.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") !{data.desc}
+        if data
+            .button.c-cta(class=`${data.margin ? data.margin : ''}`)
+                +defaultButton({name: data.buttonFirst, wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})
+                if data.buttonSecond
+                    +defaultButton({name: data.buttonSecond, wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: false})
+
+mixin MB000D_3 
+    .c-wrapper.MB000D_3 
+        .content__wrap
+            .content
+                .content-link-btn
+                    +myLinkBtnContent({
+                        title: "Verification is invalid",
+                        desc: "Please sign in to check if your account has already been verified. if your account verification has already expired, please sign up again.",
+                        buttonFirst: "Sign in",
+                        buttonSecond: "Join us",
+                    })
+
+block content
+    +MB000D_3
+    include ../../components/CM0007/CM0007-inc.pug
+    +CM0007(false, true)
+
+block footer
+    include ../../components/CM0002/CM0002-inc.pug
+    +CM0002

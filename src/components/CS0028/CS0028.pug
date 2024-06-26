@@ -1,0 +1,1057 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_carousel.pug
+include ../_common/_image.pug
+include ../_common/_forms.pug
+include ../_common/_pop-msg.pug
+include ../_common/_pagination.pug
+
+
+block meta 
+    - var componentId = "CS0028"
+    - var componentName = "CS PSP_ManualnSoftware"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    include ../CS0000/CS-inc.pug
+
+    mixin productList
+        .c-prd-grid
+            div(data-link-name) 
+                +printLazyPicture('https://placeimg.com/100/100/arch', 'https://placeimg.com/80/80/arch')
+                span.font-m-normal-16.font-w-normal-24 Door-in-Door™
+
+            div(data-link-name)   
+                +printLazyPicture('https://placeimg.com/100/100/arch', 'https://placeimg.com/80/80/arch')
+                span.font-m-normal-16.font-w-normal-24 Tall
+            div(data-link-name) 
+                +printLazyPicture('https://placeimg.com/100/100/arch', 'https://placeimg.com/80/80/arch')
+                span.font-m-normal-16.font-w-normal-24 Multi door 
+            div(data-link-name) 
+                +printLazyPicture('https://placeimg.com/100/100/arch', 'https://placeimg.com/80/80/arch')
+                span.font-m-normal-16.font-w-normal-24 American style
+ 
+    // 20230315 markup change(tag change)
+
+    mixin specSheetItem(extension, fileName)
+        .c-resources__item
+            if(extension == 'pdf' || extension == 'txt' || extension == 'djvu' || extension == 'zip' || extension == 'html' || extension == 'dwg' || extension == '')
+                div(class=`c-resources__item--extension c-resources__item--extension-${extension}`)
+                    span.sr-only= `extension : ${extension}`
+            else
+                div(class=`c-resources__item--extension c-resources__item--extension-etc`)
+                    span.sr-only= `extension : ${extension}`
+            .c-resources__item--download
+                .c-resources__item--download-info
+                    a(href="#" role="download" aria-label="").c-resources__item--download-info-name.font-underline 
+                        span= `${fileName}`
+                        .c-resources__item--download-button.c-resources__item--download-button--icon
+                            .c-icon-button.c-icon-button--download
+
+    mixin buttonVersionItem2(params)
+        - var option = {version: false, extension: '', hasInformation: false, reference: false, hash: 1, isSwiper: false, ...params}
+
+        if option.isSwiper 
+            .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item" role='listitem')
+                .c-resources__item
+                    div(class=`c-resources__item--extension c-resources__item--extension-etc`)
+                        +printLazyPicture('https://via.placeholder.com/40x40/ddd/eee/?text=40x40', 'https://via.placeholder.com/64x64/ddd/eee/?text=64x64')
+                    .c-resources__item--download
+                        .c-resources__item--download-info
+                            span.c-resources__item--download-info-name.font-w-normal-24.font-m-normal-16 GSXV90MCDE
+                            .c-resources__item--download-info-wrapper.font-w-normal-12.font-m-normal-12                                
+                                .c-resources__item--download-info-size
+                                    span LG InstaView Door-in-Door™ 
+
+                        .c-resources__item--download-button.c-hidden-mo
+                            +linkButton({type:"text", color:"black", size:"small", name: "View product support"})
+        else                     
+            li.c-resources__item
+                if(option.version) 
+                    p.c-resources__version.font-m-normal-16.font-w-normal-16 [Program/Win10_64bit] LG Update Center for LG Notebook.(Ver.1.0.1712.1201)
+                if(option.extension == 'pdf' || option.extension == 'txt' || option.extension == 'djvu' || option.extension == 'zip' || option.extension == 'html' || option.extension == 'dwg')
+                    div(class=`c-resources__item--extension c-resources__item--extension-${option.extension}`)
+                        span.sr-only= `extension : ${option.extension}`
+                else
+                    div(class=`c-resources__item--extension c-resources__item--extension-etc`)
+                        span.sr-only= `extension : ${option.extension}`
+                .c-resources__item--download
+                    .c-resources__item--download-info
+                        a(href="#" role="download" id="label_id")
+                            span.c-resources__item--download-info-name.font-w-regular-16.font-m-regular-16= `English.${option.extension}`
+                        if(option.hasInformation)
+                            .c-resources__item--download-info-wrapper.font-w-normal-14.font-m-normal-14
+                                if(option.reference)
+                                    .c-resources__item--download-info-ref
+                                        a(href=`#popReference${option.hash}` type="button" class="js-pop-open"  title="Layer popup opens") Reference
+
+                                .c-resources__item--download-info-size
+                                    span 1,923 KB
+                                .c-resources__item--download-info-date
+                                    span 14/12/2021
+                    .c-resources__item--download-button
+                        if option.extension == 'html'
+                            +buttonIcon({type:"open"})(aria-describedby="label_id")
+                        else   
+                            +buttonIcon({type:"download"})(aria-describedby="label_id")
+
+    mixin guideBodyCopy
+        .c-text-contents.guide-type
+            .c-text-contents__bodycopy
+                .cmp-text.font-w-normal-14.font-m-normal-14
+                    p If you don’t have the viewer program, download it at first.  
+                        +specSheetItem('pdf', 'Acrobat Reader download')
+    
+    mixin zipGuideCopy
+        .c-text-contents.guide-type__white-box
+            .c-text-contents__bodycopy
+                h3.cmp-text.font-w-normal-16.font-m-normal-24 To use the .zip file above:
+                ol.cmp-text.font-w-normal-14.font-m-normal-16
+                    li Click the download link and choose Save if prompted.
+                    li Locate the downloaded file. This is usually located in the Downloads folder of your computer.
+                    li Right-click and choose Extract, Extract All, or Extract Here (whichever option you see).
+                    li Choose the location for the unzipped files (using the default location should be fine).
+                    li Once unzipped, you should see one FILE and one FOLDER. Right-click the FILE, choose OPEN WITH, then choose a web browser (Internet Explorer, Google Chrome, Firefox, etc.).
+
+    mixin bodycopy(bodycopy)
+        .text.c-text-contents__bodycopy 
+            p.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") #{bodycopy}
+
+    // 20230315 button markup change
+    mixin buttonIcon(params) 
+        - var option={...params}
+        - var className = `c-btn-arrow c-btn-${option.type}`
+        if(option.type == 'download')   
+            a(href="#" class=`${className}` role="download" data-link-name data-link-destination data-link-menu data-link-page-type)&attributes(attributes)
+                span.sr-only Download
+        else
+            a(href="#" class=`${className}` target="_blank" data-link-name data-link-destination data-link-menu data-link-page-type)&attributes(attributes)
+                span.sr-only Opens in a new window
+
+    // 20230315 markup added (contents add)
+    mixin step-option-card(type)
+        case type 
+            when 1
+                .c-step-option-list__item.c-list__item.js-step-option(role="listitem")
+                    .image.c-image
+                        +printLazyPicture('https://via.placeholder.com/336x212/000/eee/?text=336x212', 'https://via.placeholder.com/708x226/000/eee/?text=708x226')
+                    .c-text-contents
+                        .text.c-text-contents__eyebrow
+                            strong.cmp-text.font-w-light-36.font-m-light-24(data-cmp-data-layer="")
+                                | Lorem ipsum dolor sit amet
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")
+                                | Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                    .button.c-cta
+                        +defaultButton({name: 'Learn more', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: "none"})
+
+            when 2 
+                .c-step-option-list__item.c-list__item.js-step-option(role="listitem")
+                    // This image may not be used. (optional)
+                    .image.c-image
+                        +printLazyPicture('../../mocks/CS0001/no-image.png', 'https://via.placeholder.com/100x100/000/eee/?text=100x100')
+                    .c-text-contents__wrap
+                        .c-text-contents
+                            .text.c-text-contents__eyebrow
+                                strong.cmp-text.font-w-light-36.font-m-light-24(data-cmp-data-layer="")
+                                    | Android Phone
+                            // Since it is not used in this type, set display:none
+                            .text.c-text-contents__bodycopy
+                                .cmp-text.font-w-normal-20.font-m-normal-12(data-cmp-data-layer="")
+                                    | Go to Google Play. 
+                        .button.c-cta
+                            button(type="button").c-btn-download
+            when 3 
+                .c-step-option-list__item.c-list__item.js-step-option(role="listitem")
+                    .image.c-image
+                        +printLazyPicture('https://via.placeholder.com/150x150/000/eee/?text=150x150', 'https://via.placeholder.com/342x342/000/eee/?text=342x342')
+                    .c-text-contents
+                        .text.c-text-contents__eyebrow
+                            strong.cmp-text.font-w-light-36.font-m-light-24(data-cmp-data-layer="")
+                                | Warranty
+
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-20.font-m-normal-12(data-cmp-data-layer="")
+                                | Verify ownership to get efficient warranty service.
+            when 4 
+                .c-step-option-list__item.c-list__item.js-step-option(role="listitem")
+                    .image.c-image
+                        +printLazyPicture('https://via.placeholder.com/100x100/000/eee/?text=100x100', 'https://via.placeholder.com/240x240/000/eee/?text=240x240')
+                    .c-text-contents
+                        .text.c-text-contents__eyebrow
+                            strong.cmp-text.font-w-normal-32.font-m-normal-16(data-cmp-data-layer="")
+                                | Warranty
+                        // Bodycopy can be hidden(option) 
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")
+                                | Verify ownership to get efficient warranty service.
+            when 5 
+                a(href="#" role="listitem").c-step-option-list__item.c-list__item.js-step-option
+                    .image.c-image
+                        +printLazyPicture('https://via.placeholder.com/100x100/000/eee/?text=100x100', 'https://via.placeholder.com/240x240/000/eee/?text=240x240')
+                    .c-text-contents
+                        .text.c-text-contents__eyebrow
+                            strong.cmp-text.font-w-semibold-24.font-m-semibold-16(data-cmp-data-layer="")
+                                | Warranty
+
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+                                | Verify ownership to get efficient warranty service.
+            when 6 
+                .c-step-option-list__item.c-list__item.js-step-option(role="listitem")
+                    .image.c-image
+                        +printLazyPicture('https://via.placeholder.com/310x330/000/eee/?text=310x330', 'https://via.placeholder.com/342x342/000/eee/?text=342x342')
+                    .c-text-contents
+                        //- .text.c-text-contents__eyebrow
+                        //-     strong.cmp-text.font-w-semibold-24.font-m-semibold-20(data-cmp-data-layer="")
+                        //-         | Lorem Ipsum
+
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")
+                                | LG Smart Share is a great way to access all of your music, videos and photos from the comfort of your own sofa. It sends all of your favourite media from your PC, laptop, tablet or smartphone directly to your TV, and, best of all, it’s wireless!
+                                br
+                                br
+                                | If you would like to find out more about Smart Share, click Support Landing  
+                                | for a comprehensive guide.
+                        // Button usage flexible (optional)
+                        .button.c-cta
+                            +linkButton({type:'text', name:'Requirements', size:'small', icon:true})
+                        .button.c-cta.c-btn__download
+                            +defaultButton({name: 'Learn more', wSize: 'small', mSize: 'small', buttonStyle: 'default'})
+                            +linkButton({name:'Windows', size:'small', icon:true})(role="download" aria-label="")
+                            +linkButton({name:'MAC', size:'small', icon:true})(role="download" aria-label="")
+            when 7 
+                .c-step-option-list__item.c-list__item.js-step-option(role="listitem")
+                    .c-video-box
+                        video(width='100%' height='100%' controls poster="../../mocks/CS0014/temp-recommended-w-02.jpg" class="c-video-box__content")
+                            source(src='https://www.lg.com/uk/images/TV/features/UHD2022/tv-uhd-06-1-thinq-ai-desktop.mp4' type='video/mp4')
+                        button(type="button" class="c-video-box__button")
+                    .c-text-contents
+                        .text.c-text-contents__eyebrow
+                            strong.cmp-text.font-w-light-36.font-m-light-24(data-cmp-data-layer="")
+                                | Step 1.
+
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-20.font-m-normal-12(data-cmp-data-layer="")
+                                | Click or tap “+ Add a device”
+
+            when 8 
+                .c-step-option-list__item.c-list__item.js-step-option(role="listitem")
+                    .c-video-box
+                        video(width='100%' height='100%' controls poster="../../mocks/CS0014/temp-recommended-w-02.jpg" class="c-video-box__content")
+                            source(src='https://www.lg.com/uk/images/TV/features/UHD2022/tv-uhd-06-1-thinq-ai-desktop.mp4' type='video/mp4')
+                        button(type="button" class="c-video-box__button")
+
+                    .c-text-contents
+                        .text.c-text-contents__eyebrow
+                            strong.cmp-text.font-m-light-24(data-cmp-data-layer="")
+                                | Step 1.
+
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-20.font-m-normal-12(data-cmp-data-layer="")
+                                | Click or tap “+ Add a device”
+                    .c-text-contents
+                        .text.c-text-contents__eyebrow
+                            strong.cmp-text.font-m-light-24(data-cmp-data-layer="")
+                                | Step 2.
+
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-20.font-m-normal-12(data-cmp-data-layer="")
+                                | Select “Scan QR” from the options
+                    .c-text-contents
+                        .text.c-text-contents__eyebrow
+                            strong.cmp-text.font-m-light-24(data-cmp-data-layer="")
+                                | Step 3.
+
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-20.font-m-normal-12(data-cmp-data-layer="")
+                                | Scan the QR code on your device
+                    .c-text-contents
+                        .text.c-text-contents__eyebrow
+                            strong.cmp-text.font-m-light-24(data-cmp-data-layer="")
+                                | Step 4.
+
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-20.font-m-normal-12(data-cmp-data-layer="")
+                                | The device is now registered
+                            span.font-m-normal-16 * Models without QR can be registered manually by entering the serial number
+                    .c-text-contents.font-m-normal-14 *QR quick scan can be used on Wi-Fi enabled products produced from Jan 2022 onwards.
+            when 9
+                // 20230316 content text change
+                each items in gameApp 
+                    .c-step-option-list__item.c-list__item.js-step-option(role="listitem")
+                        .image.c-image
+                            //- +printLazyImage(gameList.imgSrc)
+                            +printLazyPicture(`${items.img}`)
+
+                        .c-text-contents
+                            .c-flex__wrap
+                                .text.c-text-contents__eyebrow
+                                    strong.cmp-text.font-w-light-36.font-m-normal-16(data-cmp-data-layer="") #{items.title}
+                                .text.c-text-contents__bodycopy
+                                    .cmp-text.font-w-normal-20.font-m-normal-12(data-cmp-data-layer="") #{items.desc} 
+                            .button.c-cta
+                                //- +linkButton({name:'DOWNLOAD', size:'small'})(role="download" aria-label="")
+                                +buttonIcon({type:"download"})
+            when 10 
+                .c-step-option-list__item.c-list__item.js-step-option(role="listitem")
+                    .c-video-box
+                        video(width='100%' height='100%' controls poster="../../mocks/CS0014/temp-recommended-w-02.jpg" class="c-video-box__content")
+                            source(src='https://www.lg.com/uk/images/TV/features/UHD2022/tv-uhd-06-1-thinq-ai-desktop.mp4' type='video/mp4')
+                        button(type="button" class="c-video-box__button")
+                    .c-text-contents
+                        .text.c-text-contents__eyebrow
+                            strong.cmp-text.font-w-semibold-24.font-m-semibold-20(data-cmp-data-layer="")
+                                | Step 1.
+
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")
+                                | Click or tap “+ Add a device”
+                            span.font-m-normal-16 * Models without QR can be registered manually by entering the serial number
+
+    -
+        const gameApp = [
+            {
+                'title':'Bobble Pong',
+                'desc':'Match three or more consecutive bubbles of the same color using the arrow. The matching bubbles will pop and your scores will rise.',
+                'img':'../../mocks/CS0028/temp-gameapp-1.png'
+            },
+            {
+                'title':'Monster World',
+                'desc': 'Get various items while avoiding monsters and pumpkins. Once you remove all monsters you can proceed to the next stage for more items!',
+                'img':'../../mocks/CS0028/temp-gameapp-2.png'
+            },
+            {
+                'title':'Valentine',
+                'desc': 'Match chocolate pieces by following each recipe to make it complete.',
+                'img':'../../mocks/CS0028/temp-gameapp-3.png'
+            }
+        ]
+    -
+        const slideContentsList4 = [{ 
+            "type":1, 
+            "item": [  
+                {
+                    'title':'Software update Software updateSoftware update Software updateSoftware updateSoftware update',
+                    'desc':'Find out how to update your phone’s software Find out how to update your phone’s software Find out how to update your phone’s software',
+                    'pcImg':'CS0028/temp-support-software1',
+                    'moImg':'../../mocks/CS0028/temp-support-software1.svg',
+                },
+                {
+                    'title':'Windows 10S',
+                    'desc':'Windows 10S Information',
+                    'pcImg':'CS0028/temp-support-software1',
+                    'moImg':'../../mocks/CS0028/temp-support-software2.svg',
+                },
+                {
+                    'title':'Smart Share',
+                    'desc' : 'Connect portable devices to your smart TV through a Wi-Fi network or USB connection to view photos, music, and videos',
+                    'pcImg':'CS0028/temp-support-software1',
+                    'moImg':'../../mocks/CS0028/temp-support-software3.svg',
+                },
+            ]
+        },
+        { 
+            "type":2, 
+            "item": [  
+                {
+                    'title':'ThinQ',
+                    'subtit' : 'Connect and Control from anywhere.',
+                    'pcImg':'../../mocks/CS0009/temp-support-slidetype2-1-w.png',
+                    'moImg':'../../mocks/CS0009/temp-support-slidetype2-1-m.png',
+                },
+                {
+                    'title':'Right to repair',
+                    'subtit' : 'Providing high quality repair services.',
+                    'pcImg':'../../mocks/CS0009/temp-support-slidetype2-2-w.png',
+                    'moImg':'../../mocks/CS0009/temp-support-slidetype2-2-m.png',
+                },
+                {
+                    'title':'Repair request',
+                    'subtit' : 'Request repair service conveniently online.',
+                    'pcImg':'../../mocks/CS0009/temp-support-slidetype2-3-w.png',
+                    'moImg':'../../mocks/CS0009/temp-support-slidetype2-3-m.png',
+                },
+            ]
+        }]
+
+    mixin featured-info({mobileType = "block", initialClass = "bg-transparent font-black", count = 2, items})
+        // block : featured-info
+        if "swiper" == mobileType 
+            .c-spec-info.swiper-mobile
+                .c-spec-info__container
+                    .carousel.panelcontainer
+                        // block : carousel
+                        .cmp-carousel.c-carousel.c-icon-block-contents.type-b(data-cmp-data-layer="", class=`${initialClass}`)
+                            .cmp-carousel__content.swiper-wrapper
+                                // slides
+                                +benefitContents({
+                                    isSwiper: true,
+                                    count
+                                })
+                            // indicator
+                            .c-carousel__handler
+                                .cmp-carousel__actions
+                                    +carouselBtn({type:"pagination", direction:"prev"})(aria-label="")
+                                +carouselPagination
+                                .cmp-carousel__actions
+                                    +carouselBtn({type:"pagination", direction:"next"})(aria-label="")
+
+        if "block" == mobileType 
+            .c-spec-info.block-mobile
+                .c-icon-block-contents.type-a(class=`${initialClass}`)
+                    if "cs-contents" == featured
+                        // block : text-contents
+                        +featuredContents
+                    else 
+                        //- +benefitContents(4)
+                        // 20230306 new design markup change
+                        - var option={isSwiper: false, count, ...params}
+                            - for (var x = 0; x < option.count; x++)
+                                a(href="#").c-featured__wrap 
+                                    span 
+                                        span.c-featured__tit
+                                            // Add an icon image
+                                            .cmp-title(class=headlineClass, data-cmp-data-layer="")
+                                                strong.cmp-title__text.font-m-normal-16.font-w-light-36 #{items.title}
+                                                // Deletion of eybrow (display: none)
+                                                //- .c-text-contents__eyebrow(class=option.isSwiper ? "font-m-semibold-18" : "font-m-semibold-16") Type
+                                            span.c-featured__desc
+                                                .c-text-contents__bodycopy.font-m-normal-12.font-w-normal-16 #{items.desc}
+                                        +printLazyImage(`${items.moImg}`, "Smart Diagnosis")(aria-hidden="true")
+                                        // Add button
+                                    span.button.c-cta.c-hidden-mo
+                                        +buttonArrow({link:false, color:'black', border:'yes', wsize:'large', msize:'small'}) 
+
+    // When there are multiple gallery components
+    mixin galleryItem2(slideContents)
+        case slideContents.type
+            when 1
+                each items in slideContents.item
+                    .cmp-carousel__item.swiper-slide.c-carousel__item
+                        +featured-info({initialClass : "bg-transparent", mobileType : "block", count : 1, items}, 1)
+        if block
+            block
+
+    mixin carouselPaginationUI 
+
+        // 2023.03.07 markup change - added ".c-carousel__handler--dial", ".c-carousel__handler--away-from-carousel"
+        .c-carousel__handler.c-carousel__handler--dial.c-carousel__handler--away-from-carousel
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"prev"})
+            +carouselPagination
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"next"})
+
+
+
+    .guide-text-type CS PSP_ManualnSoftware
+
+    // Component Markup
+    .c-wrapper.CS0028.type-text
+        .component.type-tabs.full
+            .CS0028__container
+                // BREADCRUMB
+                .breadcrumb
+                    .breadcrumb__wrap
+                        p.cmp-breadcrumb__tit.font-w-normal-14i.font-m-normal-14i Product reselect 
+                            span.c-hidden-mo : 
+                        nav.cmp-breadcrumb.c-breadcrumb.swiper(data-cmp-data-layer="" aria-label="Choice of category")
+
+                            ol.cmp-breadcrumb__list.c-breadcrumb__list.font-m-normal-14i.font-w-normal-14i.swiper-wrapper
+                                +bcItem({text:"Product category"})
+                                +bcItem({text:"Appliances"})
+                                +bcItem({text:"Fridge freezers"})
+                                +bcItem({text:"American style"})
+                                +bcItem2({text:"GSXV90MCDE", current:true})
+
+                // CS PSP
+                .container.type-grid                         
+                    .c-prd-gallery 
+                        .c-prd-gallery__image 
+                            +printLazyImage('../../mocks/CS0028/temp-support-manual-software.png')
+                        .c-prd-gallery__text
+                            .c-prd-gallery__type.font-m-normal-12.font-w-normal-20 GSXV90MCDE
+                            // Not exposed without data
+                            .c-prd-gallery__detail-info
+                                .c-prd-gallery__number Lg InstaView Door-in-Door InstaView Door-in-Door InstaView Door-in-Door InstaView Door-in-DoorInstaView Door-in-Door InstaView Door-in-Door
+                            .c-prd-gallery__button-wrap 
+                                // block - cta
+                                .button.c-cta
+                                    +defaultButton({name: 'Repair request', wSize: 'medium', mSize: 'medium', buttonStyle: 'default'})
+                                    +defaultButton({name: 'Register a product', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight'})
+
+                .container__wrap 
+                    // Download Manuals  
+                    .container   
+                        .c-cs-header
+                            // block : text-contents
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline('font-w-light-56 font-m-light-28',h2,'Download manuals')
+
+                        .c-resources-wrap 
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Owner’s manual") 
+                                +bodycopy('Most comprehensive document of product setup and usage.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "User guide") 
+                                +bodycopy('Describes product usage and instructions.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'html', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                                //- +buttonVersionItem2(false, 'html', true, false, 1, false, false)
+                                //- +buttonVersionItem2(false, 'pdf', true, false, 1, false, false)
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", " Installation Manual") 
+                                +bodycopy('This installation guide is a document that describe the usage for the product.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Specification") 
+                                +bodycopy('Summary of product features, dimensions, and components.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Brochure") 
+                                +bodycopy('Brochure is a pamphlet or booklet summarized introductory information or advertising.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Warranty") 
+                                +bodycopy('Most comprehensive document of product setup and usage.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Data sheet") 
+                                +bodycopy('Datasheet is the documents that describe the key features and specifications for the product.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Quick Start Guide") 
+                                +bodycopy('Quick Start Guide would be helpful for beginners who experience LG product to install, operate and resolve issues.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Measure First Guide") 
+                                +bodycopy('Handy measurement guide when planning for new appliances.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Additional Link") 
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Quick Setup Guide") 
+                                +bodycopy('It is a guide that can help you set your product faster.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                            +guideBodyCopy
+                        +zipGuideCopy
+                    // Download Software
+                    .container   
+                        .c-cs-header
+                            // block : text-contents
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline('font-w-light-56 font-m-light-28', "p", 'Download software')
+                        .c-resources-wrap   
+                            .c-header-wrap
+                                .c-text-contents
+                                    .title.c-text-contents__headline
+                                        +headline("font-w-normal-32 font-m-normal-20", "p", "Software update") 
+                                        //- button(type="button").c-exclamation.c-hidden-pc
+                                    .text.c-text-contents__bodycopy.c-hidden-mo 
+                                        p.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") Software upgrades include device drivers and firmware updates only for specific models.
+                                            | Check your owner's manual to determine if your product supports software upgrades.  
+                                button.c-header-tooltip-button(type="button")
+                                .c-header-tooltip
+                                    p.font-m-normal-16 After selecting main topic, sub topic is exposed.<br>If there is no sub topic, don't need to select it.
+                                    button.c-header-tooltip__button-close(type="button") 
+
+                            .c-search-box__form
+                                +formSelect("Operating systems", "operationSystems", "operation systems", false)
+                                    option(value="") All
+                                    option(value="option1") option1
+                                    option(value="option2") option2
+                                    option(value="option3") option3
+
+                            ul.c-resources
+                                +buttonVersionItem2({version: true, extension: 'zip', hasInformation: true, reference: true, hash: 2, isSwiper: false})
+                                +buttonVersionItem2({version: true, extension: 'zip', hasInformation: true, reference: true, hash: 1, isSwiper: false})
+                            //- // Three or more buttons are available only on the mobile.
+                            //- .button.c-cta
+                            //-     +button({color:'black',type:"box-outlined", icon:true, name:"VIEW MORE"})(aria-label="")
+
+                        .c-resources-wrap   
+                            .c-text-contents
+                                .title.c-text-contents__headline.c-pt12_m
+                                    +headline("font-w-normal-20 font-m-normal-20", "p", "SW file(Version 04.41.13) detailed applicable model list : please check with reference Tab exactly") 
+                            ul.c-resources
+                                +buttonVersionItem2({version: true, extension: 'zip', hasInformation: true, reference: true, hash: 2, isSwiper: false})
+                                +buttonVersionItem2({version: true, extension: 'zip', hasInformation: true, reference: true, hash: 1, isSwiper: false})
+
+                // Case when there is no result (can be used mixed with case with result)  
+                .container__wrap 
+                    // Download Manuals No Result
+                    .container   
+                        .c-cs-header
+                            // block : text-contents
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline('font-w-light-56 font-m-light-28', "p",'Download manuals')
+                        .c-no-result 
+                            .c-no-result__wrap
+                                span.c-no-result__icon 
+                                p.font-m-normal-16.font-w-normal-20 There are no matches, please try again.
+                    // Download Software - No Result
+                    .container   
+                        .c-cs-header
+                            // block : text-contents
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline('font-w-light-56 font-m-light-28', "p", 'Download software')
+                        .c-no-result 
+                            .c-no-result__wrap
+                                span.c-no-result__icon 
+                                p.font-m-normal-16.font-w-normal-20 There are no matches, please try again.
+
+
+                // Download Software - When searching for MC products
+                .container__wrap 
+                    // Download Manuals  
+                    .container   
+                        .c-cs-header
+                            // block : text-contents
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline('font-w-light-56 font-m-light-28', "p",'Download manuals')
+
+                        .c-resources-wrap 
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Owner’s manual") 
+                                +bodycopy('Most comprehensive document of product setup and usage.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "User guide") 
+                                +bodycopy('Describes product usage and instructions.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'html', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                                //- +buttonVersionItem2(false, 'html', true, false, 1, false, false)
+                                //- +buttonVersionItem2(false, 'pdf', true, false, 1, false, false)
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", " Installation Manual") 
+                                +bodycopy('This installation guide is a document that describe the usage for the product.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Specification") 
+                                +bodycopy('Summary of product features, dimensions, and components.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Brochure") 
+                                +bodycopy('Brochure is a pamphlet or booklet summarized introductory information or advertising.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Warranty") 
+                                +bodycopy('Most comprehensive document of product setup and usage.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Data sheet") 
+                                +bodycopy('Datasheet is the documents that describe the key features and specifications for the product.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Quick Start Guide") 
+                                +bodycopy('Quick Start Guide would be helpful for beginners who experience LG product to install, operate and resolve issues.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Measure First Guide") 
+                                +bodycopy('Handy measurement guide when planning for new appliances.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Additional Link") 
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                        .c-resources-wrap
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Quick Setup Guide") 
+                                +bodycopy('It is a guide that can help you set your product faster.')
+                            ul.c-resources
+                                +buttonVersionItem2({version: false, extension: 'pdf', hasInformation: true, reference: false, hash: 1, isSwiper: false})
+                            +guideBodyCopy
+                        +zipGuideCopy
+                    .container   
+                        .c-cs-header
+                            // block : text-contents
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline('font-w-light-56 font-m-light-28', "p", 'Download software')
+                        .c-resources-wrap.c-driver-wrap   
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "Software update") 
+                                .text.c-text-contents__bodycopy.c-hidden-mo.c-pb24_w
+                                    p.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") Software upgrades include device drivers and firmware updates only for specific models.
+                                        | Check your owner's manual to determine if your product supports software upgrades.   
+                                +bodycopy('USB driver')
+                            .c-driver
+                                .c-driver-list 
+                                    .c-driver-list__item
+                                        .c-driver-list__text
+                                            .c-driver-list__number.font-m-normal-24.font-w-normal-24  01 
+                                            .c-driver-list__title.font-m-normal-16.font-w-normal-16 Install the USB driver
+                                        .button.c-cta.c-btn__download
+                                            +button({name:'Windows', size:'medium', icon:true})(aria-label="")
+                                            +button({name:'MAC', size:'small', icon:true})(aria-label="")
+                                    .c-driver-list__item
+                                        .c-driver-list__text
+                                            .c-driver-list__number.font-m-normal-24.font-w-normal-24 02
+                                            .c-driver-list__title When installed, the S/W automatically launches
+                                        .button.c-cta.c-btn__download
+                                            +buttonIcon({type:"download"})
+
+                                    .c-driver-list__item
+                                        .c-driver-list__text
+                                            .c-driver-list__number.font-m-normal-24.font-w-normal-24 03
+                                            .c-driver-list__title Connect your phone to PC using USB cable and dont plug out the USB cable while the updating software.
+                                .c-driver__gray-box     
+                                    dl
+                                        dt.font-m-normal-16.font-w-normal-16 The phone software upgrade stopped before completion
+                                        dd.font-m-normal-16.font-w-normal-16 - Don't close the update tool, disconnect the cable and reconnect it. And check the USB driver connection on our PC. After that, please restart the update.
+                                        dd.font-m-normal-16.font-w-normal-16 - Otherwise, please select "Customer Support"-"Recovery Phone" in LG MOBILE SUPPORT TOOL. Then, you can start to recover your phone.
+                        .c-resources-wrap.c-driver-wrap   
+                            .c-text-contents.c-type2
+                                +bodycopy('USB driver')
+                            .c-driver.c-type2
+                                .c-driver-list 
+                                    .c-driver-list__item.c-type1
+                                        .c-driver-list__text
+                                            .c-driver-list__title Install the USB driver
+                                        .button.c-cta.c-btn__download
+                                            +buttonIcon({type:"download"})
+
+                        .c-resources-wrap.c-driver-wrap  
+                            .c-text-contents.c-type2
+                                +bodycopy('USB driver')
+                            .c-driver.c-type2
+                                .c-driver-list 
+                                    .c-driver-list__item.c-type2
+                                        .c-driver-list__text
+                                            .c-driver-list__title Install the USB driver
+                                        .button.c-cta.c-btn__download
+                                            +specSheetItem('pdf', 'Acrobat Reader download')
+                        .c-resources-wrap.c-driver-wrap   
+                            .c-text-contents.c-type2
+                                +bodycopy('USB driver')
+                            .c-driver.c-type2
+                                .c-driver-list 
+                                    .c-driver-list__item.c-type3
+                                        .c-driver-list__text
+                                            .c-driver-list__title Install the USB driver
+                                            .c-driver-list__date.font-m-normal-14.font-w-normal-14 25/5/2022
+                                        .button.c-cta.c-btn__download
+                                            +buttonIcon({type:"download"})
+
+                        .c-resources-wrap.c-driver-wrap   
+                            .c-text-contents.c-type2
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-32 font-m-normal-20", "p", "PC sync")    
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline("font-w-normal-18 font-m-normal-16", "p", "LG Bridge") 
+                                +bodycopy('LG Bridge is an application designed to interlocked with LG devices (mobile phones and tablets) for convenient management of files and data.')
+                            .c-search-box__form
+                                +formSelect("Operating Systems", "operationSystems", "operation systems", false)
+                                    option(value="") All
+                                    option(value="option1") option1
+                                    option(value="option2") option2
+                                    option(value="option3") option3
+                            .c-driver
+                                .c-driver-list 
+                                    .c-driver-list__item
+                                        .c-driver-list__text
+                                            .c-driver-list__number.font-m-normal-16.font-w-normal-16 01 
+                                            .c-driver-list__title Install the USB driver
+                                        .button.c-cta.c-btn__download
+                                            +button({name:'Windows', size:'small', icon:true})
+                                            +button({name:'MAC', size:'small', icon:true})
+                                    .c-driver-list__item
+                                        .c-driver-list__text
+                                            .c-driver-list__number.font-m-normal-16.font-w-normal-16 02
+                                            .c-driver-list__title When installed, the S/W automatically launches
+                                        // .button.c-cta.c-btn__download
+                                            +buttonIcon({type:"download"})
+
+                                    .c-driver-list__item
+                                        .c-driver-list__text
+                                            .c-driver-list__number.font-m-normal-16.font-w-normal-16 03
+                                            .c-driver-list__title Plug your phone and don't have to synchronize
+                                .c-driver__gray-box     
+                                    dl
+                                        dt.font-m-normal-16.font-w-normal-16 Features
+                                        dd - Don't close the update tool, disconnect the cable and reconnect it. And check the USB driver connection on our PC. After that, please restart the update.
+                                        dd - Otherwise, please select "Customer Support"-"Recovery Phone" in LG MOBILE SUPPORT TOOL. Then, you can start to recover your phone.
+                                    dl
+                                        dt.font-m-normal-16.font-w-normal-16 Minimum system requirements
+                                        dd - OS: Windows XP 32bit, Vista 32/64bit, 7 32/64bit, 8 32/64bit, 8.1 32/64bit
+                                        dd - CPU : 1Ghz processor or higher
+                                        dd - Memory : 2GB RAM or higher
+                                        dd - Graphics card: 1024 x 768 screen resolution or higher and 32-bit color
+                                        dd - Hard disc: Storage of 500 MB or higher (Additional space may be required for data)
+                                        dd - Required Software : LG United Mobile driver, Windows Media Player 10 or higher
+                                        dd - Otherwise, please select "Customer Support"-"Recovery Phone" in LG MOBILE SUPPORT TOOL. Then, you can start to recover your phone.
+                                    dl 
+                                        dt Cautions
+                                        dd - LG Bridge is a new, light-weight piece of software that works with the LG G4 and later.
+                                        dd - Some of the 2015 range of LG mobile devices may not be compatible with LG Bridge and would recommend using LG PC Suite.
+                                        dd - You may also find that some features of LG Bridge may be limited depending on the device, region and / or network.
+                                        dd - The backup / restore feature of LG bridge is not compatible with LG PC suite.
+
+                        .c-resources-wrap.c-driver-wrap   
+                            .c-text-contents.c-type2.c-normal-type
+                                .title.c-text-contents__headline
+                                    +headline("font-w-semibold-24 font-m-semibold-18", "p", "OSP") 
+                                +bodycopy('On-Screen Phone is the service that allows you to view and manipulate your phone remotely via a PC, width the keyboard/mouse input from the PC. You can also easily exchange data between the PC and your phone.')
+                            .c-driver.c-type2
+                                .c-driver-list 
+                                    .c-driver-list__item
+                                        .c-driver-list__text
+                                            .c-driver-list__title Download 'OSP' application
+                                        .button.c-cta.c-btn__download
+                                            //- +linkButton({type:"box-outlined", color:"black", size:"small", name: "DOWNLOAD"})(role="download" aria-label="")
+                                            +buttonIcon({type:"download"})
+
+                                .c-driver__gray-box     
+                                    dl
+                                        dt.font-m-normal-16.font-w-normal-16 Features
+                                        dd - You can write, send and receive messages(SMS or other messengers) via PC.
+                                        dd - You can transfer file contents in Gallery, Music, Video Player, Office Viewer in your phone to the PC by drag &amp; drop.
+                                        dd - You can easily transfer files from the PC to your phone by dragging &amp; dropping.
+                                        dd - You can get real-time event notification from the phone.
+                                        dd - You can see the whole pages of Home Screens in Panorama View. (Only with LG Home)
+                                        dd - Multi-touch input using keyboard/mouse.
+                                    dl 
+                                        dt.font-m-normal-16.font-w-normal-16 Recommended systems
+                                        dd - Windows XP (SP3) 32bit /64bit, Windows Vista 32bit/64bit, Windows 7 32bit/64bit.
+                                        dd - Warning : On Windows 2000 (sp4), you can run the program but some of the drivers may not work properly.
+                                    dl 
+                                        dt.font-m-normal-16.font-w-normal-16 Cautions
+                                        dd - You can use LG On-Screen Phone service only with the supported phones. [supported phone list]
+                                        dd - To use LG On-Screen Phone service, you should connect your phone to PC via USB, Bluetooth™, or Wi-Fi.
+
+                // CS PSP (other categories)
+                // Find my product
+                .container.c-support__findPd 
+                    .c-cs-header
+                        // block : text-contents
+                        .c-text-contents
+                            .title.c-text-contents__headline
+                                +headline('font-w-light-56 font-m-light-28',h2,'Find my product')
+                    .searchbar
+                        #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                            .searchBar__searchInner
+                                form.searchBar__form(autocomplete='off' _lpchecked='1' action='')
+                                    span.fieldIcons__root
+                                        span.fieldIcons__input
+                                            input#textInput__input.textInput__input.field__input.font-m-normal-16.font-w-normal-20(type="text" name='search_query' value='' role='searchbox' aria-label="Search" placeholder='Please type model number')
+                                            button(type="button" role="button").c-button-delete delete button
+                                        button(type="button" title="search" aria-label="" aria-describedby="" role="button").fieldIcons__before.c-hidden-mo
+                                            span.icon__root
+                                                span.sr-only Search
+                                    p.message__root
+                                    .searchBar__SearchAutocompleteWrapper
+
+                        .c-model-contents
+                            a(tabindex="0" class="c-modal-open find-number font-m-normal-14 font-w-normal-16" role="dialog" data-link-name data-link-destination data-link-menu data-link-page-type) How to find my model number?
+                    
+                    +productList
+                    .care-text.font-m-normal-14.font-w-normal-14 *Includes business-only products.<br>*The above image may be slightly different from the actual image.
+                    
+                // Manual & Software on Fridge freezers
+                .c-pc-section-underline
+                    .container.type-home.type-manual-software
+                        +headline('font-w-light-56 font-m-light-28',h2,'Manual & Software on fridge freezers')
+                        .c-result-area__result.productcollection__results-count.font-m-normal-12.font-w-normal-16
+                            strong.c-result-area__count 400 
+                            span results
+
+                        .c-resources-wrap   
+                            .carousel.panelcontainer.c-resources.c-resources__option2
+                                .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                                    .cmp-carousel__content(role='list')
+                                        - for (var x = 0; x < 10; x++)
+                                            +buttonVersionItem2({isSwiper: true})
+
+                                    +pagination
+                                //- // block cta 
+                                //- .button.c-cta
+                                //-     +button({color:'black',type:"box-outlined", icon:true, name:"VIEW MORE"})(aria-label="")
+
+    .c-wrapper.CS0028.type-text.margin-bottom.margin-top
+        .component.type-card__list.type-card__mobile
+            .CS0028__container
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .c-text-contents__headline
+                            +headline('font-w-light-56 font-m-light-28',h2,'モバイル製品のお問い合わせ')
+                        .c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-20.font-m-normal-12(data-cmp-data-layer="")
+                                p LGエレクトロニクスの携帯電話、及びタブレット製品は、各通信事業者様（NTTドコモ/au KDDI/ワイモバイル）、または販売会社様の製品として販売されております。製品、及び通信サービスに関するお問い合わせ（仕様・販売・保守など）につきましてはご契約の通信事業者様までお問い合わせいただきますよう、お願い申し上げます。その他のLGモバイル製品、携帯アクセサリー製品に関しましては、下記の窓口にて承っております。※ 但し、NTTドコモから発売されているNexus 5Xの操作方法につきましては、弊社へお問い合わせをお願い致します。
+                    
+                .c-info-list
+                    .c-info-box 
+                        div
+                            .c-info-box__head 
+                                .c-info-box__head-text
+                                    p.font-m-normal-16.font-w-light-36 NTTドコモインフォメーションセンター
+                                    p.font-m-normal-12.font-w-normal-16              
+                                        | ドコモの携帯電話から151（局番なし・無料)
+                                        br
+                                        | 他社携帯・一般電話から 0120-800-000
+                        .c-info-box__button.button.c-cta
+                            +defaultButton({name: '詳細はこちら', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+
+                    .c-info-box 
+                        div
+                            .c-info-box__head 
+                                .c-info-box__head-text
+                                    p.font-m-normal-16.font-w-light-36 auお客様サポート
+                                    p.font-m-normal-12.font-w-normal-16              
+                                        | auの携帯電話から157（局番なし・無料)
+                                        br
+                                        | 他社携帯・一般電話から 0077-7-111
+                        .c-info-box__button.button.c-cta
+                            +defaultButton({name: '詳細はこちら', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+
+                    .c-info-box 
+                        div
+                            .c-info-box__head 
+                                .c-info-box__head-text
+                                    p.font-m-normal-16.font-w-light-36 ワイモバイル カスタマーセンター
+                        .c-info-box__button.button.c-cta
+                            +defaultButton({name: '詳細はこちら', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+
+                    .c-info-box 
+                        div
+                            .c-info-box__head 
+                                .c-info-box__head-text
+                                    p.font-m-normal-16.font-w-light-36 Google Play ハードウェアサポートチーム
+                        .c-info-box__button.button.c-cta
+                            +defaultButton({name: '詳細はこちら', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+    
+
+    .c-wrapper.CS0028.type-text
+        .component.type-banner__slide2.full.type-home.c-featured-info
+            .CS0028__container
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline 
+                            +headline("font-w-light-56 font-m-light-28", h2, "Popular software downloads")
+                .c-gallery.c-gallery-container
+                    .carousel.panelcontainer
+                        .cmp-carousel.swiper.c-carousel.c-carousel--gallery(data-cmp-data-layer="")
+                            .cmp-carousel__content.swiper-wrapper
+                                +galleryItem2(slideContentsList4[0])
+                            +carouselPaginationUI
+
+    .c-wrapper.CS0028.type-text.margin-top.margin-bottom
+        .component.type-card__img.type-card__list
+            .CS0028__container
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline
+                            +headline('font-w-light-56 font-m-light-28',h2,'Game app')
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-20.font-m-normal-12(data-cmp-data-layer="")
+                                span You can enjoy more games by downloading them to an external device(USB memory, HDD). Use the links below to download.
+
+                .c-support
+                    .c-support__inner
+                        .c-step-option-list.c-list.js-step-option-area(role="list")
+                            //- - for (var i=0; i<3; i++)
+                            +step-option-card(9) 
+                    .c-game-noti.font-m-normal-12.font-w-normal-14 *NOTICE : Please prepare a USB memory or HDD to save Game App. files.
+
+
+    // modal - Reference
+    each hash in [1,2]
+        +pop-msg-standard({id : `popReference${hash}`, headline:"Reference"})
+            .c-pop-msg__contents
+                // block - text contents
+                .c-text-contents
+                    .text.c-text-contents__bodycopy
+                        .cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")
+                            p Description: Dual Smart Solution is window application program for efficient window control through dual monitor, dual web and smart resolution function. Supportable OS: Win XP (32-bit) , Vista (32-bit), Win 7 (32-bit and 64-bit) , Win 8 (32-bit and 64-bit)
+            .button.c-pop-msg__button-wrap
+                +button({type:"box", color:"red", size:"medium", name: "close"})(class="js-pop-close" aria-label="")
+
+
+

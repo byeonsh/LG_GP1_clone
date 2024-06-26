@@ -1,0 +1,923 @@
+/* stylelint-disable no-descending-specificity */
+@use '../abstract/' as *;
+
+// forms
+@mixin forms() {
+  // form default
+  .c-form {
+    &-box {
+      display: flex;
+      align-items: center;
+      // padding: rem($padding6px) 0;
+      font-size: 16px;
+      line-height: 22px;
+      & + .c-form-box {
+        margin: rem($margin10px) 0 0;
+      }
+      // &.desktop-only {
+      //     display: none;
+      //     @include screen(web) {
+      //         display: flex;
+      //     }
+      //     + .c-form-box {
+      //         margin: 0;
+      //         @include screen(web) {
+      //             margin: rem($margin12px) 0 0;
+      //         }
+      //     }
+      // }
+      &__toggle {
+        display: flex;
+        align-items: center;
+        .label {
+          margin-left: rem($margin8px);
+        }
+      }
+    }
+    .label {
+      color: $gray3;
+      .count {
+        // top: rem($pos10px);
+        // margin-left: rem($margin4px);
+        // font-size: rem(10px);
+        // color: $gray6;
+        top: initial;
+        font-size: inherit;
+        line-height: inherit;
+        vertical-align: initial;
+        margin-left: rem($margin5px);
+        &:before {
+          content: '(';
+        }
+        &:after {
+          content: ')';
+        }
+      }
+    }
+  }
+
+  // checkbox... include radio
+  .c-radio-item,
+  .c-checkbox-item {
+    label {
+      display: flex;
+      align-items: center;
+      position: relative;
+      line-height: rem($height20px);
+    }
+    .label {
+      position: relative;
+      display: inline-flex;
+      align-items: flex-start;
+      cursor: pointer;
+      color: $gray3;
+      &::before {
+        content: '';
+        display: inline-block;
+        min-width: rem($width20px); // do not remove
+        width: rem($width20px);
+        height: rem($height20px);
+        margin-right: rem($margin8px);
+        border: rem($border1) solid $black;
+        background-color: $white;
+        background-repeat: no-repeat;
+        background-position: center;
+        border-radius: rem($radius4);
+      }
+    }
+    + .c-warning {
+      padding-left: rem($padding28px);
+    }
+  }
+  .c-radio-item {
+    .label {
+      &::before {
+        border-radius: $radius-full;
+      }
+    }
+    input[type='radio'] {
+      @include form-reset(20px);
+      &:checked {
+        // Checked
+        + .label {
+          color: $black;
+          &::before {
+            background-color: $white;
+            border-color: $active-red;
+            border-width: rem($border2);
+          }
+          &::after {
+            content: '';
+            display: block;
+            position: absolute;
+            left: rem(5px);
+            top: rem(5px);
+            width: rem($width10px);
+            height: rem($height10px);
+            background: $active-red;
+            border-radius: $radius-full;
+          }
+        }
+      }
+      &:focus-visible {
+        + .label {
+          outline: rem($border2) solid currentcolor;
+        }
+      }
+    }
+    // [Start] LGCOMCI-813
+    &.has-next {
+      position: relative;
+      padding-right: 30px;
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: rem(5px);
+        display: block;
+        width: 10px;
+        height: 20px;
+        background: url($icon-arrow-black-right-10-16) no-repeat 100% center;
+        transform: translateY(-50%) rotate(0) #{'/*!rtl:translateY(-50%) rotate(180deg)*/'};
+      }
+      .label {
+        &:hover {
+          text-decoration: underline;
+        }
+        &::before {
+          background-color: rgb(203 200 194 / 20%);
+          border-color: rgb(203 200 194 / 100%);
+        }
+      }
+    }
+    // [End] LGCOMCI-813
+    // [Start] LGCOMIS-1080
+    &.is-block {
+      &:nth-child(n + 2) {
+        margin-top: rem(8px);
+        @include screen(web) {
+          margin-top: rem(10px);
+        }
+      }
+      .label {
+        width: 100%;
+        padding: rem(20px 16px);
+        background-color: $white;
+        border: 2px solid transparent;
+        border-radius: rem(20px);
+        @include screen(web) {
+          padding: rem(24px);
+          font-size: rem(20px);
+        }
+        &::before,
+        &::after {
+          display: none;
+        }
+      }
+      input[type='radio']:checked + .label {
+        border-color: $black;
+        &::after {
+          display: none;
+        }
+      }
+    }
+    &.check-shaped {
+      input[type='radio'] {
+        &:checked {
+          + .label {
+            &::before {
+              background-color: $active-red;
+            }
+            &::after {
+              left: rem(6px);
+              top: rem(7px);
+              width: rem(9px);
+              height: rem(7px);
+              background-image: url($icon-check-white-9-7);
+            }
+          }
+        }
+      }
+    }
+    // [End] LGCOMIS-1080
+  }
+
+  .c-checkbox-item {
+    input[type='checkbox'] {
+      @include form-reset(20px);
+      &:checked {
+        // Checked
+        + .label {
+          color: $black;
+          &::before {
+            background-image: url($icon-check-white-15-12);
+            background-color: $active-red;
+            border-color: $active-red;
+          }
+        }
+      }
+      &:disabled {
+        + .label {
+          cursor: default;
+          .count {
+            color: inherit;
+          }
+          &::before {
+            border-color: $graycb;
+            background-color: $graycb;
+          }
+        }
+      }
+      &:focus-visible {
+        + .label {
+          outline: rem($border2) solid currentcolor;
+        }
+      }
+    }
+    + .c-checkbox-item {
+      margin-top: rem($margin8px);
+    }
+    &.small {
+      $size: rem($width16px);
+      label {
+        font-size: rem(14px);
+        line-height: $size;
+      }
+      .label:before {
+        min-width: $size;
+        width: $size;
+        height: $size;
+      }
+    }
+  }
+  // slider
+  .c-form-range {
+    position: relative;
+    width: 100%;
+    input[type='range'] {
+      position: absolute;
+      top: 10px;
+      pointer-events: none;
+      appearance: none;
+      z-index: $z-index2;
+      height: rem($height2px);
+      width: 100%;
+      opacity: 0;
+      &::-webkit-slider-thumb {
+        pointer-events: all;
+        width: rem($width20px);
+        height: rem($height20px);
+        border-radius: 0;
+        border: 0 none;
+        cursor: pointer;
+        appearance: none;
+      }
+    }
+    .c-range {
+      &-slider {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        height: auto;
+        padding-top: 28px;
+        margin: 0 rem($margin10px); // margin left, right thumb half size
+      }
+      &-track,
+      &-active {
+        position: absolute;
+        top: rem(10px);
+        right: 0;
+        left: 0;
+        height: rem($height2px);
+      }
+      &-track {
+        background: $mid-gray1;
+      }
+      &-active {
+        background: $active-red;
+      }
+      &-thumb {
+        &__left,
+        &__right {
+          position: absolute;
+          top: rem(10px);
+          border: rem($border2) solid $active-red;
+          width: rem($width20px);
+          height: rem($height20px);
+          background: $white;
+          border-radius: $radius-full;
+        }
+        &__left {
+          left: 0;
+          transform: translate(-10px, -10px);
+        }
+        &__right {
+          right: 0;
+          transform: translate(10px, -10px);
+        }
+      }
+      &-min,
+      &-max {
+        font-size: rem(12px);
+        color: $gray3;
+        font-weight: $font-semibold;
+      }
+      &-min {
+        margin-left: rem(-$margin10px);
+      }
+      &-max {
+        margin-right: rem(-$margin10px);
+      }
+    }
+    .input-right:focus-visible ~ .c-range .c-range-thumb__right,
+    .input-left:focus-visible ~ .c-range .c-range-thumb__left {
+      outline: rem($border2) solid currentcolor;
+    }
+    .MuiSlider-root {
+      .MuiSlider-thumb.Mui-focusVisible {
+        outline: rem($border2) solid currentcolor !important;
+        outline-offset: rem(1px) !important;
+      }
+    }
+  }
+  // text input field
+  .c-input-item {
+    position: relative;
+    label {
+      display: block;
+      color: $gray3;
+      margin-bottom: rem($margin8px);
+    }
+    input,
+    textarea {
+      width: 100%;
+      height: rem($height44px);
+      padding-left: rem($padding13px);
+      padding-right: rem($padding13px);
+      border: rem($border1) solid $mid-gray4;
+      background-color: $white;
+      border-radius: rem($radius12);
+      @include screen(web) {
+        height: rem($height44px);
+      }
+      &:disabled,
+      &[disabled='disabled'] {
+        background-color: $ivory6;
+        color: $mid-gray1;
+        &::placeholder {
+          color: $mid-gray1;
+        }
+      }
+      // For required form elements,
+      // delete the code below as they appear invalid until entered.
+      // &:invalid {
+      //     border-color: $active-red;
+      // }
+      &.my-warn {
+        border-color: $active-red;
+      }
+    }
+    input[type='text'],
+    input[type='number'],
+    input[type='tel'] {
+      color: $black;
+      &::placeholder {
+        color: $black;
+        opacity: 0.7;
+      }
+      &.var-red {
+        color: $active-red !important;
+        &:focus-visible {
+          outline-color: $black !important;
+        }
+      }
+    }
+    textarea {
+      display: block;
+      padding: rem($padding13px) rem($padding16px);
+      height: rem($min-height120px);
+      @include screen(web) {
+        height: rem($min-height140px);
+      }
+
+      & + .c-input-item--length {
+        margin-top: rem($margin8px);
+      }
+      &::placeholder {
+        color: $black;
+        opacity: 0.7;
+      }
+    }
+    &--length {
+      color: $mid-gray2;
+      text-align: right;
+    }
+    // rating input
+    &__rating {
+      $input: 'input';
+      $label: 'label';
+
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+      align-items: flex-end;
+      gap: rem($margin8px);
+      &--count {
+        margin-left: rem($margin2px);
+        margin-bottom: rem($margin4px);
+      }
+      > #{$input} {
+        display: none;
+      }
+      > #{$label} {
+        margin-bottom: 0;
+        cursor: pointer;
+        width: rem($icon28px);
+        height: rem($icon28px);
+        margin-top: auto;
+        background-image: url($icon-review-star-empty-32-32);
+        background-repeat: no-repeat;
+        background-size: cover;
+        transition: 0.3s;
+        @include screen(web) {
+          width: rem($icon32px);
+          height: rem($icon32px);
+        }
+      }
+      > #{$input}:checked ~ #{$label},
+      > #{$input}:checked ~ #{$label} ~ #{$label},
+      > #{$input}:not(:checked) ~ #{$label}:hover,
+      > #{$input}:not(:checked) ~ #{$label}:hover ~ #{$label} {
+        background-image: url($icon-review-star-32-32);
+      }
+    }
+    .c-input-clear {
+      display: none;
+      position: absolute;
+      bottom: rem($margin10px);
+      right: rem($margin13px);
+      width: rem($icon24px);
+      height: rem($icon24px);
+      border: none;
+      cursor: pointer;
+      border-radius: $radius-full;
+      background: {
+        image: url($icon-close-circle-gray-24-24);
+        color: $gray9;
+        repeat: no-repeat;
+      }
+      &.active {
+        display: block;
+      }
+    }
+    .c-input-item__top {
+      margin-bottom: rem($margin8px);
+      font-size: 0;
+      > * {
+        display: inline;
+        vertical-align: middle;
+        margin-bottom: 0;
+      }
+      .c-tooltip {
+        display: inline-block;
+        margin-left: rem($margin6px);
+        @include screen(web) {
+          margin-left: rem($margin8px);
+        }
+        .cmp-text {
+          font-size: rem(16px);
+        }
+      }
+    }
+  }
+
+  // select box
+  .c-select-item {
+    label {
+      display: block;
+      margin-bottom: rem($margin8px);
+      color: $gray3;
+      body.dark-theme .c-wrapper.bg-darkgray &,
+      body.dark-theme .c-wrapper.bg-black & {
+        color: $mid-gray1;
+      }
+      // .require {
+      //     margin-left: rem($margin3px);
+      //     font-style: normal;
+      //     font-weight: $font-semibold;
+      //     color: $active-red;
+      // }
+    }
+    select {
+      // reset
+      appearance: none;
+      // --- end
+      width: 100%;
+      height: rem($height44px);
+      color: $black;
+      padding-left: rem($padding13px);
+      padding-right: rem($padding35px);
+      border: {
+        width: rem($border1);
+        style: solid;
+        color: $mid-gray4;
+        radius: rem($radius12);
+      }
+      background: {
+        color: $white;
+        repeat: no-repeat;
+        image: url($icon-arrow-gray3-down-12-8);
+        position: calc(100% - rem($padding13px)) 50%;
+      }
+      @include screen(web) {
+        height: rem($height44px);
+      }
+      body.dark-theme .c-wrapper.bg-darkgray &,
+      body.dark-theme .c-wrapper.bg-black & {
+        color: $white;
+        background: {
+          color: $black;
+          image: url($icon-arrow-mid-gray1-down-12-8);
+        }
+      }
+      // variation
+      &[disabled='disabled'],
+      &[disabled='true'],
+      &:disabled {
+        // background-color: $ivory6;
+        background-image: url($icon-arrow-mid-gray1-down-12-8);
+        color: $mid-gray1;
+        &::placeholder {
+          color: $mid-gray1;
+        }
+      }
+      // For required form elements,
+      // delete the code below as they appear invalid until selected.
+      // &:invalid {
+      //     border-color: $active-red;
+      // }
+    }
+  }
+}
+// =- description -=
+// definition for basic fields among form elements... checkbox, radiobox, select box, text input field, slider,
+
+@mixin required-marking {
+  .c-required-area {
+    width: 100%;
+    text-align: right;
+    font-size: rem(14px);
+    line-height: rem(14px);
+    color: $mid-gray2;
+    @include screen(web) {
+      font-size: rem(16px);
+      line-height: rem(20px);
+    }
+    em {
+      color: $red-warning;
+    }
+  }
+  em.c-required {
+    font-size: rem(14px);
+    line-height: rem(14px);
+    margin-left: rem($margin4px);
+    font-style: normal;
+    font-weight: $font-semibold;
+    color: $active-red;
+    @include screen(web) {
+      font-size: rem(16px);
+      line-height: rem(20px);
+    }
+  }
+}
+
+// form-waring-msg : invalid or not filled filed with required.
+@mixin form-waring-msg {
+  .c-warning {
+    color: $active-red;
+    position: relative;
+    // padding-left: rem($padding28px);
+    padding-left: rem($padding13px);
+    margin-top: rem($margin6px);
+    @include screen(web) {
+      margin-top: rem($margin8px);
+      text-align: #{'/*!rtl:right*/'}; /*! 230512 RTL */
+    }
+
+    // font
+    font-size: rem(12px);
+    line-height: rem(14px);
+    @include screen(web) {
+      font-size: rem(14px);
+      line-height: rem(16px);
+    }
+    // &::before {
+    //     content: '';
+    //     display: inline-block;
+    //     background: url($icon-warning);
+    //     position: absolute;
+    //     top: 0;
+    //     left: 0;
+    //     width: rem($icon20px);
+    //     height: rem($icon20px);
+    // }
+    &.wa-check {
+      padding-left: rem($padding20px) !important;
+    }
+  }
+}
+
+@mixin form-valid-msg {
+  .c-valid {
+    color: $green;
+    position: relative;
+    padding-left: rem($padding13px);
+    margin-top: rem($margin8px);
+    font-size: rem(12px);
+    line-height: rem(14px);
+    @include screen(web) {
+      font-size: rem(14px);
+      line-height: rem(16px);
+    }
+    &.wa-check {
+      padding-left: rem($padding20px) !important;
+      &::before {
+        content: '';
+        display: block !important;
+        background: url($icon-check-green-20-20);
+        background-size: rem($icon20px) rem($icon20px);
+        background-position: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: rem($icon14px);
+        height: rem($icon14px);
+      }
+    }
+  }
+}
+// =- description -=
+// for guide to fill field correctly.
+// selector was named on the premise of a more general situation.
+
+@mixin post-forms {
+  .c-post-form {
+    display: flex;
+    flex-direction: column;
+    gap: rem($margin20px);
+    // background-color: $white;
+    padding: 0;
+    @include screen(web) {
+      gap: rem($margin24px);
+    }
+
+    input,
+    textarea,
+    select {
+      @include screen(web) {
+        font-size: rem(16px);
+      }
+    }
+
+    &__fieldset-group {
+      display: flex;
+      flex-direction: column;
+      gap: rem($margin20px);
+      @include screen(web) {
+        gap: rem($margin24px);
+      }
+    }
+
+    &__fieldset {
+      // ...
+      display: flex;
+      flex-direction: column;
+      gap: rem($margin12px);
+      @include screen(web) {
+        gap: rem($margin20px);
+      }
+
+      // modifier
+      &--w-column3-group {
+        @include screen(web) {
+          .c-post-form__item {
+            min-width: calc(100% / 3 - (rem($gutter-w) / 3 * 2));
+          }
+        }
+      }
+    }
+    &__fieldset-title {
+      .c-required {
+        vertical-align: top;
+      }
+    }
+    &__fieldset-container {
+      display: flex;
+      flex-direction: column;
+      gap: rem($margin16px);
+      background-color: $white;
+      padding: rem($padding20px) rem($padding16px);
+      @include lgness-radius('default');
+      @include screen(web) {
+        gap: rem($gutter-w);
+        padding: rem($padding24px);
+      }
+
+      .c-post-form__group-title + .c-post-form__group {
+        margin-top: rem($margin8px - $margin16px);
+        @include screen(web) {
+          margin-top: rem($margin8px - $margin24px);
+        }
+      }
+    }
+    &__group {
+      // display: grid;
+      display: flex;
+      flex-wrap: wrap;
+      gap: rem($margin16px);
+      @include screen(web) {
+        gap: rem($gutter-w);
+        // grid-template-columns: repeat(auto-fit, minmax(rem(columns(3, false)), auto));
+      }
+    }
+
+    &__button-wrap {
+      display: flex;
+      margin-top: rem($margin24px - $margin20px);
+      @include screen(web) {
+        margin-top: rem($margin32px - $gutter-w);
+      }
+    }
+    &__item {
+      min-width: 100%;
+      @include screen(web) {
+        flex: 1;
+        max-width: 100%;
+        min-width: calc(100% * 0.5 - rem($gutter-w * 0.5));
+      }
+
+      &--textarea {
+        .c-warning {
+          margin-top: rem(-$margin18px);
+        }
+      }
+      &--line {
+        padding-bottom: rem($padding16px);
+        border-bottom: rem($border1) solid $mid-gray1;
+        @include screen(web) {
+          padding-bottom: rem($padding24px);
+        }
+      }
+      &--radio {
+        .c-radio-label {
+          margin-bottom: rem($margin8px);
+        }
+        .c-radio-group {
+          display: flex;
+          flex-direction: column;
+          gap: rem($margin12px);
+          @include screen(web) {
+            flex-direction: initial;
+            gap: rem($margin24px);
+          }
+        }
+      }
+      &--check {
+        .c-check-label {
+          margin-bottom: rem($margin8px);
+        }
+      }
+      .c-pop-msg-form__text .cmp-text {
+        // font
+        font-size: rem(14px);
+        line-height: rem(16px);
+        @include screen(web) {
+          font-size: rem(16px);
+          line-height: rem(20px);
+        }
+      }
+      &.row-group {
+        max-width: calc(50% - 0.75rem) !important;
+        .group-r2 {
+          display: flex;
+          flex-direction: row;
+          gap: rem(24px);
+          input[type='text'] {
+            width: 50%;
+          }
+        }
+        .group-r3 {
+          display: flex;
+          flex-direction: row;
+          gap: rem(12px);
+          input[type='text'] {
+            width: 33.33%;
+          }
+          @include screen(web) {
+            gap: rem(24px);
+          }
+        }
+      }
+    }
+    .c-pop-msg__gray-form-agree {
+      color: $gray3;
+      a {
+        color: inherit;
+      }
+    }
+  }
+}
+
+@mixin captcha {
+  .c-captcha {
+    label {
+      color: $gray3;
+    }
+
+    &__wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: rem($margin8px);
+      margin-top: rem($margin8px);
+      @include screen(web) {
+        flex-direction: row;
+        gap: rem($margin24px);
+      }
+      > * {
+        @include screen(web) {
+          flex: 1;
+        }
+      }
+    }
+    &__viewbox {
+      display: flex;
+      gap: rem($margin8px);
+      @include screen(web) {
+        gap: rem($margin10px);
+      }
+    }
+    &__image {
+      display: flex;
+      flex-grow: 1;
+      height: rem($height84px + $border1 * 2);
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background: $white;
+      border-radius: rem($radius8);
+      border: rem($border1) solid $mid-gray1;
+
+      * {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    &__button-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: rem($margin8px);
+      @include screen(web) {
+        gap: rem($margin6px);
+      }
+    }
+
+    .c-icon-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: rem($width38px);
+      height: rem($height38px);
+      background: $white;
+      border-radius: rem($radius6);
+      border: rem($border1) solid $mid-gray1;
+      @include screen(web) {
+        width: rem($width40px);
+        height: rem($height40px);
+      }
+
+      $icon: '&:before';
+      #{$icon} {
+        content: '';
+        display: block;
+        width: rem($icon24px);
+        height: rem($icon24px);
+        background : {
+          position: 100% center;
+          size: 100%;
+          repeat: no-repeat;
+        }
+      }
+      &--refresh {
+        #{$icon} {
+          background-image: url($icon-captcha-refresh-24-24);
+        }
+      }
+      &--volume {
+        #{$icon} {
+          background-image: url($icon-captcha-volume-24-24);
+        }
+      }
+    }
+  }
+}

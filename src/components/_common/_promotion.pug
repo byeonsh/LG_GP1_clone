@@ -1,0 +1,61 @@
+include ./_image.pug
+include ./_button.pug
+include ./_product-list.pug
+include ../_common/_carousel.pug
+
+mixin promotion-card({flagSet, title, body, buttonText, buttonText2}) 
+	// block - promotion card
+	.c-promotion-card
+		.c-promotion-card__container
+			.c-promotion-card__box.c-promotion-card__box--top
+				// GA4
+				a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").c-promotion-card__thumbnail
+					// block - image
+					//- .c-image(style="background-image:url('https://via.placeholder.com/630x420/f7f8f9/333/?text=630x420')")
+					.c-image
+						+printLazyImage(`https://via.placeholder.com/630x420/f7f8f9/333/?text=630x420`)
+				if null != flagSet && 0 < flagSet.length   
+					+promotion-badge(class="c-promotion-card__badge")
+						each name, index in flagSet
+							span.c-badge__name.font-semibold(class=`${(index == 1) ? 'font-red' : ''}`)= name
+
+				// block - text contents
+				.c-text-contents
+					.text.c-text-contents__subcopy 
+						.cmp-text.font-w-light-36.font-m-light-24(data-cmp-data-layer="")= title
+					.text.c-text-contents__bodycopy 
+						.cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")= body
+					.text.c-text-contents__date 
+						.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") 21/09 15:00 ~ 11/10/2022 20:00
+			.c-promotion-card__box.c-promotion-card__box--bottom
+				// block - cta
+				.button.c-cta
+					if null != buttonText2
+						+defaultButton({name: "Terms & Conditions", wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})
+					+defaultButton({name: "Shop Now", wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+					//- if null != buttonText2
+					//- 	div.align-case-right
+					//- 		+linkButton({name: `${buttonText2}`, type:"text",color:"black", icon:true})
+
+mixin promotion-list(data)
+	// block - list
+	.c-list(role="list")
+		each set in data 
+			.c-list__item(role="listitem")
+				+promotion-card(set)
+
+mixin promotion-list--swiper(data)
+	// block - list
+	.carousel.c-list(role="list")
+		// block : carousel
+		.cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+			.cmp-carousel__content.swiper-wrapper.c-list__wrapper
+				each set in data 
+					.cmp-carousel__item.swiper-slide.c-carousel__item.c-list__item(role="listitem" data-cmp-data-layer="" data-cmp-hook-carousel="item")
+						+promotion-card(set)
+			.c-carousel__handler
+				.cmp-carousel__actions
+					+carouselBtn({type:"pagination", direction:"prev"})
+				+carouselPagination
+				.cmp-carousel__actions
+					+carouselBtn({type:"pagination", direction:"next"})

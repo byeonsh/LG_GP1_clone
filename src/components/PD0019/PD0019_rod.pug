@@ -1,0 +1,339 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_carousel.pug
+include ../_common/_headline.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "PD0019"
+    - var componentName = "PDP Stock List"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+    link(rel="stylesheet", href="../../components/PD0016/PD0016.css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+    script(src="../../components/PD0016/PD0016.js" type="module")
+
+block content
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+
+    mixin slideItem(name, cta)
+        .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+            .c-stock-list__item
+                // GA4
+                a.image.c-image.c-stock-list__item--top(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                    +printLazyImage('https://via.placeholder.com/180x60/999999/333333')
+                if(name || cta)
+                    .c-stock-list__item--bottom
+                        if(name)
+                            // GA4
+                            a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                                span.font-w-normal-24.font-m-normal-16 amazon
+                        if(cta)
+                            .cta-wrap
+                                +defaultButton({name: 'Buy Now', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: false})
+
+    //- PDP Stock List Type
+    mixin slideItem2(name, status, cta, statusText, statusType=true)
+        .cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+            .c-stock-list__item2
+                a.image.c-image.c-stock-list__item2--top(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                    +printLazyImage('https://via.placeholder.com/180x60/999999/333333')
+                if(name || status || cta)
+                    .c-stock-list__item2--bottom
+                        if(name)
+                            a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                                span.font-w-normal-24.font-m-normal-16 Amazon.co.jp
+                        if(status)
+                            if(statusType)
+                                span.c-stock-list__item2--bottom--txt01 !{statusText}  
+                            else 
+                                span.c-stock-list__item2--bottom--txt02 !{statusText}                            
+                        if(cta)
+                            .cta-wrap
+                                +defaultButton({name: 'Visit Website', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: false})
+    mixin handler                           
+        .c-carousel__handler
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"prev"})
+            +carouselPagination
+            .cmp-carousel__actions
+                +carouselBtn({type:"pagination", direction:"next"})
+
+
+    // Component Markup
+    .guide-text-type Type1. Default
+    .guide-text-option Option1. more than 3
+    .c-wrapper.PD0019.type-category.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +component-title-area({
+                    alignment:"",
+                    headline : {
+                        style: 'font-w-light-56 font-m-light-28',
+                        text : "Stock List",
+                    }
+                })(class="c-region-header--vacate-side")
+                .c-stock-list
+                    .carousel.panelcontainer
+                        // block - carousel
+                        .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                            .cmp-carousel__content.swiper-wrapper
+                                - for (var x = 0; x < 6; x++)
+                                    +slideItem(true, true)
+
+                            +handler
+
+    .guide-text-option Option2. 3 or less
+    .c-wrapper.PD0019.type-category.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +component-title-area({
+                    alignment:"",
+                    headline : {
+                        style: 'font-w-light-56 font-m-light-28',
+                        text : "Stock List",
+                    }
+                })(class="c-region-header--vacate-side")
+
+                //- contents
+                .c-stock-list
+                    .carousel.panelcontainer
+                        // block - carousel
+                        .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                            .cmp-carousel__content.swiper-wrapper
+                                - for (var x = 0; x < 2; x++)
+                                    +slideItem(true, true)
+
+                            +handler
+
+    .guide-text-option Option3. No Data
+    .c-wrapper.PD0019.type-category.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +component-title-area({
+                    alignment:"",
+                    headline : {
+                        style: 'font-w-light-56 font-m-light-28',
+                        text : "Stock List",
+                    }
+                })(class="c-region-header--vacate-side")
+                .c-stock-list
+                    .c-no-data-wrap 
+                        .c-no-data.c-no-data--no-response
+                            strong.font-w-normal-24.font-m-normal-20 There is no data.
+
+    .guide-text-type Type2. 3rd Party (Channel Advice) - UK, AU, SG, TH, VN, ES, PT, IT
+    .c-wrapper.PD0019.type-category.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +component-title-area({
+                    alignment:"",
+                    headline : {
+                        style: 'font-w-light-56 font-m-light-28',
+                        text : "Stock List",
+                    }
+                })(class="c-region-header--vacate-side")
+                .c-stock-list
+                    .carousel.panelcontainer
+                        // block - carousel
+                        .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                            .cmp-carousel__content.swiper-wrapper
+                                - for (var x = 0; x < 6; x++)
+                                    +slideItem(false, true)
+
+                            +handler
+                // or 
+                .c-stock-list
+                    .c-no-data-wrap                        
+                        .c-no-data.c-no-data--no-response
+                            strong.font-w-normal-24.font-m-normal-20 There is no data.
+    
+    //- .guide-text-type Type4. 3rd Party (intellibrand)
+    //- .c-wrapper.PD0019.type-category.margin-top.margin-bottom.bg-default
+    //-     .component
+    //-         .cmp-container
+    //-             +component-title-area({
+    //-                 alignment:"",
+    //-                 headline : {
+    //-                     style: 'font-w-light-56 font-m-light-28',
+    //-                     text : "Stock List",
+    //-                 }
+    //-             })(class="c-region-header--vacate-side")
+    //-             .c-stock-list
+    //-                 .carousel.panelcontainer
+    //-                     // block - carousel
+    //-                     .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+    //-                         .cmp-carousel__content.swiper-wrapper
+    //-                             - for (var x = 0; x < 6; x++)
+    //-                                 +slideItem(true, true)
+
+    //-                         +handler
+    //-             // or 
+    //-             .c-stock-list
+    //-                 .c-no-data-wrap 
+    //-                     .c-no-data.c-no-data--no-response
+    //-                         strong.font-w-normal-24.font-m-normal-20 There is no data.
+
+    
+    //- PDP Stock List Type
+    .guide-text-type Type3. 3rd Party (Case1: Currently Unavailable, Case 2: In Stock) - BR
+    .c-wrapper.PD0019.type-category.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +component-title-area({
+                    alignment:"",
+                    headline : {
+                        style: 'font-w-light-56 font-m-light-28',
+                        text : "Stock List",
+                    }
+                })(class="c-region-header--vacate-side")
+                .c-stock-list
+                    .carousel.panelcontainer
+                        // block - carousel
+                        .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                            .cmp-carousel__content.swiper-wrapper
+                                - for (var x = 0; x < 6; x++)
+                                    +slideItem2(true, true, true, 'Currently Unavailable')
+
+                            +handler
+                // or 
+                .c-stock-list
+                    .c-no-data-wrap 
+                        .c-no-data.c-no-data--no-response
+                            strong.font-w-normal-24.font-m-normal-20 There is no data.
+
+    .guide-text-type Type4. 3rd Party (SOLOTODO) - CL, CA
+    .c-wrapper.PD0019.type-category.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                +component-title-area({
+                    alignment:"",
+                    headline : {
+                        style: 'font-w-light-56 font-m-light-28',
+                        text : "Stock List",
+                    }
+                })(class="c-region-header--vacate-side")
+                .c-stock-list
+                    .carousel.panelcontainer
+                        // block - carousel
+                        .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                            .cmp-carousel__content.swiper-wrapper
+                                - for (var x = 0; x < 6; x++)
+                                    +slideItem(true, true)
+
+                            +handler
+                // or 
+                .c-stock-list
+                    .c-no-data-wrap                        
+                        .c-no-data.c-no-data--no-response
+                            strong.font-w-normal-24.font-m-normal-20 There is no data.
+
+    .guide-text-type Type5. 3rd Party (Commerce Connector) - DE, FR 
+    .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+        .component
+            .cmp-container
+                .c-box-3rd-party
+                    <script type="text/javascript" src="https://fi-v2.global.commerce-connector.com/cc.js" data-token="92f54963fc39a9d87c2253186808ea61" id="cci-widget" data-locale="de-DE" data-displaylanguage="de" data-widgetid="qXxA3xEob3_b91771a0-9474-11ea-b016-77418ff4a60143" data-ean="8806091612151" data-subid="he_general_shop_selection" data-trackingid="OLED83G29LA" data-eventgtm="true">
+                    </script>
+
+    .guide-text-type Type5. 3rd Party (Price Spider) - CA
+    .c-wrapper.PD0016.margin-top.margin-bottom.border-top.bg-default
+        .component
+            .cmp-container
+                .c-box-3rd-party
+                    // In order for pricespider js to work, the following meta must be added to the header.
+                    // <meta name="ps-account" content="1698">
+                    // <meta name="ps-config" content="59d4fb4e369c750034b61c08">
+                    // <meta name="ps-country" content="CA">
+                    // <meta name="ps-language" content="en">
+                    .ps-widget(ps-sku="LFCC22426S")
+                    .js-eprivacy-load-inline(data-url="//cdn.pricespider.com/1/lib/ps-widget.js")
+    //- .guide-text-type Type5. 3rd Party (Json _ lgwtb.lv)
+    //- .c-wrapper.PD0019.type-category.margin-top.margin-bottom.bg-default
+    //-     .component
+    //-         .cmp-container
+    //-             +component-title-area({
+    //-                 alignment:"",
+    //-                 headline : {
+    //-                     style: 'font-w-light-56 font-m-light-28',
+    //-                     text : "Stock List",
+    //-                 }
+    //-             })(class="c-region-header--vacate-side")
+    //-             .c-stock-list
+    //-                 .carousel.panelcontainer
+    //-                     // block - carousel
+    //-                     .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+    //-                         .cmp-carousel__content.swiper-wrapper
+    //-                             - for (var x = 0; x < 6; x++)
+    //-                                 +slideItem(false, true)
+
+    //-                         +handler
+    //-             // or 
+    //-             .c-stock-list
+    //-                 .c-no-data-wrap 
+    //-                     .c-no-data.c-no-data--no-response
+    //-                         strong.font-w-normal-24.font-m-normal-20 There is no data.
+    
+    //- .guide-text-type Type6. 3rd Party (Hatch)
+    //- .c-wrapper.PD0019.type-category.margin-top.margin-bottom.bg-default
+    //-     .component
+    //-         .cmp-container
+    //-             +component-title-area({
+    //-                 alignment:"",
+    //-                 headline : {
+    //-                     style: 'font-w-light-56 font-m-light-28',
+    //-                     text : "Stock List",
+    //-                 }
+    //-             })(class="c-region-header--vacate-side")
+    //-             .c-stock-list
+    //-                 .carousel.panelcontainer
+    //-                     // block - carousel
+    //-                     .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+    //-                         .cmp-carousel__content.swiper-wrapper
+    //-                             - for (var x = 0; x < 6; x++)
+    //-                                 +slideItem(false, false)
+
+    //-                         +handler
+    //-             // or 
+    //-             .c-stock-list
+    //-                 .c-no-data-wrap
+    //-                     .c-no-data.c-no-data--no-response
+    //-                         strong.font-w-normal-24.font-m-normal-20 There is no data.
+   
+    

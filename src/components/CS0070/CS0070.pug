@@ -1,0 +1,567 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+
+block meta 
+    - var componentId = "CS0070"
+    - var componentName = "Announcement Form"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+
+    mixin formCheckbox(label, linkLabel, name, val, id, count = "false", disabled = false, link=true)
+        .c-checkbox-item
+            label.checkbox(for=`${id}`)
+                if(disabled)
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="" disabled="disabled")&attributes(attributes)
+                else 
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="")&attributes(attributes)
+
+                if(label)
+                    span.label.font-m-normal-12.font-w-normal-20= label 
+                        a(href="daum.net").link.font-m-normal-12.font-w-normal-20= linkLabel
+                        -if(count >= 0 & count != "false") // for filter
+                            sup.count= count 
+                else 
+                    if block 
+                        span.label
+                            block   
+    mixin roleList2(item)
+        if item 
+            .c-list__item(role="listitem")
+                if block
+                    block
+        else
+            .c-list__item
+                if block
+                    block
+
+    mixin textListItem2(params)
+        - var option={contents:both, useQuote:false, isList:false, headline:'', bodycopy:'', ...params}
+            +roleList2(option.isList)
+                // block : text-contents                 
+                div(class=`c-text-contents ${option.bodycopy}`)
+                    .title.c-text-contents__headline
+                        +headline(`${option.headline}`,h2,'Consumer support')
+                    case option.contents
+                        when "desc"
+                            .text.c-text-contents__bodycopy 
+                                .cmp-text.font-m-normal-12.font-w-normal-16(data-cmp-data-layer="") 
+                                    div
+                                        p Monday - Friday 
+                                            span.font-m-normal-16.font-w-normal-24 9:00am - 5:00pm
+                                        p Saturday 
+                                            span.font-m-normal-16.font-w-normal-24 9:00am - 3:00pm
+                                    div
+                                        p Closed 
+                                            span.font-m-normal-16.font-w-normal-24 Sunday and bank holidays
+                                        p UK 
+                                            span.font-m-normal-16.font-w-normal-24 0344 847 5454
+                                        p IE 
+                                            span.font-m-normal-16.font-w-normal-24 01 686 9454
+
+                        default
+                            .text.c-text-contents__bodycopy 
+                                .cmp-text(data-cmp-data-layer="") 
+                                    p Body text can be up to 700 characters. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient. Body text can be up to 200 characters.
+                            // element : list
+                            .text.c-text-contents__bodycopy
+                                .cmp-text(data-cmp-data-layer="")
+                                    ul
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                                        li Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
+                    .button.c-cta
+                        //- +linkButton({type:"text", icon:true, name:'Contact us'})
+                        +defaultButton({name: 'Go to contact us', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})(data-link-destination)
+
+
+                    // element : quote
+                    if option.useQuote
+                        .c-text-contents__quote 
+                            .text.c-text-contents__quote-text
+                                .cmp-text.font-w-semibold-28.font-m-semibold-20(data-cmp-data-layer="") 
+                                    p “Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo”
+                            .text.c-text-contents__quote-name
+                                .cmp-text.font-w-normal-20.font-m-normal-16(data-cmp-data-layer="") 
+                                    p Lorem ipsum dolor sit amet
+
+    // Component Markup
+    .guide-text-type Announcement Form : DE, IT, FR, ES, PT, AT, CZ, CH_DE, CH_FR, HU, SE
+
+    // Component Markup
+    // 20230323 markup changed
+    .c-wrapper.CS0070.type-text
+        .component.type-form
+            .CS0070__container
+                .container.responsivegrid
+                    .c-model-content-wrap
+                        .c-cs-header
+                            // block : text-contents
+                            .c-text-contents
+                                .title.c-text-contents__headline 
+                                    +headline("font-w-light-56 font-m-light-28", h2, "LG Electronics free OLED TV power board replacement service")
+                        .c-require.font-m-normal-14.font-w-normal-14 #[em.require *] Required fields 
+                    .c-container__inner 
+                        .cs-form
+                            .cs-form__wrap
+                                .cmp-form
+                                    label(for="modelNumber").font-m-normal-16.font-w-normal-24 Enter model number #[em.require *]#[span.sr-only Required field]
+                                    //- input#modelNumber.font-m-normal-16.font-w-normal-24.c-modelNumber-valid(type="search" required="required" aria-label="" placeholder="Type a 10 digit code")
+                                    
+                                    // 20230305 SEARCH LAYER
+                                    .searchbar
+                                        #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                                            .searchBar__searchInner
+                                                form.searchBar__form(autocomplete='off' _lpchecked='1' action='')
+                                                    span.fieldIcons__root
+                                                        span.fieldIcons__input
+                                                            input#textInput__input.textInput__input.field__input.font-m-normal-16.font-w-normal-20.c-modelNumber-valid(type="text" name='search_query' value='' role='searchbox' aria-label="Search" placeholder='Please type model number')
+                                                            button(type="button").c-button-delete delete button
+                                                        button(type="button" title="search" aria-label="" aria-describedby="").fieldIcons__before.c-hidden-mo
+                                                            span.icon__root
+                                                                span.sr-only Search
+                                                    p.message__root
+                                                    .searchBar__SearchAutocompleteWrapper
+
+                                        // Note) search ux follows SE component.
+                                        .searchLayer
+                                            #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                                                .searchBar__searchInner
+                                                    form.searchBar__form(autocomplete='off' _lpchecked='1' action='')
+                                                        span.fieldIcons__root
+                                                            span.fieldIcons__input
+                                                                input#textInput__input.textInput__input.field__input.font-m-normal-16.font-w-normal-20.c-modelNumber-valid(type="text" name='search_query' value='' role='searchbox' aria-label="Search" placeholder='Please type model number')
+                                                                button(type="button").c-button-delete delete button
+                                                            //- button(type="button" title="search" aria-label="" aria-describedby="").fieldIcons__before.c-hidden-pc
+                                                                span.icon__root
+                                                                    span.sr-only Search
+                                                        p.message__root
+                                                button(type="button" title="cancel" role="search box cancel" aria-label="" aria-describedby="").c-cancel.c-hidden-pc.font-m-normal-16 Cancel
+
+                                            // When there are no search results
+                                            .c-recent__nosearches 
+                                                .font-m-light-28.font-w-light-36 There are no related products
+                                                .font-m-normal-14.font-w-normal-24 Please check the spelling and try your search again.
+
+                                            // search result
+                                            ul(role="grid" aria-label="Find my product list") 
+                                                li(role="row") 
+                                                    a(href="#")
+                                                        div 
+                                                            span.font-m-normal-12.font-w-normal-16 OLED55C7V.AEKOLED55C7V.AEKOLED55C7V.AEK
+                                                            .c-search-prd-name.font-m-normal-16.font-w-normal-16 55" LG 
+                                                                // The span tag is bold when input    
+                                                                span OLED 
+                                                                | TV - B7
+                                                        .c-search-category-name.font-m-normal-12 TVs
+                                                // When there is no product-friendly name (li addclass .c-noName)
+                                                li.c-noName(role="row") 
+                                                    a(href="#")
+                                                        div 
+                                                            span.font-m-normal-12.font-w-normal-16 OLED55C7V.AEK
+                                                            .c-search-prd-name.font-m-normal-16.font-w-normal-16 
+                                                        .c-search-category-name.font-m-normal-12 TVs
+                                                li(role="row") 
+                                                    a(href="#")
+                                                        div 
+                                                            span.font-m-normal-12.font-w-normal-16 OLED55C7V.AEK
+                                                            .c-search-prd-name.font-m-normal-16.font-w-normal-16 55" LG     
+                                                                span OLED 
+                                                                | TV - B7
+                                                        .c-search-category-name.font-m-normal-12 TVs
+                                                li(role="row") 
+                                                    a(href="#")
+                                                        div 
+                                                            span.font-m-normal-12.font-w-normal-16 OLED55C7V.AEK
+                                                            .c-search-prd-name.font-m-normal-16.font-w-normal-16 55" LG     
+                                                                span OLED 
+                                                                | TV - B7
+                                                        .c-search-category-name.font-m-normal-12 TVs
+
+                                    
+                                    //- input#modelNumber.font-m-normal-16.font-w-normal-24.c-modelNumber-valid(type="search" required="required" aria-label="" placeholder="Type a 10 digit code")
+                                    //- .searchbar
+                                    //-     #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                                    //-         .searchBar__searchInner
+                                    //-             form.searchBar__form(autocomplete='off' _lpchecked='1' action='')
+                                    //-                 span.fieldIcons__root
+                                    //-                     span.fieldIcons__input
+                                    //-                         label(for="textInput__input").sr-only Search
+                                    //-                         input#textInput__input.textInput__input.field__input.font-m-normal-16.font-w-normal-20(type="text" name='search_query' value='' role='searchbox' aria-label="" placeholder='Please type model number')
+                                    //-                         button(type="button").c-button-delete delete button
+                                    //-                     button(type="button" title="search" aria-label="" aria-describedby="").fieldIcons__before.c-hidden-mo
+                                    //-                         span.icon__root
+                                    //-                             span.sr-only Search
+                                    //-                 p.message__root
+                                    //-                 .searchBar__SearchAutocompleteWrapper
+                                    .c-warning.c-modelNumber-required Model number is required.
+                                    .c-warning.c-modelNumber-invalid This model number is invalid.
+                                .cmp-form
+                                    label(for="serialNumber").font-m-normal-16.font-w-normal-24 Serial number ( or IMEI/MEID ) #[em.require *]#[span.sr-only Required field]
+                                    input#serialNumber.font-m-normal-16.font-w-normal-24.c-serialNumber-valid(type="text" required="required" aria-label="" placeholder="Type a 15 digit code")
+                                    .c-warning.c-serialNumber-required Serial number is required.
+                                    .c-warning.c-serialNumber-invalid This serial number is invalid.
+                                .cmp-form
+                                    label(for="firstName").font-m-normal-16.font-w-normal-24 First name #[em.require *]#[span.sr-only Required field]
+                                    input#firstName.font-m-normal-16.font-w-normal-24.c-firstName-valid(type="text" required="required" aria-label="" placeholder="Type a first name")
+                                    .c-warning.c-firstName-required First name is required.
+                                    .c-warning.c-firstName-onlyChar Number or special character can not be used for first name.
+                                .cmp-form
+                                    label(for="lastName").font-m-normal-16.font-w-normal-24 Last name #[em.require *]#[span.sr-only Required field]
+                                    input#lastName.font-m-normal-16.font-w-normal-24.c-lastName-valid(type="text" required="required" aria-label="" placeholder="Type a last name")
+                                    .c-warning.c-lastName-required Last name is required.
+                                    .c-warning.c-lastName-onlyChar Number or special character can not be used for last name.    
+                                .cmp-form
+                                    label(for="telephone").font-m-normal-16.font-w-normal-24 Telephone #[em.require *]#[span.sr-only Required field]
+                                    input#telephone.font-m-normal-16.font-w-normal-24.c-telephone-valid(type="text" required="required" aria-label="" placeholder="Type number only")
+                                    .c-warning.c-telephone-required Telephone number is required.
+                                    .c-warning.c-telephone-incorrect Telephone number invalid.
+                                .cmp-form
+                                    label(for="mobilePhone").font-m-normal-16.font-w-normal-24 Mobile phone #[em.require *]#[span.sr-only Required field]
+                                    input#mobilePhone.font-m-normal-16.font-w-normal-24.c-mobilephone-valid(type="text" required="required" aria-label="" placeholder="Type number only")
+                                    .c-warning.c-mobilephone-required Mobile phone is required.
+                                    .c-warning.c-mobilephone-invalid Telephone number invalid.
+                                // select case - country
+                                .cmp-form
+                                    label(for="contry").c-select-label.font-m-normal-16.font-w-normal-24 Country #[em.require *]#[span.sr-only Required field]
+                                    select#contry.font-m-normal-16.font-w-normal-24.c-country-valid(required="required" aria-label="")              
+                                        option(value="Select your country" data-change-label="") Select your country
+                                        option(value="United Kingdom" data-change-label="United Kingdom") United Kingdom
+                                        option(value="United Kingdom-2" data-change-label="United Kingdom-2") United Kingdom-2
+                                    .c-warning.c-country-required Country is required.
+                                // input case - country
+                                //.cmp-form
+                                    label(for="contry").c-select-label.font-m-normal-16.font-w-normal-24 Country #[em.require *]#[span.sr-only Required field]
+                                    input#contry.font-m-normal-16.font-w-normal-24.c-country-valid(type="text" required="required" aria-label="" placeholder="Type your country")
+                                    .c-warning.c-country-required Country is required.
+                                .cmp-form
+                                    label(for="postCode").font-m-normal-16.font-w-normal-24 Zip code #[em.require *]#[span.sr-only Required field]
+                                    input#postCode.font-m-normal-16.font-w-normal-24.c-regProductSignUp-postCode-valid(type="text" required="required" aria-label="" placeholder="Type a zip code")
+                                    .c-warning.c-regProductSignUp-postCode-required Zip code is required.
+                                    .c-warning.c-regProductSignUp-postCode-invalid This zip code is invalid.
+                                    .c-warning.c-regProductSignUp-postCode-searchAgain Please zip code search again
+                                .cmp-form
+                                    label(for="city").c-select-label.font-m-normal-16.font-w-normal-24 City #[em.require *]#[span.sr-only Required field]
+                                    input#zipcode.font-m-normal-16.font-w-normal-24.c-city-valid(type="text" required="required" aria-label="" placeholder="Type your City")
+                                    .c-warning.c-city-required City is required.
+                                .cmp-form
+                                    label(for="address").c-select-label.font-m-normal-16.font-w-normal-24 Address #[em.require *]#[span.sr-only Required field]
+                                    input#address.font-m-normal-16.font-w-normal-24.c-address-valid(type="text" required="required" aria-label="" placeholder="Type your address")
+                                    .c-warning.c-address-required Address is required
+                                .cmp-form
+                                    label(for="email").font-m-normal-16.font-w-normal-24 Email #[em.require *]#[span.sr-only Required field]
+                                    input#email.font-m-normal-16.font-w-normal-20.c-checkEmail-email-valid(type="text" required="required" aria-label="" placeholder="(e.g. lg@domain.com)")
+                                    .c-warning.c-checkEmail-email-required Email is required.
+                                    .c-warning.c-checkEmail-email-invalid Email address invalid.
+
+                                .cmp-form 
+                                    label(for="requestDate").font-w-normal-24.font-m-normal-16 Request date #[span.sr-only Required field]
+                                    input#requestDate.font-w-normal-24.font-m-normal-16.c-non-login-requestDate-valid(type="date" required="required" data-placeholder='YYYY/MM/DD' value="" aria-describedby='' aria-label="")
+                                    .c-warning.c-non-login-requestDate-required Request date is required.
+                                    .c-file-msg.font-m-normal-16.font-w-normal-16 Read and agree to the privacy policies, and choose a date if available. An LG representative will call you within the next 2~3 business days to schedule your appointment.
+                            
+
+
+                        .cs-form__chk  
+                            +formCheckbox('I have read and understand the', 'privacy policy and cookie policy.*', "name", "val1", "privacyPolicyCheck", count="false", false)
+                            .c-warning.c-privacyPolicy-checked Policy agreement is not checked.
+                    // 20230601 using recaptcha v3
+            .button__wrap
+                .button.c-cta
+                    +defaultButton({name: 'Cancel', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+                    +defaultButton({name: 'Submit', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(class="c-submit" aria-label="" role="button")
+    
+    .guide-text-option Announcement Form : PL
+    // Component Markup
+    // 20230323 markup changed
+    .c-wrapper.CS0070.type-text
+        .component.type-form
+            .CS0070__container
+                .container.responsivegrid
+                    .c-model-content-wrap
+                        .c-cs-header
+                            // block : text-contents
+                            .c-text-contents
+                                .title.c-text-contents__headline 
+                                    +headline("font-w-light-56 font-m-light-28", h2, "LG Electronics free OLED TV power board replacement service")
+                        .c-require.font-m-normal-12.font-w-normal-24 #[em.require *] Required fields 
+                    .c-container__inner 
+                        .cs-form
+                            .cs-form__wrap
+                                .cmp-form
+                                    label(for="modelNumber").font-m-normal-16.font-w-normal-24 Enter model number #[em.require *]#[span.sr-only Required field]
+                                    //- input#modelNumber.font-m-normal-16.font-w-normal-24.c-modelNumber-valid(type="search" required="required" aria-label="" placeholder="Type a 10 digit code")
+                                    
+                                    // 20230305 SEARCH LAYER
+                                    .searchbar
+                                        #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                                            .searchBar__searchInner
+                                                form.searchBar__form(autocomplete='off' _lpchecked='1' action='')
+                                                    span.fieldIcons__root
+                                                        span.fieldIcons__input
+                                                            label(for="textInput__input").sr-only Search
+                                                            input#textInput__input.textInput__input.field__input.font-m-normal-16.font-w-normal-20.c-modelNumber-valid(type="text" name='search_query' value='' role='searchbox' aria-label="" placeholder='Please type model number')
+                                                            button(type="button").c-button-delete delete button
+                                                        button(type="button" title="search" aria-label="" aria-describedby="").fieldIcons__before.c-hidden-mo
+                                                            span.icon__root
+                                                                span.sr-only Search
+                                                    p.message__root
+                                                    .searchBar__SearchAutocompleteWrapper
+
+                                        // Note) search ux follows SE component.
+                                        .searchLayer
+                                            #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                                                .searchBar__searchInner
+                                                    form.searchBar__form(autocomplete='off' _lpchecked='1' action='')
+                                                        span.fieldIcons__root
+                                                            span.fieldIcons__input
+                                                                input#textInput__input2.textInput__input.field__input.font-m-normal-16.font-w-normal-20(type="text" name='search_query' value='' role='searchbox' aria-label="Search" placeholder='Please type model number')
+                                                                button(type="button").c-button-delete delete button
+                                                            //- button(type="button" title="search" aria-label="" aria-describedby="").fieldIcons__before.c-hidden-pc
+                                                                span.icon__root
+                                                                    span.sr-only Search
+                                                        p.message__root
+                                                button(type="button" title="cancel" role="search box cancel" aria-label="" aria-describedby="").c-cancel.c-hidden-pc.font-m-normal-16 Cancel
+
+                                            // When there are no search results
+                                            .c-recent__nosearches 
+                                                .font-m-light-28.font-w-light-36 There are no related products
+                                                .font-m-normal-14.font-w-normal-24 Please check the spelling and try your search again.
+
+                                            // search result
+                                            ul(role="grid" aria-label="Find my product list") 
+                                                li(role="row") 
+                                                    a(href="#")
+                                                        div 
+                                                            span.font-m-normal-12.font-w-normal-16 OLED55C7V.AEKOLED55C7V.AEKOLED55C7V.AEK
+                                                            .c-search-prd-name.font-m-normal-16.font-w-normal-16 55" LG 
+                                                                // The span tag is bold when input    
+                                                                span OLED 
+                                                                | TV - B7
+                                                        .c-search-category-name.font-m-normal-12 TVs
+                                                // When there is no product-friendly name (li addclass .c-noName)
+                                                li.c-noName(role="row") 
+                                                    a(href="#")
+                                                        div 
+                                                            span.font-m-normal-12.font-w-normal-16 OLED55C7V.AEK
+                                                            .c-search-prd-name.font-m-normal-16.font-w-normal-16 
+                                                        .c-search-category-name.font-m-normal-12 TVs
+                                                li(role="row") 
+                                                    a(href="#")
+                                                        div 
+                                                            span.font-m-normal-12.font-w-normal-16 OLED55C7V.AEK
+                                                            .c-search-prd-name.font-m-normal-16.font-w-normal-16 55" LG     
+                                                                span OLED 
+                                                                | TV - B7
+                                                        .c-search-category-name.font-m-normal-12 TVs
+                                                li(role="row") 
+                                                    a(href="#")
+                                                        div 
+                                                            span.font-m-normal-12.font-w-normal-16 OLED55C7V.AEK
+                                                            .c-search-prd-name.font-m-normal-16.font-w-normal-16 55" LG     
+                                                                span OLED 
+                                                                | TV - B7
+                                                        .c-search-category-name.font-m-normal-12 TVs
+
+                                    
+                                    //- input#modelNumber.font-m-normal-16.font-w-normal-24.c-modelNumber-valid(type="search" required="required" aria-label="" placeholder="Type a 10 digit code")
+                                    //- .searchbar
+                                    //-     #searchbar.searchBar__root(data-cmp-data-layer='' role='search')
+                                    //-         .searchBar__searchInner
+                                    //-             form.searchBar__form(autocomplete='off' _lpchecked='1' action='')
+                                    //-                 span.fieldIcons__root
+                                    //-                     span.fieldIcons__input
+                                    //-                         label(for="textInput__input").sr-only Search
+                                    //-                         input#textInput__input.textInput__input.field__input.font-m-normal-16.font-w-normal-20(type="text" name='search_query' value='' role='searchbox' aria-label="" placeholder='Please type model number')
+                                    //-                         button(type="button").c-button-delete delete button
+                                    //-                     button(type="button" title="search" aria-label="" aria-describedby="").fieldIcons__before.c-hidden-mo
+                                    //-                         span.icon__root
+                                    //-                             span.sr-only Search
+                                    //-                 p.message__root
+                                    //-                 .searchBar__SearchAutocompleteWrapper
+                                    .c-warning.c-modelNumber-required Model number is required.
+                                    .c-warning.c-modelNumber-invalid This model number is invalid.                                
+                                .cmp-form
+                                    label(for="serialNumber").font-m-normal-16.font-w-normal-24 Serial number ( or IMEI/MEID ) #[em.require *]#[span.sr-only Required field]
+                                    input#serialNumber.font-m-normal-16.font-w-normal-24.c-serialNumber-valid(type="text" required="required" aria-label="" placeholder="Type a 15 digit code")
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-serialNumber-required Serial number is required.
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-serialNumber-invalid This serial number is invalid.
+                                .cmp-form
+                                    label(for="firstName").font-m-normal-16.font-w-normal-24 First name #[em.require *]#[span.sr-only Required field]
+                                    input#firstName.font-m-normal-16.font-w-normal-24.c-firstName-valid(type="text" required="required" aria-label="" placeholder="Type a first name")
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-firstName-required First name is required.
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-firstName-onlyChar Number or special character can not be used for first name.
+                                .cmp-form
+                                    label(for="lastName").font-m-normal-16.font-w-normal-24 Last name #[em.require *]#[span.sr-only Required field]
+                                    input#lastName.font-m-normal-16.font-w-normal-24.c-lastName-valid(type="text" required="required" aria-label="" placeholder="Type a last name")
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-lastName-required Last name is required.
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-lastName-onlyChar Number or special character can not be used for last name.    
+                                .cmp-form
+                                    label(for="telephone").font-m-normal-16.font-w-normal-24 Telephone #[em.require *]#[span.sr-only Required field]
+                                    input#telephone.font-m-normal-16.font-w-normal-24.c-telephone-valid(type="text" required="required" aria-label="" placeholder="Type number only")
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-telephone-required Telephone number is required.
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-telephone-incorrect Telephone number invalid.
+                                .cmp-form
+                                    label(for="mobilePhone").font-m-normal-16.font-w-normal-24 Mobile phone #[em.require *]#[span.sr-only Required field]
+                                    input#mobilePhone.font-m-normal-16.font-w-normal-24.c-mobilephone-valid(type="text" required="required" aria-label="" placeholder="Type number only")
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-mobilephone-required Mobile phone is required.
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-mobilephone-invalid Mobile phone invalid.
+                                // select case - country
+                                .cmp-form
+                                    label(for="contry").c-select-label.font-m-normal-16.font-w-normal-24 Country #[em.require *]#[span.sr-only Required field]
+                                    select#contry.font-m-normal-16.font-w-normal-24.c-country-valid(required="required" aria-label="" disabled="disabled")              
+                                        option(value="" data-change-label="") Polska
+                                        option(value="United Kingdom" data-change-label="United Kingdom") United Kingdom
+                                        option(value="United Kingdom-2" data-change-label="United Kingdom-2") United Kingdom-2
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-country-required Country is required.
+                                // input case - country
+                                //.cmp-form
+                                    label(for="contry").c-select-label.font-m-normal-16.font-w-normal-24 Country #[em.require *]#[span.sr-only Required field]
+                                    input#contry.font-m-normal-16.font-w-normal-24.c-country-valid(type="text" required="required" aria-label="" placeholder="Type your country")
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-country-required Country is required.
+                                .cmp-form
+                                    label(for="postCode").font-m-normal-16.font-w-normal-24 Post code #[em.require *]#[span.sr-only Required field]
+                                    input#postCode.font-m-normal-16.font-w-normal-24.c-regProductSignUp-postCode-valid(type="text" required="required" aria-label="" placeholder="Type a post code")
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-regProductSignUp-postCode-required Zip code is required.
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-regProductSignUp-postCode-invalid This zip code is invalid.
+                                    .c-file-msg.font-m-normal-16.font-w-normal-16.c-regProductSignUp-postCode-searchAgain Wprowadź kod pocztowy w nastepującym formacie: 00-000.
+                                .cmp-form
+                                    label(for="city").c-select-label.font-m-normal-16.font-w-normal-24 City #[em.require *]#[span.sr-only Required field]
+                                    input#zipcode.font-m-normal-16.font-w-normal-24.c-city-valid(type="text" required="required" aria-label="" placeholder="Type your City")
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-city-required City is required.
+                                .cmp-form
+                                    label(for="address").c-select-label.font-m-normal-16.font-w-normal-24 Addresss #[em.require *]#[span.sr-only Required Field]
+                                    input#address.font-m-normal-16.font-w-normal-24.c-address-valid(type="text" required="required" aria-label="" placeholder="Type your Addresss")
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-address-required Addresss is required
+                                .cmp-form
+                                    label(for="email").font-m-normal-16.font-w-normal-24 Email #[em.require *]#[span.sr-only Required field]
+                                    input#email.font-m-normal-16.font-w-normal-20.c-checkEmail-email-valid(type="text" required="required" aria-label="" placeholder="(e.g. lg@domain.com)")
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-checkEmail-email-required Email is required.
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-checkEmail-email-invalid Email address invalid.
+                                    .c-file-msg.font-m-normal-16.font-w-normal-16 Podanie tej informacji jest dobrowolne, ale ułatwi nam kontakt z Tobą i pozwoli na przesłanie podsumowania zgłoszenia.
+
+                                .cmp-form 
+                                    label(for="requestDate").font-w-normal-24.font-m-normal-16 Request date #[span.sr-only Required field]
+                                    input#requestDate.font-w-normal-24.font-m-normal-16.c-non-login-requestDate-valid(type="date" required="required" data-placeholder='YYYY/MM/DD' value="" aria-describedby='' aria-label="")
+                                    .c-warning.font-m-normal-16.font-w-normal-16.c-non-login-requestDate-required Request date is required.
+                                    
+                        .c-text-contents.c-text-contents__line-type
+                            .text.c-text-contents__bodycopy
+                                .cmp-text.font-w-normal-20.font-m-normal-12(data-cmp-data-layer="") 
+                                    p Administratorem Państwa danych osobowych przetwarzanych w związku z rejestracją do udziału w Bezpłatnym Programie Wymiany Modułu Zasilającego dla TV OLED jest LG Electronics Polska sp. z o.o. z siedzibą w Warszawie ul. Wołoska 22, 02-675 Warszawa. Każdej osobie przysługuje prawo dostępu do swoich danych osobowych, ich sprostowania, usunięcia, ograniczenia przetwarzania, przenoszenia, wniesienia sprzeciwu wobec ich przetwarzania oraz wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych, ul. Stawki 2, 00-193 Warszawa, ul. Stawki 2, 00-193 Warszawa. Więcej informacji na temat przetwarzania Państwa danych osobowych dostępnych jest w 
+                                        a(href="").c-link-text Polityce prywatności - ochronie danych osobowych.
+
+                        .cs-form__chk  
+                            +formCheckbox('I have read and understand the', 'privacy policy and cookie policy.*', "name", "val1", "privacyPolicyCheck", count="false", false)
+                            .c-warning.font-m-normal-16.font-w-normal-16.c-privacyPolicy-checked Policy agreement is not checked.
+
+            .button__wrap
+                .button.c-cta
+                    +defaultButton({name: 'Cancel', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})
+                    +defaultButton({name: 'Submit', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(class="c-submit" aria-label="" role="button")
+
+    .guide-text-option Repair requested 
+    .c-wrapper.CS0070.type-text.margin-top
+        .component.c-repair__review.c-regist__complete
+            .CS0070__container
+                .c-regist__complete-wrap
+                    .c-cs-header
+                        .c-text-contents
+                            .title.c-text-contents__headline 
+                                +headline("font-w-light-56 font-m-light-28", h2, "Repair service has been requested")
+                            .text.c-text-contents__bodycopy
+                                .cmp-text.font-w-normal-20.font-m-normal-12(data-cmp-data-layer="")
+                                    span LG support representative will contact you to confirm the service and scheduling your service.
+                        .button__group
+                            .button.c-cta
+                                +defaultButton({name: 'Go to support hub', wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+                                +defaultButton({name: 'Return to repair request', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: "none"})
+                    // 20230313 markup change
+                    .c-prd-info
+                        +printLazyPicture('https://via.placeholder.com/230x230/ccc/eee/?text=230x230', 'https://via.placeholder.com/300x300/ccc/eee/?text=300x300')
+                        .c-prd-info__inner 
+                            p.font-m-light-24.font-w-light-36 Service information
+                            .c-prd-info__group
+                                dl
+                                    dt.font-m-normal-16.font-w-normal-20 Receipt number
+                                    dd.font-m-normal-16.font-w-normal-20 CNU220821567949
+                                dl
+                                    dt.font-m-normal-16.font-w-normal-20 Status
+                                    dd.font-m-normal-16.font-w-normal-20 Receipt
+                                dl
+                                    dt.font-m-normal-16.font-w-normal-20 Service type
+                                    dd.font-m-normal-16.font-w-normal-20 On site service
+                                dl
+                                    dt.font-m-normal-16.font-w-normal-20 Receipt date
+                                    dd.font-m-normal-16.font-w-normal-20 12/01/2023
+
+                            p.font-m-light-24.font-w-light-36 Request information
+                            .c-prd-info__group
+                                dl 
+                                    dt.font-m-normal-16.font-w-normal-20 Symptom
+                                    dd.font-m-normal-16.font-w-normal-20 X-Cap proactive
+                                dl 
+                                    dt.font-m-normal-16.font-w-normal-20 Model number
+                                    dd.font-m-normal-16.font-w-normal-20 
+                                        a(href="#") GSXV90MCDE
+                                dl 
+                                    dt.font-m-normal-16.font-w-normal-20 Reservation date
+                                    dd.font-m-normal-16.font-w-normal-20 17/05/2023
+                                dl 
+                                    dt.font-m-normal-16.font-w-normal-20 Serial number
+                                    dd.font-m-normal-16.font-w-normal-20 203MASXGJU14
+
+                            p.font-m-light-24.font-w-light-36 Contact information
+                            .c-prd-info__group
+                                dl 
+                                    dt.font-m-normal-16.font-w-normal-20 Customer name
+                                    dd.font-m-normal-16.font-w-normal-20 John Snow
+                                dl 
+                                    dt.font-m-normal-16.font-w-normal-20 Email
+                                    dd.font-m-normal-16.font-w-normal-20 unknown@gmail.com 
+                                dl 
+                                    dt.font-m-normal-16.font-w-normal-20 Telephone
+                                    dd.font-m-normal-16.font-w-normal-20 07911123456
+                                dl 
+                                    dt.font-m-normal-16.font-w-normal-20 Mobile phone
+                                    dd.font-m-normal-16.font-w-normal-20 00012345678
+                                dl 
+                                    dt.font-m-normal-16.font-w-normal-20 Address
+                                    dd.font-m-normal-16.font-w-normal-20 CR00YN, George Street, London, UK
+    .guide-text-option failed
+    .c-wrapper.CS0070.type-text.margin-top.margin-bottom
+        .component.c-regist__failed
+            .CS0070__container
+                .c-cs-header
+                    // block : text-contents
+                    .c-text-contents
+                        .title.c-text-contents__headline
+                            +headline('font-w-light-56 font-m-light-28',h2,'Sorry for your inconvenience')
+                        // 20230314 text edit
+                        // Different wording for each process
+                        .text.c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-20.font-m-normal-16(data-cmp-data-layer="") Repair request is failed.
+                                br
+                                | Please try again or contact consumer support center to fix this problem.
+                    // 20230314 button markup & position change
+                    .button__group
+                        .button.c-cta
+                            +defaultButton({name: 'Go to support hub', wSize: 'large', mSize: 'medium', buttonStyle: 'default'})(data-link-destination)
+                            +defaultButton({name: 'Retry', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: "none"})
+
+                .c-list(role="desc")
+                    // block : textListItem
+                    +textListItem2({contents:"desc", useQuote:false, isList:false, headline:'font-w-normal-32 font-m-normal-24', bodycopy:'font-w-normal-20 font-m-normal-24'})

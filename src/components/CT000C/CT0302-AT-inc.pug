@@ -1,0 +1,314 @@
+include ../_common/_cart-price-total.pug
+include ./CT0302-inc.pug
+
+mixin CT0302(option=false, country=false)
+    .CT0302
+        if(option === "member")
+            case country
+                when 'at'
+                    .buy-checkout__item.buy-checkout__item--delivery
+                        +checkoutStep({
+                            title:"Delivery",
+                            current:"2",
+                            total:"3",
+                            type: "active"
+                        })
+                        .c-checkout-step02
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag: ["Shipping"],
+                                        title:"Robert Surrency",
+                                        address:"bvumtiy, fg ftimtymf, Somme 12345, Austria",
+                                        num:"123-4567-8910",
+                                        type: "",
+                                    },
+                                ])
+                        .c-checkout-step02.c-checkout-step02--warn
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox(false, false, [
+                                    {
+                                        flag: ["Billing"],
+                                        title:"Robert Surrency",
+                                        address:"bvumtiy, fg ftimtymf, Somme 12345, Austria",
+                                        num:"123-4567-8910",
+                                        type: "",
+                                    },
+                                ])
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'The items(s) are not available for shipping in your area. Please change address options',
+                                remove: true,
+                            },
+                        ])
+                        +accRadioDeliveryBox(["LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)"], false, [
+                            {
+                                type: 'Free shipping',
+                                tooltipMsg: false,
+                                id: 'delivery04',
+                                price: 'FOR FREE',
+                                unitPos: false,
+                                useUnitPos: false,
+                            },
+                            {
+                                type: 'Free shipping & Take away your old device',
+                                tooltipMsg: 'Would you like us to take away your old device for disposal? Due to the current corona situation, the old device must be accessible on delivery in front of the apartment front door.',
+                                id: 'delivery37',
+                                price: 'FOR FREE',
+                                unitPos: false,
+                                useUnitPos: false,
+                                warning : ['Lieferzeit ca. 7 - 14 Werktage'],
+                            },
+                            {
+                                type: 'Free shipping & Installation',
+                                tooltipMsg: 'tooltip IT',
+                                tooltipSize: 'large--at',
+                                id: 'delivery06',
+                                price: 'FOR FREE',
+                                unitPos: false,
+                                useUnitPos: false,
+                            },
+                            {
+                                type: 'Free shipping & Take away your old device & Installation',
+                                tooltipMsg: "11111",
+                                id: 'delivery07',
+                                price: 'FOR FREE',
+                                unitPos: false,
+                                useUnitPos: false,
+                            },
+                        ])
+                        .buy-delivery-info--list
+                            ul.buy-delivery-info__list
+                                li.font-w-normal-16.font-m-normal-14 Abhängig von der Auslastung des Logistikunternehmens
+                        // [Start] 2023.07.19 UPDATE - error case markup
+                        //- .buy-delivery-box--error
+                        +accRadioDeliveryBox(["LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)"], "error", [
+                            {
+                                type: 'Free shipping',
+                                tooltipMsg: false,
+                                id: 'delivery08',
+                                price: 'FOR FREE',
+                                unitPos: false,
+                                useUnitPos: false,
+                            },
+                            {
+                                type: 'Free shipping & Take away your old device',
+                                tooltipMsg: 'Would you like us to take away your old device for disposal? Due to the current corona situation, the old device must be accessible on delivery in front of the apartment front door.',
+                                id: 'delivery09',
+                                price: 'FOR FREE',
+                                unitPos: false,
+                                useUnitPos: false,
+                                warning : ['Lieferzeit ca. 7 - 14 Werktage'],
+                            },
+                            {
+                                type: 'Free shipping & Installation',
+                                tooltipMsg: 'Free shipping & Installation',
+                                tooltipSize: 'large--at',
+                                id: 'delivery10',
+                                price: 'FOR FREE',
+                                unitPos: false,
+                                useUnitPos: false,
+                            },
+                            {
+                                type: 'Free shipping & Take away your old device & Installation',
+                                tooltipMsg: "11111",
+                                id: 'delivery11',
+                                price: 'FOR FREE',
+                                unitPos: false,
+                                useUnitPos: false,
+                            },
+                        ])
+                        // [End] 2023.07.19 UPDATE - error case markup
+                        +toastPopup([
+                            {
+                                type: "error",
+                                text: 'The items(s) are not available for shipping in your area. Please change address options',
+                                remove: true,
+                            },
+                        ])
+                        .button.buy-order-info-coupon__button 
+                            +defaultButton({name: 'Next', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="next")
+
+                default 
+                    .buy-checkout__item.buy-checkout__item--delivery
+                        
+            +CT0302("complete",'hide')
+
+        if(option === "guest")
+            .buy-checkout__item.buy-checkout__item--delivery
+                +checkoutStep({
+                    title:"Delivery",
+                    current:"2",
+                    total:"3",
+                    type: "active"
+                })
+                .c-checkout-step02.c-checkout-step02-form
+                    // [Start] 2023-06-02 : UPDATE- change messages
+                    p.c-checkout-step01-prevention Lieferung nur innerhalb Österreichs möglich
+                    // [End] 2023-06-02 : UPDATE- change messages
+                    p.c-checkout-step02-form__title.font-w-normal-24.font-m-normal-20 Shipping
+                    // [Start] 2023-06-12 : ADD - number-text
+                    +myInputForm([
+                        {
+                            type:"text",
+                            label:"Vorname",
+                            id:"firstName",
+                            required:false,
+                            placeholder:"Robert",
+                        },
+                        {
+                            type:"text",
+                            label:"Nachname",
+                            id:"lastName",
+                            required:false,
+                            placeholder:"Surrency",
+                        },
+                        {
+                            type:"tel",
+                            label:"Telefonnummer",
+                            id:"tel-2",
+                            tooltipMsg:"Telefonnummer",
+                            required:false,
+                            telNumber:"+43",
+                        },
+                        {
+                            type:"text",
+                            label:"Postleitzahl",
+                            id:"postcode",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"searchAddress",
+                            label:"Straße",
+                            id:"streetAddress-at",
+                            required:true,
+                            placeholder:"Suche mit Postleitzahl oder Straße",
+                            clearCountry:true,
+                            list: false,
+                            warning:["Suche mit Postleitzahl oder Straße"],
+                            countryImg:"icon-checkout-austria-30-20.svg",
+                            countryName:"Österreich",
+                            doubleInputNo: 1,
+                        },
+                        {
+                            type:"searchAddress",
+                            label:"Straße",
+                            id:"streetAddress-at-list",
+                            required:true,
+                            placeholder:"Suche mit Postleitzahl oder Straße",
+                            list: false,
+                            countryImg:"icon-checkout-austria-30-20.svg",
+                            countryName:"Österreich",
+                            doubleInputNo: 1,
+                        },
+                        {
+                            type:"searchAddress",
+                            label:"Straße",
+                            id:"streetAddress-at-list2",
+                            required:false,
+                            placeholder:"start with post/ Zip code or street",
+                            value:'01030',
+                            list: [
+                                '01001 1 Avenue Paul Ramadier (21 more)',
+                                '01002 1 Chemin de Grimal (21 more)',
+                                '01003 1 Avenue Paul Ramadier (21 more)',
+                                '01003 1 Avenue Paul Ramadier (21 more)',
+                                '01003 1 Avenue Paul Ramadier (21 more)',
+                            ],
+                            countryImg:"icon-checkout-austria-30-20.svg",
+                            countryName:"Österreich",
+                            doubleInputNo: 1,
+                        },
+                        {
+                            type:"text",
+                            label:"Stadt",
+                            id:"City",
+                            required:false,
+                            placeholder:"",
+                        },
+                        {
+                            type:"select",
+                            label:"Land",
+                            id:"country",
+                            value:"Österreich",
+                            optionVal: ['Österreich', 'Österreich', 'Österreich'],
+                            placeholder:"Österreich",
+                            required:true,
+                        },
+                    ])
+
+                    p.c-checkout-step02-form__title.font-w-normal-24.font-m-normal-20 Address Optional
+                    +myInputForm([
+                        {
+                            type:"text",
+                            label:"UST ID",
+                            id:"USTID",
+                            required:false,
+                            placeholder:"",
+                            frontText: "AT",
+                        },
+                        {
+                            type:"checkbox",
+                            label:false,
+                            id:"sameAddress",
+                            required:false,
+                            placeholder:false,
+                            text:'Same for billing address'
+                        },
+                    ])
+
+                .button.buy-order-info-coupon__button
+                    +defaultButton({name: "Save Address", wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(class="save")
+
+        if(option === "before")
+            .buy-checkout__item.before
+                +checkoutStep({
+                    title:"Delivery",
+                    current:"2",
+                    total:"3",
+                    type: "checkoutStep"
+                })
+
+        if(option === "complete")
+            .buy-checkout__item.buy-checkout__item--delivery.buy-checkout__item--complete(style=`${country=='hide'?'display:none':''}`)
+                +checkoutStep({
+                    title:"Delivery",
+                    current:"2",
+                    total:"3",
+                    type: "checked",
+                })
+                .c-checkout-step02
+                    .buy-address-box.buy-address-box--complete
+                        +addressBox(false, false, [
+                            {
+                                flag: ["Shipping"],
+                                title:"Robert Surrency",
+                                address:"bvumtiy, fg ftimtymf, Somme 12345, Austria",
+                                num:"123-4567-8910",
+                                type: "",
+                            },
+                        ])
+                .c-checkout-step02
+                    .buy-address-box.buy-address-box--complete
+                        +addressBox(false, false, [
+                            {
+                                flag: ["Billing"],
+                                title:"Robert Surrency",
+                                address:"bvumtiy, fg ftimtymf, Somme 12345, Austria",
+                                num:"123-4567-8910",
+                                type: "",
+                            },
+                        ])
+                .c-checkout-orderd.c-checkout-orderd--confirm
+                    .c-checkout-orderd__item.c-checkout-orderd__item--delivery
+                        +checkoutOrderDeliveryProduct("Free shipping & installation", "Lieferzeit ca. 7 - 14 Werktage", [
+                            {
+                                title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                qty: "1",
+                                price: "2,376.00",
+                                unitPos: "right",
+                                unitName: "€"
+                            },
+                        ])

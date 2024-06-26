@@ -1,0 +1,121 @@
+@charset "UTF-8";
+
+@use '../../scss/abstract/' as *;
+
+$component: '.CM0010';
+#{$component} {
+  @include lgness-margin('if-headline');
+  // element
+  > .component > .cmp-container {
+    @include container($design-grid-full, true);
+    @include inset-padding-hz;
+  }
+
+  // block
+  .c-region-header {
+    .c-text-contents {
+      // @include container($text-box-width-md, false);
+      max-width: rem($text-box-width-md);
+    }
+  }
+  .c-list {
+    @include reset-list-style;
+    @include list;
+    flex-direction: column;
+    gap: rem($margin8px);
+    @include screen(web) {
+      gap: rem($gutter-w);
+    }
+    @include screen(custom, rem(1024px + 1px), min) {
+      flex-direction: row;
+    }
+  }
+  .c-icon-block {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+    height: 100%;
+    background-color: $white;
+    padding: rem($padding20px);
+    @include lgness-radius('default');
+    @include screen(web) {
+      justify-content: space-between;
+      padding: max($padding20px, min(rem($padding32px), calc($padding32px/columns(4, false) * 100%)));
+    }
+    &__image {
+      flex-shrink: 0;
+      max-width: rem($icon64px);
+    }
+    &__text {
+      flex: 1;
+    }
+  }
+
+  // layout : margin
+  $header: '.c-region-header';
+  $icon-block: '.c-icon-block';
+  $text: '.c-text-contents';
+  $cta: '.c-cta';
+
+  #{$header} + * {
+    @include lgness-component-title-margin;
+  }
+  #{$icon-block} {
+    gap: rem($margin12px);
+    @include screen(web) {
+      gap: rem($margin32px);
+    }
+    #{$text}__headline + #{$text}__bodycopy {
+      margin-top: rem($margin8px);
+    }
+  }
+  * + #{$cta} {
+    @include screen(mobile) {
+      margin-top: rem($margin12px);
+    }
+  }
+
+  .c-button {
+    white-space: nowrap;
+  }
+
+  // theme
+  .c-icon-block {
+    &.bg-white,
+    &.bg-lightgray {
+      .c-text-contents__headline {
+        color: $black;
+      }
+      .c-text-contents__bodycopy {
+        color: $gray3;
+      }
+    }
+  }
+  &.bg-white {
+    .c-icon-block {
+      border: rem($border1) solid $mid-gray1;
+    }
+  }
+  // dark theme
+  &.bg-darkgray,
+  &.bg-black {
+    .c-icon-block {
+      color: $black;
+      .c-text-contents__bodycopy {
+        color: $dark-gray1;
+      }
+    }
+  }
+  body.dark-theme & {
+    &.bg-darkgray,
+    &.bg-black {
+      .c-icon-block {
+        color: $white;
+        background-color: $mid-gray3;
+        .c-text-contents__bodycopy {
+          color: $grayc9;
+        }
+      }
+    }
+  }
+}

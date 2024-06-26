@@ -1,0 +1,137 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_forms.pug
+
+block meta 
+    - var componentId = "ML000W"
+    - var componentName = "Track my order"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond, type})
+    if warningFirst
+       div(role='list')
+            - for(var i=0; i < warningFirst.length; i++)
+                div(role='listitem')
+                    +invalid-warning(warningFirst[i], `validate-w-${type}-${i}`)
+    if correct
+        div(role='list')
+            - for(var i=0; i < correct.length; i++)
+                div(role='listitem')
+                    +valid-msg(correct[i], `validate-c-${type}-${i}`)
+    if infoText
+        div.my-input__info 
+            p.font-w-normal-16.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i], `validate-w-${type}-${i}`)
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        div.my-input__info 
+            p.font-w-normal-14.font-m-normal-14 !{infoTextSecond}
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? "my-warn" : ""}`
+        .c-input-item(class=`${data.active ? "active" : ""}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? "my-info" : ""}`)= data.label
+                    if data.required
+                        em.c-required *
+                            span.sr-only Required fields
+            if data.required && !data.button && !data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value required, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value readonly, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config value= data.value disabled required, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+            else if data.button
+                if data.validation
+                    .input-button__container.input-button__container--validation
+                        .my-button-validation
+                            if data.disabled
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config disabled required, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+                            else 
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config required, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+                            +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst, type: data.type})
+                        .button.c-cta.button-full
+                            +linkButton({href:"#findAddress", class:"js-pop-open", name: data.button,  roleButton:"true"})
+                else
+                    .input-button__container
+                        if data.disabled
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config disabled required, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+                        else 
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder value= data.value class=config required, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+                        .button.c-cta.button-full
+                            +linkButton({href:"#findAddress", class:"js-pop-open", name: data.button,  roleButton:"true"})
+            else 
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? "my-form__search" : ""}`, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+            if !data.validation
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst, type: data.type})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, type: data.type})
+
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin ML000W
+    .c-wrapper.ML000W
+        .component
+            .fluid-container
+                .my-component.my-page-title
+                    .c-text-contents.my-component__title-section
+                        .c-text-contents__headline
+                                +headline('font-w-light-56 font-m-light-28', "h2", "Track My Order")
+                .my-component__wrap.border-only-web
+                    .my-component
+                        .my-formbox
+                            +myInputForm([
+                                {
+                                    type:"text",
+                                    id:"orderNo",
+                                    required:true,
+                                    placeholder:"Type an order number",
+                                    label: "Order No",
+                                },
+                                {
+                                    type:"email",
+                                    id:"email",
+                                    required:true,
+                                    placeholder:"Type An Email",
+                                    label: "Email",
+                                },
+                                {
+                                    type:"text",
+                                    id:"orderNoWarn",
+                                    required:true,
+                                    placeholder:"Type An Order Number",
+                                    label: "Order No",
+                                    warning: ["Order No. is required.", "Order No. is not valid."]
+                                },
+                                {
+                                    type:"email",
+                                    id:"emailWarn",
+                                    required:true,
+                                    placeholder:"Type an email",
+                                    label: "Email",
+                                    warning: ["Order No. is required.", "Order No. is not valid."]
+                                },
+                            ])
+                            .button.c-cta
+                                +defaultButton({name: 'Track Order', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+block content
+    // Component Markup
+    +ML000W

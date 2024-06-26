@@ -1,0 +1,140 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_headline.pug
+
+block meta 
+    - var componentId = "ML000D"
+    - var componentName = "Print order open window"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+mixin printOrderNewPage(params)
+    - let data = { ...params }
+    .printorder-new-box
+        .printorder-new-box__status
+            +printOrderNewPageList(data.stSet)
+        .printorder-new-box__info
+            p.printorder-new-box__subtitle.font-w-normal-24.font-m-normal-20 Order items
+            +printOrderNewPageList(data.infoSet)
+        .printorder-new-box__price
+            +printOrderNewPageList(data.priceSet)
+        .printorder-new-box__info.printorder-new-box__history
+            p.printorder-new-box__subtitle.font-w-normal-24.font-m-normal-20 Information history
+            +printOrderNewPageList(data.historySet)
+    
+mixin printOrderNewPageList (params)
+    - let data = { ...params }
+    .printorder-list
+        each set in data
+            dl.printorder-list__item
+                dt.printorder-list__title=set.title
+                if (set.detailList)
+                    each detailList in set.detailList
+                        dd.printorder-list__detail=detailList
+                else 
+                    dd.printorder-list__detail=set.detail
+
+mixin ML000D
+    .c-wrapper.ML000D.printorder-new
+        .component
+            .printorder-container
+                .my-component.my-summary-area
+                    .my-summary-area__primary
+                        +headline('font-w-normal-32 font-m-normal-20', "h2", "Order No. 123456789123")
+                        +printOrderNewPage({
+                            stSet: [
+                                {
+                                    title:'Status',
+                                    detail:'Pending Canceled',
+                                },
+                                {
+                                    title:'Order date',
+                                    detail:'December 0, 2023',
+                                }
+                            ],
+                            infoSet: [
+                                {
+                                    title:'Product name',
+                                    detail: '27" 4K UHD IPS Monitor with Ergo'
+                                },
+                                {
+                                    title:'Stock Keeping Unit (SKU)',
+                                    detail:'27UK580-B',
+                                },
+                                {
+                                    title:'Price',
+                                    detail:'$450.75',
+                                },
+                                {
+                                    title:'Amount',
+                                    detail:'Orders 1',
+                                },
+                                {
+                                    title:'Subtotal',
+                                    detail:'$450.75',
+                                },
+                                {
+                                    title:'State',
+                                    detail:'Pending Canceled',
+                                },
+                                {
+                                    title:'Action',
+                                    detail:'',
+                                }
+                            ],
+                            priceSet: [
+                                {
+                                    title:'You accumulate with this purchase',
+                                    detail:'0 Points',
+                                },
+                                {
+                                    title:'Subtotal',
+                                    detail:'$450.75',
+                                },
+                                {
+                                    title:'Shipping and handling charges',
+                                    detail:'$0.00',
+                                },
+                                {
+                                    title:'ITBMS(PA)(7%)',
+                                    detail:'$31.55',
+                                },
+                                {
+                                    title:'Grand Total',
+                                    detail:'$482.30',
+                                }
+                            ],
+                            historySet: [
+                                {
+                                    title:'Shipping Address',
+                                    detailList: ['Last first','2929,Raihanan BInt Zaid Riyadh, AlArid 13337', 'T : 415) 123-4560'],
+                                },
+                                {
+                                    title:'Shipping method',
+                                    detail:'Free Shipping - FREE',
+                                },
+                                {
+                                    title:'Billing address',
+                                    detailList: ['Last first','2929,Raihanan BInt Zaid Riyadh, AlArid 13337', 'T : 415) 123-4560'],                                   
+                                },
+                                {
+                                    title:'Payment method',
+                                    detail:'Payment in installments for BAC Credomatic cards',
+                                },
+                            ]
+                        })
+                        .printorder-new-box__button
+                            +defaultButton({name:"Print order", wSize: 'large', mSize: 'medium', buttonStyle: 'default'})
+block content
+    // Component Markup
+    +ML000D

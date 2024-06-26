@@ -1,0 +1,68 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+
+block meta 
+    - var componentId = "CS0082"
+    - var componentName = "CS Popup"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js")
+    script(src=componentId+".js" type="module")
+
+block content
+    
+    mixin formCheckbox2(label, linkLabel, label2, linkLabel2, name, val, id, count = "false", disabled = false, link=true)
+        .c-checkbox-item
+            label.checkbox(for=`${id}`)
+                if(disabled)
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="", disabled="disabled")&attributes(attributes)
+                else
+                    input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, aria-label="")&attributes(attributes)
+
+                if(label)
+                    span.label.font-m-normal-12.font-w-normal-16= label
+                        a(href="daum.net").link.font-m-normal-12.font-w-normal-16= linkLabel
+                        span.font-m-normal-12.font-w-normal-16= label2
+                        a(href="daum.net").link.font-m-normal-12.font-w-normal-16= linkLabel2
+                        -if(count >= 0 & count != "false") // for filter
+                            sup.count= count
+                else
+                    if block
+                        span.label
+                            block
+
+    // Component Markup
+    .guide-text-type Repair Request - BR, MX, TR
+        br
+        | Installation Request - CL, CO, PE, CAC_EN, MX, ID, TR
+        br
+        | Send Phone for Repair - BR
+    // Component Markup
+    .c-wrapper.CS0082.type-text
+        .component.cs-component
+            .CS0082__container.c-full
+                .c-modal
+                    .c-modal__dimmed
+                    .c-modal__box
+                        .c-modal-head__wrap
+                            .c-modal__head 
+                                .c-modal__title.font-m-light-24.font-w-light-36 Importante, leia com atenção:
+                            button(type="button" aria-label="").c-modal__closebtn close btn                     
+                        .c-modal__content 
+                            .c-modal__content-text Informamos que se o problema for identificado como não sendo defeito de fabricação (avaria, mau uso, problemas relacionados a condições de instalação, vírus, software não original ou fatores externos) os reparos não serão cobertos pela garantia e estarão sujeitos a orçamentos, inclusive eventuais taxas de visita (Se aplicável). A validação da garantia e feita obrigatoriamente pela copia legível da Nota Fiscal de compra.
+                            .cs-form
+                                .cs-form__chk
+                                    +formCheckbox2('I have read and understand the', 'privacy policy and cookie policy*', ' ', '', "name", "val5", "checkId5", count="false", false)
+                                    .c-warning.c-privacyPolicy-checked Policy agreement is not checked.
+                            .button.c-cta
+                                +defaultButton({name: 'Continue', wSize: 'medium', mSize: 'small', buttonStyle: 'default'})(class="c-btn-continue")

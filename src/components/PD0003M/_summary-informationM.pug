@@ -1,0 +1,1472 @@
+include ../_common/_image.pug
+include ../_common/_button.pug
+include ../_common/_forms.pug
+include ../_common/_product-list.pug
+include ../_common/_pagination.pug
+
+//- +++ basic information +++
+mixin product-basic-information
+	include ../_common/_sns-list.pug
+	.c-product-basic-information
+		.c-product-item
+			.c-product-item__wrapper.c-product-item__wrapper--headline
+				.c-product-item__tag
+					//- .c-product-item__tag--mda
+					//- 	span LG recommends Windows
+					.c-product-item__tag--flag
+						span New
+						span.flag-highlight Pre Order
+						span.flag-highlight Limited Offer
+					+product-basic-tag-button
+				- var mdn = "OLED65C26LD"
+				- var ufn = "E8PUA 4K HDR OLED Glass TV w/ AI ThinQ® 65” Class (69.5” Diag) E8PUA 4K HDR OLED Glass TV w/ AI ThinQ® 65” Class (69.5” Diag) E8PUA 4K HDR OLED Glass TV w/ AI ThinQ® 65” Class (69.5” Diag) E8PUA 4K HDR OLED Glass TV w/ AI ThinQ® 65” Class (69.5” Diag)"
+				- var fontStyle = {headline : "font-w-normal-32 font-m-normal-20", sku : "font-w-normal-20 font-m-normal-12"}
+				- var useLink = false
+				+product_name(mdn, ufn, fontStyle, useLink, false, clipboard = true, ret = true, 'h1')(class="c-product-item__model-display-name")
+				+product-brands
+				.c-product-item__category
+					// RO : category download button
+					.c-button.c-button--category
+						+iconButton({type:'link',color:"black", class:"download", name:"Catalog"})(role="button")
+					+product_rating(grade="A", modelid='MD07546559', specsheet=false, rating=true, catalog=false, summary=false, labels=false, bottomSheet=true)
+					// RO : BazaarVoice
+					.c-button.c-button--write-review
+						+textButton({name: 'Write a Review', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: false})(href='#', data-link-destination="" data-link-name="" data-link-menu="" data-link-page-type="")
+				//- summary
+				//- +product_rating("A", 'MD07546559', true, true, true)
+			// 3rd party : energy saving area 
+			// RO : 3rd party - bazaar or in house review
+			.c-product-item__wrapper.c-product-item__energy-saving(style="max-width:222px;height:66px;background:#fafafa;line-height:66px;text-align:center;overflow:hidden") Energy Saving Banner Area
+			// RO : Available Countries show
+			.c-product-item__wrapper.c-product-item__wrapper--available.hidden
+				.c-product-item__available-countries
+					.c-country-icon-wrapper
+						+availableCountriesTooltip
+				// or
+				.c-product-item__available-in
+				span.font-w-semibold-16.font-m-semibold-14 Available in
+				.c-country-icon-wrapper
+					+availableInTooltip
+		.c-product-item--price
+			+product-out-of-stock
+
+mixin product-basic-tag-button
+	.c-product-item__tag--button.c-product-item__button
+		// 2022-11-04
+		// 2022-10.25 : number added to wishlist
+		span.number 120K
+		.c-tooltip
+			.button
+				// Add 'active' class when button is activated
+				button(type="button" aria-pressed="false" class="cmp-button c-icon-button c-icon-button--wish c-tooltip__button" data-cmp-data-layer="" data-wa-type="press")
+					span.sr-only add to wishlist
+			.c-tooltip__container.top-right
+				.c-tooltip__contents.c-tooltip__contents--small
+					.c-text-contents
+						.text.c-text-contents__bodycopy
+							.cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="")
+								p Add items to your MY LG wishlist
+					.button
+						+textButton({name: 'View Wishlist', isButton:false, buttonStyle:"default", wSize: "small", mSize : "small"})
+
+		.c-tooltip.c-tooltip__share
+			.button
+				button(type="button" aria-expanded="false" class="cmp-button c-icon-button c-icon-button--share c-tooltip__button" data-cmp-data-layer="" aria-controls="snsShare")
+					span.sr-only Share
+			.c-tooltip__container.top-right(id="snsShare")
+				// 2022-11-04
+				.c-tooltip__contents
+					// sns list
+					+snsList
+
+mixin product-brands
+	.c-product-item__brand
+		+printLazyImage("/assets/image/logo-lg-signature-black-99-11.svg")
+		+printLazyImage("/assets/image/logo-lg-thinq-black-54-11.svg")
+
+mixin product-out-of-stock
+	- var soldOutStyle = "font-w-normal-32 font-m-normal-20"
+	.price-area
+		.price-box(class=`${soldOutStyle}`)
+			.c-price__flag--notice
+				span Out of stock
+			.c-price__flag--notice
+				span Sold out
+
+//- 2023-06-08 GP RO show / available area
+mixin availableInTooltip(code)
+	.c-tooltip
+		.button
+			button(type="button" class=`cmp-button c-tooltip-icon c-country-icon c-tooltip__button` data-cmp-data-layer="")
+				img(src="/assets/flag/united-kingdom.png", alt="united kingdom")
+		.c-tooltip__container.top-right
+			.c-tooltip__contents
+				span.font-w-normal-14.font-m-normal-14 united kingdom
+	.c-tooltip
+		.button
+			button(type="button" class=`cmp-button c-tooltip-icon c-country-icon c-tooltip__button` data-cmp-data-layer="")
+				img(src="/assets/flag/germany.png", alt="germany")
+		.c-tooltip__container.top-right
+			.c-tooltip__contents
+				span.font-w-normal-14.font-m-normal-14 germany
+	.c-tooltip
+		.button
+			button(type="button" class=`cmp-button c-tooltip-icon c-country-icon c-tooltip__button` data-cmp-data-layer="")
+				img(src="/assets/flag/russia.png", alt="russia")
+		.c-tooltip__container.top-right
+			.c-tooltip__contents
+				span.font-w-normal-14.font-m-normal-14 russia
+	.c-tooltip
+		.button
+			button(type="button" class=`cmp-button c-tooltip-icon c-country-icon c-tooltip__button` data-cmp-data-layer="")
+				img(src="/assets/flag/poland.png", alt="poland")
+		.c-tooltip__container.top-right
+			.c-tooltip__contents
+				span.font-w-normal-14.font-m-normal-14 poland
+	.c-tooltip
+		.button
+			button(type="button" class=`cmp-button c-tooltip-icon c-country-icon c-tooltip__button` data-cmp-data-layer="")
+				img(src="/assets/flag/australia.png", alt="australia")
+		.c-tooltip__container.top-right
+			.c-tooltip__contents
+				span.font-w-normal-14.font-m-normal-14 australia
+	.c-tooltip
+		.button
+			button(type="button" class=`cmp-button c-tooltip-icon c-country-icon c-tooltip__button` data-cmp-data-layer="")
+				img(src="/assets/flag/united-states-of-america.png", alt="united states of america")
+		.c-tooltip__container.top-right
+			.c-tooltip__contents
+				span.font-w-normal-14.font-m-normal-14 united states
+
+mixin availableCountriesTooltip
+	- var country = {"angola":"angola", "cote-d-Ivoire":"Côte d'Ivoire","nigeria":"Nigeria","senegal":"Senegal","benin":"Benin","cameroon":"Cameroon","dr-congo":"DR Congo","gabon":"Gabon","gambia":"Gambia","ghana":"Ghana","guinea-conakry":"Guinea Conakry","liberia":"Liberia","mali":"Mali","mauritania":"Mauritania","rp-congo":"RP Congo","togo":"Togo"}
+		.c-tooltip
+			.button
+				button(type="button" class=`cmp-button c-tooltip-icon c-country-icon c-country-icon--global c-tooltip__button` data-cmp-data-layer="")
+					span.font-w-normal-14i.font-m-normal-14i.font-semibold Available Countries
+			.c-tooltip__container.top-left
+				// 2022-11-04
+				.c-tooltip__contents.has-close
+					button.c-tooltip__close(type='button')
+						span.sr-only Close
+					.c-tooltip--list
+						each val, key in country
+							div(class=`c-country-icon`)
+								img(src=`/assets/flag/${key}.png`, alt="")
+								span.font-w-normal-14.font-m-normal-14= val
+
+//- +++ extra information +++
+mixin product-information-box({title, titleFontStyle, controlsId})
+	- var titleFont = titleFontStyle || "font-w-normal-24 font-m-normal-16"
+	- var compatibleClass = (title === "Compatible Product") ? 'c-compatible' : ''
+
+	if title == "Key Features"
+		.c-accordion__box.js-accordion-handle-target(data-expand="independent")
+			.c-accordion__head
+				.c-accordion__head-text
+					.text.c-text-contents__headline
+						.cmp-text(data-cmp-data-layer="" class=`${titleFont}` id=`label-${controlsId}`)
+							h2= title
+				//- button
+				.button
+					// to dev - id value is sample.
+					button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${controlsId}` aria-labelledby=`label-${controlsId}`)
+						span.c-accordion__button-text.sr-only Learn More
+			.c-accordion__body(id=`${controlsId}`)
+				if block
+					block
+	else
+		.c-accordion__box.js-accordion-handle-target.c-accordion__box--expand(data-expand="independent" class=compatibleClass)
+			.c-accordion__head
+				.c-accordion__head-text
+					.text.c-text-contents__headline
+						.cmp-text(data-cmp-data-layer="" class=`${titleFont}` id=`label-${controlsId}`)
+							h2= title
+				//- button
+				.button
+					// to dev - id value is sample.
+					button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="true" aria-controls=`${controlsId}` aria-labelledby=`label-${controlsId}`)
+						span.c-accordion__button-text.sr-only Learn More
+			.c-accordion__body(id=`${controlsId}`)
+				if block
+					block
+
+mixin list-information(params)
+	- var config = {useImage : false, imageClass : null, ...params}
+	- var list = config.data || []
+	- var imgClass = config.imageClass
+
+	// block - list
+	.c-list(role="list")&attributes(attributes)
+		each text in list
+			.c-list__item(role="listitem")
+				if config.useImage
+					// block - image
+					.image.c-image(class={[imgClass] : null != config.imageClass})
+						+printLazyImage('https://via.placeholder.com/30x30/999999/333333')
+				span.font-w-normal-16.font-m-normal-14= text
+
+mixin key-feature(option=false)
+	if(option == 'moreLines')
+		// RO
+		- var initialState = ["Most advanced OLED picture quality","HDMI 2.1 Spec, 0.1ms response time","Designed for an outstanding gaming, movie and sport viewing experience","Lorem ipsum dolor sit amet consectetur, adipisicing elit. Inventore, nulla!","Lorem ipsum dolor sit.","Lorem ipsum dolor sit amet consectetur adipisicing.",]
+		.c-key-feature
+			+list-information({data : initialState})(id='keyFeatureList' class="c-list--single-column")
+			.c-key-feature__button.c-key-feature__button--expand.button
+				button.cmp-button.c-button.c-button--text-icon.down.m-small.w-small.js-more-text-trigger(aria-expanded="false" aria-controls=`keyFeatureList` data-cmp-data-layer='')
+					span.cmp-button__text.c-button__text.expand More
+					span.cmp-button__text.c-button__text.collapse Less
+			.c-key-feature__button.c-key-feature__button--footer.button
+				+textButton({wSize: 'medium', mSize: 'small', name : "Product Specs", buttonStyle : "default", isButton: false})(class="js-pop-open" aria-controls="popProductSpecs" role="button")
+	else if(option == 'fewerLines')
+		// RO 
+		- var initialState = ["Most advanced OLED picture quality","HDMI 2.1 Spec, 0.1ms response time","Designed for an outstanding gaming, movie and sport viewing experience"]
+		.c-key-feature
+			+list-information({data : initialState})(id='keyFeatureList2' class="c-list--single-column")
+			//- .c-key-feature__button.c-key-feature__button--expand.button
+			//- 	button.cmp-button.c-button.c-button--text-icon.down.m-small.w-small.js-more-text-trigger(aria-expanded="false" aria-controls=`keyFeatureList` data-cmp-data-layer='')
+			//- 		span.cmp-button__text.c-button__text.expand More
+			//- 		span.cmp-button__text.c-button__text.collapse Less
+			.c-key-feature__button.c-key-feature__button--footer.button.align-right
+				+textButton({wSize: 'medium', mSize: 'small', name : "Product Specs", buttonStyle : "default", isButton: false})(class="js-pop-open" aria-controls="popProductSpecs" role="button")
+	else
+		- var initialState = ["Most advanced OLED picture quality","HDMI 2.1 Spec, 0.1ms response time","Designed for an outstanding gaming, movie and sport viewing experience","Lorem ipsum dolor sit amet consectetur, adipisicing elit. Inventore, nulla!","Lorem ipsum dolor sit.","Lorem ipsum dolor sit amet consectetur adipisicing.",]
+		.c-key-feature
+			+list-information({data : initialState})(id='keyFeatureList' class="c-list--single-column")
+			.c-key-feature__button.c-key-feature__button--expand.button
+				button.cmp-button.c-button.c-button--text-icon.down.m-small.w-small.js-more-text-trigger(aria-expanded="false" aria-controls=`keyFeatureList` data-cmp-data-layer='')
+					span.cmp-button__text.c-button__text.expand More
+					span.cmp-button__text.c-button__text.collapse Less
+			.c-key-feature__button.c-key-feature__button--footer.button
+				+textButton({wSize: 'medium', mSize: 'small', name : "Product Specs", buttonStyle : "default", isButton: false})(class="js-pop-open" aria-controls="popProductSpecs" role="button")
+
+mixin award-information
+	- var initialState = ["CES 2022 Innovation Award, Honoree of the gaming category","Inverter Linear copressor 10-YEAR warranty","CES 2022 Innovation Award","Lorem ipsum dolor sit amet consectetur, adipisicing elit. Inventore, nulla!","Lorem ipsum dolor sit.","Lorem ipsum dolor sit amet consectetur adipisicing.",]
+
+	// block - list
+	+list-information({useImage : true, imageClass : "c-list__item-presentation-image", data : initialState})(class="c-list--single-column c-list--no-bleet")
+
+mixin compatible-product(count)
+	- var sku = "OLED65C26LD"
+	- var renderType = 6 > count ? "list" : "search"
+
+	case renderType
+		when "list"
+			// when "7 > sku(model display name) count", use this.
+			// block - list
+			.c-list
+				- for (var i=0; i < count; i++)
+					.c-list__item
+						span= sku
+			.button.align-right
+				// GA4
+				+textButton({wSize : "medium", mSize : "small", buttonStyle:"default", name:"Find My Model #?", isButton : false})(href="#popFindModel" class="js-pop-open" role="button")
+
+		when "search"
+			// when "7 <= sku(model display name) count", use this.
+			.c-search-combobox
+				.text.c-search-combobox__description
+					.cmp-text(data-cmp-data-layer) Search for compatible products for your accessory.
+				.c-search-combobox__indicator
+					span(aria-live="polite")
+						span 99
+						| models
+					.button
+						// GA4
+						+textButton({wSize : "medium", mSize : "small", buttonStyle:"default", name:"Find My Model #?", isButton : false})(href="#popFindModel" class="js-pop-open" role="button")
+				form.cmp-form(action="#" method="get").c-search-combobox__search-form
+					.c-search-combobox__search-field
+						- var required = true
+						- var inLayer = false
+						- var labelSrOnly = true
+						//- input
+						+formText("text", "", "PD0003CompatibleProductSearchInput", required, "Find a compatible product", inLayer, labelSrOnly)(onclick="event.currentTarget.closest('.c-search-combobox').querySelector('.c-search-combobox__dropdown-list').classList.toggle('.c-search-combobox__dropdown-list--active')")
+						//- msg - validation
+						+invalid-warning("Model is Required")
+						//- dropdown
+						.c-search-combobox__dropdown-list
+							- for (var i=0; i < count; i++)
+								.c-search-combobox__dropdown-item(role="button" tabindex="0")
+									span= sku
+					.button.c-search-combobox__search-button
+						+defaultButton({name : "Search", wSize:"medium", mSize:"medium", buttonStyle:"default", isButton : true})(type="submit")
+					//- msg - matched
+					.c-search-combobox__search-return-msg
+						+valid-msg("Your model is compatible with this <accessory>")
+						+invalid-warning("This model is not compatible with this <accessory>")
+		default
+			|
+
+mixin compatible-product(ro)
+	//RO ver
+	- var sku = "OLED65C26LD"
+
+	.c-list
+		- for (var i=0; i < 6; i++)
+			.c-list__item
+				span= sku
+	.button.align-right
+		// GA4
+		+textButton({wSize : "medium", mSize : "small", buttonStyle:"default", name:"Find My Model #?", isButton : false})(href="#popFindModel" class="js-pop-open" role="button")
+
+	.c-search-combobox
+		.text.c-search-combobox__description
+			.cmp-text(data-cmp-data-layer) Search for compatible products for your accessory.
+		form.cmp-form(action="#" method="get").c-search-combobox__search-form
+			.c-search-combobox__search-field
+				- var required = true
+				- var inLayer = false
+				- var labelSrOnly = true
+				//- input
+				+formText("text", "", "PD0003CompatibleProductSearchInput", required, "Find a compatible product", inLayer, labelSrOnly)(onclick="event.currentTarget.closest('.c-search-combobox').querySelector('.c-search-combobox__dropdown-list').classList.toggle('.c-search-combobox__dropdown-list--active')")
+				//- msg - validation
+				+invalid-warning("Model is Required")
+				//- dropdown
+				.c-search-combobox__dropdown-list
+					- for (var i=0; i < count; i++)
+						.c-search-combobox__dropdown-item(role="button" tabindex="0")
+							span= sku
+			.button.c-search-combobox__search-button
+				+defaultButton({name : "Search", wSize:"medium", mSize:"medium", buttonStyle:"default", isButton : true})(type="submit")
+			//- msg - matched
+			.c-search-combobox__search-return-msg
+				+valid-msg("Your model is compatible with this <accessory>")
+				+invalid-warning("This model is not compatible with this <accessory>")
+		.c-search-combobox__indicator.c-search-combobox__indicator--bottom
+			span(aria-live="polite")
+				span 99
+				| models
+			.button
+				// GA4
+				+textButton({wSize : "medium", mSize : "small", buttonStyle:"default", name:"Find My Model #?", isButton : false})(href="#popFindModel" class="js-pop-open" role="button")
+
+//- +++ sibling information +++
+mixin product-sibling-option-box({title, titleFontStyle, description, descriptionStyle, controlsId, useNotice, useTooltip, columnCount, hasbottomDescription, bottomDescription, requiredTitle})
+	- var titleFont = titleFontStyle || "font-w-normal-24 font-m-normal-16"
+	- var descriptionStyle = descriptionFontStyle || "font-w-normal-16 font-m-normal-12"
+	- var optionCount = columnCount || 2
+	- var optionLayout = 2 > optionCount ? "full" : 3 > optionCount ? "half" : 4 > optionCount ? "third" : "quarter"
+	- var optionLayoutClass = `c-sibling-option-box--layout-${optionLayout}`
+	- var firstOpened =  (controlsId === 'PD0003SiblingOptions01' || controlsId === 'PD0003SiblingOptions11' || controlsId === 'PD0003SiblingColor01' || controlsId === 'PD0003SiblingBuy01' || controlsId === 'PD0003SiblingOptions05' || controlsId === 'PD0003SiblingOptionsB01' || controlsId === 'PD0003SiblingOptionsB02' || controlsId === 'PD0003SiblingOptionsB03')
+	- var optionExpandClass = firstOpened ? 'c-accordion__box--expand' : ''
+	- var optionExpandBtnAria = firstOpened ? 'true' : 'false'
+	// block - product sibling box
+	.c-sibling-option-box.c-accordion__box.js-accordion-handle-target(class={[optionLayoutClass] : 5 > optionCount} class=`${optionExpandClass}` data-expand="independent")
+		//- accordion head
+		.c-sibling-option-box__head.c-accordion__head
+			//- title
+			// block - text contents
+			.c-accordion__head-text.c-text-contents
+				.text.c-text-contents__headline
+					.cmp-text(data-cmp-data-layer="" class=`${titleFont}`)
+						if requiredTitle
+							h2.option-name= title
+								+required-text-sr
+						else
+							h2.option-name= title
+						//- tooltip
+						if useTooltip
+							+exclamBorderTooltip
+					if description
+					.cmp-text(data-cmp-data-layer="" class=`description ${descriptionStyle}`)
+						span=description 
+
+			//- button
+			.button
+				// to dev - id value is sample.
+				button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded=`${optionExpandBtnAria}` aria-controls=`${controlsId}`)
+					span.c-accordion__button-text.expand.sr-only Expand
+					span.c-accordion__button-text.collapse.sr-only Collapse
+
+		//- accordion body
+		// to dev - id value is sample.
+		.c-sibling-option-box__contents.c-accordion__body(id=`${controlsId}`)
+			if block
+				block
+			//- option promotion text
+			if useNotice
+				+promotion-notice-list
+			if hasbottomDescription
+				p.bottom-description.higlighted
+					a(href="#none" target="_blank" title="Opens in a new tab")=bottomDescription
+				p.bottom-description normal text area 
+					a(href="#none" target="_blank" title="Opens in a new tab")=bottomDescription
+
+mixin product-sibling-option(params)
+	- var config = {optionType : "", price : "$1,499.99", optionName : "Lorem ipsum", optionFlagName : "Lorem ipsum", inputName : "", useTooltip : false, disabled : false, useOptionFlag : false, useAddButton: false, useOptionNameIcon: false, checked: false, priceToggle: false, mesPrice: false, outlineOption: false, ...params}
+	- var indicateColor = config.optionColor
+	- var hashRange = 100000
+	- var hash = Math.ceil(Math.random() * hashRange).toString(16)
+	- var id = `${config.inputName}-${hash}`
+	- var priceHash = Math.ceil(Math.random() * hashRange)
+	- var priceId = indicateColor ? '' : `${id}-${priceHash}`
+	- var nameHash = Math.ceil(Math.random() * hashRange)
+	- var nameId = `${id}-${nameHash}`
+	// block - sibling option
+	.c-sibling-option
+		//- radiobox
+		if(config.checked == true)
+			if (config.optionType == "checkbox")
+				input.c-sibling-option__input.sr-only(type="checkbox" id=`${id}` name=`${config.inputName}` disabled=config.disabled checked)
+			else if (config.optionType == "warranty")
+				input.c-sibling-option__input.sr-only(type="radio" id=`${id}` name=`${config.inputName}` disabled checked)
+			else
+				input.c-sibling-option__input.sr-only(type="radio" id=`${id}` name=`${config.inputName}` disabled=config.disabled checked)
+		else
+			if (config.optionType == "checkbox")
+				input.c-sibling-option__input.sr-only(type="checkbox" id=`${id}` name=`${config.inputName}` disabled=config.disabled)
+			else if (config.optionType == "warranty")
+				input.c-sibling-option__input.sr-only(type="radio" id=`${id}` name=`${config.inputName}` disabled)
+			else
+				input.c-sibling-option__input.sr-only(type="radio" id=`${id}` name=`${config.inputName}` disabled=config.disabled)
+		div.c-sibling-option__detail(class={"horizontal-align" : indicateColor} class={"label-toggle-display" : config.optionType == "delivery" }  class={"c-addon-product-box__item" : config.optionType == "warranty" || config.optionType == "service"} class={[config.outlineOption ? "option-red" : ``] : !!config.outlineOption})
+			//- primary information
+			//- indicate option name / price
+			.c-sibling-option__primary-detail(class={"c-sibling-option__primary-detail--single-line-mobile" : config.optionType == "care"})
+				//- a11y name
+				label(for=`${id}` aria-labelledby=`${nameId} ${priceId}`)
+				//- option definition
+				if (config.optionType == "warranty")
+					.c-addon-product-box__item-image
+						.image.c-image
+							+printLazyImage('../../mocks/PD0003/img-warranty2years-80-80.png')
+					.c-addon-product-box__item-text
+						.c-addon-product-box__item-name
+							.c-addon-product-box__item-modelname(id=`${nameId}`)
+								.c-addon-product-box__item-ufn= config.optionName
+								.c-addon-product-box__item-info Protects your product for an additional 24 months
+								.c-addon-product-box__item-info-detail This plancovers visit charges and spare part cost during Plan period. Additionally, onetime panel breakage will be covered. These benefits can be availed Pan Indiathrough qualified LG Service Engg and will be using genuine spare parts (For moredetails)
+							.c-addon-product-box__item-price(id=`${priceId}`)
+								//- [Start] UPDATE : promotion, monthly pament amount area
+								if config.idx === 0 
+									| £190.00
+								else
+									| £200.00
+								.c-addon-product-box__item-price--discount
+									if config.mesPrice
+										span.unit $115.03/mes
+									else if config.idx === 0
+										del £200.00
+										span.unit £3.75/month
+									else
+										del £269.98
+									//- [End] UPDATE : promotion, monthly pament amount area
+				else if (config.optionType == "service")
+					.c-addon-product-box__item-image
+						.image.c-image
+							+printLazyImage('../../mocks/PD0003/img-service-80-80.png')
+					.c-addon-product-box__item-text
+						.c-addon-product-box__item-name
+							.c-addon-product-box__item-modelname(id=`${nameId}`)
+								.c-addon-product-box__item-ufn Combis door change of direction service
+								.c-addon-product-box__item-info We provide combination door redirection service.
+							.c-addon-product-box__item-price(id=`${priceId}`) £90.00
+								.c-addon-product-box__item-price--discount
+										del £100.00
+				else
+					div.c-sibling-option__definition
+						if indicateColor
+							span.c-sibling-option__swatch(class=`${config.optionColor}`)
+						//- flag
+						if config.useOptionFlag
+							.text.c-sibling-option__flag
+								span.cmp-text(data-cmp-text-layer)= config.optionFlagName
+						//- size
+						if config.inputName == 'size'
+							.text.c-sibling-option__name(id=`${nameId}`)
+								span.cmp-text(data-cmp-text-layer)= config.optionName
+						//- name
+						else if config.inputName == 'color'
+							.text.c-sibling-option__name(id=`${nameId}`)
+								span.cmp-text(data-cmp-text-layer)= config.optionName
+						else
+							.text.c-sibling-option__name(id=`${nameId}`)
+								if config.useOptionNameIcon
+									.image.c-image.c-pbp-icon
+										+printLazyImage('https://via.placeholder.com/32x32/999999/333333')
+								span.cmp-text(data-cmp-text-layer)= config.optionName
+
+						//- tooltip button
+						if config.useTooltip
+							+exclamBorderTooltip(tooltipText, usedButton = true, direction = 'bottom-left', size = '', describedby=`${nameId}`)
+
+						//- description
+						if config.useDescription
+							.c-sibling-option__description Lorem ipsum dolor sit amet.
+
+				//- price
+				if (config.price !== "" && config.optionType !== "warranty" && config.optionType !== "service")
+					if (config.priceToggle)
+						// RO ver
+						div.c-sibling-option__price(id=`${priceId}`).c-sibling-option__price--toggle
+							.text
+								span.cmp-text(data-cmp-text-layer)= config.price
+							//- more price information
+							case config.optionType
+								when "care"
+									div.c-sibling-option__price-discount
+										del $1,60.00
+										span 10% off
+								default
+									|
+					else
+						div.c-sibling-option__price(id=`${priceId}`)
+							.text
+								span.cmp-text(data-cmp-text-layer)= config.price
+							//- more price information
+							case config.optionType
+								when "care"
+									div.c-sibling-option__price-discount
+										del $1,60.00
+										span 10% off
+								default
+									|
+
+				else if(config.useAddButton !== false)
+					div.c-sibling-option__btn(id=`${priceId}`)
+						.button
+							+button({type:'box-outlined', name:'Add', size:'medium'})
+			//- more information
+			if block
+				block
+
+//- mixin product-sibling-case(type = "", array = [])
+//- 	- var sample = {"graphics":[{inputName:"graphics",optionName:"Intel® Iris® Plus Graphics"},{inputName:"graphics",optionName:"Intel® Iris® Plus Graphics"},{inputName:"graphics",optionName:"Intel® Iris® Plus Graphics"},{inputName:"graphics",optionName:"NVIDIA® GeForce® GTX™ 1650Ti"},{inputName:"graphics",optionName:"AMD Radeon™ Graphics"},], "warranty":[{useDescription:"Includes up to two incidents of accidenta damage protection",inputName:"warranty",optionName:"2 years",},{useDescription:"Includes up to two incidents of accidenta damage protection",inputName:"warranty",optionName:"5 years"}],"services":[{useDescription:"delivery only",inputName:"sevices",optionName:"Services A",columnCount:1},{inputName:"sevices",optionName:"Haul Away"},{inputName:"sevices",optionName:"LG Care+"},{inputName:"sevices",optionName:"No Need", price : "0"},],"color":[{inputName:"color",optionColor:"gray",optionName:"Noble Steel", price:""},{inputName:"color",optionColor:"black",optionName:"Matte Black",price:""},{inputName:"color",optionColor:"#eee",optionName:"Shiny Steel",price:""},{inputName:"color",optionColor:"white",optionName:"White",price:""},],"storage":[{inputName:"storage",optionName:"2TB"},{inputName:"storage",optionName:"1TB"},{inputName:"storage",optionName:"512GB"},{inputName:"storage",optionName:"256GB"},],"ram":[{inputName:"rammemory",optionName:"16GB"},{inputName:"rammemory",optionName:"8GB"},],"processor":[{inputName:"processor",optionName:"Intel\xae Core™ i7"},{inputName:"processor",optionName:"Intel\xae Core™ i5"},{inputName:"processor",optionName:"Intel\xae Core™ i3"},],"care" : [{optionType : 'care', inputName : `premiumcareplan`, optionFlagName : "Best deal", useOptionFlag : true, optionName : "LG Premium Care Plan 5 Year"},{optionType : 'care', inputName : `premiumcareplan`, optionFlagName : "Best deal", useOptionFlag : true, optionName : "LG Premium Care Plan 3 Year"},{optionType : 'care', inputName : `premiumcareplan`, optionFlagName : "Best deal", useOptionFlag : true, optionName : "LG Premium Care Plan 1 Year", disabled : true},{inputName:"premiumcareplan",optionName:"No Need", price : "0"}],"size":[{inputName:"size",optionName:"77”"},{inputName:"size",optionName:"66”"},{inputName:"size",optionName:"55”"},{inputName:"size",optionName:"44”"},], "lorem":[{inputName:"lorem",optionName:"Lorem ipsum 1", price:""},{inputName:"lorem",optionName:"Lorem ipsum 2", price:""},{inputName:"lorem",optionName:"Lorem ipsum 3", price:""},{inputName:"lorem",optionName:"Lorem ipsum 4", price:""},{inputName:"lorem",optionName:"Lorem ipsum 5", price:""},]};
+//- 	- var list = 1 > array.length ? sample[type] : array
+
+//- 	.c-sibling-option-box__option-group
+//- 		each set in list
+//- 			//- options
+//- 			case type
+//- 				when "care"
+//- 					+product-sibling-option(set)
+//- 						if set.optionName != "No Need"
+//- 							.c-sibling-option__disclaimer
+//- 								// block - text contents
+//- 								.c-text-contents
+//- 									.text.c-text-contents__eyebrow
+//- 										.cmp-text.font-w-semibold-16.font-w-semibold-14(data-cmp-data-layer="")
+//- 											em Purchasable in 30 days
+//- 									.text.c-text-contents__disclaimer
+//- 										.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="")
+//- 											span LG Premium Care Protects your Product for an additional 12 Month LG Premium Care Protects you Product for an additional
+//- 				default
+//- 					+product-sibling-option(set)
+
+mixin zip-input(id)
+	.c-zip-input.c-sibling-option__zip-input
+		.c-sibling-option__zip-input--wrap
+			+formText("text", "Street district or zip code", `${id}`, false, "Street district or zip code", false, true)
+			.button.c-cta
+				+button({type:'box-outlined', name:'Find', size:'medium', class: 'js-pop-open'})(aria-controls="popFindRelayPoint")
+		.c-search-combobox__search-return-msg
+			+invalid-warning("Please enter an address to find the nearest pick-up point.")
+			+invalid-warning("No pick-up point found nearby.")
+
+mixin date-input(id)
+	.c-date-input.c-sibling-option__date-input
+		//- input(type="hidden" value="")
+		.c-sibling-option__date-input--wrap
+			.c-input-item
+				label.c-date-input__field(for=`${id}`)
+					//- span.c-date-input__name Pick a deliver slot
+					span.c-date-input__input-part
+						input.c-date-input__input.cmp-form-text__text(id=`${id}` data-cmp-hook-form-text="input" type="text" name="date" min="2023-01-01" max="2023-02-10" placeholder="Select date")
+						a.c-date-input__ware.js-pop-open.js-calendar-pop(role="button" href="#popSelectDate" data-render-type="onetime")
+							span.sr-only Calendar
+mixin address-select(id)
+	.c-sibling-option.c-address-select.c-sibling-option__address-select
+		.c-sibling-option__address-select--wrap
+			+formSelect("Select pickup address", "Select pickup address", "Select pickup address", false, true)
+				option(value="") Select pickup address
+
+mixin promotion-notice-list
+	// block - promotion notice
+	ul.c-promotion-notice.c-promotion-notice--list
+		li.c-promotion-notice__item
+			// block - image
+			.image.c-image.c-pbp-icon
+				+printLazyImage('https://via.placeholder.com/32x32/999999/333333')
+			.text.c-promotion-notice__text
+				span.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") Membership Benefit 5%
+		li.c-promotion-notice__item
+			// block - image
+			.image.c-image.c-pbp-icon
+				+printLazyImage('https://via.placeholder.com/32x32/999999/333333')
+			.text.c-promotion-notice__text
+				span.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") This Product Local Promotion Wow!
+
+//- RO delivery-time
+mixin product-dilivery-time(option=false)
+	if (option == "message")
+		.c-product-dilivery-time__wrap
+			.c-sibling-option-box__head
+				.c-text-contents
+					.text.c-text-contents__headline
+						h2.cmp-text.font-w-normal-24.font-m-normal-16 Delivery time
+			.c-sibling-option-box__contents
+				.c-sibling-option__secondary-detail 
+					.c-product-dilivery-time__text.font-w-normal-20.font-m-normal-14 
+						p Delivery within 3-5 days
+					.c-product-dilivery-time__disclaimer
+						p.c-text.font-w-normal-14.font-m-normal-12 Disclaimer for delivery time
+	else if(option == "calendar")
+		.c-product-dilivery-time__wrap
+			.c-sibling-option-box__head
+				.c-text-contents
+					.text.c-text-contents__headline
+						h2.cmp-text.font-w-normal-24.font-m-normal-16 Delivery time
+			.c-sibling-option-box__contents
+				.c-sibling-option__secondary-detail 
+					+date-input("Deliverytime")
+					.c-product-dilivery-time__disclaimer
+						p.c-text.font-w-normal-14.font-m-normal-12 Disclaimer for delivery time
+	else
+		.c-product-dilivery-time__wrap
+			.c-sibling-option-box__head
+				.c-text-contents
+					.text.c-text-contents__headline
+						h2.cmp-text.font-w-normal-24.font-m-normal-16 Delivery time
+			.c-sibling-option-box__contents
+				.c-sibling-option__secondary-detail 
+					+date-input("Deliverytime")
+					.c-product-dilivery-time__disclaimer
+						p.c-text.font-w-normal-14.font-m-normal-12 Disclaimer for delivery time
+			//or
+			.c-sibling-option-box__contents
+				.c-sibling-option__secondary-detail 
+					.c-product-dilivery-time__text.font-w-normal-20.font-m-normal-14 
+						p Delivery within 3-5 days
+					.c-product-dilivery-time__disclaimer
+						p.c-text.font-w-normal-14.font-m-normal-12 Disclaimer for delivery time
+
+//- pincode
+mixin product-delivery-pincode(requiredText, required)
+	// pincodeFormTitle
+	mixin pincodeFormTitle(text)
+		if option.requiredText
+			.text.c-form__title
+				.cmp-text.font-w-normal-16.font-m-normal-16 
+					p Select delivery range
+						+required-text-sr
+		else
+			.text.c-form__title
+				+deliverly-item-icon("stock")
+				.cmp-text(data-cmp-data-layer="")
+					p #{text}
+	// block : product pincode
+	.c-product-pincode
+		if option.required
+			+required-text-indicate.font-m-normal-14.font-w-normal-16
+		.c-product-pincode__inner
+			//- form single
+			form.c-form.c-form--single.cmp-form
+				+pincodeFormTitle("Check if stock is available :: Single Type")
+				.c-form__box
+					// block : form box
+					.c-form-box
+						+formText("text", "Enter postal code", "product-pincode-01", false, "Enter postal code", false, true)
+						// block :cta
+						.button.c-cta
+							+defaultButton({name:'Check', wSize:'medium', mSize: 'medium', buttonStyle : "default", isButton: true})
+					.c-form-box
+						+formSelect("Enter Pincode", "Pincode", "Select Zipcode", false, true)
+							option(value="") Select Zipcode
+						// block :cta
+						.button.c-cta
+							+defaultButton({name:'Check', wSize:'medium', mSize: 'medium', buttonStyle : "default", isButton: true})
+					.c-form-box
+						+formText("text", "Enter postal code", "product-pincode-01", false, "Enter postal code", false, true)(disabled="disabled")
+						// block :cta
+						.button.c-cta
+							+defaultButton({name:'Check', wSize:'medium', mSize: 'medium', buttonStyle : "default", isButton: true})(disabled="disabled")
+					.c-form-box
+						+formSelect("Enter Pincode", "Pincode", "Select Zipcode", false, true)(disabled="disabled")
+							option(value="") Select Zipcode
+						// block :cta
+						.button.c-cta
+							+defaultButton({name:'Check', wSize:'medium', mSize: 'medium', buttonStyle : "default", isButton: true})(disabled="disabled")
+					+valid-msg("Success text area.")
+					+invalid-warning("Error & Failure & Text Area.")
+			//- form multi
+			form.c-form.c-form--multi.cmp-form
+				+pincodeFormTitle("Check if stock is available :: Multi Type")
+				.c-form__box
+					// block : form box
+					.c-form-box.c-valuedation-region
+						+formSelect("Enter Region", "Region", "Region", false, true)
+							option(value="") Region
+							option(value="544") text1
+							option(value="86") text2
+						+formSelect("Enter Comuna", "Comuna", "Comuna", false, true)
+							option(value="") Comuna
+							option(value="44") text1
+							option(value="6555") text2
+						// block :cta
+						.button.c-cta
+							+defaultButton({name:'Check', wSize:'medium', mSize: 'medium', buttonStyle : "default", isButton: true})
+					.c-form-box.c-valuedation-region
+						+formSelect("Enter Region", "Region", "Region", false, true)
+							option(value="") Region
+						+formSelect("Enter Comuna", "Comuna", "Comuna", false, true)
+							option(value="") Comuna
+						+formSelect("Enter Area3", "Area3", "Area3", false, true)
+							option(value="") Area3
+						// block :cta
+						.button.c-cta
+							+defaultButton({name:'Check', wSize:'medium', mSize: 'medium', buttonStyle : "default", isButton: true})
+					.c-form-box
+						+formSelect("Enter Region", "Region", "Region", false, true)(disabled="disabled")
+							option(value="") Region
+							option(value="544") text1
+							option(value="86") text2
+						+formSelect("Enter Comuna", "Comuna", "Comuna", false, true)(disabled="disabled")
+							option(value="") Comuna
+							option(value="44") text1
+							option(value="6555") text2
+						// block :cta
+						.button.c-cta
+							+defaultButton({name:'Check', wSize:'medium', mSize: 'medium', buttonStyle : "default", isButton: true})(disabled="disabled")
+					+valid-msg("Success text area.")
+					+invalid-warning("Error & Failure & Text Area.")
+
+//- +++ summary marketing elements +++
+//- promotion banner
+mixin product-summary-promotion-banner(bannerType = "overlay-bottom", useMoreDialog = false)
+	// block - summary recommended promotion
+	.c-summary-recommended-promotion
+		if(bannerType == "overlay-bottom")
+			.c-summary-recommended-promotion__head
+				.text
+					h2.cmp-text.font-w-normal-24.font-m-normal-16(data-cmp-data-layer="") Recommended Promotion
+				if useMoreDialog
+					.button.c-cta
+						+textButton({name: 'View More', wSize: 'small', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(href="#popRecommendedBanner" class="js-pop-open" role="button")
+			.c-summary-recommended-promotion__carousel
+				.carousel.panelcontainer
+					// block : carousel
+					.cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+						.cmp-carousel__content.swiper-wrapper
+							each set in [{}, {}, {}]
+								.cmp-carousel__item.swiper-slide.c-carousel__item(data-cmp-data-layer=`${bannerType}` data-cmp-hook-carousel="item")
+									+banner-item(bannerType)
+						.c-carousel__handler
+							.cmp-carousel__actions
+								+carouselBtn({type:"pagination", direction:"prev"})
+							+carouselPagination
+							.cmp-carousel__actions
+								+carouselBtn({type:"pagination", direction:"next"})
+		else
+			+banner-item(bannerType)
+
+mixin banner-item(bannerType, bannerSize='800x800')
+	- var imageHeight = 240
+	- var bannerTypeClass = bannerType == `` ? `` : `c-summary-banner--${bannerType}`
+	- var typeClass = null != bannerType && `${bannerTypeClass}`
+	// GA4
+	a.c-summary-banner(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" class={[typeClass] : !!typeClass})
+		.c-summary-banner__visual(style=`background-image:url(https://via.placeholder.com/${bannerSize}/333/999)`)
+		.c-summary-banner__contents
+			// block - text contents
+			.c-text-contents
+				case bannerType
+					//- when "overlay-side"
+					//- 	.text.c-text-contents__subcopy
+					//- 		span.cmp-text.font-w-light-36.font-m-light-24(data-cmp-data-layer="")
+					//- 			| Lorem ipsum dolor, sit amet co
+					//- 	// block - cta
+					//- 	.c-cta
+					//- 		span.c-button.c-button--box.small.white
+					//- 			span.c-button__text Learn More
+					when "overlay-bottom"
+						.text.c-text-contents__bodycopy
+							span.cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")
+								| Lorem ipsum dolor, sit amet consectetur
+					//- default
+					//- 	.text.c-text-contents__bodycopy
+					//- 		span.cmp-text.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")
+					//- 			| Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis repellat ipsam voluptas consequuntur modi? Dicta?
+					//- 		span.font-red.font-semibold.font-underline.font-w-normal-14i.font-m-normal-14i Select Here
+
+//- bundle carousel
+mixin product-summary-bundle-carousel
+	- var titleFont = "font-w-semibold-18 font-m-semibold-18"
+	.c-summary-bundle
+		.c-summary-bundle__head-text
+			.text.c-text-contents__headline
+				.cmp-text(data-cmp-data-layer="" class=`${titleFont}`)
+					strong Create your bundle
+		.c-product-list.c-product-list--summary.c-product-list--carousel.js-product-bundle-list
+			.carousel.panelcontainer
+				// block : carousel
+				.cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+					.cmp-carousel__content.swiper-wrapper
+						-for(var x = 0 ; x < 4; ++x)
+							+summaryItemSlide({imgSize:'100x100', fontClass:{sku:"font-w-bold-12i font-m-bold-12i", headline:"font-w-semibold-16 font-m-semibold-16", price:"font-w-semibold-18 font-m-semibold-18"}, btnName: "add to cart"})
+
+					.c-carousel__handler
+						.cmp-carousel__actions
+							+carouselBtn({type:"pagination", direction:"prev"})
+						+carouselPagination
+						.cmp-carousel__actions
+							+carouselBtn({type:"pagination", direction:"next"})
+
+//- pto
+mixin product-summary-pto
+	.c-product-summary-pto
+		// block - product list
+		.c-product-list
+			+ptoItem({
+				imgSize:'350x350',
+				fontClass:{
+					sku:"font-w-normal-16 font-m-normal-12",
+					headline:"font-w-normal-24 font-m-normal-16",
+					priceFontStyle:"font-w-normal-32 font-m-normal-16",
+					subPriceFontStyle:"font-w-normal-16 font-m-normal-12",
+				},
+				discount: "20% off",
+				tooltipEHF : false
+			})
+			+ptoItem({
+				imgSize:'350x350',
+				fontClass:{
+					sku:"font-w-normal-16 font-m-normal-12",
+					headline:"font-w-normal-24 font-m-normal-16",
+					priceFontStyle:"font-w-normal-32 font-m-normal-16",
+					subPriceFontStyle:"font-w-normal-16 font-m-normal-12",
+				},
+				onlyPurchase: true,
+				tooltipEHF : false
+			})
+//- addon
+mixin product-addon-before(addonType, useTooltip, useTooltipText)
+	.c-addon-product-box--before
+		.c-addon-product-box__information-container
+			.c-sibling-option__definition
+				.c-addon-product-box__name
+					.image.c-image.c-pbp-icon
+						if addonType == 'bundle'
+							+printLazyImage('../../mocks/PD0003/icon-bundle-48-48.png')
+						else if addonType == 'accessory'
+							+printLazyImage('../../mocks/PD0003/icon-accessory-48-48.png')
+						else if addonType == 'bundleBtype'
+							+printLazyImage('../../mocks/PD0003/icon-bundle-48-48.png')
+						else if addonType == 'accessoryBtype'
+							+printLazyImage('../../mocks/PD0003/icon-accessory-48-48.png')
+						else if addonType == 'warranty'
+							+printLazyImage('../../mocks/PD0003/icon-warranty-48-48.png')
+						else if addonType == 'service'
+							+printLazyImage('../../mocks/PD0003/icon-service-32-32.png')
+					.text.c-addon-product-box__name--option
+						span.cmp-text(data-cmp-text-layer)
+							if addonType == 'bundle'
+								| Discover and Save More
+							else if addonType == 'accessory'
+								| Perfect Paring for your TV/Audio/Video
+							else if addonType == 'bundleBtype'
+								| Discover and Save More
+							else if addonType == 'accessoryBtype'
+								| Perfect Paring for your TV/Audio/Video
+							else if addonType == 'warranty'
+								| Protect with LG Premium Care
+							else if addonType == 'service'
+								| Service
+					if useTooltip
+						+exclamBorderTooltip(useTooltipText, false)
+
+			//- button
+			div.c-sibling-option__btn.font-w-semibold-16.font-m-normal-14i
+				.button
+					+defaultButton({wSize :"small", mSize : "small", isButton : true, buttonStyle:"default", name:'Add'})(onclick="this.closest('.c-addon-product-box').classList.add('c-addon-product-box--option-choosing'); this.closest('.c-sibling-option-box__option-group').classList.add('choosing');")
+
+mixin product-sibling-option-bundle-box({title, titleFontStyle, useNotice, useTooltip, columnCount})
+	- var titleFont = titleFontStyle || "font-w-normal-24 font-m-normal-16"
+	- var optionCount = columnCount || 2
+	- var optionLayout = 2 > optionCount ? "full" : 3 > optionCount ? "half" : 4 > optionCount ? "third" : "quarter"
+	- var optionLayoutClass = `c-sibling-option-box--layout-${optionLayout}`
+	// block - product sibling box
+	.c-sibling-option-box(class={[optionLayoutClass] : 5 > optionCount})
+		//- accordion head
+		.c-sibling-option-box__head
+			//- title
+			// block - text contents
+			.c-sibling-option-box__head-text.c-text-contents
+				.text.c-text-contents__headline
+					.cmp-text(data-cmp-data-layer="" class=`${titleFont}`)
+						strong= title
+			//- tooltip
+			if useTooltip
+				+exclamBorderTooltip
+
+		//- accordion body
+		// to dev - id value is sample.
+		.c-sibling-option-box__contents
+			if block
+				block
+			//- option promotion text
+			if useNotice
+				+promotion-notice-list
+
+mixin product-addon-item(mode, addonType, idx, selectionSkuView)
+	.c-addon-product-box__item
+		.c-addon-product-box__item-image
+			.image.c-image
+				if addonType === 'service'
+					+printLazyImage('../../mocks/PD0003/img-service-80-80.png')
+				else if addonType != 'warranty'
+					+printLazyImage('../../mocks/PD0003/img-thum-80-80.png')
+				else
+					+printLazyImage('../../mocks/PD0003/img-warranty2years-80-80.png')
+		.c-addon-product-box__item-text
+			.c-addon-product-box__item-name
+				.c-addon-product-box__item-modelname
+					if (mode == 'after' && addonType != 'warranty' && addonType != 'service') || selectionSkuView
+						.c-addon-product-box__item-sku S40Q
+							if(idx === 0)
+								span.font-w-normal-16.font-m-normal-12.font-green In Stock
+							else
+								span.font-w-normal-16.font-m-normal-12.font-red Out of Stock
+					if addonType == 'bundle' || addonType == 'bundleBtype'
+						.c-addon-product-box__item-ufnLG Soundbar S40Q
+						if(idx === 0)
+							.c-addon-product-box__item-discount Extra $5 off on your main product
+						//- [Start] UPDATE : promotion, monthly pament amount area
+						if(idx < 2)
+							.c-addon-product-box__item-promotion LG Soundbarsare engineered to seamlessly enhance LG TV performance and designed to match LGTV.
+						//- [End] UPDATE : promotion, monthly pament amount area
+					else if addonType == 'accessory' || addonType == 'accessoryBtype'
+						.c-addon-product-box__item-ufn OLED G2 Stand for 55 G2
+						//- [Start] UPDATE : promotion, monthly pament amount area
+						if(idx === 0)
+							.c-addon-product-box__item-promotion LG Soundbarsare engineered to seamlessly enhance LG TV performance and designed to match LGTV.
+						//- [End] UPDATE : promotion, monthly pament amount area
+					else if addonType == 'warranty'
+						.c-addon-product-box__item-ufn OLED G2 Stand for 55 G2
+						.c-addon-product-box__item-info Protects your product for an additional 24 months
+						.c-addon-product-box__item-info-detail This plancovers visit charges and spare part cost during Plan period. Additionally, onetime panel breakage will be covered. These benefits can be availed Pan Indiathrough qualified LG Service Engg and will be using genuine spare parts (For moredetails)
+					else if addonType == 'service'
+						.c-addon-product-box__item-ufn Combis door change of direction service
+						.c-addon-product-box__item-info We provide combination door redirection service.
+					if mode == 'after' && addonType != 'warranty' && addonType != 'service'
+						.c-addon-product-box__item-qty Qty : 1
+				if addonType == 'bundle' || addonType == 'bundleBtype'
+					.c-addon-product-box__item-price £249.98
+						.c-addon-product-box__item-price--fee Includes $15 EHF fee
+						.c-addon-product-box__item-price--discount
+							del £269.98
+							strong Save £20.00
+					if(idx === 0)
+						.c-addon-product-box__item-discount Extra $5 off on your main product
+					//- [Start] UPDATE : promotion, monthly pament amount area
+					if(idx < 2)
+						.c-addon-product-box__item-promotion LG Soundbarsare engineered to seamlessly enhance LG TV performance and designed to match LGTV.
+					//- [End] UPDATE : promotion, monthly pament amount area
+				else if addonType == 'accessory' || addonType == 'accessoryBtype'
+					.c-addon-product-box__item-price £299.98
+					//- [Start] UPDATE : promotion, monthly pament amount area
+					if(idx === 0)
+						.c-addon-product-box__item-promotion LG Soundbarsare engineered to seamlessly enhance LG TV performance and designed to match LGTV.
+					//- [End] UPDATE : promotion, monthly pament amount area
+				else if addonType == 'warranty'
+					//- [Start] UPDATE : promotion, monthly pament amount area
+					.c-addon-product-box__item-price £190.00
+						if(idx === 0)
+							.c-addon-product-box__item-price--discount
+								del £200.00
+								span.unit £3.75/month
+						if(idx === 2)
+							.c-addon-product-box__item-price--discount
+								del £200.00
+					//- [End] UPDATE : promotion, monthly pament amount area
+				else if addonType == 'service'
+					.c-addon-product-box__item-price £90.00
+							.c-addon-product-box__item-price--discount
+								del £100.00
+			if(mode == 'after')
+				.c-addon-product-box__item-btn
+					+textButton({name: 'Edit', wSize: 'small', mSize: 'small', buttonStyle: 'default', underline : true, isButton: true})(onclick="this.closest('.c-addon-product-box').classList.add('c-addon-product-box--option-choosing');this.closest('.c-addon-product-box').classList.remove('c-addon-product-box--option-selected'); this.closest('.c-sibling-option-box__option-group').classList.add('choosing');this.closest('.c-addon-product-box').querySelector('button').focus();")
+					button(type="button" class="c-addon-product-box__item-btn__delete" onclick="this.closest('.c-addon-product-box--after').querySelectorAll('.c-addon-product-box__item').length <= 1 ? this.closest('.c-addon-product-box').classList.remove('c-addon-product-box--option-selected') : this.closest('.c-addon-product-box__item').remove()")
+						span.sr-only Delete
+			else if(addonType != 'warranty')
+				.c-addon-product-box__item-btn
+					//- +defaultButton({wSize :"small", mSize : "small", isButton : true, buttonStyle:"default", name:"Add On"})(onclick="this.nextElementSibling.classList.remove('hidden');this.classList.add('hidden');")
+					if(addonType == 'bundleBtype' || addonType == 'accessoryBtype')
+						if(selectionSkuView && (idx !== 0))
+							+defaultButton({wSize :"small", mSize : "small", isButton : true, buttonStyle:"default", name:"Add On"})(disabled)
+						else
+							+defaultButton({wSize :"small", mSize : "small", isButton : true, buttonStyle:"sf", name:"Add On"})(onclick="this.closest('.c-addon-product-box__list-li').classList.add('add');this.closest('.c-addon-product-box__list-li').querySelector('.c-addon-product-box__item-btn').querySelectorAll('.c-button')[0].classList.add('hidden');this.closest('.c-addon-product-box__list-li').querySelector('.c-addon-product-box__item-btn').querySelectorAll('.c-button')[1].classList.remove('hidden');")
+						button(type="button" class="c-button c-addon-product-box__item-btn__delete" onclick="this.closest('.c-addon-product-box__list-li').classList.remove('add');this.closest('.c-addon-product-box__list-li').querySelector('.c-addon-product-box__item-btn').querySelectorAll('.c-button')[1].classList.add('hidden');this.closest('.c-addon-product-box__list-li').querySelector('.c-addon-product-box__item-btn').querySelectorAll('.c-button')[0].classList.remove('hidden');")
+							span.sr-only Delete
+					else
+						if(selectionSkuView && (idx !== 0))
+							+defaultButton({wSize :"small", mSize : "small", isButton : true, buttonStyle:"default", name:"Add On"})(disabled)
+						else
+							+defaultButton({wSize :"small", mSize : "small", isButton : true, buttonStyle:"default", name:"Add On"})(onclick="this.closest('.c-addon-product-box__list-li').querySelector('.c-addon-product-box__item-more').classList.toggle('hidden');")
+						button(type="button" class="c-button c-addon-product-box__item-btn__delete" onclick="this.closest('.c-addon-product-box__list-li').classList.remove('add');this.previousElementSibling.classList.remove('hidden');this.classList.add('hidden');")
+							span.sr-only Delete
+
+	if(addonType != 'bundleBtype' && addonType != 'accessoryBtype' && addonType != 'warranty' && mode == 'selection')
+		// delivery for bundle or accessory
+		.c-addon-product-box__item-more.hidden
+			if(addonType == 'bundle')
+				// delivery + installation
+				+product-sibling-option-bundle-box({title :"Delivery + Installation", columnCount : 1, useTooltip : true})
+					.c-sibling-option-box__option-group
+						+product-sibling-option({ optionType : "delivery", inputName: 'delivery', optionName: 'Delivery Only', useTooltip: true })
+							.c-sibling-option__secondary-detail
+								+date-input("deliveryOnly")
+						+product-sibling-option({ optionType : "delivery", inputName: 'delivery', optionName: 'Delivery Only & Installation', useTooltip: true })
+							.c-sibling-option__secondary-detail
+								+date-input("addInstallation")
+						+product-sibling-option({ optionType : "delivery", inputName: 'delivery', optionName: 'Delivery & Installation & Wallmount'})
+							.c-sibling-option__secondary-detail
+								+date-input("addWallmount")
+				// services changes
+				+product-sibling-option-bundle-box({title :"Services Charge", columnCount : 1, useTooltip : true})
+					.c-sibling-option-box__option-group
+						+product-sibling-option({ inputName: 'service', optionName: 'No Need', price : "0", useTooltip: true })
+						+product-sibling-option({ inputName: 'service', optionName: 'Haul-away', useTooltip: true })
+
+			else
+				// delivery + installation
+				+product-sibling-option-bundle-box({title :"Delivery", columnCount : 1, useTooltip : true})
+					.c-sibling-option-box__option-group
+						+product-sibling-option({ optionType : "delivery", inputName: 'delivery', optionName: 'Regular Delivery', useTooltip: true })
+							.c-sibling-option__secondary-detail
+								+date-input("regularDelivery")
+
+			.c-addon-product-box__item-more-btn
+				+defaultButton({wSize :"small", mSize : "small", isButton : true, buttonStyle:"default", name:"Save Option"})(onclick="this.closest('.c-addon-product-box__list-li').classList.add('add');this.closest('.c-addon-product-box__list-li').querySelector('.c-addon-product-box__item-btn').querySelectorAll('.c-button')[0].classList.add('hidden');this.closest('.c-addon-product-box__list-li').querySelector('.c-addon-product-box__item-btn').querySelectorAll('.c-button')[1].classList.remove('hidden');this.closest('.c-addon-product-box__item-more').classList.add('hidden');")
+
+mixin product-addon-item-toggle(mode, addonType, idx, selectionSkuView, typeToggle)
+	- var config = {outlineOption: false}
+	button.c-addon-product-box__item.btn-addon--toggle(class={[config.outlineOption ? "option-red" : ``] : !!config.outlineOption} onmouseover="if(this.querySelector('.text-out-of-stock')) {this.setAttribute('disabled',true);}" onclick="this.closest('.c-addon-product-box__list-li').classList.toggle('add');")
+		.c-addon-product-box__item-image
+			.image.c-image
+				if addonType === 'service'
+					+printLazyImage('../../mocks/PD0003/img-service-80-80.png')
+				else if addonType != 'warranty'
+					+printLazyImage('../../mocks/PD0003/img-thum-80-80.png')
+				else
+					+printLazyImage('../../mocks/PD0003/img-warranty2years-80-80.png')
+		.c-addon-product-box__item-text
+			.c-addon-product-box__item-name
+				.c-addon-product-box__item-modelname
+					if addonType == 'bundle' || addonType == 'bundleBtype'
+						if(idx === 1)
+							.c-addon-product-box__item-stock
+								span.text-out-of-stock.font-w-normal-14.font-m-normal-12.font-red Out of Stock
+						.c-addon-product-box__item-ufnLG Soundbar S40Q
+						if(idx === 0)
+							.c-addon-product-box__item-discount Extra $5 off on your main product
+						//- [Start] UPDATE : promotion, monthly pament amount area
+						if(idx < 2)
+							.c-addon-product-box__item-promotion LG Soundbarsare engineered to seamlessly enhance LG TV performance and designed to match LGTV.
+						//- [End] UPDATE : promotion, monthly pament amount area
+					else if addonType == 'accessory' || addonType == 'accessoryBtype'
+						.c-addon-product-box__item-ufn OLED G2 Stand for 55 G2
+						//- [Start] UPDATE : promotion, monthly pament amount area
+						if(idx === 0)
+							.c-addon-product-box__item-promotion LG Soundbarsare engineered to seamlessly enhance LG TV performance and designed to match LGTV.
+						//- [End] UPDATE : promotion, monthly pament amount area
+					else if addonType == 'warranty'
+						.c-addon-product-box__item-ufn OLED G2 Stand for 55 G2
+						.c-addon-product-box__item-info Protects your product for an additional 24 months
+						.c-addon-product-box__item-info-detail This plancovers visit charges and spare part cost during Plan period. Additionally, onetime panel breakage will be covered. These benefits can be availed Pan Indiathrough qualified LG Service Engg and will be using genuine spare parts (For moredetails)
+					else if addonType == 'service'
+						.c-addon-product-box__item-ufn Combis door change of direction service
+						.c-addon-product-box__item-info We provide combination door redirection service.
+				if addonType == 'bundle' || addonType == 'bundleBtype'
+					.c-addon-product-box__item-price £249.98
+						.c-addon-product-box__item-price--fee Includes $15 EHF fee
+						.c-addon-product-box__item-price--discount
+							del £269.98
+							strong Save £20.00
+					if(idx === 0)
+						.c-addon-product-box__item-discount Extra $5 off on your main product
+					//- [Start] UPDATE : promotion, monthly pament amount area
+					if(idx < 2)
+						.c-addon-product-box__item-promotion LG Soundbarsare engineered to seamlessly enhance LG TV performance and designed to match LGTV.
+					//- [End] UPDATE : promotion, monthly pament amount area
+				else if addonType == 'accessory' || addonType == 'accessoryBtype'
+					.c-addon-product-box__item-price £299.98
+					//- [Start] UPDATE : promotion, monthly pament amount area
+					if(idx === 0)
+						.c-addon-product-box__item-promotion LG Soundbarsare engineered to seamlessly enhance LG TV performance and designed to match LGTV.
+					//- [End] UPDATE : promotion, monthly pament amount area
+				else if addonType == 'warranty'
+					//- [Start] UPDATE : promotion, monthly pament amount area
+					.c-addon-product-box__item-price £190.00
+						if(idx === 0)
+							.c-addon-product-box__item-price--discount
+								del £200.00
+								span.unit £3.75/month
+						if(idx === 2)
+							.c-addon-product-box__item-price--discount
+								del £200.00
+					//- [End] UPDATE : promotion, monthly pament amount area
+				else if addonType == 'service'
+					.c-addon-product-box__item-price £90.00
+							.c-addon-product-box__item-price--discount
+								del £100.00
+
+mixin product-addon-selection(addonType, selectionSkuView)
+	.c-addon-product-box--selection
+		.c-addon-product-box__information-container
+			.c-addon-product-box__head
+				.c-addon-product-box__name
+					.image.c-image.c-pbp-icon
+						if addonType == 'bundle'
+							+printLazyImage('../../mocks/PD0003/icon-bundle-48-48.png')
+						else if addonType == 'accessory'
+							+printLazyImage('../../mocks/PD0003/icon-accessory-48-48.png')
+						else if addonType == 'bundleBtype'
+							+printLazyImage('../../mocks/PD0003/icon-bundle-48-48.png')
+						else if addonType == 'accessoryBtype'
+							+printLazyImage('../../mocks/PD0003/icon-accessory-48-48.png')
+						else if (addonType == 'warranty') || (addonType == 'warrantyBtype')
+							+printLazyImage('../../mocks/PD0003/icon-warranty-48-48.png')
+						else if (addonType == 'service')
+							+printLazyImage('../../mocks/PD0003/icon-service-32-32.png')
+					.text.c-addon-product-box__name--option
+						span.cmp-text(data-cmp-text-layer)
+							if addonType == 'bundle'
+								| Discover and save more
+							else if addonType == 'accessory'
+								| Perfect paring for your TV&Soundbars
+							else if addonType == 'bundleBtype'
+								| Discover and save more
+							else if addonType == 'accessoryBtype'
+								| Perfect paring for your TV&Soundbars
+							else if (addonType == 'warranty') || (addonType == 'warrantyBtype')
+								| Protect with LG Premium care
+							else if (addonType == 'service')
+								| Service
+						//- span.cmp-text(data-cmp-text-alyer)
+						//- 	| Buy more save more
+						//- 	span (
+						//- 	if addonType == 'bundle'
+						//- 		strong 1
+						//- 	else if addonType == 'accessory'
+						//- 		strong 2
+						//- 	else if addonType == 'warranty'
+						//- 		strong 3
+						//- 	span /3)
+
+			.c-addon-product-box__list
+				if (addonType == 'warranty') || (addonType == 'warrantyBtype')
+					.c-addon-product-box__list-ul.c-sibling-option-box__option-group
+						- for (var x = 0; x < 5; x++)
+							if addonType == 'warrantyBtype'
+								+product-sibling-option({inputName: "warranty", optionType: "warranty", mesPrice: true})
+								//- .c-sibling-option
+								//- 	+product-addon-item('selection', addonType, x)
+							else
+								+product-sibling-option({inputName: "warranty", optionType: "warranty", idx: x})
+								//- .c-sibling-option
+								//- 	+product-addon-item('selection', addonType, x)
+				else if (addonType == 'service')
+					.c-addon-product-box__list-ul.c-sibling-option-box__option-group
+						- for (var x = 0; x < 5; x++)
+							+product-sibling-option({inputName: "service", optionType: "service"})
+				else
+					.c-addon-product-box__list-ul
+						- for (var x = 0; x < 5; x++)
+							.c-addon-product-box__list-li
+								+product-addon-item('selection', addonType, x, selectionSkuView)
+			.c-addon-product-box__foot
+				.c-addon-product-box__foot-count
+					.c-addon-product-box__foot-qty
+						| Add Item(
+						strong.font-red 0
+						| )
+					.c-addon-product-box__foot-price
+						| £0
+				.c-addon-product-box__foot-cta
+					.button
+						+defaultButton({wSize :"medium", mSize : "medium", isButton : true, buttonStyle:"default", name:'Save'})(onclick="this.closest('.c-addon-product-box').classList.remove('c-addon-product-box--option-choosing');this.closest('.c-addon-product-box').classList.add('c-addon-product-box--option-selected'); this.closest('.c-sibling-option-box__option-group').classList.remove('choosing');" onblur="this.closest('.c-sibling-option-box').querySelector('button').focus();")
+
+mixin product-addon-selection-toggle(addonType, selectionSkuView)
+	.c-addon-product-box--selection
+		.c-addon-product-box__information-container
+			.c-addon-product-box__list
+				if (addonType == 'warranty') || (addonType == 'warrantyBtype')
+					.c-addon-product-box__list-ul.c-sibling-option-box__option-group
+						- for (var x = 0; x < 5; x++)
+							if addonType == 'warrantyBtype'
+								+product-sibling-option({inputName: "warranty", optionType: "warranty", mesPrice: true})
+							else
+								+product-sibling-option({inputName: "warranty", optionType: "warranty", idx: x})
+				else if (addonType == 'service')
+					.c-addon-product-box__list-ul.c-sibling-option-box__option-group
+						- for (var x = 0; x < 5; x++)
+							+product-sibling-option({inputName: "service", optionType: "service"})
+				else
+					.c-addon-product-box__list-ul
+						- for (var x = 0; x < 5; x++)
+							.c-addon-product-box__list-li
+								+product-addon-item-toggle('selection', addonType, x, selectionSkuView)
+			if (addonType !== 'warranty') && (addonType !== 'warrantyBtype')
+				.c-addon-product-box__foot
+					.c-addon-product-box__foot-count
+						.c-addon-product-box__foot-qty
+							| Add Item(
+							strong.font-red 0
+							| )
+						.c-addon-product-box__foot-price
+							| £0
+
+mixin product-addon-after(addonType)
+	.c-addon-product-box--after
+		//- [Start] UPDATE : promotion, monthly pament amount area
+		+product-addon-item('after', addonType, 0)
+		+product-addon-item('after', addonType, 1)
+		if addonType == 'warranty'
+			+product-addon-item('after', addonType, 2)
+		//- [End] UPDATE : promotion, monthly pament amount area
+
+mixin product-sibling-option-wa(params)
+	- var config = {optionType : "", price : "$1,499.99", optionName : "Lorem ipsum", optionFlagName : "Lorem ipsum", inputName : "", useTooltip : false, disabled : false, useOptionFlag : false, useAddButton: false, useOptionNameIcon: false, checked: false, priceToggle: false, checked: false, outlineOption: false, config, ...params}
+	- var indicateColor = config.optionColor
+	- var hashRange = 100000
+	- var hash = Math.ceil(Math.random() * hashRange).toString(16)
+	- var id = `${config.inputName}-${hash}`
+	- var priceHash = Math.ceil(Math.random() * hashRange)
+	- var priceId = indicateColor ? '' : `${id}-${priceHash}`
+	- var nameHash = Math.ceil(Math.random() * hashRange)
+	- var nameId = `${id}-${nameHash}`
+	- var attributes = config.optionType == "delivery" ? {"aria-expanded": `${config.checked}`} : null
+	// block - sibling option
+	.c-sibling-option.radio-item(role="radio" aria-checked=`${config.checked}` class={[config.checked ? "active" : ``] : !!config.checked} tabindex="0")&attributes(attributes)
+		div.c-sibling-option__detail(class={"horizontal-align" : indicateColor} class={"label-toggle-display" : config.optionType == "delivery" }  class={"c-addon-product-box__item" : config.optionType == "warranty"} class={[config.outlineOption ? "option-red" : ``] : !!config.outlineOption})
+			//- primary information
+			//- indicate option name / price
+			.c-sibling-option__primary-detail(class={"c-sibling-option__primary-detail--single-line-mobile" : config.optionType == "care"})
+				//- a11y name
+				//- label(for=`${id}` aria-labelledby=`${nameId} ${priceId}`)
+				//- option definition
+				if (config.optionType == "warranty")
+					.c-addon-product-box__item-image
+						.image.c-image.exchang-img
+							+printLazyImage('https://via.placeholder.com/165x165/999999/333333')
+					.c-addon-product-box__item-text
+						.c-addon-product-box__item-name
+							.c-addon-product-box__item-modelname(id=`${nameId}`)
+								.c-addon-product-box__item-ufn= config.optionName
+								.c-addon-product-box__item-info Protects your product for an additional 24 months
+							.c-addon-product-box__item-price(id=`${priceId}`) £200.00
+				else if(config.optionType == "exchangeOffer")
+					.c-addon-product-box__item-image.exchange-image
+						.image.c-image
+							+printLazyImage("/assets/icon/icon-exchange-union-20-20.svg")
+					.c-addon-product-box__item-text
+						.c-addon-product-box__item-name
+							.c-addon-product-box__item-modelname(id=`${nameId}`)
+								.c-addon-product-box__item-ufn= config.optionName	
+				else
+					div.c-sibling-option__definition
+						if indicateColor
+							span.c-sibling-option__swatch(class=`${config.optionColor}`)
+						//- flag
+						if config.useOptionFlag
+							.text.c-sibling-option__flag
+								span.cmp-text(data-cmp-text-layer)= config.optionFlagName
+						//- size
+						if config.inputName == 'size'
+							.text.c-sibling-option__name(id=`${nameId}`)
+								span.cmp-text(data-cmp-text-layer)= config.optionName
+						//- name
+						else if config.inputName == 'color'
+							.text.c-sibling-option__name(id=`${nameId}`)
+								span.cmp-text(data-cmp-text-layer)= config.optionName
+						else
+							.text.c-sibling-option__name(id=`${nameId}`)
+								if config.useOptionNameIcon
+									.image.c-image.c-pbp-icon
+										+printLazyImage('https://via.placeholder.com/32x32/999999/333333')
+								span.cmp-text(data-cmp-text-layer)= config.optionName
+
+						//- tooltip button
+						if config.useTooltip
+							+exclamBorderTooltip(tooltipText, usedButton = true, direction = 'bottom-left', size = '', describedby=`${nameId}`)
+
+						//- description
+						if config.useDescription
+							.c-sibling-option__description Lorem ipsum dolor sit amet.
+
+				//- price
+				if (config.price !== "" && config.optionType !== "warranty")
+					if (config.priceToggle)
+						// RO ver
+						div.c-sibling-option__price(id=`${priceId}`).c-sibling-option__price--toggle
+							.text
+								span.cmp-text(data-cmp-text-layer)= config.price
+							//- more price information
+							case config.optionType
+								when "care"
+									div.c-sibling-option__price-discount
+										del $1,60.00
+										span 10% off
+								default
+									|
+					else if(config.optionType === "exchangeoffer")										
+						.c-sibling-option__price
+							.text.exchange-price
+								span.cmp-text(data-cmp-text-layer)= config.price
+					else
+						div.c-sibling-option__price(id=`${priceId}`)
+							.text
+								span.cmp-text(data-cmp-text-layer)= config.price
+							//- more price information
+							case config.optionType
+								when "care"
+									div.c-sibling-option__price-discount
+										del $1,60.00
+										span 10% off
+								default
+									|
+
+				else if(config.useAddButton !== false)
+					div.c-sibling-option__btn(id=`${priceId}`)
+						.button
+							+button({type:'box-outlined', name:'Add', size:'medium'})
+
+			//- more information
+			if block
+				block
+
+mixin product-sibling-option-prd(params)
+	- var config = {price : "$1,499.99", optionName : "Lorem ipsum", optionFlagName : "Lorem ipsum", inputName : "", useTooltip : false, disabled : false, useOptionFlag : false, useAddButton: false, useOptionNameIcon: false, checked: false, priceToggle: false, ...params}
+	- var indicateColor = config.optionColor
+	- var hashRange = 100000
+	- var hash = Math.ceil(Math.random() * hashRange).toString(16)
+	- var id = `${config.inputName}-${hash}`
+	- var priceHash = Math.ceil(Math.random() * hashRange)
+	- var priceId = indicateColor ? '' : `${id}-${priceHash}`
+	- var nameHash = Math.ceil(Math.random() * hashRange)
+	- var nameId = `${id}-${nameHash}`
+	// block - sibling option
+	if (config.disabled)
+		li
+			div.c-sibling-option(class="disabled" data-sku='')
+				div.c-sibling-option__detail(class="horizontal-align")
+					//- primary information
+					//- indicate option name / price
+					.c-sibling-option__primary-detail(class={"c-sibling-option__primary-detail--single-line-mobile" : config.optionType == "care"})
+
+						div.c-sibling-option__definition
+							if indicateColor
+								span.c-sibling-option__swatch(class=`${config.optionColor}`)
+							//- flag
+							if config.useOptionFlag
+								.text.c-sibling-option__flag
+									span.cmp-text(data-cmp-text-layer)= config.optionFlagName
+							//- size
+							if config.inputName == 'size'
+								.text.c-sibling-option__name(id=`${nameId}`)
+									span.cmp-text(data-cmp-text-layer)= config.optionName
+							//- name
+							else if config.inputName == 'color'
+								.text.c-sibling-option__name(id=`${nameId}`)
+									span.cmp-text(data-cmp-text-layer)= config.optionName
+							else
+								.text.c-sibling-option__name(id=`${nameId}`)
+									if config.useOptionNameIcon
+										.image.c-image.c-pbp-icon
+											+printLazyImage('https://via.placeholder.com/32x32/999999/333333')
+									span.cmp-text(data-cmp-text-layer)= config.optionName
+
+						//- price
+						if (config.price !== "" && config.optionType !== "warranty")
+							if (config.priceToggle)
+								// RO ver
+								div.c-sibling-option__price(id=`${priceId}`).c-sibling-option__price--toggle
+									.text
+										span.cmp-text(data-cmp-text-layer)= config.price
+									//- more price information
+									case config.optionType
+										when "care"
+											div.c-sibling-option__price-discount
+												del $1,60.00
+												span 10% off
+										default
+											|
+							else
+								div.c-sibling-option__price(id=`${priceId}`)
+									.text
+										span.cmp-text(data-cmp-text-layer)= config.price
+									//- more price information
+									case config.optionType
+										when "care"
+											div.c-sibling-option__price-discount
+												del $1,60.00
+												span 10% off
+										default
+											|
+
+						else if(config.useAddButton !== false)
+							div.c-sibling-option__btn(id=`${priceId}`)
+								.button
+									+button({type:'box-outlined', name:'Add', size:'medium'})
+	else
+		li
+			a.c-sibling-option(href='#' data-sku='' role='button' class={[config.checked ? "checked" : ``] : !!config.checked} aria-pressed= config.checked ? `true` : `false`)
+				div.c-sibling-option__detail(class="horizontal-align")
+					//- primary information
+					//- indicate option name / price
+					.c-sibling-option__primary-detail(class={"c-sibling-option__primary-detail--single-line-mobile" : config.optionType == "care"})
+
+						div.c-sibling-option__definition
+							if indicateColor
+								span.c-sibling-option__swatch(class=`${config.optionColor}`)
+							//- flag
+							if config.useOptionFlag
+								.text.c-sibling-option__flag
+									span.cmp-text(data-cmp-text-layer)= config.optionFlagName
+							//- size
+							if config.inputName == 'size'
+								.text.c-sibling-option__name(id=`${nameId}`)
+									span.cmp-text(data-cmp-text-layer)= config.optionName
+							//- name
+							else if config.inputName == 'color'
+								.text.c-sibling-option__name(id=`${nameId}`)
+									span.cmp-text(data-cmp-text-layer)= config.optionName
+							else
+								.text.c-sibling-option__name(id=`${nameId}`)
+									if config.useOptionNameIcon
+										.image.c-image.c-pbp-icon
+											+printLazyImage('https://via.placeholder.com/32x32/999999/333333')
+									span.cmp-text(data-cmp-text-layer)= config.optionName
+
+						//- price
+						if (config.price !== "" && config.optionType !== "warranty")
+							if (config.priceToggle)
+								// RO ver
+								div.c-sibling-option__price(id=`${priceId}`).c-sibling-option__price--toggle
+									.text
+										span.cmp-text(data-cmp-text-layer)= config.price
+									//- more price information
+									case config.optionType
+										when "care"
+											div.c-sibling-option__price-discount
+												del $1,60.00
+												span 10% off
+										default
+											|
+							else
+								div.c-sibling-option__price(id=`${priceId}`)
+									.text
+										span.cmp-text(data-cmp-text-layer)= config.price
+									//- more price information
+									case config.optionType
+										when "care"
+											div.c-sibling-option__price-discount
+												del $1,60.00
+												span 10% off
+										default
+											|
+
+						else if(config.useAddButton !== false)
+							div.c-sibling-option__btn(id=`${priceId}`)
+								.button
+									+button({type:'box-outlined', name:'Add', size:'medium'})

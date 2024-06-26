@@ -1,0 +1,154 @@
+mixin promotionIcon
+    // block : image
+    .image.c-image
+        +printLazyImage('https://via.placeholder.com/176x176/4A4946/E3DFD8')
+mixin promotionCoupon
+    .c-promotion-coupon
+        // block : image
+        .image.c-image
+            +printLazyPicture('https://via.placeholder.com/480x234/FD312E/C74846', 'https://via.placeholder.com/300x156/FD312E/C74846')
+mixin promotionBg
+    // block : image
+    - var mobile = 'https://via.placeholder.com/768x1499/f0ece4/808080?text=768xflexible'
+    - var web = 'https://via.placeholder.com/1920x1533/f0ece4/808080?text=1920xflexible'
+    .image.c-image
+        +printLazyPicture(mobile, web)
+        //- +printLazyPicture('https://placeimg.com/720/1060/arch', 'https://placeimg.com/1920/1000/arch')
+mixin promotionTextArea(headline,subcopy,bodycopy)
+    - var headlineStyle = "font-w-light-80 font-m-light-36"
+    - var bodyStyle = "font-w-normal-24 font-m-normal-16" 
+    - var subStyle = "font-w-light-56 font-m-light-28"
+    - var dateStyle = "font-w-normal-32 font-m-normal-16" 
+
+    .c-promotion-detail__text-area
+        // block - text contents
+        .c-promotion-detail__text-contents.c-text-contents
+            .title.c-text-contents__headline
+                - var pass = false
+                +headline(headlineStyle, pass, headline)
+            .text.c-text-contents__bodycopy
+                p.cmp-text(data-cmp-data-layer="" class=bodyStyle)=bodycopy
+        // block - text contents
+        .c-promotion-detail__text-contents.c-text-contents.c-promotion-date
+            .text.c-text-contents__subcopy
+                p.cmp-text(data-cmp-data-layer="" class=subStyle)!=subcopy
+            .text.c-text-contents__date
+                p.cmp-text(data-cmp-data-layer="" class=dateStyle)
+                    | Promotion Dates : 02/02/2024 ~ 03/10/2024
+
+mixin promotionHead (params)
+    - var option = {...params}
+    .c-promotion-detail__list-headline.c-text-contents
+        .title.c-text-contents__headline
+            .cmp-title.font-w-light-56.font-m-light-28(data-cmp-data-layer="")
+                strong.cmp-title__text= option.listHeadline
+
+mixin promotionIconList
+    // block - list
+    .c-list
+        - for (var x = 0; x < 5; x++)
+            .c-list__item
+                +promotionIcon
+                .c-text-contents
+                    .title.c-text-contents__headline
+                        .cmp-title.font-w-normal-20.font-m-normal-20(data-cmp-data-layer="")
+                            strong.cmp-title__text Content
+                    .text.c-text-contents__bodycopy
+                        p.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")
+                            | Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+
+mixin promotionStepList (param)
+    each data in param
+        li.c-list__item
+            +promotionIcon
+            .c-text-contents
+                .title.c-text-contents__headline
+                    .cmp-title.font-w-normal-20.font-m-normal-20(data-cmp-data-layer="")
+                        strong.cmp-title__text= data.listTitle
+                .text.c-text-contents__bodycopy
+                    p.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")
+                        = data.listText                           
+
+mixin promotionClosed
+    .c-promotion-detail__msg-box
+        .c-promotion-detail__msg-box-head The claim form is now closed.
+        .c-promotion-detail__msg-box-description 
+            // GA4
+            a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") contact us
+            span  for assistance in completing your claim. 
+
+        +defaultButton({
+            name : "View Other Promotions",
+            wSize : "large",
+            mSize : "medium",
+            buttonStyle : "default",
+            isButton : false
+        })
+
+mixin promotionCopyright
+    .c-promotion-detail__copyright
+        //- // block - text contents
+        //- .c-text-contents
+        //-     .text.c-text-contents__bodycopy.font-w-normal-16.font-m-normal-14
+        //-         p.cmp-text(data-cmp-data-layer="")
+        //-             | LG Electronics U.K. Limited
+        //-         p.cmp-text(data-cmp-data-layer="")
+        //-             | Registered office: Velocity 2, Brooklands Drive, Weybridge, KT13 0SL.
+        //-         p.cmp-text(data-cmp-data-layer="")
+        //-             | Company registration number 02143888
+        .c-sns-share
+            +promotionSns
+
+mixin promotionDetail($params)
+    - var config = {...$params}
+    .c-promotion-detail
+        .c-promotion-detail__bg
+            +promotionBg
+        .c-promotion-detail__inner
+            +promotionTextArea(config.headline,config.subcopy,config.bodycopy)
+            .c-promotion-detail__content                
+                if config.type == 'closed'
+                    +promotionClosed
+                    .c-promotion-detail__cta
+                        .c-cta.button
+                            +defaultButton({name:'Track My Claim',wSize: 'large', mSize: 'medium',buttonStyle: 'highlight',isButton:false})(class="js-pop-open" href="#popClaimTrack" role="button")
+                        .c-term.button 
+                            +textButton({name:'Terms and conditions', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="js-pop-open" href="#popRedemptionTerms" role="button")
+                if config.type == 'list'
+                    .c-promotion-detail__content_inner                        
+                        .c-promotion-detail__step_inner
+                            .c-promotion-detail__step
+                                +promotionHead({listHeadline:'How To Claim'})                    
+                                ol.c-list
+                                    +promotionStepList([
+                                        {
+                                            listTitle : "Step 1. Purchase",
+                                            listText : "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+                                        },
+                                        {
+                                            listTitle : "Step 2. Claim",
+                                            listText : "State of the art and what every Gamer needs. NVIDIA® G-SYNC® CompatibleAMD FreeSync™"
+                                        },
+                                        {
+                                            listTitle : "Step 3. Reward",
+                                            listText : "Max line 4 Max line 4 Max line 4 Max line 4 Max line 4 Max line 4 Max line 4 Max line 4 Max line 4 Max line 4 Max line 4 Max line 4 Max line 4 Feel like you're there. 31.5” QHD (2560 x 1440)Nano IPS & HDR10"
+                                        },
+                                    ])
+                            .c-promotion-detail__stepContent
+                                +promotionHead({listHeadline:'What you need to claim'})
+                                +promotionIconList
+
+                        .c-promotion-detail__ctaList
+                            .c-cta.button                            
+                                +defaultButton({name:'Track My Claim',wSize: 'large', mSize: 'medium',buttonStyle: 'default',isButton:false})(class="js-pop-open" href="#popClaimTrack" role="button")
+                                +defaultButton({name:'Claim Now',wSize: 'large', mSize: 'medium',buttonStyle: 'highlight',isButton:false})(class="js-pop-open" href="#popClaimNow" role="button")
+                            .c-term.button 
+                                +textButton({name:'Terms and conditions', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="js-pop-open" href="#popRedemptionTerms" role="button")
+                                
+                if config.type == 'coupon'
+                    .c-promotion-detail__coupon
+                        +promotionCoupon
+                        +promotionCoupon
+
+            +promotionCopyright
+

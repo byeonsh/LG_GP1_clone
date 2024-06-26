@@ -1,0 +1,522 @@
+include ./_image.pug
+include ./_button.pug
+include ./_toast.pug
+                                          
+mixin cartPriceTotal(data, options)
+    // block : product price sticky
+    .cart-price-total
+        .c-product-price-sticky(class={'js-sticky':data[0].isStickyBottom, 'c-product-price-sticky--m-bottom-fixed': data[0].isMobileBottomFixed, 'c-product-price-sticky--fold-toggle':data[0].useToggleFoldBtn})
+            if data[0].msg
+                +toastPopup(data[0].msg, 'checkout-aria')
+            // block : product price information
+            //- RO fullcase active hidden 
+            //- .c-product-price-information.web.active(class=`${data[0].empty ? 'c-product-price-information--empty' : ''}`)
+            .c-product-price-information.web(class=`${data[0].empty ? 'c-product-price-information--empty' : ''}` class=`${data[0].close ? 'close' : ''}`)
+                .c-product-price-information__inner
+                    .button.c-product-price-information__btn-toggle
+                        button.cmp-button(aria-controls="productPriceDetailInformation" aria-expanded="false" data-cmp-data-layer="")
+                            span.cmp-button__text.sr-only open/close
+                    // block : price box
+                    +total-price(data[0])
+                    .buy-total__container(class=`${data[0].discount ? 'buy-total__container--discount-sapce':''}`)
+                        if data[0].coupon
+                            .c-text-contents__bodycopy.text-coupon
+                                +printLazyImage(`../../assets/icon/icon-coupon-24-24.svg`)
+                                span.font-w-normal-14.font-m-normal-12 You have 
+                                    span.font-red 3 coupons
+                                    | . Apply at checkout.
+                        .text.c-price-box.font-w-normal-24.font-m-normal-16(id="productPriceDetailInformation")
+                            if !data[0].empty
+                                .c-price-box__item.c-price-box__item--list
+                                    if data[0].totalDetail
+                                        each depth1 in data[0].totalDetail
+                                            +price-info({
+                                                unitPos:data[0].unitPosition,
+                                                emphasis : false,
+                                                useTooltip : false,
+                                                bold : true,
+                                                name : depth1.parent_title,
+                                                price : depth1.parent_price,
+                                                detail: depth1.children,
+                                                mixinType : "text"
+                                            })
+                                    if data[0].taxIncludeSG
+                                        .c-price-info.c-price-info__subject.font-semibold
+                                            .c-price-info__title.cmp-text(data-cmp-data-layer="")
+                                                p Product Price before discount 
+                                                    br 
+                                                    | (incl 9% GST)
+                                            .c-price-info__price
+                                                p $N,NNN.NN
+                                        .c-price-info.c-price-info__subject
+                                            .c-price-info__title.cmp-text(data-cmp-data-layer="")
+                                                p Total Tax after discount 
+                                                    br 
+                                                    | (9% GST)
+                                            .c-price-info__price
+                                                p $NNN.NN
+                                    //- [Start] 2024-05-07 ADD : [PH] BUY payment - taxIncludePH
+                                    if data[0].taxIncludePH
+                                        .c-price-info.c-price-info__subject.font-semibold
+                                            .c-price-info__title.cmp-text(data-cmp-data-layer="")
+                                                p Product price before discount
+                                                    br 
+                                                    | (with 12% VAT)
+                                            .c-price-info__price
+                                                p ₱ 2,099.98
+                                        .c-price-info-detail
+                                            .c-price-info-detail__name.cmp-name.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")
+                                                span OLW480B
+                                            .c-price-info-detail__price.cmp-price.font-w-semibold-16.font-m-semibold-14(data-cmp-data-layer="")
+                                                span ₱ 2,959.00
+                                    //- [End] 2024-05-07 ADD : payment PH - taxIncludePH
+                                    //- [Start] priceListCustomize
+                                    if data[0].priceListCustomize
+                                        each item in data[0].priceListCustomize 
+                                            -const detailSubList = []
+                                            -let sebUseTooltipTitle = [];
+                                            if item.sub
+                                                each subItem in item.sub
+                                                    -sebUseTooltipTitle.push(subItem.isTooltip ? subItem.title : '');
+                                                    -let obj = {};
+                                                    -obj[subItem.title] = subItem.price;
+                                                    -detailSubList.push(obj)
+                                            +price-info({
+                                                unitPos:data[0].unitPosition,
+                                                unitName:item.unitName?item.unitName :data[0].unitName,
+                                                emphasis : item.emphasis,
+                                                useTooltip : item.isTooltip,
+                                                bold : true,
+                                                name : item.title,
+                                                price : item.price,
+                                                sebUseTooltip : sebUseTooltipTitle,
+                                                detail: detailSubList
+                                            })
+                                    //- [End] priceListCustomize
+                                    if data[0].taxInclude
+                                        - let taxIncludeValue = typeof data[0].taxInclude === "boolean" ?  "Subtotal (Tax included)" : data[0].taxInclude
+                                        +price-info({emphasis : false, useTooltip : false, bold : true, name : taxIncludeValue, price : "£4,199.96"})
+                                    if data[0].taxIncludeSub
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Subtotal (税込)", price : "146,990"})
+                                    if data[0].taxIncludeSubOnly
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Subtotal (Tax included)", price : "2,990"})
+                                    //- else
+                                    //-     +price-info({emphasis : false, useTooltip : false, bold : true, name : "Subtotal", price : "£419.99"})
+                                    if data[0].taxIncludeCN
+                                        // RO CN
+                                        .c-price-info.c-price-info__subject
+                                            .c-price-info__title.cmp-text(data-cmp-data-layer="")
+                                                p Subtotal (Tax included)
+                                            .c-price-info__price.cmp-text.font-w-normal-20.font-m-semibold-14(data-cmp-data-layer="")
+                                                p
+                                                    span.smallFont ￥
+                                                    span 99990.
+                                                    span.smallFont 00
+                                    if data[0].taxIncludeVN
+                                        // RO VN
+                                        .c-price-info.c-price-info__subject
+                                            .c-price-info__title.cmp-text(data-cmp-data-layer="")
+                                                p Subtotal (Tax included)
+                                            .c-price-info__price.cmp-text.font-w-normal-20.font-m-semibold-14(data-cmp-data-layer="")
+                                                p
+                                                    span 11.990.000
+                                                    sup.smallFont ₫   
+                                    if data[0].taxIncludeJP
+                                        // RO JP
+                                        .c-price-info.c-price-info__subject
+                                            .c-price-info__title.cmp-text(data-cmp-data-layer="")
+                                                p Subtotal(税込)
+                                            .c-price-info__price.cmp-text.font-w-normal-20.font-m-semibold-14(data-cmp-data-layer="")
+                                                p ￥NNN,NNN
+                                    if data[0].taxIncludeKZ
+                                        // RO KZ
+                                        .c-price-info.c-price-info__subject
+                                            .c-price-info__title.cmp-text(data-cmp-data-layer="")
+                                                p Subtotal (Tax included)
+                                            .c-price-info__price.cmp-text.font-w-normal-20.font-m-semibold-14(data-cmp-data-layer="")
+                                                p NNN NNN ₸
+                                    if data[0].discount
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : true, useTooltip : false, bold : true, name : "Discount", class:"c-price-info__discount", price : "18.00", detail: [{"Welcome Coupon" : "18.00"}, {"Applied points" : "18.00"}]})
+                                    if data[0].discountFreeDelivery
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : true, useTooltip : false, bold : true, name : "Discount", class:"c-price-info__discount", price : "-100.00", detail: [{"Free Delivery" : "-100.00"}]})
+                                    if data[0].discountMembership
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : true, useTooltip : false, bold : true, name : "Discount", class:"c-price-info__discount", price : "-100.00", detail: [{"LG Membership" : "100.00"}]})
+                                    if data[0].discountPaymentMethod
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : true, useTooltip : false, bold : true, name : "Discount", class:"c-price-info__discount", price : "100.00", detail: [{"Welcome Coupon" : "18.00"},{"Payment method discount" : "100.00"}]})
+                                    if data[0].discountAppliedPoints
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : true, useTooltip : false, bold : true, name : "Discount", class:"c-price-info__discount", price : "100.00", detail: [{"Welcome Coupon" : "18.00"},{"Applied Points" : "100.00"}]})
+                                    if data[0].discountNoPix
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : true, useTooltip : false, bold : true, name : "Discount", class:"c-price-info__discount", price : "100.00", detail: [{"Welcome Coupon" : "18.00"},{"Desconto no PIX" : "100.00"}]})
+                                    if data[0].vatInfo
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "VAT (15%)", price : "34,390"})
+                                    if data[0].taxIncludeTax
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Tax", price : "419.99", detail: [{"VAT (20%)" : "293.99"},{"WEEE Fee" : "50.00"}]})
+                                    if data[0].taxIncludeVat
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Tax", price : "419.99", detail: [{"VAT (20%)" : "293.99"}]})
+                                    if data[0].taxIncludeTooltip
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Tax", price : "419.99", sebUseTooltip : ['Environmental Handling Fee (EHF)'], detail: [{"VAT (20%)" : "293.99"},{"WEEE Fee" : "50.00"},{"Environmental Handling Fee (EHF)" : "12.00"},]})
+                                    if data[0].shipping
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Shipping (Free Delivery)", price : "0.00", detail: [{"OLW480B" : "0.00"},{"TONE-UFP+OLW480B" : "0.00"}]})
+                                    if data[0].freeShipping
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Free Shipping", price : "0.00", detail: [{"OLW480B" : "0.00"},{"TONE-UFP+OLW480B" : "0.00"}]})
+                                    if data[0].shippingIn
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Shipping", price : "0.00", detail: [{"OLW480B" : "293.99"},{"TONE-UFP8+OLW480B" : "50.00"}]})
+                                    if data[0].discountCN
+                                        // RO CN
+                                        .c-price-info.c-price-info__subject.c-price-info__discount
+                                            .c-price-info__title.cmp-text.font-red(data-cmp-data-layer="")
+                                                p Discount
+                                            .c-price-info__price.cmp-text.font-w-normal-20.font-m-semibold-14.font-red(data-cmp-data-layer="")
+                                                p
+                                                    span.smallFont -￥
+                                                    span 99990.
+                                                    span.smallFont 00
+                                    if data[0].discountVN
+                                        // RO VN
+                                        .c-price-info.c-price-info__subject.c-price-info__discount
+                                            .c-price-info__title.cmp-text.font-red(data-cmp-data-layer="")
+                                                p Discount
+                                            .c-price-info__price.cmp-text.font-w-normal-20.font-m-semibold-14.font-red(data-cmp-data-layer="")
+                                                p
+                                                    span -11.990.000
+                                                    sup.smallFont ₫
+                                    if data[0].taxInclude
+                                        +price-info({emphasis : false, useTooltip : false, bold : true, name : "Tax", price : "£419.99", detail: [{"VAT (20%)" : "£293.99"},{"WEEE Fee" : "£50.00"}]})
+                                    if data[0].taxIncludeCA
+                                        // RO CA
+                                        .c-price-info.c-price-info__subject
+                                            .c-price-info__title.cmp-text(data-cmp-data-layer="")
+                                                p Tax
+                                            .c-price-info__price.cmp-text.font-w-normal-20.font-m-semibold-14(data-cmp-data-layer="")
+                                                p $NNN.NN
+                                        .c-price-info-detail
+                                            .c-price-info-detail__name.cmp-name.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")
+                                                span PST(NN%)
+                                            .c-price-info-detail__price.cmp-price.font-w-semibold-16.font-m-semibold-14(data-cmp-data-layer="")
+                                                span $NNN.NN
+                                        .c-price-info-detail
+                                            .c-price-info-detail__name.cmp-name.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")
+                                                span GST(NN%)
+                                            .c-price-info-detail__price.cmp-price.font-w-semibold-16.font-m-semibold-14(data-cmp-data-layer="")
+                                                span $NNN.NN
+                                        .c-price-info-detail
+                                            .c-price-info-detail__name.cmp-name.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")
+                                                .infoTooltipWrap 
+                                                    .c-price__plus Environmental Handling Fee(EHF)
+                                                    .infoTooltipArea
+                                                        button.btnInfoTooltip 
+                                                            span.hidden Infomation 
+                                                        .infoTooltipNote Please note, the EHF fee associated with this item is based on the delivery address postal code. For more details on the EHF fee visit.
+                                                            .linkMore
+                                                                a Learn More    
+                                                            span.bottomArrow
+                                                            button.btnClose 
+                                                                span.hidden close
+                                            .c-price-info-detail__price.cmp-price.font-w-semibold-16.font-m-semibold-14(data-cmp-data-layer="")
+                                                span $NNN.NN
+                                    if data[0].delivery
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Delivery", price : "0.00"})
+                                    if data[0].deliveryList
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Delivery", price : "0.00", detail: [{"OLW480B" : "0.00"}]})
+                                    if data[0].deliveryFree
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Delivery (Free delivery)", price : "0", detail: [{"OLW480B" : "0"}]})
+                                    if data[0].deliveryInstallation
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Delivery + Installation", price : "3.000", detail: [{"OLW480B" : "0.00"},{"TONE-UFP+OLW480B" : "0.00"}]})
+                                    if data[0].deliveryInstallationList
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Delivery + Installation", price : "3.000", detail: [{"OLW480B" : "0.00"}]})
+                                    if data[0].deliveryInfo
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Delivery", price : "30.00"})
+                                    if data[0].deliveryFee
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Delivery fee", price : "30.00"})
+                                    if data[0].deliveryCharge
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Delivery Charge", price : "30.00", detail: [{"OLW480B" : "293.99"},{"TONE-UFP8+OLW480B" : "50.00"}]})
+                                    if data[0].freight
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Freight", price : "0", detail: [{"OLW480B" : "0"},{"TONE-UFP+OLW480B" : "0"}]})
+                                    if data[0].deliveryCN
+                                        // RO CN
+                                        .c-price-info.c-price-info__subject
+                                            .c-price-info__title.cmp-text(data-cmp-data-layer="")
+                                                p Delivery
+                                            .c-price-info__price.cmp-text.font-w-normal-20.font-m-semibold-14(data-cmp-data-layer="")
+                                                p
+                                                    span.smallFont ￥
+                                                    span 99990.
+                                                    span.smallFont 00
+                                        .c-price-info-detail
+                                            .c-price-info-detail__name.cmp-name.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")
+                                                span TONE-UFP8+OLW480B
+                                            .c-price-info-detail__price.cmp-price.font-w-semibold-16.font-m-semibold-14(data-cmp-data-layer="")
+                                                span 
+                                                    span.smallFont ￥
+                                                    span 99990.
+                                                    span.smallFont 00
+                                    if data[0].deliveryVN
+                                        // RO VN
+                                        .c-price-info.c-price-info__subject
+                                            .c-price-info__title.cmp-text(data-cmp-data-layer="")
+                                                p Delivery
+                                            .c-price-info__price.cmp-text.font-w-normal-20.font-m-semibold-14(data-cmp-data-layer="")
+                                                p
+                                                    span 11.990.000
+                                                    sup.smallFont ₫
+                                        .c-price-info-detail
+                                            .c-price-info-detail__name.cmp-name.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")
+                                                span TONE-UFP8+OLW480B
+                                            .c-price-info-detail__price.cmp-price.font-w-semibold-16.font-m-semibold-14(data-cmp-data-layer="")
+                                                span 
+                                                    span 11.990.000
+                                                    sup.smallFont ₫
+                                    if data[0].deliveryTH
+                                        // RO TH
+                                        .c-price-info.c-price-info__subject
+                                            .c-price-info__title.cmp-text(data-cmp-data-layer="")
+                                                p Delivery
+                                            .c-price-info__price.cmp-text.font-w-normal-20.font-m-semibold-14(data-cmp-data-layer="")
+                                                p Free
+                                        .c-price-info-detail
+                                            .c-price-info-detail__name.cmp-name.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")
+                                                span Delivery option value
+                                            .c-price-info-detail__price.cmp-price.font-w-semibold-16.font-m-semibold-14(data-cmp-data-layer="")
+                                                span Free
+                                    if data[0].deliveryCO
+                                        // RO CO
+                                        .c-price-info.c-price-info__subject
+                                            .c-price-info__title.cmp-text(data-cmp-data-layer="")
+                                                p Delivery
+                                            .c-price-info__price.cmp-text.font-w-normal-20.font-m-semibold-14(data-cmp-data-layer="")
+                                                p $NN
+                                        .c-price-info-detail
+                                            .c-price-info-detail__name.cmp-name.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")
+                                                span Delivery option value
+                                            .c-price-info-detail__price.cmp-price.font-w-semibold-16.font-m-semibold-14(data-cmp-data-layer="")
+                                                span $NN
+                                    if data[0].service
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, class: "c-price-info--service",  name : "Service Charge", price : "0.00", detail: [{"Haul-away" : "18.00"}]})
+                                    if data[0].payAtDoor
+                                        .c-price-info-detail.payAtDoor
+                                            .c-price-info-detail__name.cmp-name(data-cmp-data-layer="")
+                                                span Disposal of Existing Product
+                                            .c-price-info-detail__price.cmp-price(data-cmp-data-layer="")
+                                                span Pay at Door
+                                    if data[0].serviceFee
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, class: "c-price-info--service",  name : "Service fee", price : "0.00", detail: [{"installation (TV bracket)" : "9.000"}, {"installation (WM connect)" : "9.000"}]})
+                                    if data[0].serviceTooltip
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, class: "c-price-info--service",  name : "Service Charge", price : "0.00", sebUseTooltip : ['Haul-Away'], detail: [{"Installation" : "10.00"}, {"Haul-Away" : "10.00"}]})
+                                    if data[0].serviceFeeTooltip
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, class: "c-price-info--service",  name : "Service fee", price : "10.00", sebUseTooltip : ['Haul-Away'], detail: [{"Installation" : "10.00"}, {"Haul-Away" : "Free"}]})
+                                    if data[0].taxIncludeInfo
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, bold : true, name : "Tax", price : "419.99", detail: [{"PST/QST/HST+GST" : "349.99"}]})
+                                    if data[0].ehf
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : true, bold : true, name : "EHF", price : "18.00"})
+                                    if data[0].point
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, name : "Earning point", price : "104 points", point : true})
+                                    if data[0].pointPA
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, name : "Acumulas con esta compra", price : "107 puntos", pointPA : true})
+                                    if data[0].asidePaymentInfo
+                                        +price-info({unitPos:data[0].unitPosition, unitName:data[0].unitName, emphasis : false, useTooltip : false, name : data[0].asidePaymentInfo, class:'c-price-info--payment-info'})
+                    if data[0].checkoutDiscount
+                        .text-discount.font-m-normal-12.font-red Discount !{data[0].checkoutDiscount}
+                if data[0].btnName != undefined && data[0].btnName != false 
+                    .c-product-pay-cta.button.c-cta.my-button__full
+                        if data[0].isBtnDisabled
+                            //- +button({type:"box", color: "red", size:"large", name: data[0].btnName})(disabled)
+                            +defaultButton({name: data[0].btnName, wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})(disabled)
+                        else 
+                            //- +button({type:"box", color: "red", size:"large", name: data[0].btnName})
+                            +defaultButton({name: data[0].btnName, wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(aria-describedby="checkout-aria")
+                if data[0].card
+                    +product-card-info
+
+mixin unitPos(pos, price, unitName)
+    // [Start] 2023-05-31 : UPDATE -about product price
+    if pos == 'right' 
+        = `${price}${unitName ? unitName : '€'}` 
+    else if pos == 'sup'
+        = `${price}`
+        sup.c-price__unit=`${unitName ? unitName : '₫'}`
+    else if pos == 'cn'
+        span.c-price__smallFont=`${unitName ? unitName : ' ￥'}`
+        = `${price}`
+        span.c-price__smallFont .00
+    else
+        = `${unitName ? unitName : '£'}${price}`
+    // [End] 2023-05-31 : UPDATE -about product price
+
+
+mixin price-info(params)
+    - var option = {list:false, dimmed:false, bold:false, ehf:false, ...params}
+
+    // block : price info
+    .c-price-info.c-price-info__subject(class={'font-red' : option.emphasis, 'sub-tree': option.list, 'font-semibold' : option.bold,'dimmed': option.dimmed, 'EarnedPoint': option.point} class=`${option.class ? option.class : ''}`)
+        .c-price-info__title.cmp-text(data-cmp-data-layer="")
+            if(option.link)
+                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")= option.name
+            else
+                p= option.name
+                    if option.useTooltip
+                        +exclamTooltip(option.tooltipMsg, false)
+        if(option.price)
+            .c-price-info__price.cmp-text.font-w-normal-20.font-m-semibold-14(class={'font-red' : option.emphasis} data-cmp-data-layer="")
+                p
+                    if (option.mixinType === "text") || (option.point === true) || (option.pointPA === true)
+                        = option.price
+                    else
+                        +unitPos(option.unitPos, option.price, option.unitName)
+                    
+    if(Boolean(option.point))
+        .c-price-info-point
+            .c-price-info-point__copy.cmp-text.font-red Points earned will be provided 3 days after delivery is complete.
+    if(Boolean(option.pointPA))
+        .c-price-info-point
+            .c-price-info-point__copy.cmp-text.font-red Los puntos acumulados se proporcionarán 3 días después de completar la entrega
+    if(Boolean(option.detail))
+        each addItem in option.detail
+            .c-price-info-detail
+                .c-price-info-detail__name.cmp-name.font-w-normal-16.font-m-normal-12(data-cmp-data-layer="")
+                    if addItem.title 
+                        span= addItem.title 
+                    else
+                        span= Object.keys(addItem)
+                            if(Boolean(option.sebUseTooltip))
+                                each tootip in option.sebUseTooltip
+                                    if(tootip === Object.keys(addItem).toString())
+                                        +exclamTooltip(option.tooltipMsg, false)
+                .c-price-info-detail__price.cmp-price.font-w-semibold-16.font-m-semibold-14(data-cmp-data-layer="")
+                    if option.mixinType === "text"
+                        span
+                            = addItem.price
+                    else
+                        span
+                            +unitPos(option.unitPos, Object.values(addItem), option.unitName)
+            
+
+mixin total-price(params)
+    - var data = {...params}
+    - var defaultPrice = data.unitPrice ? data.unitPrice : '2,749.90'
+    - var defaultTitle = data.totalPriceTitle ? data.totalPriceTitle : 'Grand total'
+    // block : product total price    
+    .c-product-total-price
+        .c-product-total-price__box(id="grand_total")
+            .text.c-product-total-price__text
+                .cmp-text.font-w-normal-32.font-m-semibold-20(data-cmp-data-layer="")
+                    p= defaultTitle
+                        if data.taxIncludeSG  
+                            br 
+                            | (incl 9% GST)
+                        else if data.taxIncludePH
+                            br
+                            | (with 12% VAT)
+                        else if data.vatIncludeZA
+                            br
+                            | (Included VAT)
+            .text.c-product-total-price__num
+                span.cmp-text.font-w-semibold-32.font-m-semibold-20(data-cmp-data-layer="")
+                    if data.empty
+                        //- strong £0.00
+                        +unitPos(data.unitPosition, '0.00', data.unitName)
+                    else
+                        //- strong £4,199.97
+                        +unitPos(data.unitPosition, defaultPrice, data.unitName)
+                        //- // RO CN
+                        //- strong
+                        //-     span.smallFont ￥
+                        //-     span 99990.
+                        //-     span.smallFont 00
+                        //- // RO VN
+                        //- span 11.990.000
+                        //- sup.smallFont ₫
+        if data.totalGuideMsg
+            .c-product-total-price__guide-msg 
+                span.font-w-normal-16.font-m-normal-12 !{data.totalGuideMsg}
+        if data.totalMsg
+            .c-product-total-price__guide-msg.align-text-right
+                span.font-w-normal-16.font-m-normal-12 !{data.totalMsg}    
+
+mixin product-card-info
+    .c-product-card-info.text
+        .cmp-text.c-product-card-info__text.font-w-normal-14.font-m-normal-12(data-cmp-data-layer="")
+            p You can pay with
+        .c-product-card-info__image
+            <svg width="234" height="12" viewBox="0 0 234 12" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <rect width="37.037" height="12" fill="url(#pattern0)"/>
+                    <g clip-path="url(#clip0_4157_271303)">
+                        <path d="M57.4138 11.836V11.8669H57.4426C57.448 11.8669 57.4533 11.8656 57.458 11.8629C57.4599 11.8616 57.4614 11.8598 57.4624 11.8578C57.4634 11.8557 57.4639 11.8534 57.4638 11.8511C57.4639 11.8489 57.4634 11.8466 57.4624 11.8446C57.4614 11.8426 57.4599 11.8409 57.458 11.8396C57.4534 11.8368 57.448 11.8355 57.4426 11.8357H57.4138V11.836ZM57.4429 11.8142C57.4552 11.8134 57.4674 11.817 57.4775 11.8242C57.4815 11.8275 57.4847 11.8317 57.4868 11.8364C57.4889 11.8412 57.4898 11.8463 57.4896 11.8515C57.4897 11.856 57.489 11.8604 57.4873 11.8646C57.4856 11.8687 57.4831 11.8724 57.4798 11.8755C57.4721 11.8822 57.4624 11.8862 57.4522 11.887L57.4908 11.9309H57.4611L57.4256 11.8873H57.4141V11.9309H57.3893V11.8143H57.4433L57.4429 11.8142ZM57.4352 11.9712C57.4482 11.9713 57.4611 11.9687 57.4731 11.9635C57.4846 11.9585 57.495 11.9514 57.5039 11.9426C57.5128 11.9337 57.5199 11.9233 57.5248 11.9117C57.5349 11.8873 57.5349 11.8598 57.5248 11.8354C57.5198 11.8239 57.5127 11.8134 57.5039 11.8045C57.495 11.7957 57.4846 11.7886 57.4731 11.7837C57.461 11.7787 57.4482 11.7763 57.4352 11.7764C57.422 11.7763 57.4089 11.7787 57.3966 11.7837C57.3849 11.7885 57.3742 11.7956 57.3651 11.8045C57.3515 11.8185 57.3422 11.8362 57.3386 11.8554C57.3349 11.8746 57.337 11.8945 57.3445 11.9125C57.3492 11.9241 57.3562 11.9346 57.3651 11.9434C57.3742 11.9523 57.3849 11.9594 57.3966 11.9643C57.4088 11.9695 57.4219 11.9721 57.4352 11.972M57.4352 11.7483C57.4691 11.7483 57.5016 11.7616 57.5258 11.7853C57.5375 11.7968 57.5467 11.8104 57.5531 11.8254C57.5597 11.8408 57.5631 11.8574 57.5631 11.8741C57.5631 11.8909 57.5597 11.9075 57.5531 11.9229C57.5466 11.9378 57.5373 11.9514 57.5258 11.9629C57.514 11.9743 57.5002 11.9834 57.4852 11.9899C57.4694 11.9966 57.4524 12.0001 57.4352 12C57.4178 12.0001 57.4006 11.9967 57.3846 11.9899C57.3694 11.9836 57.3555 11.9744 57.3437 11.9629C57.3321 11.951 57.323 11.937 57.3167 11.9216C57.3102 11.9062 57.3068 11.8896 57.3068 11.8728C57.3068 11.8561 57.3102 11.8395 57.3167 11.8241C57.3231 11.809 57.3324 11.7954 57.344 11.784C57.3557 11.7724 57.3697 11.7632 57.385 11.757C57.401 11.7503 57.4182 11.7469 57.4356 11.747M45.6277 11.2978C45.6277 11.0753 45.7734 10.8925 46.0116 10.8925C46.2393 10.8925 46.3929 11.0674 46.3929 11.2978C46.3929 11.5281 46.2393 11.703 46.0116 11.703C45.7734 11.703 45.6277 11.5202 45.6277 11.2978M46.6524 11.2978V10.6647H46.3771V10.8189C46.2898 10.7049 46.1574 10.6334 45.9774 10.6334C45.6227 10.6334 45.3443 10.9117 45.3443 11.2981C45.3443 11.6845 45.6225 11.9627 45.9774 11.9627C46.1574 11.9627 46.2898 11.8911 46.3771 11.7773V11.9309H46.652V11.2978H46.6524ZM55.9515 11.2978C55.9515 11.0753 56.0973 10.8925 56.3356 10.8925C56.5634 10.8925 56.7168 11.0674 56.7168 11.2978C56.7168 11.5281 56.5634 11.703 56.3356 11.703C56.0974 11.703 55.9515 11.5202 55.9515 11.2978ZM56.9765 11.2978V10.1565H56.7011V10.8189C56.6138 10.7049 56.4814 10.6334 56.3013 10.6334C55.9466 10.6334 55.6682 10.9117 55.6682 11.2981C55.6682 11.6845 55.9465 11.9627 56.3013 11.9627C56.4814 11.9627 56.6138 11.8911 56.7011 11.7773V11.9309H56.9765V11.2978ZM50.0681 10.8795C50.2455 10.8795 50.3594 10.9907 50.3885 11.1865H49.7318C49.7612 11.0037 49.8721 10.8795 50.0682 10.8795M50.0737 10.6327C49.7028 10.6327 49.4433 10.9026 49.4433 11.2974C49.4433 11.6998 49.7132 11.962 50.0921 11.962C50.2827 11.962 50.4573 11.9144 50.6109 11.7847L50.4761 11.5807C50.37 11.6655 50.2349 11.7131 50.1079 11.7131C49.9305 11.7131 49.769 11.631 49.7293 11.4031H50.6691C50.6718 11.3689 50.6746 11.3343 50.6746 11.2973C50.6718 10.9027 50.4278 10.6327 50.0735 10.6327M53.3963 11.2973C53.3963 11.0748 53.5421 10.8921 53.7803 10.8921C54.0079 10.8921 54.1615 11.067 54.1615 11.2973C54.1615 11.5276 54.0079 11.7025 53.7803 11.7025C53.5421 11.7025 53.3963 11.5198 53.3963 11.2973M54.4209 11.2973V10.6647H54.1459V10.8189C54.0583 10.7049 53.9262 10.6334 53.7461 10.6334C53.3914 10.6334 53.113 10.9117 53.113 11.2981C53.113 11.6845 53.3912 11.9627 53.7461 11.9627C53.9262 11.9627 54.0583 11.8911 54.1459 11.7773V11.9309H54.421V11.2978L54.4209 11.2973ZM51.8421 11.2973C51.8421 11.6812 52.1094 11.9619 52.5173 11.9619C52.7079 11.9619 52.835 11.9195 52.9723 11.811L52.8401 11.5886C52.7368 11.6628 52.6283 11.7025 52.5085 11.7025C52.2888 11.6998 52.1273 11.541 52.1273 11.2973C52.1273 11.0536 52.2888 10.8948 52.5085 10.8921C52.628 10.8921 52.7365 10.9318 52.8401 11.006L52.9723 10.7836C52.8347 10.6751 52.7077 10.6327 52.5173 10.6327C52.1094 10.6327 51.8421 10.9133 51.8421 11.2973M55.3901 10.6327C55.2313 10.6327 55.1279 10.7069 55.0564 10.8181V10.6647H54.7837V11.9302H55.0592V11.2208C55.0592 11.0114 55.1492 10.895 55.3291 10.895C55.388 10.8942 55.4465 10.905 55.5012 10.9269L55.586 10.6674C55.5251 10.6435 55.4457 10.6329 55.3899 10.6329M48.013 10.7653C47.8806 10.678 47.6982 10.6329 47.4969 10.6329C47.1763 10.6329 46.9698 10.7866 46.9698 11.038C46.9698 11.2444 47.1235 11.3717 47.4065 11.4114L47.5365 11.4299C47.6874 11.4511 47.7587 11.4909 47.7587 11.5623C47.7587 11.6602 47.6584 11.716 47.4702 11.716C47.2796 11.716 47.142 11.6551 47.0493 11.5836L46.9199 11.7982C47.0708 11.9094 47.2615 11.9625 47.4679 11.9625C47.8334 11.9625 48.0452 11.7904 48.0452 11.5494C48.0452 11.3269 47.8785 11.2105 47.6031 11.1708L47.4734 11.152C47.3542 11.1366 47.2588 11.1126 47.2588 11.0278C47.2588 10.9353 47.3488 10.8796 47.4997 10.8796C47.6613 10.8796 47.8177 10.9405 47.8943 10.9881L48.0135 10.7656L48.013 10.7653ZM51.5641 10.6331C51.4054 10.6331 51.3019 10.7074 51.2308 10.8186V10.6647H50.958V11.9302H51.2332V11.2208C51.2332 11.0114 51.3232 10.895 51.5031 10.895C51.562 10.8942 51.6205 10.905 51.6753 10.9269L51.7601 10.6674C51.6992 10.6435 51.6197 10.6329 51.564 10.6329M49.2156 10.6647H48.7656V10.2807H48.4873V10.6647H48.2306V10.9162H48.4873V11.4936C48.4873 11.7872 48.6013 11.9621 48.9269 11.9621C49.0463 11.9621 49.1839 11.9251 49.2712 11.8642L49.1917 11.6286C49.1096 11.6762 49.0196 11.7001 48.948 11.7001C48.8104 11.7001 48.7656 11.6153 48.7656 11.4883V10.9164H49.2156V10.6647ZM45.1009 11.9306V11.1363C45.1009 10.8372 44.9103 10.6359 44.603 10.6332C44.4415 10.6305 44.2748 10.6808 44.1581 10.8584C44.0708 10.718 43.9333 10.6332 43.7399 10.6332C43.6047 10.6332 43.4726 10.6729 43.3692 10.8211V10.6647H43.0938V11.9302H43.3714V11.2285C43.3714 11.0088 43.4932 10.8921 43.6813 10.8921C43.8641 10.8921 43.9566 11.0112 43.9566 11.2257V11.9301H44.2348V11.2284C44.2348 11.0087 44.3618 10.8919 44.5445 10.8919C44.7324 10.8919 44.8221 11.0111 44.8221 11.2256V11.9299L45.1009 11.9306Z" fill="#231F20"/>
+                        <path d="M57.5706 7.72072V7.53564H57.5224L57.4667 7.66265L57.4112 7.53564H57.3629V7.72072H57.3971V7.5813L57.4493 7.70159H57.4847L57.5369 7.58099V7.72072H57.5708H57.5706ZM57.2649 7.72072V7.56734H57.3266V7.53611H57.1689V7.56734H57.2306V7.72072H57.2646H57.2649Z" fill="#F79410"/>
+                        <path d="M52.0931 8.51441H47.9224V1.01904H52.0932L52.0931 8.51441Z" fill="#FF5F00"/>
+                        <path d="M48.1863 4.76689C48.1863 3.24645 48.8982 1.89205 50.0068 1.01921C49.1677 0.357537 48.1298 -0.00157377 47.0612 5.18466e-06C44.4288 5.18466e-06 42.2949 2.13418 42.2949 4.76689C42.2949 7.3996 44.4288 9.53377 47.0612 9.53377C48.1298 9.53537 49.1677 9.17626 50.0069 8.51457C48.8984 7.64189 48.1863 6.2874 48.1863 4.76689Z" fill="#EB001B"/>
+                        <path d="M57.7192 4.76689C57.7192 7.3996 55.5853 9.53377 52.9529 9.53377C51.8842 9.53534 50.8461 9.17624 50.0068 8.51457C51.1157 7.64173 51.8276 6.2874 51.8276 4.76689C51.8276 3.24638 51.1157 1.89205 50.0068 1.01921C50.8461 0.357556 51.8841 -0.0015461 52.9529 5.00381e-06C55.5853 5.00381e-06 57.7191 2.13418 57.7191 4.76689" fill="#F79E1B"/>
+                    </g>
+                    <g clip-path="url(#clip1_4157_271303)">
+                        <path d="M63.7012 0.00756836H75.6415V6.47744L75.0504 7.40435L75.6415 8.22931V11.9926H63.7012V5.89349L64.0706 5.4671L63.7012 5.05926V0.00756836Z" fill="#016FD0"/>
+                        <path d="M63.7012 0.00854492H75.6415V6.47842L75.0504 7.40533L75.6415 8.23028V11.9936H63.7012V5.89446L64.0706 5.46808L63.7012 5.06024V0.00854492Z" fill="#016FD0"/>
+                        <path d="M66.019 8.35896V6.47731H68.0039L68.2169 6.75597L68.4369 6.47731H75.6415V8.22921C75.6415 8.22921 75.4531 8.35708 75.2351 8.35897H71.2458L71.0057 8.06235V8.35897H70.2189V7.85264C70.2189 7.85264 70.1115 7.92331 69.8791 7.92331H69.6113V8.35897H68.42L68.2074 8.07434L67.9915 8.35897L66.019 8.35896ZM63.7012 5.05914L64.1488 4.01172H64.9228L65.1768 4.59844V4.01172H66.1391L66.2903 4.43578L66.4369 4.01172H70.7564V4.22491C70.7564 4.22491 70.9835 4.01172 71.3566 4.01172L72.7581 4.01664L73.0078 4.59568V4.01172H73.813L74.0347 4.34433V4.01172H74.8473V5.89336H74.0347L73.8223 5.55966V5.89335H72.6392L72.5202 5.59674H72.2021L72.0851 5.89335H71.2828C70.9616 5.89335 70.7564 5.68452 70.7564 5.68452V5.89335H69.5466L69.3066 5.59675V5.89336H64.8082L64.6893 5.59675H64.3722L64.2542 5.89335H63.7012V5.05914Z" fill="white"/>
+                        <path d="M64.3078 4.24365L63.7041 5.65256H64.0971L64.2085 5.37043H64.8561L64.9669 5.65256H65.3686L64.7655 4.24365H64.3078ZM64.5312 4.57153L64.7286 5.06455H64.3332L64.5312 4.57153ZM65.4102 5.65232V4.24341L65.9687 4.24549L66.2936 5.15387L66.6107 4.24341H67.1648V5.65232H66.8138V4.61417L66.4419 5.65232H66.1341L65.7611 4.61417V5.65232H65.4102ZM67.4048 5.65232V4.24341H68.5499V4.55856H67.7595V4.79955H68.5315V5.09617H67.7595V5.34644H68.5499V5.65232H67.4048ZM68.7531 4.24365V5.65256H69.104V5.15202H69.2518L69.6725 5.65256H70.1013L69.6396 5.13348C69.8291 5.11743 70.0246 4.95418 70.0246 4.70073C70.0246 4.40425 69.7927 4.24365 69.534 4.24365H68.7531ZM69.104 4.5588H69.5051C69.6014 4.5588 69.6714 4.63435 69.6714 4.7071C69.6714 4.80069 69.5807 4.85541 69.5103 4.85541H69.104V4.5588ZM70.5261 5.65232H70.1678V4.24341H70.5261V5.65232ZM71.3757 5.65232H71.2984C70.9242 5.65232 70.697 5.35639 70.697 4.95365C70.697 4.54096 70.9216 4.24341 71.3942 4.24341H71.782V4.5771H71.38C71.1882 4.5771 71.0525 4.72737 71.0525 4.95713C71.0525 5.22998 71.2076 5.34458 71.4311 5.34458H71.5235L71.3757 5.65232ZM72.1393 4.24365L71.5356 5.65256H71.9286L72.04 5.37043H72.6876L72.7984 5.65256H73.2001L72.597 4.24365H72.1393ZM72.3627 4.57153L72.56 5.06455H72.1647L72.3627 4.57153ZM73.2411 5.65232V4.24341H73.6872L74.2569 5.12861V4.24341H74.6078V5.65232H74.1761L73.592 4.74395V5.65232H73.2411ZM66.2598 8.11791V6.709H67.4048V7.02415H66.6144V7.26516H67.3864V7.56177H66.6144V7.81203H67.4048V8.11791H66.2598ZM71.8707 8.11791V6.709H73.0158V7.02415H72.2253V7.26516H72.9936V7.56177H72.2253V7.81203H73.0158V8.11791H71.8707ZM67.4493 8.11791L68.0068 7.42215L67.436 6.709H67.8781L68.2181 7.14986L68.5592 6.709H68.984L68.4207 7.41345L68.9792 8.11791H68.5372L68.2071 7.68401L67.8851 8.11791H67.4493ZM69.0209 6.70924V8.11815H69.3811V7.67324H69.7504C70.063 7.67324 70.2999 7.5068 70.2999 7.18313C70.2999 6.91499 70.1141 6.70924 69.796 6.70924H69.0209ZM69.3811 7.02787H69.7701C69.871 7.02787 69.9432 7.08999 69.9432 7.19007C69.9432 7.2841 69.8714 7.35229 69.7689 7.35229H69.3811V7.02787ZM70.4523 6.709V8.11791H70.8032V7.61737H70.9509L71.3717 8.11791H71.8005L71.3388 7.59884C71.5283 7.58279 71.7237 7.41953 71.7237 7.16608C71.7237 6.8696 71.4919 6.709 71.2332 6.709H70.4523ZM70.8032 7.02415H71.2043C71.3005 7.02415 71.3705 7.0997 71.3705 7.17246C71.3705 7.26606 71.2798 7.32076 71.2095 7.32076H70.8032V7.02415ZM73.1783 8.11791V7.81203H73.8806C73.9845 7.81203 74.0295 7.75566 74.0295 7.69385C74.0295 7.63461 73.9846 7.57474 73.8806 7.57474H73.5632C73.2874 7.57474 73.1337 7.40605 73.1337 7.15277C73.1337 6.92685 73.2744 6.709 73.6844 6.709H74.3677L74.22 7.02601H73.6289C73.516 7.02601 73.4812 7.08551 73.4812 7.14234C73.4812 7.20073 73.5242 7.26516 73.6105 7.26516H73.9429C74.2504 7.26516 74.3839 7.44024 74.3839 7.66951C74.3839 7.91602 74.2352 8.11791 73.9262 8.11791H73.1783ZM74.4662 8.11791V7.81203H75.1685C75.2724 7.81203 75.3174 7.75566 75.3174 7.69385C75.3174 7.63461 75.2726 7.57474 75.1685 7.57474H74.8512C74.5753 7.57474 74.4217 7.40605 74.4217 7.15277C74.4217 6.92685 74.5624 6.709 74.9723 6.709H75.6557L75.5079 7.02601H74.9169C74.8039 7.02601 74.7691 7.08551 74.7691 7.14234C74.7691 7.20073 74.8121 7.26516 74.8984 7.26516H75.2309C75.5384 7.26516 75.6718 7.44024 75.6718 7.66951C75.6718 7.91602 75.5231 8.11791 75.2141 8.11791H74.4662Z" fill="#016FD0"/>
+                    </g>
+                <path d="M86.2511 11.8985V11.1084C86.2557 11.042 86.2462 10.9753 86.223 10.9129C86.1998 10.8504 86.1636 10.7936 86.1168 10.7462C86.0699 10.6989 86.0135 10.6621 85.9513 10.6382C85.8891 10.6144 85.8225 10.6041 85.756 10.6081C85.669 10.6024 85.582 10.6202 85.5042 10.6595C85.4264 10.6989 85.3606 10.7584 85.3136 10.8319C85.2708 10.7606 85.2095 10.7022 85.1363 10.6628C85.0631 10.6234 84.9806 10.6045 84.8975 10.6081C84.8251 10.6044 84.7529 10.6198 84.6883 10.6526C84.6236 10.6854 84.5686 10.7345 84.5288 10.795V10.6397H84.2549V11.8985H84.5314V11.2006C84.5254 11.1576 84.5291 11.1137 84.542 11.0722C84.555 11.0307 84.577 10.9926 84.6065 10.9606C84.636 10.9287 84.6721 10.9036 84.7124 10.8873C84.7527 10.8709 84.7961 10.8637 84.8395 10.8662C85.0212 10.8662 85.1134 10.9847 85.1134 11.198V11.8985H85.39V11.2006C85.3844 11.1576 85.3884 11.114 85.4015 11.0727C85.4147 11.0314 85.4367 10.9935 85.4661 10.9616C85.4954 10.9297 85.5314 10.9046 85.5715 10.8882C85.6116 10.8717 85.6548 10.8642 85.6981 10.8662C85.885 10.8662 85.9746 10.9847 85.9746 11.198V11.8985H86.2511ZM87.7944 11.2691V10.6397H87.5205V10.7924C87.4737 10.7322 87.4132 10.684 87.3441 10.6519C87.2749 10.6198 87.199 10.6048 87.1228 10.6081C86.9531 10.6164 86.7931 10.6897 86.6759 10.8127C86.5588 10.9358 86.4934 11.0992 86.4934 11.2691C86.4934 11.439 86.5588 11.6024 86.6759 11.7255C86.7931 11.8485 86.9531 11.9218 87.1228 11.9301C87.199 11.9334 87.2749 11.9183 87.3441 11.8863C87.4132 11.8542 87.4737 11.806 87.5205 11.7458V11.8985H87.7944V11.2691ZM86.7752 11.2691C86.7795 11.1948 86.8054 11.1234 86.8497 11.0636C86.8941 11.0039 86.9549 10.9584 87.0248 10.9329C87.0947 10.9073 87.1705 10.9028 87.2429 10.9198C87.3154 10.9368 87.3812 10.9747 87.4324 11.0287C87.4836 11.0827 87.5178 11.1505 87.5309 11.2237C87.5441 11.297 87.5354 11.3724 87.5062 11.4408C87.4769 11.5092 87.4282 11.5676 87.3662 11.6086C87.3042 11.6497 87.2315 11.6718 87.1571 11.672C87.1049 11.6727 87.0532 11.6626 87.0051 11.6423C86.9571 11.622 86.9138 11.592 86.8779 11.5542C86.842 11.5163 86.8144 11.4714 86.7967 11.4224C86.779 11.3733 86.7717 11.3211 86.7752 11.2691ZM93.655 10.6066C93.7475 10.6057 93.8392 10.6229 93.9251 10.6572C94.0052 10.6892 94.0782 10.7365 94.14 10.7965C94.2009 10.8562 94.2491 10.9275 94.282 11.0062C94.3504 11.1748 94.3504 11.3634 94.282 11.532C94.2492 11.6107 94.2009 11.682 94.14 11.7417C94.0782 11.8017 94.0052 11.849 93.9251 11.881C93.7513 11.9485 93.5586 11.9485 93.3848 11.881C93.3049 11.8491 93.2321 11.8018 93.1706 11.7417C93.1101 11.6818 93.062 11.6105 93.0293 11.532C92.9609 11.3634 92.9609 11.1748 93.0293 11.0062C93.062 10.9277 93.1101 10.8564 93.1706 10.7965C93.2321 10.7364 93.3049 10.6891 93.3848 10.6572C93.4707 10.6229 93.5625 10.6057 93.655 10.6066V10.6066ZM93.655 10.8656C93.6014 10.8651 93.5483 10.8751 93.4986 10.8951C93.4517 10.9139 93.4092 10.9421 93.3737 10.9779C93.3379 11.0145 93.3097 11.0579 93.2909 11.1054C93.2506 11.2108 93.2506 11.3274 93.2909 11.4328C93.3097 11.4803 93.3379 11.5237 93.3737 11.5603C93.4092 11.5961 93.4517 11.6243 93.4986 11.6431C93.5991 11.6825 93.7108 11.6825 93.8114 11.6431C93.8584 11.6242 93.901 11.596 93.9369 11.5603C93.973 11.5238 94.0014 11.4804 94.0204 11.4328C94.0607 11.3274 94.0607 11.2108 94.0204 11.1054C94.0014 11.0578 93.973 11.0144 93.9369 10.9779C93.901 10.9422 93.8584 10.914 93.8114 10.8951C93.7617 10.8751 93.7085 10.8651 93.655 10.8656V10.8656ZM89.2847 11.2691C89.2821 10.8767 89.0398 10.6081 88.6869 10.6081C88.5161 10.617 88.3554 10.6918 88.2385 10.8167C88.1216 10.9416 88.0577 11.1069 88.0601 11.278C88.0625 11.449 88.131 11.6125 88.2513 11.7341C88.3716 11.8557 88.5344 11.9259 88.7054 11.9301C88.8933 11.9367 89.077 11.8739 89.2215 11.7537L89.0872 11.5509C88.9832 11.6342 88.8544 11.6805 88.7212 11.6825C88.6307 11.6902 88.5407 11.6623 88.4705 11.6047C88.4002 11.5472 88.355 11.4646 88.3445 11.3744H89.2795C89.2821 11.3402 89.2847 11.306 89.2847 11.2691ZM88.3472 11.1585C88.352 11.074 88.3897 10.9947 88.4522 10.9376C88.5147 10.8805 88.5971 10.8501 88.6817 10.853C88.7644 10.8514 88.8444 10.8826 88.9041 10.9399C88.9638 10.9971 88.9984 11.0758 89.0003 11.1585H88.3472ZM90.4382 10.961C90.3187 10.8922 90.1836 10.8551 90.0458 10.853C89.8957 10.853 89.8061 10.9083 89.8061 11.0005C89.8061 11.0848 89.9009 11.1084 90.0195 11.1242L90.1485 11.1427C90.4224 11.1822 90.5883 11.298 90.5883 11.5193C90.5883 11.7589 90.3776 11.9301 90.0142 11.9301C89.8197 11.9355 89.6286 11.8782 89.469 11.7668L89.5981 11.5535C89.7189 11.6431 89.8664 11.6895 90.0168 11.6852C90.2038 11.6852 90.3039 11.6299 90.3039 11.5324C90.3039 11.4613 90.2328 11.4218 90.0827 11.4008L89.9536 11.3823C89.6718 11.3428 89.5191 11.2164 89.5191 11.011C89.5191 10.7608 89.7245 10.6081 90.0432 10.6081C90.2234 10.6018 90.4017 10.6476 90.5567 10.7398L90.4382 10.961ZM91.7542 10.8899H91.3065V11.4587C91.3065 11.5851 91.3513 11.6694 91.4883 11.6694C91.5737 11.6666 91.6571 11.6421 91.7306 11.5983L91.8095 11.8327C91.7069 11.8967 91.5882 11.9305 91.4672 11.9301C91.1433 11.9301 91.03 11.7563 91.03 11.464V10.8899H90.7746V10.6397H91.03L91.0299 10.2578H91.3065L91.3065 10.6397H91.7542V10.8899ZM92.7021 10.6081C92.7685 10.6083 92.8345 10.6199 92.897 10.6423L92.8127 10.9004C92.7583 10.8787 92.7001 10.868 92.6415 10.8688C92.4625 10.8688 92.3729 10.9847 92.3729 11.1927V11.8985H92.099V10.6397H92.3703V10.7924C92.4039 10.7347 92.4525 10.6871 92.5109 10.6546C92.5693 10.6222 92.6353 10.6061 92.7021 10.6081V10.6081ZM94.5983 11.7153C94.6153 11.7151 94.6322 11.7185 94.6479 11.7251C94.663 11.7314 94.6767 11.7405 94.6884 11.752C94.7 11.7634 94.7093 11.7769 94.7157 11.7919C94.7223 11.8072 94.7257 11.8238 94.7257 11.8405C94.7257 11.8572 94.7223 11.8737 94.7157 11.8891C94.7092 11.9039 94.7 11.9174 94.6884 11.9288C94.6767 11.9403 94.6629 11.9494 94.6479 11.9558C94.6322 11.9626 94.6153 11.966 94.5983 11.9658C94.5732 11.9661 94.5486 11.9589 94.5275 11.9453C94.5065 11.9316 94.4899 11.9121 94.4799 11.8891C94.4733 11.8737 94.4699 11.8572 94.4699 11.8405C94.4699 11.8238 94.4733 11.8072 94.4799 11.7919C94.4863 11.777 94.4955 11.7634 94.5071 11.752C94.5188 11.7404 94.5326 11.7313 94.5478 11.7251C94.5638 11.7185 94.5809 11.7151 94.5983 11.7153V11.7153ZM94.5983 11.9382C94.6113 11.9383 94.6241 11.9357 94.6361 11.9305C94.6475 11.9255 94.6579 11.9185 94.6667 11.9096C94.6781 11.8984 94.6864 11.8845 94.6911 11.8692C94.6958 11.8539 94.6967 11.8377 94.6936 11.822C94.6906 11.8063 94.6838 11.7916 94.6737 11.7792C94.6637 11.7668 94.6508 11.757 94.6361 11.7507C94.6241 11.7457 94.6112 11.7431 94.5983 11.7432C94.585 11.7431 94.5719 11.7457 94.5597 11.7507C94.5481 11.7555 94.5375 11.7626 94.5286 11.7714C94.5104 11.7898 94.5001 11.8147 94.5001 11.8405C94.5001 11.8664 94.5104 11.8913 94.5286 11.9096C94.5377 11.9188 94.5486 11.926 94.5606 11.9309C94.5725 11.9358 94.5853 11.9383 94.5983 11.9382V11.9382ZM94.6056 11.7819C94.618 11.7811 94.6302 11.7846 94.6402 11.7919C94.6442 11.7952 94.6474 11.7993 94.6495 11.804C94.6516 11.8088 94.6525 11.8139 94.6523 11.8191C94.6525 11.8235 94.6517 11.8279 94.65 11.832C94.6483 11.8361 94.6458 11.8398 94.6426 11.8428C94.635 11.8496 94.6253 11.8537 94.6152 11.8544L94.6532 11.8983H94.6235L94.5881 11.8547H94.5768V11.8983H94.5519V11.7819H94.6056ZM94.5768 11.8037V11.8347H94.6053C94.6108 11.835 94.6163 11.8336 94.621 11.8309C94.6229 11.8296 94.6245 11.8278 94.6255 11.8257C94.6265 11.8237 94.627 11.8214 94.6268 11.8191C94.627 11.8168 94.6265 11.8145 94.6255 11.8125C94.6244 11.8105 94.6229 11.8088 94.621 11.8075C94.6163 11.8048 94.6108 11.8034 94.6053 11.8037H94.5768Z" fill="black"/>
+                <path d="M91.3658 1.03125H87.2119V8.49583H91.3658V1.03125Z" fill="#7375CF"/>
+                <path d="M87.4752 4.76288C87.4745 4.04399 87.6374 3.33437 87.9516 2.68774C88.2657 2.04112 88.7228 1.47443 89.2883 1.03059C88.588 0.480124 87.747 0.137798 86.8613 0.0427375C85.9756 -0.0523227 85.0811 0.10372 84.2799 0.493028C83.4787 0.882337 82.8032 1.4892 82.3306 2.24426C81.858 2.99933 81.6074 3.87212 81.6074 4.76288C81.6074 5.65364 81.858 6.52643 82.3306 7.2815C82.8032 8.03656 83.4787 8.64343 84.2799 9.03273C85.0811 9.42204 85.9756 9.57808 86.8613 9.48302C87.747 9.38796 88.588 9.04564 89.2883 8.49517C88.7228 8.05133 88.2657 7.48465 87.9516 6.83802C87.6374 6.19139 87.4745 5.48177 87.4752 4.76288V4.76288Z" fill="#EB001B"/>
+                <path d="M96.5162 7.70501V7.55219H96.5778V7.52105H96.4209V7.55219H96.4825V7.70501H96.5162ZM96.8209 7.70501V7.52075H96.7728L96.7175 7.64749L96.6621 7.52075H96.614V7.70501H96.6479V7.56602L96.6998 7.68585H96.7351L96.7869 7.56572V7.70501H96.8209Z" fill="#00A2E5"/>
+                <path d="M96.9688 4.76288C96.9688 5.65363 96.7182 6.52642 96.2457 7.28148C95.7731 8.03654 95.0976 8.64341 94.2965 9.03272C93.4953 9.42204 92.6008 9.57808 91.7151 9.48302C90.8294 9.38796 89.9884 9.04564 89.2881 8.49517C89.8531 8.05088 90.3099 7.4841 90.624 6.83758C90.9381 6.19105 91.1012 5.48166 91.1012 4.76288C91.1012 4.0441 90.9381 3.3347 90.624 2.68818C90.3099 2.04166 89.8531 1.47488 89.2881 1.03059C89.9884 0.480122 90.8294 0.137796 91.7151 0.0427366C92.6008 -0.0523223 93.4953 0.103723 94.2965 0.493035C95.0976 0.882348 95.7731 1.48922 96.2457 2.24428C96.7182 2.99934 96.9688 3.87213 96.9688 4.76288V4.76288Z" fill="#00A2E5"/>
+                <g clip-path="url(#clip2_4157_271303)">
+                    <path d="M112.322 0H109.675C109.679 1.06077 109.434 2.10769 108.958 3.05608C108.483 4.00447 107.792 4.82772 106.939 5.45922L105.892 6.2433L109.947 11.7791H113.288L109.553 6.6849C110.435 5.81002 111.134 4.7684 111.609 3.62072C112.085 2.47304 112.327 1.24224 112.322 0Z" fill="black"/>
+                    <path d="M102.859 11.7791H105.57V0H102.859V11.7791Z" fill="black"/>
+                    <path d="M114.077 11.7746H116.63V0.00219727H114.077V11.7746Z" fill="black"/>
+                    <path d="M139.019 3.41344C138.046 3.41344 137.124 3.71535 136.509 4.53998V3.63199H134.08V11.7746H136.538V7.49378C136.538 6.25458 137.367 5.6485 138.368 5.6485C139.44 5.6485 140.055 6.28838 140.055 7.47575V11.7746H142.491V6.59254C142.491 4.6977 140.984 3.40894 139.019 3.40894V3.41344Z" fill="black"/>
+                    <path d="M122.126 9.79874C121.555 9.81327 121.002 9.60077 120.588 9.20789C120.174 8.81502 119.933 8.2739 119.918 7.70337C119.949 7.1386 120.195 6.60724 120.606 6.21848C121.017 5.82972 121.561 5.61308 122.127 5.61308C122.692 5.61308 123.237 5.82972 123.648 6.21848C124.058 6.60724 124.305 7.1386 124.336 7.70337C124.321 8.2743 124.079 8.81577 123.665 9.20871C123.25 9.60165 122.697 9.81388 122.126 9.79874V9.79874ZM124.343 3.63205V4.15251C123.787 3.77374 123.15 3.5308 122.483 3.44327C121.816 3.35573 121.137 3.42604 120.503 3.64853C119.868 3.87102 119.294 4.23948 118.827 4.72424C118.361 5.20899 118.015 5.7965 117.817 6.43946C117.619 7.08242 117.575 7.76286 117.688 8.42601C117.801 9.08915 118.069 9.71646 118.468 10.2574C118.868 10.7984 119.39 11.2379 119.99 11.5406C120.591 11.8432 121.255 12.0006 121.927 12C122.788 12.0051 123.63 11.749 124.343 11.2655V11.786H126.783V3.63205H124.343Z" fill="black"/>
+                    <path d="M130.554 4.69328V3.63208H128.058V11.7747H130.559V7.97377C130.559 6.68952 131.949 6.00007 132.915 6.00007H132.942V3.63208C131.953 3.63208 131.043 4.05566 130.554 4.69328V4.69328Z" fill="black"/>
+                    <path d="M147.849 9.79874C147.279 9.81327 146.726 9.60077 146.312 9.2079C145.898 8.81502 145.656 8.2739 145.641 7.70337C145.672 7.1386 145.919 6.60724 146.33 6.21848C146.74 5.82972 147.285 5.61309 147.85 5.61309C148.416 5.61309 148.96 5.82972 149.371 6.21848C149.782 6.60724 150.028 7.1386 150.059 7.70337C150.044 8.2743 149.803 8.81577 149.388 9.20871C148.974 9.60165 148.42 9.81388 147.849 9.79874V9.79874ZM150.068 3.63205V4.15251C149.423 3.71257 148.669 3.45705 147.889 3.41344C147.109 3.36982 146.332 3.53977 145.641 3.90499C144.95 4.27021 144.372 4.81688 143.969 5.48616C143.566 6.15545 143.353 6.92201 143.353 7.70337C143.353 8.48473 143.566 9.25129 143.969 9.92058C144.372 10.5899 144.95 11.1365 145.641 11.5018C146.332 11.867 147.109 12.0369 147.889 11.9933C148.669 11.9497 149.423 11.6942 150.068 11.2542V11.7747H152.506V3.63205H150.068Z" fill="black"/>
+                    <path d="M155.095 8.88623C154.792 8.88579 154.495 8.97526 154.243 9.14334C153.991 9.31142 153.794 9.55054 153.678 9.83046C153.562 10.1104 153.531 10.4185 153.59 10.7158C153.649 11.0132 153.794 11.2864 154.008 11.5009C154.223 11.7154 154.496 11.8615 154.793 11.9208C155.09 11.9801 155.398 11.9499 155.678 11.834C155.959 11.7181 156.198 11.5218 156.366 11.2698C156.535 11.0177 156.625 10.7214 156.625 10.4183C156.625 10.2172 156.586 10.0181 156.509 9.83219C156.432 9.64632 156.32 9.47741 156.177 9.33511C156.035 9.19281 155.867 9.07992 155.681 9.0029C155.495 8.92588 155.296 8.88623 155.095 8.88623V8.88623Z" fill="black"/>
+                </g>
+                <g clip-path="url(#clip3_4157_271303)">
+                    <path d="M170.761 9.65251C170.71 9.99101 170.451 9.99101 170.201 9.99101H170.059L170.159 9.359C170.165 9.32078 170.198 9.29267 170.236 9.29267H170.302C170.472 9.29267 170.632 9.29267 170.715 9.38961C170.765 9.44766 170.78 9.53366 170.761 9.65251V9.65251ZM170.652 8.76934H169.71C169.645 8.76934 169.59 8.81626 169.58 8.87995L169.199 11.2981C169.192 11.3458 169.229 11.3889 169.277 11.3889H169.76C169.806 11.3889 169.844 11.3561 169.851 11.3115L169.959 10.626C169.969 10.5623 170.024 10.5153 170.088 10.5153H170.387C171.008 10.5153 171.366 10.2147 171.46 9.6189C171.502 9.35833 171.461 9.15358 171.339 9.01025C171.205 8.85266 170.968 8.76934 170.652 8.76934" fill="#459ADB"/>
+                    <path d="M164.038 9.65251C163.986 9.99101 163.728 9.99101 163.478 9.99101H163.335L163.435 9.359C163.441 9.32078 163.474 9.29267 163.513 9.29267H163.578C163.748 9.29267 163.909 9.29267 163.992 9.38961C164.041 9.44766 164.056 9.53366 164.038 9.65251V9.65251ZM163.929 8.76934H162.986C162.922 8.76934 162.867 8.81626 162.857 8.87995L162.476 11.2981C162.468 11.3458 162.505 11.3889 162.553 11.3889H163.003C163.068 11.3889 163.123 11.342 163.133 11.2783L163.236 10.626C163.246 10.5623 163.3 10.5153 163.365 10.5153H163.663C164.284 10.5153 164.642 10.2147 164.736 9.6189C164.778 9.35833 164.738 9.15358 164.616 9.01025C164.482 8.85266 164.244 8.76934 163.929 8.76934Z" fill="#253B7D"/>
+                    <path d="M166.117 10.5207C166.073 10.7787 165.869 10.9519 165.607 10.9519C165.477 10.9519 165.372 10.9098 165.304 10.83C165.238 10.7509 165.212 10.6383 165.234 10.5128C165.274 10.2571 165.482 10.0783 165.739 10.0783C165.868 10.0783 165.972 10.1209 166.04 10.2014C166.11 10.2824 166.137 10.3959 166.117 10.5207V10.5207ZM166.746 9.64176H166.295C166.256 9.64176 166.223 9.66989 166.217 9.70814L166.197 9.8344L166.166 9.78865C166.068 9.64667 165.85 9.59927 165.632 9.59927C165.134 9.59927 164.708 9.97734 164.625 10.5075C164.582 10.7721 164.643 11.0249 164.793 11.2013C164.931 11.3634 165.127 11.4309 165.361 11.4309C165.763 11.4309 165.986 11.1726 165.986 11.1726L165.966 11.2981C165.959 11.3458 165.995 11.389 166.044 11.389H166.45C166.515 11.389 166.57 11.3421 166.58 11.2784L166.824 9.73257C166.831 9.68489 166.794 9.64176 166.746 9.64176Z" fill="#253B7D"/>
+                    <path d="M172.841 10.5207C172.797 10.7787 172.592 10.9519 172.331 10.9519C172.2 10.9519 172.095 10.9098 172.028 10.83C171.961 10.7509 171.936 10.6383 171.957 10.5128C171.998 10.2571 172.206 10.0783 172.463 10.0783C172.591 10.0783 172.695 10.1209 172.764 10.2014C172.833 10.2824 172.86 10.3959 172.841 10.5207V10.5207ZM173.47 9.64176H173.018C172.98 9.64176 172.947 9.66989 172.941 9.70814L172.921 9.8344L172.889 9.78865C172.791 9.64667 172.574 9.59927 172.356 9.59927C171.857 9.59927 171.431 9.97734 171.348 10.5075C171.305 10.7721 171.367 11.0249 171.517 11.2013C171.654 11.3634 171.851 11.4309 172.085 11.4309C172.487 11.4309 172.71 11.1726 172.71 11.1726L172.69 11.2981C172.682 11.3458 172.719 11.389 172.767 11.389H173.174C173.238 11.389 173.293 11.3421 173.303 11.2784L173.547 9.73257C173.555 9.68489 173.518 9.64176 173.47 9.64176" fill="#459ADB"/>
+                    <path d="M169.15 9.6417H168.696C168.653 9.6417 168.612 9.66326 168.588 9.69914L167.962 10.6212L167.697 9.73515C167.68 9.67974 167.629 9.6417 167.572 9.6417H167.126C167.072 9.6417 167.034 9.69471 167.051 9.7457L167.551 11.2126L167.081 11.8759C167.044 11.928 167.081 12 167.145 12H167.598C167.641 12 167.681 11.9789 167.706 11.9436L169.215 9.76511C169.251 9.71298 169.213 9.6417 169.15 9.6417Z" fill="#253B7D"/>
+                    <path d="M174.001 8.83575L173.614 11.2981C173.607 11.3458 173.644 11.3889 173.692 11.3889H174.081C174.145 11.3889 174.2 11.342 174.21 11.2783L174.592 8.86024C174.599 8.8125 174.562 8.76934 174.514 8.76934H174.079C174.04 8.76934 174.007 8.79751 174.001 8.83575Z" fill="#459ADB"/>
+                    <path d="M171.473 1.98788C171.569 1.37922 171.472 0.965058 171.143 0.589933C170.781 0.176915 170.127 -2.36371e-05 169.289 -2.36371e-05H166.858C166.687 -2.36371e-05 166.541 0.124565 166.515 0.293707L165.503 6.71503C165.483 6.84172 165.581 6.95628 165.709 6.95628H167.209L167.106 7.61339C167.088 7.72422 167.174 7.82446 167.286 7.82446H168.551C168.701 7.82446 168.828 7.71546 168.852 7.56752L168.864 7.50321L169.102 5.99154L169.118 5.908C169.141 5.76006 169.268 5.65107 169.418 5.65107H169.607C170.833 5.65107 171.792 5.15298 172.073 3.71258C172.19 3.11071 172.129 2.60828 171.819 2.2551C171.726 2.14826 171.609 2.05994 171.473 1.98788" fill="#459ADB"/>
+                    <path d="M171.473 1.9879C171.569 1.37924 171.472 0.965082 171.143 0.589957C170.781 0.176939 170.127 3.4255e-07 169.289 3.4255e-07H166.858C166.687 3.4255e-07 166.541 0.124589 166.515 0.293731L165.503 6.71505C165.483 6.84174 165.581 6.9563 165.709 6.9563H167.209L167.586 4.56493L167.575 4.63988C167.601 4.47079 167.746 4.3462 167.917 4.3462H168.63C170.031 4.3462 171.128 3.77687 171.448 2.13032C171.458 2.08156 171.466 2.03434 171.473 1.9879" fill="#232D62"/>
+                    <path d="M167.991 1.99596C168.007 1.89424 168.073 1.81096 168.16 1.76882C168.2 1.74968 168.245 1.73903 168.292 1.73903H170.197C170.423 1.73903 170.633 1.75379 170.826 1.78481C170.881 1.7937 170.934 1.80387 170.986 1.81539C171.038 1.82695 171.089 1.83983 171.138 1.85416C171.162 1.86125 171.186 1.86875 171.21 1.87659C171.304 1.908 171.392 1.94501 171.473 1.9879C171.569 1.37924 171.472 0.965082 171.143 0.589957C170.781 0.176939 170.127 3.4255e-07 169.289 3.4255e-07H166.858C166.687 3.4255e-07 166.541 0.124589 166.515 0.293731L165.503 6.71505C165.483 6.84174 165.581 6.9563 165.709 6.9563H167.209L167.586 4.56493L167.991 1.99596Z" fill="#253B7D"/>
+                </g>
+                    <path d="M194.103 5.86285V9.38034H192.987V0.693699H195.947C196.3 0.68632 196.651 0.748974 196.98 0.878046C197.309 1.00712 197.609 1.20005 197.863 1.44571C198.12 1.67646 198.324 1.95945 198.462 2.27566C198.6 2.59186 198.669 2.93397 198.664 3.27897C198.671 3.62582 198.603 3.97015 198.465 4.28837C198.327 4.6066 198.122 4.89118 197.863 5.12262C197.346 5.61611 196.707 5.86262 195.947 5.86216H194.103V5.86285ZM194.103 1.76315V4.79547H195.975C196.18 4.80156 196.384 4.76475 196.574 4.68741C196.764 4.61008 196.936 4.49391 197.079 4.34634C197.221 4.20837 197.333 4.04335 197.41 3.86103C197.487 3.6787 197.527 3.48279 197.527 3.28486C197.527 3.08693 197.487 2.89102 197.41 2.70869C197.333 2.52637 197.221 2.36134 197.079 2.22337C196.938 2.0727 196.767 1.95369 196.576 1.87422C196.386 1.79476 196.181 1.75667 195.975 1.76246H194.103V1.76315ZM201.235 3.24293C202.06 3.24293 202.711 3.46333 203.188 3.90415C203.666 4.34496 203.904 4.94934 203.904 5.7173V9.38034H202.836V8.55555H202.788C202.326 9.23479 201.711 9.57441 200.944 9.57441C200.289 9.57441 199.742 9.38034 199.301 8.9922C199.089 8.81406 198.92 8.59096 198.806 8.33916C198.691 8.08736 198.635 7.81321 198.64 7.53669C198.64 6.92168 198.872 6.43258 199.337 6.0694C199.802 5.70621 200.422 5.52416 201.198 5.52323C201.861 5.52323 202.407 5.64452 202.836 5.88711V5.63205C202.837 5.44354 202.796 5.25711 202.716 5.08628C202.637 4.91545 202.52 4.7645 202.375 4.64438C202.08 4.37814 201.695 4.23288 201.298 4.23753C200.674 4.23753 200.181 4.50044 199.818 5.02628L198.835 4.40734C199.376 3.63106 200.176 3.24293 201.235 3.24293ZM199.791 7.56095C199.791 7.70297 199.824 7.84311 199.888 7.9697C199.953 8.09629 200.046 8.20566 200.162 8.28871C200.408 8.48284 200.715 8.58568 201.029 8.57981C201.5 8.57902 201.951 8.39159 202.284 8.0586C202.654 7.71066 202.838 7.30242 202.838 6.83389C202.49 6.55665 202.005 6.41803 201.383 6.41803C200.93 6.41803 200.552 6.5273 200.249 6.74586C199.943 6.96765 199.791 7.23727 199.791 7.56095ZM210.031 3.437L206.305 12.0003H205.153L206.535 9.00399L204.085 3.437H205.298L207.069 7.7065H207.093L208.816 3.437H210.031Z" fill="#5F6368"/>
+                    <path d="M189.595 5.10454C189.595 4.76448 189.567 4.425 189.509 4.08984H184.803V6.01181H187.498C187.443 6.31878 187.326 6.6114 187.155 6.87203C186.984 7.13267 186.761 7.35591 186.502 7.52832V8.7759H188.11C189.052 7.90745 189.595 6.62313 189.595 5.10454Z" fill="#4285F4"/>
+                    <path d="M184.801 9.98079C186.148 9.98079 187.282 9.5386 188.109 8.77618L186.5 7.5286C186.053 7.83218 185.476 8.00545 184.801 8.00545C183.5 8.00545 182.395 7.12799 182 5.94556H180.343V7.23126C180.758 8.05777 181.395 8.75257 182.182 9.23809C182.97 9.72361 183.876 9.98075 184.801 9.98079Z" fill="#34A853"/>
+                    <path d="M182.001 5.94565C181.792 5.32605 181.792 4.65506 182.001 4.03546V2.74976H180.344C179.994 3.44504 179.812 4.21241 179.812 4.99055C179.812 5.7687 179.994 6.53606 180.344 7.23135L182.001 5.94565Z" fill="#FBBC04"/>
+                    <path d="M184.801 1.97567C185.513 1.96404 186.201 2.23293 186.716 2.72422L188.14 1.29989C187.237 0.451589 186.04 -0.0141439 184.801 0.000327413C183.876 0.000369571 182.97 0.257506 182.182 0.743029C181.395 1.22855 180.758 1.92335 180.343 2.74986L182 4.03557C182.395 2.85313 183.5 1.97567 184.801 1.97567Z" fill="#EA4335"/>
+                <g clip-path="url(#clip4_4157_271303)">
+                    <path d="M232.321 0H216.929C216.865 0 216.801 0 216.737 0.000373708C216.683 0.00075874 216.629 0.00135894 216.575 0.00283112C216.457 0.0060133 216.338 0.0129552 216.222 0.0338376C216.104 0.0550823 215.994 0.0897352 215.887 0.144297C215.782 0.197873 215.685 0.267949 215.602 0.351569C215.518 0.435189 215.448 0.531481 215.394 0.636946C215.34 0.744109 215.305 0.853991 215.284 0.972128C215.263 1.08835 215.256 1.207 215.253 1.32453C215.251 1.37848 215.251 1.43243 215.25 1.48637C215.25 1.55048 215.25 1.61454 215.25 1.67876V10.3214C215.25 10.3856 215.25 10.4495 215.25 10.5138C215.251 10.5677 215.251 10.6217 215.253 10.6756C215.256 10.793 215.263 10.9117 215.284 11.0279C215.305 11.1461 215.34 11.2559 215.394 11.3631C215.448 11.4685 215.518 11.5649 215.602 11.6484C215.685 11.7322 215.782 11.8023 215.887 11.8557C215.994 11.9104 216.104 11.9451 216.222 11.9663C216.338 11.9871 216.457 11.9941 216.575 11.9973C216.629 11.9985 216.683 11.9993 216.737 11.9995C216.801 12 216.865 12 216.929 12H232.321C232.385 12 232.449 12 232.513 11.9995C232.567 11.9993 232.621 11.9985 232.675 11.9973C232.793 11.9941 232.911 11.9871 233.028 11.9663C233.146 11.9451 233.256 11.9104 233.363 11.8557C233.468 11.8023 233.565 11.7322 233.648 11.6484C233.732 11.5649 233.802 11.4685 233.856 11.3631C233.91 11.2559 233.945 11.1461 233.966 11.0279C233.987 10.9117 233.994 10.793 233.997 10.6756C233.999 10.6217 233.999 10.5677 234 10.5138C234 10.4495 234 10.3856 234 10.3214V1.67876C234 1.61454 234 1.55048 234 1.48637C233.999 1.43243 233.999 1.37848 233.997 1.32453C233.994 1.207 233.987 1.08835 233.966 0.972128C233.945 0.853991 233.91 0.744109 233.856 0.636946C233.802 0.531481 233.732 0.435189 233.648 0.351569C233.565 0.267949 233.468 0.197873 233.363 0.144297C233.256 0.0897352 233.146 0.0550823 233.028 0.0338376C232.911 0.0129552 232.793 0.0060133 232.675 0.00283112C232.621 0.00135894 232.567 0.00075874 232.513 0.000373708C232.449 0 232.385 0 232.321 0Z" fill="black"/>
+                    <path d="M232.321 0.399902L232.51 0.400265C232.562 0.400627 232.613 0.401182 232.665 0.402586C232.754 0.40501 232.859 0.409868 232.957 0.427398C233.042 0.442709 233.114 0.465992 233.182 0.500826C233.25 0.535151 233.311 0.580131 233.365 0.634093C233.42 0.688416 233.465 0.750406 233.5 0.818704C233.534 0.886595 233.557 0.957554 233.573 1.04319C233.59 1.13992 233.595 1.24513 233.597 1.33537C233.599 1.38631 233.599 1.43725 233.6 1.4894C233.6 1.55246 233.6 1.6155 233.6 1.67869V10.3213C233.6 10.3845 233.6 10.4474 233.6 10.5118C233.599 10.5627 233.599 10.6137 233.597 10.6647C233.595 10.7548 233.59 10.86 233.572 10.9578C233.557 11.0423 233.534 11.1133 233.499 11.1815C233.465 11.2496 233.42 11.3115 233.366 11.3655C233.311 11.4199 233.25 11.4647 233.181 11.4994C233.113 11.534 233.042 11.5573 232.958 11.5724C232.858 11.5902 232.749 11.5951 232.666 11.5973C232.615 11.5985 232.563 11.5992 232.51 11.5995C232.447 11.6 232.384 11.5999 232.321 11.5999H216.929C216.929 11.5999 216.928 11.5999 216.927 11.5999C216.865 11.5999 216.802 11.5999 216.739 11.5995C216.687 11.5992 216.636 11.5985 216.586 11.5974C216.502 11.5951 216.392 11.5902 216.293 11.5726C216.208 11.5573 216.137 11.534 216.068 11.4989C216.001 11.4646 215.939 11.4198 215.885 11.3653C215.831 11.3115 215.786 11.2497 215.751 11.1815C215.716 11.1133 215.693 11.0422 215.678 10.9567C215.66 10.859 215.655 10.7543 215.653 10.6648C215.652 10.6135 215.651 10.5623 215.651 10.5114L215.65 10.361L215.65 10.3213V1.67869L215.65 1.63898L215.651 1.48892C215.651 1.43768 215.652 1.38645 215.653 1.33525C215.655 1.24566 215.66 1.14089 215.678 1.04239C215.693 0.95769 215.716 0.886504 215.751 0.818002C215.786 0.750293 215.831 0.688484 215.885 0.634263C215.939 0.580222 216.001 0.535298 216.069 0.500645C216.137 0.465981 216.208 0.442709 216.293 0.427432C216.391 0.409857 216.496 0.40501 216.586 0.402575C216.637 0.401182 216.689 0.400627 216.739 0.400276L216.929 0.399902H232.321Z" fill="white"/>
+                    <path d="M220.368 4.03601C220.529 3.83526 220.638 3.56572 220.609 3.29028C220.374 3.30197 220.087 3.44528 219.921 3.64618C219.772 3.81823 219.64 4.09905 219.674 4.36295C219.938 4.38582 220.202 4.23112 220.368 4.03601Z" fill="black"/>
+                    <path d="M220.606 4.41437C220.223 4.39156 219.897 4.63174 219.714 4.63174C219.531 4.63174 219.251 4.42587 218.948 4.43142C218.553 4.43721 218.187 4.66014 217.987 5.01472C217.576 5.72404 217.879 6.77621 218.279 7.35391C218.473 7.63972 218.708 7.95441 219.016 7.94311C219.308 7.93166 219.422 7.75429 219.777 7.75429C220.131 7.75429 220.234 7.94311 220.543 7.93739C220.863 7.93166 221.063 7.65144 221.258 7.36535C221.481 7.03955 221.572 6.72495 221.578 6.70768C221.572 6.70196 220.96 6.46737 220.955 5.76395C220.949 5.17496 221.435 4.89481 221.458 4.87743C221.183 4.47162 220.755 4.42587 220.606 4.41437Z" fill="black"/>
+                    <path d="M223.942 3.61743C224.775 3.61743 225.355 4.19125 225.355 5.02669C225.355 5.86512 224.763 6.44192 223.921 6.44192H222.999V7.90767H222.333V3.61743L223.942 3.61743ZM222.999 5.88295H223.763C224.343 5.88295 224.673 5.57081 224.673 5.02967C224.673 4.4886 224.343 4.17938 223.766 4.17938H222.999V5.88295Z" fill="black"/>
+                    <path d="M225.528 7.01867C225.528 6.47157 225.948 6.13563 226.691 6.094L227.548 6.04347V5.80267C227.548 5.4548 227.313 5.24669 226.92 5.24669C226.548 5.24669 226.316 5.42504 226.26 5.70455H225.653C225.689 5.13962 226.171 4.72339 226.944 4.72339C227.702 4.72339 228.187 5.12476 228.187 5.75209V7.90762H227.571V7.39327H227.557C227.375 7.74114 226.98 7.96112 226.569 7.96112C225.957 7.96112 225.528 7.58056 225.528 7.01867ZM227.548 6.73623V6.48947L226.777 6.53701C226.394 6.56379 226.177 6.73325 226.177 7.00084C226.177 7.27433 226.403 7.45273 226.748 7.45273C227.197 7.45273 227.548 7.14352 227.548 6.73623Z" fill="black"/>
+                    <path d="M228.768 9.05839V8.53808C228.816 8.54995 228.923 8.54995 228.976 8.54995C229.274 8.54995 229.434 8.4251 229.533 8.10401C229.533 8.09805 229.589 7.91374 229.589 7.91075L228.459 4.78003H229.155L229.946 7.32506H229.958L230.749 4.78003H231.427L230.255 8.07127C229.988 8.82946 229.678 9.07325 229.03 9.07325C228.976 9.07325 228.816 9.06728 228.768 9.05839Z" fill="black"/>
+                </g>
+                <defs>
+                    <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
+                        <use xlink:href="#image0_4157_271303" transform="scale(0.001 0.00308642)"/>
+                    </pattern>
+                    <clipPath id="clip0_4157_271303">
+                        <rect width="16.4983" height="12" fill="white" transform="translate(41.9692)"/>
+                    </clipPath>
+                    <clipPath id="clip1_4157_271303">
+                        <rect width="12" height="12" fill="white" transform="translate(63.6865)"/>
+                    </clipPath>
+                    <clipPath id="clip2_4157_271303">
+                        <rect width="53.9997" height="12" fill="white" transform="translate(102.625)"/>
+                    </clipPath>
+                    <clipPath id="clip3_4157_271303">
+                        <rect width="12.7498" height="12" fill="white" transform="translate(161.844)"/>
+                    </clipPath>
+                    <clipPath id="clip4_4157_271303">
+                        <rect width="18.75" height="12" fill="white" transform="translate(215.25)"/>
+                    </clipPath>
+                    <image id="image0_4157_271303" width="1000" height="324" xlink:href="data:image/png;base64,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"/>
+                </defs>
+            </svg>
+
+    // [Start] 2023-06-02 : ADD - added message
+    //- .c-product-card-info__text-sub.c-text-contents
+    //-     .text.c-text-contents__bodycopy
+    //-         p.cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") All items in the basket must be eligible for Klarna & the total amount in the basket cannot exceed £2,500 for the financing option to appear in checkout.
+    // [End] 2023-06-02 : ADD - added message

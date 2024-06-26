@@ -1,0 +1,130 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_image.pug
+include ../_common/_button.pug
+include ../_common/_resource.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "ST0032"
+    - var componentName = "B2B Air Solution Resource"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    //- script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+
+    mixin resourceType(type)
+        .c-table__type= type
+
+    mixin resourceDownload(name, extension="")
+        // 2023-01-27 : Add role to download link for tagging
+        a(href="#", target="_blank" role="button").c-table__title.font-underline
+            span= `${name}.${extension}`
+            .c-table__title--icon
+                .c-icon-button.c-icon-button--download
+
+    mixin resourceSize(extension, size)
+        .c-table__size
+            if(extension == 'pdf' || extension == 'txt' || extension == 'djvu' || extension == 'zip' || extension == 'html' || extension == 'dwg')
+                span(class=`c-resources__item--extension c-resources__item--extension-${extension}`)
+                    span.sr-only= `extension : ${extension}`
+                span= size
+            else
+                span(class=`c-resources__item--extension c-resources__item--extension-etc`)
+                    span.sr-only= `extension : ${extension}`
+                span= size
+
+
+                    
+    // Component Markup
+    .guide-text-type B2B Air Solution Resource
+    // block : ST0032
+    .c-wrapper.ST0032.margin-top.margin-bottom.bg-default
+        .component
+            .cmp-container
+                //- title area
+                +component-title-area({
+                    alignment: "",
+                    headline : {
+                        text : "Catalogue & Leaflet & Document Download"
+                    }
+                })
+                
+                //- contents
+                // block : c-table
+                .c-table
+                    table
+                        caption Title, Size Table List
+                        colgroup
+                            col.cell-size
+                            col
+                            col.cell-size
+                        thead
+                            tr
+                                th(scope="col") Resource Type
+                                th(scope="col") Title
+                                th(scope="col") Size
+                        tbody
+                            - for(var x = 0 ; x < 3; x++)
+                                tr
+                                    td 
+                                        +resourceType("Catalog")
+                                    td 
+                                        +resourceDownload('Specs Sheet_File_Name(English)', 'pdf')
+                                    td
+                                        +resourceSize('pdf', "8.864K")
+                                tr
+                                    td 
+                                        +resourceType("Catalog")
+                                    td 
+                                        +resourceDownload('2015_MULTI_V_Reference Site Catalogue_Europe')
+                                    td
+                                        +resourceSize('zip', "13.864K")
+                // block : link box
+                .c-link-box
+                    // block : text contents 
+                    .c-text-contents    
+                        .c-text-contents__bodycopy
+                            .cmp-text.font-w-normal-24.font-m-normal-16
+                                p For manuals or materilas related to engineering support, please go to resource download
+                    // block : cta 
+                    .button.c-cta
+                        +defaultButton({name: 'Button Text', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+                            
+
+

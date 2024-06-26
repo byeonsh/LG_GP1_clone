@@ -1,0 +1,184 @@
+mixin ST0058(option=false)
+    mixin printTab(div, num, selected)
+        if selected
+            li.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0", data-cmp-hook-tabs="tab", aria-selected="true")
+                if block
+                    block
+        else 
+            li.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1", data-cmp-hook-tabs="tab", aria-selected="false")
+                if block
+                    block
+    mixin printTabPanel(div, num, selected)
+        if selected 
+            .cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+        else 
+            .cmp-tabs__tabpanel(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+
+    mixin printButton(type="") 
+        if (type === "highlight")
+            +defaultButton({name: 'Buy Now', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})(href="#")
+        else if (type === "default")
+            +defaultButton({name: 'Buy Now', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})(href="#")
+        else if (type === "text")
+            +textButton({name: 'Button Text', wSize: 'medium', mSize: 'medium', buttonStyle: 'default transparent', isButton: false})(href="#")
+        else 
+            |
+
+    mixin printContents(num, type)
+        //- - console.log(type)
+        if(num <= 6)
+            .c-category-list(class=`length-${num}`)
+                - var n = 0;
+                while n < num
+                    - n++;
+                    .c-category-list__item
+                        // GA4
+                        //- a.c-category-list__link(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") 
+                        .c-category-list__link
+                            .c-image.image
+                                +printLazyImage('https://via.placeholder.com/350x350?text=category+image', "")
+                            .c-text-contents.align-text-left
+                                if (n == 1 || n == 3)
+                                    .c-text-contents__inner
+                                        .c-text-contents__subcategory #{n} a Ультра большие телевизоры Ультра большие телевизоры
+                                        .c-text-contents__description
+                                            p Телевизоры LG объединяет лучшие решения в своём классе. Большой экран, идеальная картинка вне зависимости от угла обзора. Узнайте больше о электронике LG на официальном сайте.
+                                    .button.cta
+                                        each item in type
+                                            +printButton(item)
+                                else
+                                    .c-text-contents__inner
+                                        .c-text-contents__subcategory #{n} Washing Machines
+                                        .c-text-contents__description
+                                            p Powerful washing with speed and energy-efficiency.
+                                    .button.cta
+                                        each item in type
+                                            +printButton(item)
+        else
+            .carousel.panelcontainer
+                .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                    .cmp-carousel__content.swiper-wrapper.c-category-list(class=`six-or-more`)
+                        - var n = 0;
+                        while n < num
+                            - n++;
+                            .cmp-carousel__item.swiper-slide.c-carousel__item.c-category-list__item(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+                                // GA4
+                                //- a.c-category-list__link(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                                .c-category-list__link
+                                    .c-image.image
+                                        +printLazyImage('https://via.placeholder.com/350x350?text=category+image', "")
+                                    .c-text-contents.align-text-left
+                                        if (n == 1 || n == 5)
+                                            .c-text-contents__inner
+                                                .c-text-contents__subcategory #{n} Ультра большие телевизоры Ультра большие телевизоры
+                                                .c-text-contents__description
+                                                    p Телевизоры LG объединяет лучшие решения в своём классе. Большой экран, идеальная картинка вне зависимости от угла обзора. Узнайте больше о электронике LG на официальном сайте.
+                                            .button.cta
+                                                each item in type
+                                                    +printButton(item)
+                                        else 
+                                            .c-text-contents__inner
+                                                .c-text-contents__subcategory #{n} Washing
+                                                .c-text-contents__description
+                                                    p Powerful washing with speed and energy-efficiency.
+                                            .button.cta
+                                                each item in type
+                                                    +printButton(item)
+
+                    .c-carousel__handler
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"prev"})
+                        +carouselPagination
+                        .cmp-carousel__actions
+                            +carouselBtn({type:"pagination", direction:"next"})
+
+    if (option == 'DEV')
+        .container.responsivegrid.ST0058.c-wrapper.margin-top.border-top.bg-default
+            .component
+                #container-557869df90.cmp-container
+                    .title.font-w-light-56.font-m-light-28
+                        #title-9723e169e7.cmp-title(data-cmp-data-layer='')
+                            h2.cmp-title__text Product Category (dev code)
+                    .tabs.panelcontainer.tabs-margin
+                        #tabs-78f2c1011a.cmp-tabs(data-cmp-is="tabs", data-cmp-data-layer="{&#34;tabs-78f2c1011a&#34;:{&#34;shownItems&#34;:[&#34;tabs-78f2c1011a-item-14a11613e8&#34;],&#34;@type&#34;:&#34;lge/components/tabs&#34;,&#34;repo:modifyDate&#34;:&#34;2023-02-08T12:21:17Z&#34;}}", data-placeholder-text="false")
+                            div(class="cmp-tabs__inner")
+                                ol(role="tablist", class="cmp-tabs__tablist", aria-label="LG Signature", aria-multiselectable="false")
+                                    li#tabs-78f2c1011a-item-14a11613e8-tab(role="tab", class="cmp-tabs__tab cmp-tabs__tab--active", aria-controls="tabs-78f2c1011a-item-14a11613e8-tabpanel", tabindex="0", data-cmp-hook-tabs="tab") LG SIGNATURE
+                                    li#tabs-78f2c1011a-item-297aa24634-tab(role="tab", class="cmp-tabs__tab", aria-controls="tabs-78f2c1011a-item-297aa24634-tabpanel", tabindex="-1", data-cmp-hook-tabs="tab") TV/AUDIO/VIDEO
+                                    li#tabs-78f2c1011a-item-46926ff690-tab(role="tab", class="cmp-tabs__tab", aria-controls="tabs-78f2c1011a-item-46926ff690-tabpanel", tabindex="-1", data-cmp-hook-tabs="tab") APPLIANCES
+                                    li#tabs-78f2c1011a-item-e69fc29688-tab(role="tab", class="cmp-tabs__tab", aria-controls="tabs-78f2c1011a-item-e69fc29688-tabpanel", tabindex="-1", data-cmp-hook-tabs="tab") COMPUTER PRODUCTS
+                                    li#tabs-78f2c1011a-item-399db113ca-tab(role="tab", class="cmp-tabs__tab", aria-controls="tabs-78f2c1011a-item-399db113ca-tabpanel", tabindex="-1", data-cmp-hook-tabs="tab") BUSINESS
+                            #tabs-78f2c1011a-item-14a11613e8-tabpanel(role="tabpanel", aria-labelledby="tabs-78f2c1011a-item-14a11613e8-tab", tabindex="0", class="cmp-tabs__tabpanel cmp-tabs__tabpanel--active", data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="{&#34;tabs-78f2c1011a-item-14a11613e8&#34;:{&#34;@type&#34;:&#34;lge/components/tabs/item&#34;,&#34;repo:modifyDate&#34;:&#34;2023-01-20T09:30:49Z&#34;,&#34;dc:title&#34;:&#34;LG SIGNATURE&#34;}}")
+                                .container.responsivegrid.c-wrapper.margin-bottom
+                                    #container-14a11613e8.cmp-container
+                                        .aem-Grid.aem-Grid--12.aem-Grid--default--12
+                                            .c-wrapper.ST0058.aem-GridColumn.aem-GridColumn--default--12
+                                                .component
+                                                    .cmp-container
+                                                        +printContents(5, type=["highlight"])
+                            #tabs-78f2c1011a-item-297aa24634-tabpanel(role="tabpanel", aria-labelledby="tabs-78f2c1011a-item-297aa24634-tab", tabindex="0", class="cmp-tabs__tabpanel cmp-tabs__tabpanel--active", data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="{&#34;tabs-78f2c1011a-item-297aa24634&#34;:{&#34;@type&#34;:&#34;lge/components/tabs/item&#34;,&#34;repo:modifyDate&#34;:&#34;2023-01-20T09:30:49Z&#34;,&#34;dc:title&#34;:&#34;LG SIGNATURE&#34;}}")
+                                .container.responsivegrid.c-wrapper.margin-bottom
+                                    #container-297aa24634.cmp-container
+                                        .aem-Grid.aem-Grid--12.aem-Grid--default--12
+                                            .c-wrapper.ST0058.aem-GridColumn.aem-GridColumn--default--12
+                                                .component
+                                                    .cmp-container
+                                                        +printContents(5, type=["text"])
+                                            .container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12
+                                                #container-7c7b163dd4.cmp-container
+
+                            #tabs-78f2c1011a-item-46926ff690-tabpanel(role="tabpanel", aria-labelledby="tabs-78f2c1011a-item-46926ff690-tab", tabindex="0", class="cmp-tabs__tabpanel", data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="{&#34;tabs-78f2c1011a-item-46926ff690&#34;:{&#34;@type&#34;:&#34;lge/components/tabs/item&#34;,&#34;repo:modifyDate&#34;:&#34;2023-01-20T09:30:17Z&#34;,&#34;dc:title&#34;:&#34;APPLIANCES&#34;}}")
+                                .container.responsivegrid.c-wrapper.margin-bottom
+                                    #container-46926ff690.cmp-container
+                                        .c-wrapper.ST0058
+                                            .component
+                                                .cmp-container
+                                                    +printContents(5, type=["text"])
+                            #tabs-78f2c1011a-item-e69fc29688-tabpanel(role="tabpanel", aria-labelledby="tabs-78f2c1011a-item-e69fc29688-tab", tabindex="0", class="cmp-tabs__tabpanel", data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="{&#34;tabs-78f2c1011a-item-e69fc29688&#34;:{&#34;@type&#34;:&#34;lge/components/tabs/item&#34;,&#34;repo:modifyDate&#34;:&#34;2022-11-18T14:21:28Z&#34;,&#34;dc:title&#34;:&#34;COMPUTER PRODUCTS&#34;}}")
+                                .container.responsivegrid.c-wrapper.margin-bottom
+                                    #container-e69fc29688.cmp-container
+                                        .c-wrapper.ST0058
+                                            .component
+                                                .cmp-container
+                                                    +printContents(5, type=["default"])
+                            #tabs-78f2c1011a-item-399db113ca-tabpanel(role="tabpanel", aria-labelledby="tabs-78f2c1011a-item-399db113ca-tab", tabindex="0", class="cmp-tabs__tabpanel", data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="{&#34;tabs-78f2c1011a-item-399db113ca&#34;:{&#34;@type&#34;:&#34;lge/components/tabs/item&#34;,&#34;repo:modifyDate&#34;:&#34;2022-11-18T14:21:22Z&#34;,&#34;dc:title&#34;:&#34;BUSINESS&#34;}}")
+                                .container.responsivegrid.c-wrapper.margin-bottom
+                                    #container-399db113ca.cmp-container
+                                        .c-wrapper.ST0058
+                                            .component
+                                                .cmp-container
+                                                    +printContents(5, type=["highlight"])
+    else
+        .c-wrapper.ST0058.margin-top.margin-bottom.border-top.bg-default
+            .component
+                .cmp-container
+                    +component-title-area({
+                        headline : {
+                            text : "Product Category",
+                        }
+                    })(class="c-region-header--vacate-side")
+
+                    .tabs.panelcontainer.tabs-margin
+                        .cmp-tabs(data-cmp-data-layer="", data-placeholder-text="false")
+                            .cmp-tabs__inner
+                                ul.cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                                    +printTab(11, 1, true) LG Signature
+                                    +printTab(11, 2, false) TV/Audio/Video
+                                    +printTab(11, 3, false) Appliances
+                                    +printTab(11, 4, false) Computer Products
+                                    +printTab(11, 5, false) Business
+
+                            +printTabPanel(11, 1, true)
+                                +printContents(12, type=["highlight"])
+                            +printTabPanel(11, 2, false)
+                                +printContents(6, type=["text"])
+                            +printTabPanel(11, 3, false)
+                                +printContents(5, type=["highlight"])
+                            +printTabPanel(11, 4, false)
+                                +printContents(4, type=["default"])
+                            +printTabPanel(11, 5, false)
+                                +printContents(3, type=["highlight", "default"])

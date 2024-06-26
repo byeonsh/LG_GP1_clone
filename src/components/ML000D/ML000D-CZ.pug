@@ -1,0 +1,1141 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_headline.pug
+include ../_common/_pop-msg.pug
+include ../_common/_cart-price-total.pug
+
+block meta 
+    - var componentId = "ML000D"
+    - var componentName = "Order Details"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+mixin myOrder(params)
+    - let data = {...params}
+    .my-order
+        .my-order__txt 
+            .font-w-normal-16.font-m-normal-12 No. 
+                span !{data.orderNumber}
+            .font-w-normal-16.font-m-normal-12 Date 
+                span !{data.date}
+        if data.linkText
+            +linkButton({type:"text", icon:true, color:"red", name:data.linkText})
+
+mixin buyProductPrice(params)
+    - var priceStyle = params.priceFontStyle || "font-w-semibold-20 font-m-semibold-16"
+    - var subPriceStyle = params.subPriceFontStyle || "font-w-normal-14i font-m-normal-12"
+    - var soldOutStyle = params.soldOutFontStyle || "font-w-semibold-18 font-m-semibold-18"
+    .price-area
+        .price-box 
+            .c-price(class=`${priceStyle}`)
+                .c-price__purchase= params.purchase
+                if params.qty
+                    .c-qty.font-w-normal-16.font-m-normal-12 Qty : !{params.qty}
+    //- [Start] 2023-09-13 : ADD- Includes $15 EHF fee
+    if params.includeEHF
+        span.price-area--EHF-fee.font-w-normal-16.font-m-normal-12 !{params.includeEHF}
+    //- [End] 2023-09-13 : ADD- Includes $15 EHF fee
+
+mixin buyProductBundlePrice(params)
+    - var priceStyle = params.priceFontStyle || "font-w-semibold-18 font-m-semibold-14"
+    - var subPriceStyle = params.subPriceFontStyle || "font-w-normal-14i font-m-normal-12"
+    - var soldOutStyle = params.soldOutFontStyle || "font-w-semibold-18 font-m-semibold-18"
+    .price-area
+        .price-box 
+            .c-price(class=`${priceStyle}`)
+                .c-price__purchase= params.purchase
+                if params.qty
+                    .c-qty.font-w-normal-14.font-m-normal-12 Qty : !{params.qty}
+
+mixin productMsg(params)
+    - let data = { ...params }
+    .buy-cart-list__msg 
+        span.font-w-normal-16.font-m-normal-14 !{data.msg}
+            if data.msgLink
+                +linkButton({type:"text",color:`${data.msgLinkColor ? data.msgLinkColor : "black"}`, underline:true, name:data.msgLink})
+
+
+mixin buyProductItemBundle(params)
+    // [Start] 2023-05-23 : ADD- Change Delivery Case
+    - let data = { ...params }
+    .c-product-item__bundle-wrap
+        .c-product-item
+            .c-product-item__top-container
+                .c-product-item__visual-image
+                    a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").image.c-image
+                        +printLazyImage("https://via.placeholder.com/64x64/999999/333333")
+            .c-product-item__bottom-container
+                .c-product-item__bottom-container__text-box
+                    .c-text-contents.c-product-item__layout
+                        a(href="#" class="c-product-item__landing" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                            .text.c-text-contents__eyebrow.sku
+                                if data.name
+                                    .cmp-text(data-cmp-data-layer="" class="font-w-normal-12 font-m-normal-12")
+                                        p
+                                            span= data.name
+                            if data.plag
+                                .text.c-text-contents__plag 
+                                    span.font-w-bold-12.font-m-bold-10.font-white= data.plag
+                            .text.c-text-contents__headline
+                                .cmp-text(data-cmp-data-layer="" class="font-w-normal-16 font-m-normal-14") 
+                                    p= `${data.title ? `${data.title}` : "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)"}`
+                            if data.warrantyinfo 
+                                .c-text-contents__warrantyinfo 
+                                    each set in data.warrantyinfo
+                                        .c-text-contents__warrantyinfo__box
+                                            span.font-w-normal-16.font-m-normal-12.c-text-contents__warrantyinfo__title !{set.title} :
+                                            span.font-w-normal-16.font-m-normal-12.c-text-contents__warrantyinfo__text !{set.text}
+                        if data.purchase
+                            +buyProductBundlePrice({installment: data.installment, discount: `${data.discount ? '20% off' : ''}`, purchase: `${data.purchase ? data.purchase : '£1,866.98'}`, priceInstallment: data.priceInstallment, purchase: data.purchase, qty: data.qty, previousPrice: data.previousPrice, discount: data.discount, membership: data.membership})
+                    if data.deliveryStepNum || data.btnTrackOrder || data.btnReview || data.btnReturn
+                        div.c-product-item__bottom-container__other
+                            if data.deliveryStepNum
+                                div.c-product-item__bottom-container__other--installaion
+                                    if data.deliveryStepNum < 5
+                                        .c-text-contents.c-installaion-text
+                                            .font-w-normal-16.font-m-normal-12 !{data.deliveryNotice}
+                                                if data.deliveryNoticeBoldDate 
+                                                    span.c-installaion-text__bold !{data.deliveryNoticeBoldDate}
+                                                    span )
+                                    .delivery-box
+                                        if data.deliveryStepText
+                                            div(class=`delivery-step__item__step-text delivery-step--active-0${data.deliveryStepNum}`)
+                                                .c-text-contents
+                                                    span.font-w-normal-16.font-m-normal-12 !{data.deliveryStepText}
+                                        ul(class=`delivery-step delivery-step--active-0${data.deliveryStepNum}` aria-hidden='true')
+                                            - for(i=1; i<=5; i++)
+                                                if data.deliveryStepNum == i
+                                                    li.delivery-step__item.delivery-step__item--active
+                                                else 
+                                                    li(class="delivery-step__item")
+                                        span.sr-only !{data.deliveryStepNum}step of 5 delivery steps</span>
+                            if data.btnTrackOrder || data.btnReview || data.btnReturn
+                                .c-button.button 
+                                    if data.btnTrackOrder
+                                        +linkButton({href:"#trackMyOrder", class:"js-pop-open c-button--track", type:"text", color:"black", icon:true, name:"Track My Order"})
+                                    if data.btnReview
+                                        +linkButton({type:"text", color:"black", icon:true, name:"Write a Review"})
+                                    if data.btnReturn
+                                        +linkButton({href:"#ExchangeOrder", class:"js-pop-open", type:"text", color:"black", icon:true, name:"Exchange", roleButton:"true"})
+                                        +linkButton({href:"#returnOrder", class:"js-pop-open", type:"text", color:"black", icon:true, name:"Return", roleButton:"true"})
+        if data.changeDeliveryDate
+            each set in data.changeDeliveryDate
+                .c-product-item--change-date 
+                    .c-text-contents.c-product-item--change-date__title 
+                        .c-product-item--change-date__title__noti.font-w-normal-16.font-m-normal-12 !{set.notice}
+                            if set.btnExpectedDeliveryDate
+                                .c-product-item--change-date__btn-box.c-button.button
+                                    a.cmp-button.c-button.medium.c-button--text-underline.js-pop-open(href="#historyTablePopup", data-cmp-data-layer="",role="button")
+                                        span.c-product-item--change-date__title__underline.cmp-button__text.c-button__text.font-w-normal-16.font-m-normal-12 !{set.underline}
+                                            em.c-product-item--change-date__title__date.font-w-bold-16.font-m-bold-12 !{set.date}
+                            else                        
+                                span.c-product-item--change-date__title__underline.font-w-normal-16.font-m-normal-12 !{set.underline}
+                                    em.c-product-item--change-date__title__date.font-w-bold-16.font-m-bold-12 !{set.date}
+                    if set.btnchangeDeliveryDate
+                        .c-product-item--change-date__btn-box.c-button.button
+                            +linkButton({href:"#CalendarPopup", class:"js-pop-open c-button__calendar", type:"box", color:"white", icon:true, name: "Change Delivry Date", roleButton: true})(role="button")
+    // [End] 2023-05-23 : ADD- Change Delivery Case
+
+mixin buyProductItem(params)
+    - let data = { ...params }
+    .c-product-item
+        div(class=`${data.warrantyinfo ? 'c-product-item__top-container c-product-item__top-container--warranty' : 'c-product-item__top-container'}`)
+            .c-product-item__visual-image
+                a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="").image.c-image
+                    +printLazyImage("https://via.placeholder.com/100x100/999999/333333")
+        .c-product-item__bottom-container(class=`${data.warrantyinfo ? 'c-product-item__bottom-container--warranty' : ''}`)
+            .c-product-item__bottom-container__text-box
+                .c-text-contents.c-product-item__layout
+                    //- [Start] 2023-04-24 : ADD - cancel case
+                    if data.tagType &&  data.tagText
+                        .c-text-contents__tag(class=`c-text-contents__tag--${data.tagType}`)
+                            i.c-text-contents__tag__icon= data.tagText
+                            span.c-text-contents__tag__text= data.tagText
+                    //- [End] 2023-04-24 : ADD - cancel case
+                    a(href="#" class="c-product-item__landing" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        .text.c-text-contents__eyebrow.sku
+                            if data.name
+                                .cmp-text(data-cmp-data-layer="" class="font-w-normal-16 font-m-normal-12")
+                                    p
+                                        span= data.name
+                        .text.c-text-contents__headline
+                            .cmp-text(data-cmp-data-layer="" class="font-w-normal-20 font-m-normal-16") 
+                                p= `${data.title ? `${data.title}` : "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)"}`
+                    if data.warrantyinfo 
+                        .c-text-contents__warrantyinfo 
+                            each set in data.warrantyinfo
+                                .c-text-contents__warrantyinfo__box
+                                    span.font-w-normal-16.font-m-normal-12.c-text-contents__warrantyinfo__title !{set.title} :
+                                    span.font-w-normal-16.font-m-normal-12.c-text-contents__warrantyinfo__text !{set.text}
+                    +buyProductPrice({installment: data.installment, discount: `${data.discount ? '20% off' : ''}`, purchase: `${data.purchase ? data.purchase : '£1,866.98'}`, priceInstallment: data.priceInstallment, purchase: data.purchase, qty: data.qty, previousPrice: data.previousPrice, discount: data.discount, membership: data.membership, includeEHF : data.includeEHF})
+                if data.deliveryStepNum || data.btnTrackOrder || data.btnReview || data.btnReturn
+                    div.c-product-item__bottom-container__other
+                        if data.deliveryStepNum
+                            div.c-product-item__bottom-container__other--installaion
+                                if data.deliveryStepNum < 5
+                                    .c-text-contents.c-installaion-text
+                                        .font-w-normal-16.font-m-normal-12 !{data.deliveryNotice}
+                                            if data.deliveryNoticeBoldDate 
+                                                span.c-installaion-text__bold !{data.deliveryNoticeBoldDate}
+                                                span )
+                                .delivery-box
+                                    if data.deliveryStepText
+                                        div(class=`delivery-step__item__step-text delivery-step--active-0${data.deliveryStepNum}`)
+                                            .c-text-contents
+                                                span.font-w-normal-16.font-m-normal-12 !{data.deliveryStepText}
+                                    ul(class=`delivery-step delivery-step--active-0${data.deliveryStepNum}` aria-hidden='true')
+                                        - for(i=1; i<=5; i++)
+                                            if data.deliveryStepNum == i
+                                                li.delivery-step__item.delivery-step__item--active
+                                            else 
+                                                li(class="delivery-step__item")
+                                    span.sr-only !{data.deliveryStepNum}step of 5 delivery steps</span>
+                        if data.btnTrackOrder || data.btnReview || data.btnReturn || data.btnReplacement
+                            //- .c-button__box
+                            .c-button.button 
+                                if data.btnTrackOrder
+                                    +linkButton({href:"#trackMyOrder", class:"js-pop-open c-button--track", type:"text", color:"black", icon:true, name:"Track My Order"})
+                                if data.btnReview
+                                    +linkButton({type:"text", color:"black", icon:true, name:"Write a Review"})
+                                if data.btnReturn
+                                    +linkButton({href:"#exchangeOrder", class:"js-pop-open", type:"text", color:"black", icon:true, name:"Exchange", roleButton:"true"})
+                                    +linkButton({href:"#returnOrder", class:"js-pop-open", type:"text", color:"black", icon:true, name:"Return", roleButton:"true"})
+                                if data.btnReplacement
+                                    +linkButton({href:"#replacementPop", class:"js-pop-open", type:"text", color:"black", icon:true, name:"Replacement", roleButton:"true"})
+                if data.completed
+                    each set in data.completed
+                        div.c-product-item__bottom-container__completed(class=`completed--${set.completedType}`)
+                            .c-text-contents.c-installaion-text
+                                span.font-w-normal-16.font-m-normal-12 !{set.completedTxt}
+    if data.return
+        .c-product-item--return 
+            .c-text-contents.c-product-item--return__title 
+                .font-w-normal-20.font-m-normal-16 Return
+            each set in data.return 
+                .c-product-item--return__desc 
+                    .c-text-contents.c-product-item--return__qty 
+                        .font-w-normal-16.font-m-normal-14 Qty : !{data.qty} /
+                    .c-text-contents.c-product-item--return__status 
+                        .font-w-normal-16.font-m-normal-14 !{set.returnStatus} /
+                    .c-text-contents.c-product-item--return__num 
+                        if set.isReturnNumLink 
+                            a.font-w-normal-16.font-m-normal-14(href=set.returnNumLinkUrl data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") !{set.returnNum}
+                        else
+                            .font-w-normal-16.font-m-normal-14 !{set.returnNum}
+    // [Start] 2023-05-23 : ADD- Change Delivery Case
+    if data.changeDeliveryDate
+        each set in data.changeDeliveryDate
+            .c-product-item--change-date 
+                .c-text-contents.c-product-item--change-date__title 
+                    .c-product-item--change-date__title__noti.font-w-normal-16.font-m-normal-12 !{set.notice}
+                        if set.btnExpectedDeliveryDate
+                            .c-product-item--change-date__btn-box.c-button.button
+                                a.cmp-button.c-button.medium.c-button--text-underline.js-pop-open(href="#historyTablePopup", data-cmp-data-layer="",role="button")
+                                    span.c-product-item--change-date__title__underline.cmp-button__text.c-button__text.font-w-normal-16.font-m-normal-12 !{set.underline}
+                                        em.c-product-item--change-date__title__date.font-w-bold-16.font-m-bold-12 !{set.date}
+                        else                        
+                            span.c-product-item--change-date__title__underline.font-w-normal-16.font-m-normal-12 !{set.underline}
+                                em.c-product-item--change-date__title__date.font-w-bold-16.font-m-bold-12 !{set.date}
+                if set.btnchangeDeliveryDate
+                    .c-product-item--change-date__btn-box.c-button.button
+                        +linkButton({href:"#CalendarPopup", class:"js-pop-open c-button__calendar", type:"box", color:"white", icon:true, name: "Change Delivry Date", roleButton: true})(role="button")
+    // [End] 2023-05-23 : ADD- Change Delivery Case
+    if data.msg
+        +productMsg(data)
+    if data.bundle
+        .c-product-item__bundle
+            .c-product-item__bundle__items
+                each set in data.bundle 
+                        +buyProductItemBundle(set)
+
+mixin buyCartList(params)
+    - let data = { ...params }
+    //- block : Buy Directly From LG
+    .c-product-directly.c-medium-size
+        //- .c-product-directly-item
+        div(class=`${data.warrantyinfo ? 'c-product-directly-item c-product-directly-item--warranty' : 'c-product-directly-item'}`)
+            +buyProductItem(params)
+
+mixin myOrderDetail(params)
+    - let data = { ...params }
+    .my-orderDetail
+        ul
+            each set in data
+                li
+                    .c-text-contents__title
+                        span.font-w-normal-16.font-m-normal-12= set.title
+                    .c-text-contents__bodycopy
+                        span.font-w-normal-24.font-m-normal-16 !{set.bodycopy}
+
+mixin myShipping(params)
+    .my-shipping
+        ul  
+            each set in params.data
+                - let minixContents = []
+                - for( let i = 0; i < Object.keys(set).length; i++ )
+                    if Object.keys(set)[i] !== 'title' && Object.values(set)[i]
+                        - minixContents.push(`<p class='font-w-normal-16 font-m-normal-14'>${Object.values(set)[i]}</p>`)
+                li
+                    if set.title
+                        .c-text-contents__title
+                            span.font-w-bold-10.font-m-bold-10= set.title
+                    .c-text-contents__bodycopy!= minixContents.join("")
+        .refund-account-info
+            .refund-account-info__title
+                span.font-w-semibold-16.font-m-semibold-14 Bank information
+            .refund-account-info__detail
+                .font-w-normal-16.font-m-normal-14 !{params.refundInfoBank}
+                .font-w-normal-16.font-m-normal-14 !{params.refundInfoAccount}
+      
+
+mixin myOrderItemInfo(params)
+    - let data = {...params}
+    .order-item-warp
+        .order-item
+            .order-item__image
+                .image.c-image
+                    +printLazyImage("https://via.placeholder.com/100x100/999999/333333")
+            .order-item__info-text
+                .order-item__code 
+                    .c-text-contents
+                        .c-text-contents__bodycopy
+                            span.font-w-normal-16.font-m-normal-12 !{data.code} 
+                .order-item__name 
+                    .c-text-contents
+                        .c-text-contents__bodycopy
+                            span.font-w-normal-20.font-m-normal-16 !{data.name}
+
+mixin checkoutOrderTotal(params)
+    - let data = {...params}
+    .buy-summary-area__payment.buy-summary-area__payment--guest
+        .orderd-confirm-summery
+            .orderd-confirm-summery__total 
+                .c-text-contents.align-text-left.orderd-confirm-summery__total__total-title
+                    .title.c-text-contents__bodycopy
+                        span.cmp-text.font-w-semibold-24.font-m-semibold-20 Total
+                .c-text-contents.align-text-left.orderd-confirm-summery__total__total-num
+                    .title.c-text-contents__bodycopy
+                        span.cmp-text.font-w-semibold-24.font-m-semibold-20= data.total
+            .orderd-confirm-summery__list        
+                +price-info({emphasis : false, useTooltip : false, bold : true, name : "Subtotal (Tax included)", price : "£4,199.96"})
+                +price-info({emphasis : true, useTooltip : false, bold : true, name : "Discount", price : "£18.00", detail: [{"Welcome Coupon" : "£18.00"}]})
+                +price-info({emphasis : false, useTooltip : false, bold : true, name : "Tax", price : "£419.99", detail: [{"VAT (20%)" : "£293.99"},{"WEEE Fee" : "£50.00"}]})
+                +price-info({emphasis : false, useTooltip : false, bold : true, name : "Delivery + installation", price : "£0.00", detail: [{"OLW480B" : "£293.99"},{"TONE-UFP8+OLW480B" : "£50.00"}]})
+                +price-info({emphasis : false, useTooltip : false, bold : true, type: "service",  name : "Service charge", price : "£0.00", detail: [{"Haul-away" : "£18.00"}]})
+            if data.paymentMethod
+                .orderd-confirm-summery__card
+                    .c-text-contents.align-text-left
+                        .c-text-contents__bodycopy
+                            span.cmp-text.font-w-semibold-18.font-m-semibold-14 !{data.paymentMethod}
+                    if data.cardType || data.cardNum || data.cardPeriod
+                        .orderd-confirm-summery__card__detail
+                            .orderd-confirm-summery__card__card-info.orderd-confirm-summery__card__card-info--left
+                                div(class=`orderd-confirm-summery__card__card-info__thumb orderd-confirm-summery__card__card-info__thumb--${data.cardType}`)
+                                .orderd-confirm-summery__card__card-info__text
+                                    .c-text-contents.align-text-left
+                                        .c-text-contents__bodycopy
+                                            span.cmp-text.font-w-normal-16.font-m-normal-16 !{data.cardType}
+                                            span.cmp-text.font-w-normal-16.font-m-normal-16 !{data.cardNum}
+                            .orderd-confirm-summery__card__card-info.orderd-confirm-summery__card__card-info--right
+                                .orderd-confirm-summery__card__card-info__text
+                                    .c-text-contents.align-text-right
+                                        .c-text-contents__bodycopy
+                                            span.cmp-text.font-w-normal-16.font-m-normal-16 !{data.cardPeriod}
+
+mixin errorMsg(params)
+    - let data = {...params}
+    ul.error-content-msg
+        each set in data
+            li.error-content-msg__item(class=`error-content-msg__item--${set.title}`)
+                .error-content-msg__container
+                    i.error-content-msg__icon(class=`error-content-msg__icon--${set.title}`)
+                        span.sr-only= set.title
+                    .error-content-msg__title.font-w-normal-12.font-m-normal-12= set.text
+                button(type='button' class='error-content-msg__remove')
+                    span.sr-only remove
+
+mixin printOrderNewPage(params)
+    - let data = { ...params }
+    .printorder-new-box
+        .printorder-new-box__status
+            +printOrderNewPageList(data.stSet)
+        .printorder-new-box__info
+            p.printorder-new-box__subtitle.font-w-normal-24.font-m-normal-20 Order items
+            +printOrderNewPageList(data.infoSet)
+        .printorder-new-box__price
+            +printOrderNewPageList(data.priceSet)
+        .printorder-new-box__info.printorder-new-box__history
+            p.printorder-new-box__subtitle.font-w-normal-24.font-m-normal-20 Information history
+            +printOrderNewPageList(data.historySet)
+    
+mixin printOrderNewPageList (params)
+    - let data = { ...params }
+    .printorder-list
+        each set in data
+            dl.printorder-list__item
+                dt.printorder-list__title=set.title
+                if (set.detailList)
+                    each detailList in set.detailList
+                        dd.printorder-list__detail=detailList
+                else 
+                    dd.printorder-list__detail=set.detail
+
+mixin ML000D
+    .c-wrapper.ML000D
+        .component
+            .fluid-container
+                //- display product image
+                .my-component.align-text-left
+                    .c-text-contents
+                        .text.c-text-contents__headline 
+                            +headline("font-w-light-56 font-m-light-28", "h2", "Order Details")
+                .my-component.my-summary-area
+                    .my-summary-area__primary
+                        +myOrder({orderNumber:"795987950587", date:"21 Jan. 2023"})
+                        .buy-cart-list
+                            // [Start] 2023-12-06 : ADD- IN Track my order popup case
+                            .buy-cart-list__item
+                                +buyCartList({
+                                    id : '8',
+                                    name: "OLED55C24LA (XXXXXXXXX)",
+                                    title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                    purchase: '₹2,099.98',
+                                    qty: "1",
+                                    deliveryStepNum:"4",
+                                    deliveryStepText:"On Delivery",
+                                    btnTrackOrder: true,
+                                })
+                            // [End] 2023-12-06 : ADD- IN Track my order popup case
+                            // [Start] 2023-12-04 : ADD- IN Replacement popup case
+                            .buy-cart-list__item
+                                +buyCartList({
+                                    id : '7',
+                                    name: "OLED55C24LA (XXXXXXXXX)",
+                                    title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                    purchase: '₹2,099.98',
+                                    qty: "1",
+                                    deliveryStepNum:"5",
+                                    deliveryStepText:"Delivery Completed",
+                                    btnReview:false,
+                                    btnReturn:false,
+                                    btnReplacement: true,
+                                })
+                            // [End] 2023-12-04 : ADD- IN Replacement popup case
+                            // [Start] 2023-09-13 : ADD- Includes $15 EHF fee
+                            .buy-cart-list__item
+                                +buyCartList({
+                                    id : '1',
+                                    name: "OLW480B (XXXXXXXXX)",
+                                    title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                    purchase: '£2,099.98',
+                                    qty: "1",
+                                    deliveryStepNum:"5",
+                                    deliveryStepText:"Delivery Completed",
+                                    btnReview:false,
+                                    btnReturn:false,
+                                    includeEHF: "Includes $15 EHF fee",
+                                    changeDeliveryDate: [{
+                                        notice: "Delivery only",
+                                        underline: "Expected Dlivery Date ",
+                                        date: "02/01/2023",
+                                        btnExpectedDeliveryDate : true,
+                                        btnchangeDeliveryDate: false,
+                                    }],
+                                })
+                            // [End] 2023-09-13 : ADD- Includes $15 EHF fee
+                            .buy-cart-list__item
+                                +buyCartList({
+                                    id : '1',
+                                    name: "OLW480B (XXXXXXXXX)",
+                                    title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                    purchase: '£2,099.98',
+                                    qty: "1",
+                                    deliveryStepNum:"5",
+                                    deliveryStepText:"Delivery Completed",
+                                    btnReview:false,
+                                    btnReturn:true,
+                                })
+                            // [Start] 2023-05-23 : ADD- Change Delivery Case
+                            .buy-cart-list__item
+                                +buyCartList({
+                                    id : '2',
+                                    name: "OLW480B (XXXXXXXXX)",
+                                    purchase: '£2,099.98',
+                                    qty: "1",
+                                    deliveryStepNum:"2",
+                                    deliveryStepText:"Preparing for Delivery",
+                                    btnTrackOrder:false,
+                                    installment: 2,
+                                    changeDeliveryDate: [{
+                                        notice: "Delivery + Installation",
+                                        underline: "Expected Dlivery Date ",
+                                        date: "02/01/2023",
+                                        btnExpectedDeliveryDate : true,
+                                        btnchangeDeliveryDate: false,
+                                    }],
+                                })
+                            .buy-cart-list__item
+                                +buyCartList({
+                                    id : '3',
+                                    name: "OLW480B (XXXXXXXXX)",
+                                    purchase: '£2,099.98',
+                                    qty: "1",
+                                    deliveryStepNum:"2",
+                                    deliveryStepText:"Preparing for Delivery",
+                                    btnTrackOrder:false,
+                                    installment: 2,
+                                    changeDeliveryDate: [{
+                                        notice: "Delivery + Installation",
+                                        underline: "Expected Dlivery Date ",
+                                        date: "02/01/2023",
+                                        btnExpectedDeliveryDate : false,
+                                        btnchangeDeliveryDate: false,
+                                    }],
+                                })
+                            .buy-cart-list__item
+                                +buyCartList({
+                                    id : '3',
+                                    name: "OLW480B (XXXXXXXXX)",
+                                    purchase: '£2,099.98',
+                                    qty: "1",
+                                    deliveryStepNum:"2",
+                                    deliveryStepText:"Preparing for Delivery",
+                                    btnTrackOrder:false,
+                                    installment: 2,
+                                    changeDeliveryDate: [{
+                                        notice: "Delivery + Installation",
+                                        underline: "Expected Dlivery Date ",
+                                        date: "02/01/2023",
+                                        btnExpectedDeliveryDate : false,
+                                        btnchangeDeliveryDate: true,
+                                    }],
+                                })
+                            .buy-cart-list__item
+                                +buyCartList({
+                                    id : '3',
+                                    name: "OLW480B (XXXXXXXXX)",
+                                    purchase: '£2,099.98',
+                                    qty: "1",
+                                    deliveryStepNum:"2",
+                                    deliveryStepText:"Preparing for Delivery",
+                                    btnTrackOrder:false,
+                                    installment: 2,
+                                    changeDeliveryDate: [{
+                                        notice: "Delivery + Installation",
+                                        underline: "Expected Dlivery Date ",
+                                        date: "02/01/2023",
+                                        btnExpectedDeliveryDate : true,
+                                        btnchangeDeliveryDate: true,
+                                    }],
+                                })
+                            // [End] 2023-05-23 : ADD- Change Delivery Case
+                            .buy-cart-list__item
+                                +buyCartList({
+                                    id : '1',
+                                    name: "OLW480B (XXXXXXXXX)",
+                                    title: "LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)",
+                                    purchase: '£2,099.98',
+                                    qty: "1",
+                                    deliveryStepNum:"5",
+                                    deliveryStepText:"Delivery Completed",
+                                    return: [
+                                        {
+                                            returnStatus:"Return approved",
+                                            returnNum:"88000000777",
+                                            isReturnNumLink:true,
+                                            returnNumLinkUrl:"#",
+                                        },
+                                        {
+                                            returnStatus:"Return approved",
+                                            returnNum:"88000000776",
+                                            isReturnNumLink:true,
+                                            returnNumLinkUrl:"#",
+                                        },
+                                    ], 
+                                })
+                        +productMsg({
+                            msg: "Canceling an order is always possible so long as it has not yet been shipped. If you need help with your order, please ",
+                            msgLink: "contact us",
+                            msgLinkColor: "black",
+                        })
+                        .buy-cart-list__bottom-btn         
+                            .c-button.button
+                                +defaultButton({name: 'Cancel Order', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})(href="#cancelOrder", class="js-pop-open")
+                        +myOrder({orderNumber:"795987950587", date:"Agu 25,2022"})
+                        .buy-cart-list
+                            .buy-cart-list__item
+                                +buyCartList({
+                                    id : '1',
+                                    name: "OLW480B (XXXXXXXXX)",
+                                    purchase: '£2,099.98',
+                                    qty: "1",
+                                    deliveryNoticeBoldDate:" 02/01/2023",
+                                    deliveryStepNum:"2",
+                                    deliveryStepText:"Preparing for Delivery",
+                                    btnTrackOrder:false,
+                                    btnReturn:true,
+                                    msg: "When returning a 'Buy More Save More' product, 'Partial Return' is only applicable to the added on items.",
+                                    installment: 2,
+                                    changeDeliveryDate: [{
+                                        notice: "Delivery + Installation",
+                                        underline: "Expected Dlivery Date ",
+                                        date: "02/01/2023",
+                                        btnExpectedDeliveryDate : true,
+                                    }],
+                                    bundle: [
+                                        {
+                                            title:"2 Years warranty",
+                                            purchase: "£2,099.98",
+                                            qty: "1",
+                                        },
+                                        {
+                                            name:"QP5 (XXXXXXXXX)",
+                                            title:"LG Soundbar QP5",
+                                            purchase: "£699.98",
+                                            qty: "1",
+                                            deliveryStepNum:"4",
+                                            deliveryStepText:"On Delivery",
+                                            btnTrackOrder:false,
+                                            changeDeliveryDate: [{
+                                                notice: "Delivery + Installation",
+                                                underline: "Expected Dlivery Date ",
+                                                date: "02/01/2023",
+                                                btnExpectedDeliveryDate : true,
+                                                btnchangeDeliveryDate: false,
+                                            }],
+                                        },
+                                        {
+                                            name:"QP5 (XXXXXXXXX)",
+                                            title:"LG Soundbar QP5",
+                                            purchase: "£699.98",
+                                            qty: "1",
+                                            deliveryStepNum:"4",
+                                            deliveryStepText:"On Delivery",
+                                            btnTrackOrder:false,
+                                            changeDeliveryDate: [{
+                                                notice: "Delivery + Installation",
+                                                underline: "Expected Dlivery Date ",
+                                                date: "02/01/2023",
+                                                btnExpectedDeliveryDate : false,
+                                                btnchangeDeliveryDate: false,
+                                            }],
+                                        },
+                                        {
+                                            name:"QP5 (XXXXXXXXX)",
+                                            title:"LG Soundbar QP5",
+                                            purchase: "£699.98",
+                                            qty: "1",
+                                            deliveryStepNum:"4",
+                                            deliveryStepText:"On Delivery",
+                                            btnTrackOrder:false,
+                                            changeDeliveryDate: [{
+                                                notice: "Delivery + Installation",
+                                                underline: "Expected Dlivery Date ",
+                                                date: "02/01/2023",
+                                                btnExpectedDeliveryDate : false,
+                                                btnchangeDeliveryDate: true,
+                                            }],
+                                        },
+                                        {
+                                            name:"QP5 (XXXXXXXXX)",
+                                            title:"LG Soundbar QP5",
+                                            purchase: "£699.98",
+                                            qty: "1",
+                                            deliveryStepNum:"4",
+                                            deliveryStepText:"On Delivery",
+                                            btnTrackOrder:false,
+                                            changeDeliveryDate: [{
+                                                notice: "Delivery + Installation",
+                                                underline: "Expected Dlivery Date ",
+                                                date: "02/01/2023",
+                                                btnExpectedDeliveryDate : true,
+                                                btnchangeDeliveryDate: true,
+                                            }],
+                                        },
+                                        {
+                                            name:"QP5 (XXXXXXXXX)",
+                                            title:"LG Soundbar QP5",
+                                            purchase: "£699.98",
+                                            qty: "1",
+                                            deliveryStepNum:"5",
+                                            deliveryStepText:"Delivery Completed",
+                                            btnReturn:true,
+                                        },
+                                        {
+                                            name:"sp8ya (XXXXXXXXX)",
+                                            title:"LG LED65C25LB.AEU",
+                                            deliveryStepNum:"5",
+                                            deliveryStepText:"Delivery Completed",
+                                            btnReturn:true,
+                                        },
+                                        
+                                    ]
+                                })
+                        .buy-cart-list__bottom-btn         
+                            .c-button.button
+                                +defaultButton({name: 'Invoice', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})(href="#popInvoice", class="js-pop-open")
+                        // [only RO_CN] Print Invoice button
+                        .buy-cart-list__bottom-btn
+                            .button.button--align-type__center
+                                .button--align-type--box
+                                    +defaultButton({name: 'Print Invoice', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})(href="#", class="print js-print", role="print", data-css-url="../../main.css,../../dev.css,./ML000D.css")
+                                    +defaultButton({name: 'DownLoad Invoice', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})(href="#popInvoice", class="js-pop-open")
+                                    // [PA same case] Print Order 
+                                    +defaultButton({name: 'Print order', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})(href="#popPrintOrder", class="js-pop-open")
+                        +myOrder({orderNumber:"795987950587", date:"21 Jan. 2023"})
+                        .buy-cart-list
+                            .buy-cart-list__item
+                                +buyCartList({
+                                    id : '1',
+                                    title: "LG Premium Care 2 Year",
+                                    warrantyinfo : [
+                                        {
+                                            title: "Model number", 
+                                            text: "LRMVS2806S",
+                                        },
+                                        {
+                                            title: "Serial number ", 
+                                            text: "706RMHR3C001",
+                                        }
+                                    ]
+                                })
+                        //- [Start] 2023-04-24 : ADD - cancel case
+                        +myOrder({orderNumber:"95987950587", date:"21 Jan. 2023"})  			
+                        .buy-cart-list
+                            .buy-cart-list__item
+                                +buyCartList({
+                                    tagType : "cancel",
+                                    tagText:"Cancel Requested",
+                                    id : '1',
+                                    name: "OLED55C24LA (XXXXXXXXX)",
+                                    title: "",
+                                    purchase: '£2,099.98',
+                                    qty: "1",
+                                    btnReview:false,
+                                    btnReturn:false,
+                                })
+                            .buy-cart-list__item
+                                +buyCartList({
+                                    tagType : "cancelled",
+                                    tagText:"Cancelled",
+                                    name: "PF610P (XXXXXXXXX)",
+                                    title: "LG CineBeam PF610P Full HD LED Smart Portable Projector with Apple AirPlay 2",
+                                    purchase: '£798.98',
+                                    qty: "1",
+                                    btnReview:false,
+                                    btnReturn:false,
+                                })
+                        //- [End] 2023-04-24 : ADD - cancel case 
+                        +myOrder({orderNumber:"95987950587", date:"21 Jan. 2023"})
+                        .buy-cart-list
+                            .buy-cart-list__item
+                                +buyCartList({
+                                    id : '1',
+                                    title: "LG Premium Care 2 Year",
+                                    warrantyinfo : [
+                                        {
+                                            title: "Model number", 
+                                            text: "LRMVS2806S",
+                                        },
+                                        {
+                                            title: "Serial number ", 
+                                            text: "706RMHR3C001",
+                                        }
+                                    ],
+                                    purchase: '£2,099.98',
+                                    qty: "1",
+                                    completed: [
+                                        {
+                                            completedType: 'awaiting',
+                                            completedTxt: 'Awaiting contract',
+                                        },
+                                        {
+                                            completedType: 'awaiting',
+                                            completedTxt: 'Awaiting confirm',
+                                        },
+                                        {
+                                            completedType: 'confirm',
+                                            completedTxt: 'Contract confirm',
+                                        },
+                                        {
+                                            completedType: 'rejected',
+                                            completedTxt: 'Contract rejected'
+                                        }
+                                    ]
+                                })
+
+                    .my-summary-area__secondary
+                        h2.my-summary-area__secondary__title Shipping
+                        +myShipping({
+                          data: [
+                            {
+                                title:"SHIPPING",
+                                name:"Robert Surrency", 
+                                address:"Gv Globus, 776 Buckingham Avenue, Slough, Berkshire, SL1 4NL, United Kingdom", 
+                                zipcode:"(415) 123-4560",
+                            },
+                            {
+                                title:"BILLING",
+                                name:"Robert Surrency", 
+                                address:"Unit 5 Devonshire Court, Victoria Road, Feltham, Middlesex, TW13 7LU, United Kingdom", 
+                                zipcode:"(415) 123-4560",
+                            },
+                        ], refundInfoBank: "Robert Surrency", refundInfoAccount: "123-1234567890/1234"})
+                        //- +myShipping([
+                        //-     {
+                        //-         name:"Robert Surrency", 
+                        //-         address:"Gv Globus, 776 Buckingham Avenue, Slough, Berkshire, SL1 4NL, United Kingdom", 
+                        //-         zipcode:"(415) 123-4560",
+                        //-     },
+                        //- ])
+                        h2.my-summary-area__secondary__title Payment
+                        +cartPriceTotal([
+                        {
+                            isStickyBottom: false,
+                            isMobileBottomFixed: false,
+                            useToggleFoldBtn: false,
+                            totalMsg: 'dont 18,00€ d` éco-participation',
+                            taxInclude:true,
+                            discount: true,
+                            delivery: true,
+                            service: true,
+                            payAtDoor: true,
+                            point: true,
+                            asidePaymentInfo: 'Credit Card',
+                            taxIncludeCN: true,
+                            taxIncludeVN: true,
+                            taxIncludeJP: true,
+                            taxIncludeCA:true,
+                            taxIncludeKZ:true,
+                            discountCN:true,
+                            discountVN: true,
+                            deliveryCN: true,
+                            deliveryVN: true,
+                            deliveryTH: true,
+                            deliveryCO: true,
+                        },
+                        ])
+
+block content
+    // Component Markup
+    +ML000D
+
+
+block modal
+
+block modal
+    //- [Start] 2023-05-23 : ADD- Change Delivery Case
+    // Pop-up Calendar
+    .mem-modal
+        +pop-msg-standard({id : `CalendarPopup`, size: "large"})
+            .Buy-calendar
+                .Buy-calendar__box
+                .button.Buy-calendar__button
+                    +button({type:"box", color:"red", size:"medium", name: "Save", class: "js-close--btn"})
+                // [start] have to delete that case is dev
+                .button.Buy-calendar__button
+                    +linkButton({href:"#changeCompleted", class:"js-pop-open", type:"text", color:"black", icon:true, name:"Change completed", roleButton:"true"})
+                    +linkButton({href:"#changeCompletedFailed", class:"js-pop-open", type:"text", color:"black", icon:true, name:"Error case", roleButton:"true"})
+                // [End] have to delete that case is dev
+
+    // Pop-up Change history
+    +pop-msg-standard({id : `historyTablePopup`, size: "large"})
+        .c-pop-msg__contents
+            .c-text-contents.c-pop-msg__contents__text-box 
+                .c-text-contents__bodycopy.c-pop-msg__contents__text-box__title
+                    .cmp-text.font-m-normal-28.font-w-light-36(data-cmp-data-layer="") History of Expected Delivery Date
+            .c-delivery-history-table
+                // block : c-table
+                .c-table
+                    table
+                        caption Year, Reports Type, Reports Type
+                        colgroup
+                            col(width="33.3%").cell-size.year
+                            col(width="33.3%").cell-size.type
+                            col(width="33.3%")
+                        thead
+                            tr
+                                th(scope="col") Date
+                                th(scope="col") From
+                                th(scope="col") To
+                        tbody
+                            tr.bold
+                                td.year 
+                                    p 03/05/2023
+                                td.type 
+                                    p 10/05/2023
+                                td
+                                    p 20/05/2023
+                            tr
+                                td.year 
+                                    p 03/05/2023
+                                td.type 
+                                    p 10/05/2023
+                                td
+                                    p 20/05/2023
+                            tr
+                                td.year 
+                                    p 03/05/2023
+                                td.type 
+                                    p 10/05/2023
+                                td
+                                    p 20/05/2023
+                            tr
+                                td.year 
+                                    p 03/05/2023
+                                td.type 
+                                    p 10/05/2023
+                                td
+                                    p 20/05/2023
+                            tr
+                                td.year 
+                                    p 03/05/2023
+                                td.type 
+                                    p 10/05/2023
+                                td
+                                    p 20/05/2023
+        .button.c-pop-msg__button-wrap
+            +defaultButton({name: 'Close', wSize: 'medium', mSize: 'medium', color:"red", buttonStyle: 'highlight', isButton: false})
+
+    // Pop-up Change Completed
+    +pop-msg-standard({id : `changeCompleted`, wSize: 'medium', mSize: 'small', headline:"Change Completed", headerBorder: false})
+        // block - text contents
+        .c-text-contents 
+            .text.c-text-contents__bodycopy
+                .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") Changing the delivery date was successful.
+        .button.c-pop-msg__button-wrap
+            +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popWishlistSignIn")
+    
+    // Pop-up Change Completed (Failed)
+    +pop-msg-standard({id : `changeCompletedFailed`, wSize: 'medium', mSize: 'small', headline:"Error", headerBorder: false})
+        // block - text contents
+        .c-text-contents 
+            .text.c-text-contents__bodycopy
+                .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="") Sorry, we are unable to process your request to change delivery date for ship id 
+                    <span class="font-red">[XXXXXXXX]</span> due to getting rejection response or connection error with the carrier system
+        .button.c-pop-msg__button-wrap
+            +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popWishlistSignIn")
+    // [End] 2023-05-23 : ADD- Change Delivery Case
+
+    // Pop-up to Cancel Order
+    +pop-msg-standard({id : `cancelOrder`, headline:"Cancel Order", classes : 'ML000D__modal-container ML000D__modal-container--cancel'})
+        // block - text contents
+        .c-pop-msg__contents
+            .c-text-contents.c-pop-msg__contents__text-box 
+                .c-text-contents__bodycopy.c-pop-msg__contents__text-box__title
+                    .cmp-text.font-m-normal-20.font-w-light-24(data-cmp-data-layer="") Are you sure you want to cancel?
+                .c-text-contents__bodycopy.c-pop-msg__contents__text-box__desc
+                    .cmp-text.font-m-normal-14.font-w-normal-14(data-cmp-data-layer="") Applied coupons will be returned. <br/>Your paid amount will be released within maximum1-2 business days  after the cancellation is completed.
+                    .cmp-text.font-m-normal-14.font-w-normal-14(data-cmp-data-layer="") the item(s) to be cancel requested
+                        ul.c-pop-msg__contents__list.c-pop-msg__contents__list--dot
+                            li LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)
+        +errorMsg([
+            {
+                title: "error",
+                text: 'The cancellation cannot be made.'
+            }
+        ])
+        .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap--no-divide-on-mobile
+            +defaultButton({name: 'No', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="js-pop-close")
+            +defaultButton({name: 'Yes', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})(disabled='disabled')
+
+    // Pop-up to Return Item
+    +pop-msg-standard({id : `returnOrder`, headline:"Return Item", classes : 'ML000D__modal-container ML000D__modal-container--return'})
+        // block - text contents
+        .c-pop-msg__contents
+            .c-text-contents.c-pop-msg__contents__text-box
+                .c-text-contents__bodycopy.c-pop-msg__contents__text-box__title
+                    .cmp-text.font-m-normal-20.font-w-light-24(data-cmp-data-layer="") Are you sure you want to return?
+                .c-text-contents__bodycopy.c-pop-msg__contents__text-box__desc
+                    .cmp-text.font-m-normal-20.font-w-light-24(data-cmp-data-layer="") Applied coupons will be returned. 
+                    .cmp-text.font-m-normal-14.font-w-normal-14(data-cmp-data-layer="") the item(s) to be return requested
+                        //-[Start] 2024-03-13, 2024-03-20 : update package deal > Return Enable > Return whole package deal / Return for each item of package
+                        ul.c-pop-msg__contents__list.c-pop-msg__contents__list--dot.c-pop-msg__contents__list-packagedeal
+                            li
+                                span LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)
+                            li
+                                span span Side By Side Refrigerator LG LS66MXN | LINEARCOOLING™ | 24.5
+                            li
+                                span span Side By Side Refrigerator LG LS66MXN | LINEARCOOLING™ | 24.5
+                        //-[End] 2024-03-13, 2024-03-20 : update package deal > Return Enable > Return whole package deal / Return for each item of package
+        .button.c-pop-msg__button-wrap
+            +defaultButton({name: 'No', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="js-pop-close")
+            +defaultButton({name: 'Yes', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+    // Pop-up to Exchange Item
+    +pop-msg-standard({id : `exchangeOrder`, headline:"Exchange Item", classes : 'ML000D__modal-container ML000D__modal-container--return'})
+        // block - text contents
+        .c-pop-msg__contents
+            .c-text-contents.c-pop-msg__contents__text-box
+                .c-text-contents__bodycopy.c-pop-msg__contents__text-box__title
+                    .cmp-text.font-m-normal-20.font-w-light-24(data-cmp-data-layer="") Are you sure you want to exchange?
+                .c-text-contents__bodycopy.c-pop-msg__contents__text-box__desc
+                    .cmp-text.font-m-normal-14.font-w-normal-14(data-cmp-data-layer="") the item(s) to be exchange requested
+                        ul.c-pop-msg__contents__list.c-pop-msg__contents__list--dot
+                            li LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)
+        .button.c-pop-msg__button-wrap
+            +defaultButton({name: 'Storniern', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(class="js-pop-close")
+            +defaultButton({name: 'Exchange', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+    // Pop-up to invoice
+    +pop-msg-standard({id : `popInvoice`, headline:"Invoice #113000001522", classes : 'ML000D__modal-container ML000D__modal-container--invoice', size: "large"})
+        .c-pop-msg__contents
+            .ML000D__modal-container--invoice__container
+                .ML000D__modal-container--invoice__box
+                    +myOrderItemInfo({code:"OLED55C24LA", name:"LG B1 65 inch Class 4K Smart OLED TV w/AI ThinQ® (64.5'' Diag)"})
+                        +headline("font-w-semibold-46 font-m-semibold-26", h3, "Invoice")
+                        +headline("font-w-semibold-46 font-m-semibold-26", h3, "#113000001522")
+                    +myOrderDetail([
+                        {title:"SKU", bodycopy:"65NAN0906NA"},
+                        {title:"Price", bodycopy:"£2,199.99"},
+                        {title:"Qty Invoiced", bodycopy:"1"},
+                        {title:"Subtotal (Tax included)", bodycopy:"£2,199.99"}
+                    ])
+                +cartPriceTotal([
+                    {
+                        isStickyBottom: false,
+                        isMobileBottomFixed: false,
+                        useToggleFoldBtn: false,
+                        taxInclude:true,
+                        discount: true,
+                        delivery: true,
+                        service: true,
+                    },
+                ])
+        .button.c-pop-msg__button-wrap
+            // [Start] 2023-04-25 : UPDATE - Print Invoice, 2023-11-13 : Update - download invoice
+            +defaultButton({name: 'Print Invoice', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})(class="print js-print" href="#" data-css-url="../../main.css,../../dev.css,./ML000D.css" role="print")
+            // Download Invoice - [FR] only
+            +defaultButton({name: 'Download Invoice', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})
+            // Download Invoice - [FR] only
+            // [End] 2023-04-25 : UPDATE - Print Invoice, 2023-11-13 : Update - download invoice
+
+    // Pop-up to Replacement
+    +pop-msg-standard({id : `replacementPop`, headline:"Replacement Request", classes : 'ML000D__modal-container ML000D__modal-container--replacement'})
+        // block - text contents
+        .c-pop-msg__contents
+            .c-text-contents.c-pop-msg__contents__text-box
+                .c-text-contents__bodycopy
+                    .cmp-text.font-m-normal-16.font-w-light-16(data-cmp-data-layer="") If you wish to request replacement, please contat us.
+        .button.c-pop-msg__button-wrap
+            +defaultButton({name: 'Telephon', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: false})(target="_blank")
+            +defaultButton({name: 'Whatsapp', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: false})(target="_blank")
+            +defaultButton({name: 'Email', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: false})(target="_blank")
+
+    // Pop-up to Track my order
+    +pop-msg-standard({id : `trackMyOrder`, headline:"Track my order",  classes : 'ML000D__modal-container ML000D__modal-container--track'})
+        // block - text contents
+        .c-pop-msg__contents
+            .c-delivery-track
+                //- .c-delivery-track__divide
+                //-     .cmp-title.font-w-normal-20.font-m-normal-16
+                //-         strong.cmp-title__text Delivery date
+                //-     .c-delivery-track__date
+                //-         .cmp-text.date.font-w-normal-16.font-m-normal-14 Delivery area name
+                //-         .cmp-text.font-w-normal-16.font-m-normal-14 DD/MM/YYYY 00:00
+                .c-delivery-track__divide
+                    .cmp-title.font-w-normal-20.font-m-normal-16
+                        strong.cmp-title__text Delivery progress
+                    ol.c-delivery-track__step
+                        li.c-delivery-track__step-each.active
+                            span.mark
+                            .cmp-text.font-w-normal-16.font-m-normal-14 Delivery area name
+                            .cmp-text.font-w-normal-16.font-m-normal-14 DD/MM/YYYY 00:00
+                        li.c-delivery-track__step-each.active
+                            span.mark
+                            .cmp-text.font-w-normal-16.font-m-normal-14 Delivery area name
+                            .cmp-text.font-w-normal-16.font-m-normal-14 DD/MM/YYYY 00:00
+                        li.c-delivery-track__step-each
+                            span.mark
+                            .cmp-text.font-w-normal-16.font-m-normal-14 Delivery area name
+                            .cmp-text.font-w-normal-16.font-m-normal-14 DD/MM/YYYY 00:00
+                        li.c-delivery-track__step-each
+                            span.mark
+                            .cmp-text.font-w-normal-16.font-m-normal-14 Delivery area name
+                            .cmp-text.font-w-normal-16.font-m-normal-14 DD/MM/YYYY 00:00
+        .button.c-pop-msg__button-wrap
+            +defaultButton({name: 'Delivery tracking', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: false})(target="_blank")
+
+    // Pop-up to print order
+    +pop-msg-standard({id : `popPrintOrder`, headline:"Order No. 123456789123", classes : 'ML000D__modal-container ML000D__modal-container--printOrder', size: "large"})
+        .c-pop-msg__contents
+            .ML000D__modal-container--printOrder__container
+                .printorder-new
+                    +printOrderNewPage({
+                        stSet: [
+                            {
+                                title:'Status',
+                                detail:'Pending Canceled',
+                            },
+                            {
+                                title:'Order date',
+                                detail:'December 0, 2023',
+                            }
+                        ],
+                        infoSet: [
+                            {
+                                title:'Product name',
+                                detail: '27" 4K UHD IPS Monitor with Ergo'
+                            },
+                            {
+                                title:'Stock Keeping Unit (SKU)',
+                                detail:'27UK580-B',
+                            },
+                            {
+                                title:'Price',
+                                detail:'$450.75',
+                            },
+                            {
+                                title:'Amount',
+                                detail:'Orders 1',
+                            },
+                            {
+                                title:'State',
+                                detail:'Pending Canceled',
+                            },
+                        ],
+                        priceSet: [
+                            {
+                                title:'Subtotal',
+                                detail:'$450.75',
+                            },
+                            {
+                                title:'Shipping and handling charges',
+                                detail:'$0.00',
+                            },
+                            {
+                                title:'Service Charge',
+                                detail:'$0.00',
+                            },
+                            {
+                                title:'ITBMS(PA)(7%)',
+                                detail:'$31.55',
+                            },
+                            {
+                                title:'Grand Total',
+                                detail:'$482.30',
+                            }
+                        ],
+                        historySet: [
+                            {
+                                title:'Shipping Address',
+                                detailList: ['Last first','2929,Raihanan BInt Zaid Riyadh, AlArid 13337', 'T : 415) 123-4560'],
+                            },
+                            {
+                                title:'Billing address',
+                                detailList: ['Last first','2929,Raihanan BInt Zaid Riyadh, AlArid 13337', 'T : 415) 123-4560'],                                   
+                            },
+                        ]
+                    })
+        .button.c-pop-msg__button-wrap
+            +defaultButton({name: 'Print order', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})

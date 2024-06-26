@@ -1,0 +1,62 @@
+include ./_forms.pug
+include ./_product-list.pug
+include ../_common/_specs.pug
+
+mixin pop-close-button(dailogId)
+    .button.c-pop-msg__close.c-pop-msg__close--on-top
+        button.cmp-button.js-pop-close(type="button", aria-controls=`${dailogId}` data-cmp-data-layer="")
+            span.cmp-button__text.sr-only close
+
+mixin pop-msg-header(params)
+    - var option = {headerBorder : true, headerSrOnly: false, align : "left",  ...params}
+    - var dialogHeadline = option.headline || "Dialog Headline"
+    - var dialogDescription = option.headerDescription || "Dialog Description"
+    - var headerBorder = option.headerBorder ? '' : 'c-pop-msg__header--no-border'
+    - var headerMargin = option.headerMargin ? `c-pop-msg__header--margin-${option.headerMargin}` : ''
+    - var dialogLabelId = `${option.id}-headline`
+    - var headerSrOnly = option.headerSrOnly ? 'sr-only' : ''
+    - var alignClass = option.align
+    .c-pop-msg__header(class=`${headerBorder} ${headerMargin} ${headerSrOnly}` class={[alignClass] : 0 > option.align.indexOf("left")})
+        // block - text contents
+        .c-text-contents
+            .title.c-text-contents__headline(id=`${dialogLabelId}`)
+                // 22.11.11 - moved font classname here
+                strong.cmp-title.font-w-light-36.font-m-light-24(data-cmp-data-layer="")= dialogHeadline
+            if option.headerDescription
+                .text.c-text-contents__bodycopy
+                    span.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")= dialogDescription                    
+
+
+//- print layer popup 
+mixin printLayerPopup(popId, params)
+    case popId
+
+        when 'popStockAlert'
+            +pop-msg-standard({id : `popStockAlert`, headline:"Get Stock Alert", headerBorder: false})
+                .c-pop-msg__contents.fit-header
+                    //- dialog description 
+                    +pop-msg-start-description("Leave your email address below to receive an email as soon as the selected item is back in stock")
+                    +required-text-indicate
+                    // block - pop msg (dialog) form 
+                    - var require = true
+                    - var inLayer = true
+                    form(action="#" method="post").c-pop-msg-form.gray
+                        .c-pop-msg-form__item
+                            +email-field("stockAlertEmail1", require, inLayer)
+                            +field-description("by providing your e-mail, you agree to get product stock notification from LG")(class="c-pop-msg-form__text--item-guide")
+                        .c-pop-msg-form__item.has-line
+                            +agreement-field("agreeStockAlert1", require)
+                            
+                    +form-disclaimer(" * We won't share your email address with anyone else ")(class="font-m-normal-12 font-w-normal-12")
+
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({name: 'Close', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popStockAlert")
+                    +defaultButton({name: 'OK', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+
+    - var option={desc:'', btn1: '', btn2: '', ...params}
+    +pop-msg-standard({id:popId, size: "small"})
+        .c-pop-msg__contents
+            p.align-text-center(id=popId) #{option.desc}
+        .button.c-pop-msg__button-wrap
+            +defaultButton({name: params.btn1, wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-pop-msg__close-btn js-pop-close")
+            +defaultButton({name: params.btn2, wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})(aria-controls=popId)

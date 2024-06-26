@@ -1,0 +1,551 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_pop-msg.pug
+include ../_common/_forms.pug
+include ../_common/_pagination.pug
+
+block meta 
+    - var componentId = "PD0045"
+    - var componentName = "In House Review "
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+
+    // An area for testing options when coding. 
+    // Please do not use it during development.
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },                            
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+
+    mixin star(percent, rating)
+        // block : star wrap
+        .c-star
+            .c-star__front-image
+                .c-star__back-image(style=`width:${percent};` aria-hidden="true")
+            span.font-w-normal-14.font-m-normal-14= rating
+
+    mixin user-data(nickName, date, contentTitle, contentBodycopy, ellipsis, examination)
+        .c-review__user-info.c-text-contents
+            .text.c-text-contents__headline
+                strong(data-cmp-data-layer="")= nickName
+            .text.c-text-contents__bodycopy
+                span(data-cmp-data-layer="")= date
+
+        if block 
+            block
+
+        .c-review__user-content.c-text-contents
+            if contentTitle
+                .text.c-text-contents__headline
+                    strong.cmp-text.font-w-normal-24.font-m-normal-20(data-cmp-data-layer="")= contentTitle
+            .text.c-text-contents__bodycopy
+                span.cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="")= contentBodycopy
+            if examination 
+                .text.c-text-contents__bodycopy
+                    span.cmp-text.font-w-normal-14.font-m-normal-14.font-red(data-cmp-data-layer="") Thank you for submitting a review! Your review is being moderated and may take up a few days to appear.
+
+            if ellipsis
+                .button
+                    button.cmp-button.c-button.c-button--text-underline(type="button" aria-expanded="false")
+                        span.cmp-button__text.c-button__text.expand View More
+                        span.cmp-button__text.c-button__text.collapse Close
+
+    mixin comment-item(data, controlsId)
+        // block - comment
+        .c-comment.c-accordion__box.js-accordion-handle-target
+            each set, idx in data
+                if idx === 0
+                    .c-comment__list.c-accordion__head.is-delform-show
+                        if set.manager
+                            .c-text-contents
+                                .text.c-text-contents__headline 
+                                    p.cpm-text.font-w-normal-16.font-m-normal-16.font-red Response From LG Electronics :
+
+                        +user-data(set.userNickName, set.date, false, set.bodycopy, false)
+
+                        if set.examination
+                            .c-review__examination.c-text-contents
+                                .text.c-text-contents__bodycopy
+                                    span.cmp-text.font-w-normal-14.font-m-normal-14.font-red(data-cmp-data-layer="") Thank you for submitting a review! Your review is being moderated and may take up a few days to appear.
+                        +postFormFieldset("Commenter")
+                            .c-post-form__group
+                                .c-post-form__item
+                                    +formText("text", "NickName", `post_nickname${idx}`, true, "Example: Jackie27", false, false, false, true)
+                                    +postFormMessage("A Nick Name is required.", "")
+                                .c-post-form__item
+                                    +formText("password", "Password", `post_password${idx}`, true, "", false, false, false, true)
+                                    +postFormMessage("A Password is required. / The entered password doesn’t comply the regulations.", "")
+                                .button.c-post-form__button-wrap
+                                    // +button({name:'CANCEL', class:'js-close'})
+                                    // +button({type:"box", color:"red", name: "POST COMMENT"}, "submit")
+                                    +defaultButton({name:'Cancel', wSize: 'medium', mSize: 'small', buttonStyle: 'default white', isButton: true})(class='js-close')
+                                    +defaultButton({name:'Delete comment', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(type='submit')
+
+                        .c-review__edit.button.c-cta
+                            +textButton({name: 'Delete', wSize: 'small', mSize: 'small', buttonStyle: 'default', underline : true, isButton: true})
+                else
+                    ul.c-accordion__body(id=`${controlsId}`)
+                        //- li.c-comment__list
+                        //-     +user-data(set.userNickName, set.date, false, set.bodycopy, false)
+                        //-     .c-review__edit.button.c-cta
+                        //-         +textButton({name: 'Delete', wSize: 'small', mSize: 'small', buttonStyle: 'default', underline : true, isButton: true})
+                        li.c-comment__list.is-delform-show
+                            if set.manager
+                                .c-text-contents
+                                    .text.c-text-contents__headline 
+                                        p.cpm-text.font-w-normal-16.font-m-normal-16.font-red Response From LG Electronics :
+
+                            +user-data(set.userNickName, set.date, false, set.bodycopy, false)
+
+                            if set.examination
+                                .c-review__examination.c-text-contents
+                                    .text.c-text-contents__bodycopy
+                                        span.cmp-text.font-w-normal-14.font-m-normal-14.font-red(data-cmp-data-layer="") Thank you for submitting a review! Your review is being moderated and may take up a few days to appear.
+
+                            +postFormFieldset("Commenter")
+                                .c-post-form__group
+                                    .c-post-form__item
+                                        +formText("text", "NickName", `post_nickname${idx}`, true, "Example: Jackie27", false, false, false, true)
+                                        +postFormMessage("A Nick Name is required.", "")
+                                    .c-post-form__item
+                                        +formText("password", "Password", `post_password${idx}`, true, "", false, false, false, true)
+                                        +postFormMessage("A Password is required. / The entered password doesn’t comply the regulations.", "")
+                                    .button.c-post-form__button-wrap
+                                        // +button({name:'CANCEL', class:'js-close'})
+                                        // +button({type:"box", color:"red", name: "POST COMMENT"}, "submit")
+                                        +defaultButton({name:'Cancel', wSize: 'medium', mSize: 'small', buttonStyle: 'default white', isButton: true})(class='js-close')
+                                        +defaultButton({name:'Delete comment', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(type='submit')
+
+                            .c-review__edit.button.c-cta
+                                +textButton({name: 'Delete', wSize: 'small', mSize: 'small', buttonStyle: 'default', underline : true, isButton: true})
+
+            
+                    
+            .c-accordion__contol-button
+                button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${controlsId}`)
+                    span.c-accordion__button-text.expand View comment
+                    span.c-accordion__button-text.collapse Hide comments
+
+    mixin reivew-innner(data, mostState, idx)
+        +star(data.ratingPercent, data.rating)
+
+        +user-data(data.userNickName, data.date, data.title, data.bodycopy, mostState, data.examination)
+            if data.recommend
+                .c-review__recommend
+                    p I recommend this product
+
+        if !mostState
+            .c-review__edit.button.c-cta
+                +textButton({name: 'Edit', wSize: 'small', mSize: 'small', buttonStyle: 'default', underline : true, isButton: true})
+                +textButton({name: 'Delete', wSize: 'small', mSize: 'small', buttonStyle: 'default', underline : true, isButton: true})
+
+            .c-review__comment-button.button
+                +iconButton({type:"button", comment:false, class:"helpful",name:`Helpful (${data.helpfulNum})`})
+                +textButton({name: "Comment",wSize: 'small', mSize: 'small', buttonStyle: 'default', underline : true, isButton: true})
+
+            .c-review__write-form.is-hide 
+                form(action="#" method="post").c-post-form
+                    +required-text-indicate
+                    +postFormFieldset("Comment")
+                        .c-post-form__item.c-post-form__item--textarea
+                            +formTextarea("text", "Comment", `post_comment0${idx}`, true, "Write a comment", false, false, false, true)(minLength="20", maxlength="5000")
+                            +postFormMessage("Comment is required.", "")
+
+                    +postFormFieldset("Commenter")
+                        .c-post-form__group
+                            .c-post-form__item
+                                +formText("text", "NickName", `post_nickname${idx}`, true, "Example: Jackie27", false, false, false, true)
+                                +postFormMessage("Nickname is required.", "")
+                            .c-post-form__item
+                                +formText("password", "Password", `post_password${idx}`, true, "", false, false, false, true)
+                                +postFormMessage("A Password is required. / The entered password doesn’t comply the regulations.")
+                            .c-post-form__item
+                                +formText("text", "E-mail", `post_email${idx}`, true, "Example: Jackie27@google.com", false, false, false, true)
+                                +postFormMessage("An E-mail is required. / The entered E-mail doesn’t comply the regulations.", "")
+
+                    .button.c-post-form__button-wrap
+                        // +button({name:'CANCEL', class:'js-close'})
+                        // +button({type:"box", color:"red", name: "POST COMMENT"}, "submit")
+                        +defaultButton({name:'Cancel', wSize: 'medium', mSize: 'small', buttonStyle: 'default white', isButton: true})(class='js-close')
+                        +defaultButton({name:'Post Comment', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(type='submit')
+                
+    mixin most-reivew-item(data, blockLabel)
+        if data.mosetReview
+            .c-review__content-label
+                strong.font-w-normal-24.font-m-normal-20= blockLabel
+
+            .c-review__item.c-review__item--most
+                +reivew-innner(data, true)
+
+    mixin review-item(data)
+        each set, idx in data.listInfo
+            - var deletedTexts = set.deleted ? "This review is deleted" : "" || set.adminDeleted ? "This review deleted by admin" : ""
+            - var controlsId = "comment-set-0"
+
+            li.c-review__item
+                if set.deleted || set.adminDeleted
+                    .c-review__deleted.c-text-contents
+                        .text.c-text-contents__headline
+                            p.cmp-text.font-w-normal-24.font-m-normal-20(data-cmp-data-layer="")= deletedTexts
+                else
+                    +reivew-innner(set, false, idx)
+
+                if set.commentInfo.length > 0
+                    +comment-item(set.commentInfo, controlsId + idx)
+
+    mixin reivew-wrap(data)
+        - var listLengthCheck = data.listInfo.length > 0
+
+        .c-review__content
+
+            if listLengthCheck
+                each set in data.listInfo
+                    +most-reivew-item(set, data.blockLabel)
+
+                .c-review__content-label
+                    strong.font-w-normal-24.font-m-normal-20= data.listLabel
+
+                    // blcok : select item
+                    +formSelect("", "selectSort", "Select Sort", false)
+                        option(value="Most Recent " selected) Most Recent 
+                        option(value="Most helpful") Most helpful
+                        option(value="Rating High to Low") Rating High to Low
+                        option(value="Rating Low to High") Rating Low to High
+
+                ul.c-review__list.c-accordion.js-accordion
+                    +review-item(data)
+
+                .c-review__pagenation.desktop-only
+                    //- +paginationFraction
+                    +pagination
+                .c-review__pagenation.mobile-only
+                    +textButton({name: 'More', wSize: 'medium', mSize: 'medium', buttonStyle: 'down', isButton: true})
+            else
+                .c-review__content-label
+                    strong.font-w-normal-24.font-m-normal-20= data.listLabel
+                        
+                .c-review__list.c-review__list--none-data Be the first to review this product
+
+    // Component Markup
+    // Type1. Default
+    .guide-text-type Type1. Default
+    .c-wrapper.PD0045.bg-default
+        .component 
+            .cmp-container
+                // block : review
+                .c-review
+                    .c-review__head 
+                        // block : text contents
+                        .c-text-contents
+                            .title.c-text-contents__headline
+                                h2.cmp-title.font-w-light-56.font-m-light-28(data-cmp-data-layer="") What people are saying
+                       
+                        // block : head star
+                        .c-head-star.c-text-contents
+                            .title.c-text-contents__headline.c-head-star__title
+                                p.cmp-title.font-w-normal-24.font-m-normal-20(data-cmp-data-layer="") <em>4.5</em>/5
+                            .text.c-text-contents__bodycopy.c-head-star__text
+                                p.cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="") Overall Rating
+                            +star("90%", "(1450)")
+
+                        // block : cta"
+                        .button.c-cta
+                            // before login : Go to the sign-in page
+                            +defaultButton({name:'Write a Review', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+                            //+linkButton({type:'box', color:'red', name: 'Write a Review', size:"medium"})
+                            // after login                            
+                            +defaultButton({name:'Write a Review', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})(href='#popPostReview' class='js-pop-open' role='button')
+                            //+linkButton({href:"#popPostReview", type:"box", color:"red", class:"js-pop-open", name:"write a review", roleButton:"true"})
+
+                    +reivew-wrap({
+                        blockLabel: "Most helpful review",
+                        listLabel: "Reviews",
+                        commentView:true,
+                        listInfo: [
+                            {
+                                userNickName: "Malin*****",
+                                date: "9 months ago",
+                                recommend: true,
+                                rating: "4/5",
+                                ratingPercent: "80%",
+                                mosetReview: true,
+                                title: "Review title on mobile can be up to 2 lines",
+                                bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written  Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written…",
+                                helpfulNum: 5,
+                                examination: true,
+                                commentInfo: []
+                            },
+                            {
+                                userNickName: "Malin*****",
+                                date: "8 months ago",
+                                rating: "4/5",
+                                ratingPercent: "80%",
+                                title: "Review title on mobile can be up to 2 lines",
+                                bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written …",
+                                helpfulNum: 5,
+                                commentInfo: [],
+                            },
+                            {
+                                userNickName: "Malin*****",
+                                date: "8 months ago",
+                                recommend: true,
+                                rating: "4/5",
+                                ratingPercent: "80%",
+                                title: "Review title on mobile can be up to 2 lines",
+                                bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written …",
+                                helpfulNum: 5,
+                                commentInfo: [],
+                            },
+                            {
+                                userNickName: "Malin*****",
+                                date: "8 months ago",
+                                rating: "4/5",
+                                ratingPercent: "80%",
+                                title: "Review title on mobile can be up to 2 lines",
+                                bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written …",
+                                helpfulNum: 5,
+                                commentInfo: [],
+                                deleted: false,
+                            },
+                            {
+                                userNickName: "Malin*****",
+                                date: "8 months ago",
+                                recommend: true,
+                                rating: "4/5",
+                                ratingPercent: "80%",
+                                title: "Review title on mobile can be up to 2 lines",
+                                bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written …",
+                                helpfulNum: 5,
+                                commentInfo: [],
+                                adminDeleted: false,
+                            }
+                        ],
+                    })
+
+    // Type2. Message
+    .guide-text-type Type2. Message
+    .c-wrapper.PD0045.bg-default
+        .component 
+            .cmp-container
+                // block : review
+                .c-review
+                    .c-review__head 
+                        // block : text contents
+                        .c-text-contents
+                            .title.c-text-contents__headline
+                                h2.cmp-title.font-w-light-56.font-m-light-28(data-cmp-data-layer="") What people are saying
+                        
+                        // block : head star
+                        .c-head-star.c-text-contents
+                            .title.c-text-contents__headline.c-head-star__title
+                                p.cmp-title.font-w-normal-24.font-m-normal-20(data-cmp-data-layer="") <em>0</em>/5
+                            .text.c-text-contents__bodycopy.c-head-star__text
+                                p.cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="") Overall Rating
+                            +star("0", "(0)")
+
+                        // block : cta
+                        .button.c-cta
+                            +defaultButton({name:'Write a Review', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+                            //+button({type: "box", color:"red", name: 'Write a Review'})
+
+                    +reivew-wrap({
+                        blockLabel: "Most helpful review",
+                        listLabel: "Reviews",
+                        listInfo: [],
+                    })
+    
+    // Type3. Full case
+    .guide-text-type Type3. Full case
+    .c-wrapper.PD0045.bg-default
+        .component 
+            .cmp-container
+                // block : review
+                .c-review
+                    .c-review__head 
+                        // block : text contents
+                        .c-text-contents
+                            .title.c-text-contents__headline
+                                h2.cmp-title.font-w-light-56.font-m-light-28(data-cmp-data-layer="") What people are saying
+                       
+                        // block : head star
+                        .c-head-star.c-text-contents
+                            .title.c-text-contents__headline.c-head-star__title
+                                p.cmp-title.font-w-normal-24.font-m-normal-20(data-cmp-data-layer="") <em>4.5</em>/5
+                            .text.c-text-contents__bodycopy.c-head-star__text
+                                p.cmp-text.font-w-normal-14.font-m-normal-14(data-cmp-data-layer="") Overall Rating
+                            +star("90%", "(1450)")
+
+                        // block : cta"
+                        .button.c-cta
+                            // before login : Go to the sign-in page
+                            +defaultButton({name:'Write a Review', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})
+                            //+linkButton({type:'box', color:'red', name: 'Write a Review', size:"medium"})
+                            // after login                            
+                            +defaultButton({name:'Write a Review', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: false})(href='#popPostReview' class='js-pop-open' role='button')
+                            //+linkButton({href:"#popPostReview", type:"box", color:"red", class:"js-pop-open", name:"write a review", roleButton:"true"})
+
+                    +reivew-wrap({
+                        blockLabel: "Most helpful review",
+                        listLabel: "Reviews",
+                        commentView:true,
+                        listInfo: [
+                            {
+                                userNickName: "Malin*****",
+                                date: "9 months ago",
+                                recommend: true,
+                                rating: "4/5",
+                                ratingPercent: "80%",
+                                mosetReview: true,
+                                title: "Review title on mobile can be up to 2 lines",
+                                bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written  Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written…",
+                                helpfulNum: 5,
+                                examination: true,
+                                commentInfo: [],
+                            },
+                            {
+                                userNickName: "Malin*****",
+                                date: "9 months ago",
+                                recommend: true,
+                                rating: "4/5",
+                                ratingPercent: "80%",
+                                title: "Review title on mobile can be up to 2 lines",
+                                bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written  Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written…",
+                                helpfulNum: 5,
+                                examination: true,
+                                commentInfo: [
+                                    {
+                                        userNickName: "Malin*****",
+                                        date: "8 months ago",
+                                        bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like.",
+                                    },
+                                    {
+                                        userNickName: "Malin*****",
+                                        date: "8 months ago",
+                                        bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like.",
+                                        manager: true,
+                                    }
+                                ],
+                                deleted: true,
+                            },
+                            {
+                                userNickName: "Malin*****",
+                                date: "9 months ago",
+                                recommend: true,
+                                rating: "4/5",
+                                ratingPercent: "80%",
+                                title: "Review title on mobile can be up to 2 lines",
+                                bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written  Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written…",
+                                helpfulNum: 5,
+                                examination: true,
+                                commentInfo: [
+                                    {
+                                        userNickName: "Malin*****",
+                                        date: "12 months ago",
+                                        bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like.",
+                                        manager: true,
+                                        examination: true,
+                                    },
+                                    {
+                                        userNickName: "Malin*****",
+                                        date: "12 months ago",
+                                        bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like.",
+                                        examination: true,
+                                    }
+                                ],
+                            },
+                            {
+                                userNickName: "Malin*****",
+                                date: "8 months ago",
+                                rating: "4/5",
+                                ratingPercent: "80%",
+                                title: "Review title on mobile can be up to 2 lines",
+                                bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written …",
+                                helpfulNum: 5,
+                                commentInfo: [],
+                            },
+                            {
+                                userNickName: "Malin*****",
+                                date: "8 months ago",
+                                recommend: true,
+                                rating: "4/5",
+                                ratingPercent: "80%",
+                                title: "Review title on mobile can be up to 2 lines",
+                                bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written …",
+                                helpfulNum: 5,
+                                commentInfo: [],
+                            },
+                            {
+                                userNickName: "Malin*****",
+                                date: "8 months ago",
+                                rating: "4/5",
+                                ratingPercent: "80%",
+                                title: "Review title on mobile can be up to 2 lines",
+                                bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written …",
+                                helpfulNum: 5,
+                                commentInfo: [
+                                    {
+                                        userNickName: "Malin*****",
+                                        date: "8 months ago",
+                                        bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like.",
+                                    },
+                                    {
+                                        userNickName: "Malin*****",
+                                        date: "8 months ago",
+                                        bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like.",
+                                        manager: true,
+                                    }
+                                ],
+                                deleted: true,
+                            },
+                            {
+                                userNickName: "Malin*****",
+                                date: "8 months ago",
+                                recommend: true,
+                                rating: "4/5",
+                                ratingPercent: "80%",
+                                title: "Review title on mobile can be up to 2 lines",
+                                bodycopy: "Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written review goes here. This is what a short one looks like. Written …",
+                                helpfulNum: 5,
+                                commentInfo: [],
+                                adminDeleted: false,
+                            }
+                        ],
+                    })
+
+block modal
+    +printLayerPopup('popPostReview')
+    +printLayerPopup('popEditReview')
+    +printLayerPopup('popSuccessSubmitReview')

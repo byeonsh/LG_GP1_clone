@@ -1,0 +1,315 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_pop-msg.pug
+include ../_common/_forms.pug
+
+block meta 
+    - var componentId = "MB000C"
+    - var componentName = "Member Third Party Service - Email Validation (Case1)"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+    
+mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected, required})
+    .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+        +formSelect(label, id, placeholder, required= required)
+            if optionVal
+                - for(var i=0; i < optionVal.length; i++)
+                    if selected === i + 1
+                        option(value="" selected)= optionVal[i]
+                    else
+                        option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText})
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+            
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst ? 'my-warn' : ''}`
+    if data.type === 'select'
+        +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required})
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                    // [Start] 2023-06-08 : ADD - required option
+                    if data.required
+                        em.c-required *
+                            span.sr-only Required fields
+                    // [End] 2023-06-08 : ADD - required option
+
+                // [Start] 2023-06-08 : ADD - required option
+                if data.required
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`, required)&attributes(attributes)
+                else 
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`)&attributes(attributes)
+                // [End] 2023-06-08 : ADD - required option
+                if data.type === 'password'
+                    button(type='button' class='my-form__eye')
+                        span.sr-only show password
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+                
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+block content
+    .button.c-cta
+        .guide-text-option Option : Third Party Service
+        +linkButton({href:"#ThirdPartyService", type:"box", color:"red", class:"js-pop-open", name:"ThirdPartyService", roleButton:"true"})
+        +linkButton({href:"#ThirdPartyServiceEmailValidationError", type:"box", color:"red", class:"js-pop-open", name:"ThirdPartyServiceEmailValidation Error", roleButton:"true"})
+        +linkButton({href:"#ThirdPartyServiceEmailValidationCase1", type:"box", color:"red", class:"js-pop-open", name:"ThirdPartyServiceEmailValidation Case1", roleButton:"true"})
+        +linkButton({href:"#ThirdPartyServiceEmailValidationCase2", type:"box", color:"red", class:"js-pop-open", name:"ThirdPartyServiceEmailValidation Case2", roleButton:"true"})
+
+        .guide-text-option Option : Social Media Account Connection fail
+        +linkButton({href:"#socialMediaConnectionfail", type:"box", color:"red", class:"js-pop-open", name:"socialMediaConnectionfail", roleButton:"true"})
+        
+        .guide-text-option Option : notice for password set pop-up (ES only)
+        +linkButton({href:"#noticeForPasswordSet", type:"box", color:"red", class:"js-pop-open", name:"noticeForPasswordSet", roleButton:"true"})
+
+block modal
+    .MB000C
+        .my-email-validation
+            +pop-msg-standard({id : `ThirdPartyService`, headline:"Almost complete to sign in"})
+                .my-email-validation__text.font-w-normal-16.font-m-normal-16 If you sign in with this ID at first, please fill email address out.
+                // [Start] 2023-06-08 : ADD - my-form-required
+                p.my-form-required.font-w-normal-16.font-m-normal-12
+                    em.c-required * 
+                        span.sr-only Required fields
+                    | Required fields
+                // [End] 2023-06-08 : ADD - my-form-required
+
+                .my-formbox
+                    // [Start] 2023-05-17 : UPDATE - change location to country
+                    // [Start] 2023-06-08 : UPDATE - change required option
+                    +myInputForm([
+                        {
+                            type:"select",
+                            optionVal: ['Country Select', 'Country Select', 'Country Select'],
+                            label: 'Country',
+                            id: 'country',
+                            required: true,
+                            placeholder: 'Country Select',
+                        },
+                        {
+                            type:"email",
+                            label:"Email Address",
+                            id:"EmailAddress",
+                            required: true,
+                            placeholder:"Email Account (Case Sensitive)"
+                        },
+                    ])
+                // [End] 2023-05-17 : UPDATE - change location to country
+                // [End] 2023-06-08 : UPDATE - change required option
+
+                .button.c-cta.my-button.my-button__full
+                    // [Start] 2023-06-08 : UPDATE - changed button name [Duplicate Check] to [Verification Check]
+                    +defaultButton({name: 'Verification Check', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                    // [End] 2023-06-08 : UPDATE - changed button name [Duplicate Check] to [Verification Check]
+
+        .my-email-validation
+            +pop-msg-standard({id : `ThirdPartyServiceEmailValidationError`, headline:"Almost complete to sign in"})
+                .my-email-validation__text.font-w-normal-16.font-m-normal-16 If you sign in with this ID at first, please fill email address out.
+                // [Start] 2023-06-08 : ADD - my-form-required
+                p.my-form-required.font-w-normal-16.font-m-normal-12
+                    em.c-required * 
+                        span.sr-only Required fields
+                    | Required fields
+                // [End] 2023-06-08 : ADD - my-form-required
+
+                .my-formbox
+                    // [Start] 2023-05-17 : UPDATE - change location to country
+                    // [Start] 2023-06-08 : UPDATE - add Email Address warning message and change required option
+                    +myInputForm([
+                        {
+                            type:"select",
+                            optionVal: ['Country Select', 'Country Select', 'Country Select'],
+                            label: 'Country',
+                            id: 'country',
+                            required: true,
+                            placeholder: 'Country Select',
+                            warning: ['Country is required.'],
+                        },
+                        {
+                            type:"email",
+                            label:"Email Address",
+                            id:"EmailAddress",
+                            required: true,
+                            placeholder:"Email Account (Case Sensitive)",
+                            warningFirst: [
+                                'Email account is required.',
+                                'Email address invalid.',
+                                'The account is being used abroad. Please enter a different account.',
+                                'Account is already registered with India. Please try again.',
+                                'Your account has been locked',
+                                "You didn't verify your address after creating an account, please enter a different account.",
+                                'Already exist for this email address. Please enter the LG.com password.'
+                            ],
+                            correct: ['You can sign in with this ID.'],
+                        },
+                    ])
+                    // [End] 2023-05-17 : UPDATE - change location to country
+                    // [End] 2023-06-08 : UPDATE - add Email Address warning message and change required option
+
+                .button.c-cta.my-button.my-button__full
+                    // [Start] 2023-06-08 : UPDATE - changed button name [Duplicate Check] to [Verification Check]
+                    +defaultButton({name: 'Verification Check', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                    // [End] 2023-06-08 : UPDATE - changed button name [Duplicate Check] to [Verification Check]
+        .my-email-validation
+            +pop-msg-standard({id : `ThirdPartyServiceEmailValidationCase1`, headline:"Almost complete to sign in"})
+                .my-email-validation__text.font-w-normal-16.font-m-normal-16 If you sign in with this ID at first, please fill email address out.
+                // [Start] 2023-06-08 : ADD - my-form-required
+                p.my-form-required.font-w-normal-16.font-m-normal-12
+                    em.c-required * 
+                        span.sr-only Required fields
+                    | Required fields
+                // [End] 2023-06-08 : ADD - my-form-required
+
+                // [Start] 2023-06-08 : UPDATE - change required option
+                .my-formbox
+                    +myInputForm([
+                        {
+                            type:"select",
+                            optionVal: ['UK', 'UK', 'UK'],
+                            select: '1', 
+                            label: 'Country',
+                            id: 'country',
+                            required: true,
+                            placeholder: 'Country Select',
+                        },
+                        {
+                            type:"email",
+                            label:"Email Address",
+                            id:"EmailAddress",
+                            required: true,
+                            value:"abcd1234@gmail.com",
+                            warning: ['Already exist for this email address. Please enter the LG.com password.'],
+                        },
+                    ])
+                // [End] 2023-06-08 : UPDATE - change required option
+
+                .button.c-cta.my-button.my-button__full
+                    // [Start] 2023-06-08 : UPDATE - changed button name [Duplicate Check] to [Verification Check]
+                    +defaultButton({name: 'Verification Check', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                    // [End] 2023-06-08 : UPDATE - changed button name [Duplicate Check] to [Verification Check]
+
+                // [Start] 2023-06-08 : UPDATE - change required option
+                .my-formbox
+                    +myInputForm([
+                        {
+                            type:"password",
+                            label:"Password",
+                            id:"password",
+                            required: true,
+                            placeholder:"Password",
+                            warning: ['Password is required.', 'Password is incorrect'],
+                        },
+                    ])
+                // [End] 2023-06-08 : UPDATE - change required option
+                .button.c-cta.my-button.my-button__full.my-button__full--large
+                    +defaultButton({name: 'Sign In', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+        .my-email-validation
+            +pop-msg-standard({id : `ThirdPartyServiceEmailValidationCase2`, headline:"Almost complete to sign in"})
+                .my-email-validation__text.font-w-normal-16.font-m-normal-16 If you sign in with this ID at first, please fill email address out.
+                // [Start] 2023-06-08 : ADD - my-form-required
+                p.my-form-required.font-w-normal-16.font-m-normal-12
+                    em.c-required * 
+                        span.sr-only Required fields
+                    | Required fields
+                // [End] 2023-06-08 : ADD - my-form-required
+
+                .my-formbox
+                    // [Start] 2023-05-17 : UPDATE - change location to country
+                    // [Start] 2023-06-08 : UPDATE - change required option
+                    +myInputForm([
+                        {
+                            type:"select",
+                            optionVal: ['UK', 'UK', 'UK'],
+                            select: '1',
+                            label: 'Country',
+                            id: 'country',
+                            required: true,
+                            placeholder: 'Country Select',
+                        },
+                        {
+                            type:"email",
+                            label:"Email Address",
+                            id:"EmailAddress",
+                            required: true,
+                            value:"abcd1234@gmail.com",
+                            correct: ['You can sign in with this ID'],
+                        },
+                    ])
+                    // [End] 2023-05-17 : UPDATE - change location to Country
+                    // [End] 2023-06-08 : UPDATE - change required option
+
+                .my-email-validation__button
+                    .button.c-cta.my-button
+                        // [Start] 2023-06-08 : UPDATE - changed button name [Duplicate Check] to [Verification Check]
+                        +defaultButton({name: 'Verification Check', wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                        // [End] 2023-06-08 : UPDATE - changed button name [Duplicate Check] to [Verification Check]
+                    .button.c-cta.my-button
+                        // [Start] 2023-04-26 : Update Text
+                        +defaultButton({name: 'Join Us', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+                        // [End] 2023-04-26 : Update Text
+    
+        +pop-msg-standard({id:'noticeForPasswordSet', size: "medium", headline:"Se requiere reestablecer la contraseña.", classes:"c-pop-msg--noticeForPasswordSet"})
+            .c-pop-msg__contents
+                .c-text-contents.align-text-left 
+                    .text.c-text-contents__bodycopy 
+                        p.cmp-text.font-w-normal-16.font-m-normal-16 Los datos de su cuenta han sido migrados desde www.tiendalgonline.com a LG.com/es. Para completar el proceso, es necesario reestablecer la contraseña y, tras ello, vuelv a iniciar sesión.
+                +textButton({name: 'Reestablecer contraseña', wSize: 'small', mSize: 'small', buttonStyle: 'default', isButton: true})
+            .button.c-pop-msg__button-wrap
+                +defaultButton({
+                    name: 'Cancelar', 
+                    wSize: 'medium', 
+                    mSize: 'medium', 
+                    buttonStyle: 'default', 
+                    isButton: true
+                })(class="c-pop-msg__close-btn js-pop-close" aria-controls="noticeForPasswordSet")
+                +defaultButton({name: 'Confirmar', wSize: 'medium', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+    +pop-msg-standard({id:'socialMediaConnectionfail', size: "small"})
+        .c-pop-msg__contents
+            p.font-w-normal-16.font-m-normal-16 You can't connect with this social account used abroad.
+        .button.c-pop-msg__button-wrap
+            +defaultButton({
+                name: 'Close', 
+                wSize: 'medium', 
+                mSize: 'medium', 
+                buttonStyle: 'highlight', 
+                isButton: true
+            })(class="c-pop-msg__close-btn js-pop-close" aria-controls="socialMediaConnectionfail")

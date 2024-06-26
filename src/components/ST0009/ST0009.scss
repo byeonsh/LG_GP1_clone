@@ -1,0 +1,283 @@
+@charset "UTF-8";
+// module
+@use '../../scss/abstract/' as *;
+
+$component: '.ST0009';
+#{$component} {
+  // variable
+  $text-contents: '.c-text-contents';
+  $list: '.c-list';
+  > .component > .cmp-container {
+    display: flex;
+    flex-direction: column;
+    @include container($design-grid-full, true);
+    @include inset-padding-hz;
+  }
+  // block : image
+  .c-image {
+    overflow: hidden;
+    @include lgness-radius('default');
+  }
+  // block : media
+  .c-media {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: $z-index1;
+    &__controls {
+      padding-bottom: rem($padding20px);
+      @include screen(web) {
+        padding-bottom: rem($padding24px);
+      }
+    }
+  }
+  // block : text contents
+  .c-text-contents {
+    // layout : margin
+    @at-root #{$component} {
+      .c-picker--vertical #{$text-contents} {
+        @include screen(web) {
+          width: min(rem(columns(8)), columns(8) / $design-grid-full * 100%);
+        }
+      }
+      // .c-image + #{$text-contents} {
+      //     margin-top: rem($margin72px);
+      // }
+      #{$text-contents}__headline + #{$text-contents}__bodycopy {
+        margin-top: rem($margin8px);
+      }
+      * + .c-cta {
+        margin-top: rem($margin12px);
+        @include screen(web) {
+          margin-top: 0;
+        }
+      }
+    }
+  }
+  // block : picker
+  .c-picker {
+    &--horizontal {
+      @include screen(web) {
+        display: flex;
+        justify-content: space-between;
+      }
+      @include screen(web) {
+        flex-direction: row-reverse;
+        @at-root #{$component} {
+          &.place-text-right .c-picker--horizontal {
+            flex-direction: row; /* 230512 RTL */
+          }
+          &.place-text-left .c-picker--horizontal {
+            flex-direction: row-reverse; /* 230512 RTL */
+          }
+        }
+      }
+    }
+    &__visual {
+      display: flex;
+      @include screen(web) {
+        flex-direction: row-reverse;
+      }
+      @include screen(mobile) {
+        flex-direction: column-reverse;
+        gap: rem($margin12px);
+      }
+      @include screen(web) {
+        justify-content: space-between;
+      }
+      @include screen(web) {
+        @at-root #{$component} {
+          &.place-text-right .c-picker__visual {
+            flex-direction: row; /* 230512 RTL */
+          }
+          &.place-text-left .c-picker__visual {
+            flex-direction: row-reverse; /* 230512 RTL */
+          }
+        }
+      }
+    }
+    &__view {
+      display: block;
+      @at-root #{$component} {
+        .c-picker--vertical .c-picker__view {
+          @include screen(web) {
+            width: min(rem(columns(9)), columns(9) / $design-grid-full * 100%);
+          }
+        }
+        .c-picker--horizontal .c-picker__view {
+          @include screen(web) {
+            width: min(rem(columns(6)), columns(6) / $design-grid-full * 100%);
+          }
+        }
+      }
+    }
+    &__media {
+      .c-image {
+        display: none;
+        &.active {
+          display: block;
+        }
+      }
+    }
+    &__contents {
+      @at-root #{$component} {
+        .c-picker--horizontal .c-picker__contents {
+          @include screen(web) {
+            width: min(rem(columns(5)), columns(5) / $design-grid-full * 100%);
+          }
+        }
+      }
+    }
+    &__text {
+      display: flex;
+      justify-content: flex-start; /* 230512 RTL */
+      margin-top: rem($margin12px);
+      @include screen(web) {
+        margin-top: rem($margin40px);
+      }
+      .c-text-contents {
+        display: none;
+        &.active {
+          display: block;
+        }
+      }
+    }
+    &__buttons {
+      display: flex;
+      .c-cta {
+        display: none;
+        &.active {
+          display: flex;
+        }
+      }
+      @at-root #{$component} {
+        .c-picker--horizontal {
+          #{$list} + .c-picker__buttons {
+            margin-top: rem($margin24px);
+          }
+          .align-center .c-picker__buttons {
+            justify-content: center;
+          }
+          .align-right .c-picker__buttons {
+            justify-content: flex-end; /* 230512 RTL */
+          }
+          .align-left .c-picker__buttons {
+            justify-content: flex-start; /* 230512 RTL */
+          }
+        }
+      }
+    }
+    // block : list
+    .c-list {
+      @include reset-list-style;
+      display: flex;
+      @include flex-context(row);
+      @include screen(mobile) {
+        flex-wrap: nowrap;
+      }
+      &__item {
+        border: 0;
+        padding: 0;
+        position: relative;
+        display: block;
+        &.active {
+          &:before {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            @include lgness-radius('default');
+            z-index: $z-index1;
+            border: rem($border2) solid $black;
+            @include screen(web) {
+              border-width: rem($border4);
+            }
+          }
+          &:after {
+            display: none;
+          }
+        }
+        // .c-image {
+        //     @include lgness-radius('default');
+        // }
+      }
+      @at-root #{$component} {
+        .c-picker--vertical #{$list} {
+          gap: rem($margin10px);
+          @include screen(web) {
+            @include list(wrap, $block-margin-w);
+            @include flex-context(column);
+            width: min(rem(columns(2)), columns(2) / $design-grid-full * 100%);
+          }
+          &__item {
+            @include screen(mobile) {
+              flex-basis: calc(100% / 3);
+              .c-image {
+                height: 100%;
+                * {
+                  height: 100%;
+                }
+              }
+            }
+          }
+        }
+        .c-picker--horizontal {
+          #{$list} {
+            @include screen(mobile) {
+              display: none;
+            }
+            @include screen(web) {
+              display: flex;
+              gap: min(rem($margin20px), $margin20px / columns(5) * 100%);
+              &__item {
+                width: rem($icon64px);
+                height: rem($icon64px);
+                &.active {
+                  &:before {
+                    width: rem($width64px);
+                    border-radius: rem($radius8);
+                  }
+                }
+                .c-image {
+                  border-radius: rem($radius8);
+                  height: 100%;
+                  * {
+                    height: 100%;
+                  }
+                }
+              }
+            }
+          }
+          .c-picker__text + #{$list} {
+            margin-top: rem($margin24px);
+          }
+          .align-center #{$list} {
+            justify-content: center;
+          }
+          .align-right #{$list} {
+            justify-content: flex-end; /* 230512 RTL */
+          }
+          .align-left #{$list} {
+            justify-content: flex-start; /* 230512 RTL */
+          }
+        }
+      }
+    }
+  }
+  // for handler's position
+  .c-carousel {
+    @include carousel-order-change(768, 512);
+  }
+  // block : cta
+  .c-cta {
+    gap: rem($margin6px);
+    @include screen(web) {
+      gap: rem($margin8px);
+    }
+  }
+}

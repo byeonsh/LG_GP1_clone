@@ -1,0 +1,307 @@
+@charset "UTF-8";
+
+@use '../../scss/abstract/' as *;
+@use 'sass:list';
+
+$component: '.ST0035';
+#{$component} {
+  @include lgness-margin('if-headline');
+  > .component > .cmp-container {
+    @include container($design-grid-full, true);
+    @include inset-padding-hz;
+  }
+
+  .c-text-contents {
+    .align-container {
+      justify-content: flex-start; /* 230512 RTL */
+    }
+    &__inner {
+      max-width: rem($text-box-width-md);
+    }
+  }
+  .c-text-contents + .c-block-image {
+    @include lgness-component-title-margin;
+  }
+
+  // block : block image
+  .c-block-image {
+    position: relative;
+    &__container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: (100% + 1%); // 1% is responsive gap space
+      list-style: none;
+      display: flex;
+      flex-flow: column wrap;
+      margin: 0;
+      padding: 0;
+    }
+    &__cover {
+      width: calc((100% - rem($gutter-m)) / 2);
+      @include screen(mobile) {
+        &:nth-child(1),
+        &:nth-child(3),
+        &:nth-child(5) {
+          margin-right: rem($gutter-m);
+        }
+        &:nth-child(1),
+        &:nth-child(2) {
+          .c-content-box {
+            margin-top: 0;
+          }
+        }
+      }
+      @include screen(web) {
+        width: calc((100% - rem($gutter-w) * 2) / 3);
+        margin-right: rem($gutter-w);
+        &:nth-child(1),
+        &:nth-child(2),
+        &:nth-child(3) {
+          .c-content-box {
+            margin-top: 0;
+          }
+        }
+      }
+    }
+
+    &.length-8 {
+      // order :: match document & layout
+      $document-order: 1, 2, 3, 4, 5, 6, 7, 8;
+      $flex-order: 1, 3, 6, 2, 4, 7, 5, 8;
+      $flex-order-mobile: 1, 5, 2, 6, 3, 4, 7, 8;
+      padding-bottom: calc($height759px / columns(4, false, mobile)) * 100%;
+      @for $i from 1 through length($document-order) {
+        .c-block-image__cover:nth-child(#{$i}) {
+          order: list.nth($flex-order-mobile, $i);
+        }
+      }
+      @include screen(web) {
+        // padding-bottom: calc(($gutter-w * 2 + $height309px * 2 + $height732px) / 1284px) * 100%;
+        padding-bottom: calc($height1568px / $design-grid-full) * 100%;
+        @for $i from 1 through length($document-order) {
+          .c-block-image__cover:nth-child(#{$i}) {
+            order: list.nth($flex-order, $i);
+          }
+        }
+      }
+      @include screen(mobile) {
+        .c-block-image__cover:nth-child(6) {
+          margin-right: rem($margin10px);
+        }
+      }
+    }
+    &.length-7 {
+      // order :: match document & layout
+      $document-order: 1, 2, 3, 4, 5, 6, 7;
+      $flex-order: 1, 3, 6, 2, 4, 7, 5;
+      $flex-order-mobile: 1, 5, 2, 6, 3, 7, 4;
+
+      padding-bottom: calc($height642px / columns(4, false, mobile)) * 100%;
+      @for $i from 1 through length($document-order) {
+        .c-block-image__cover:nth-child(#{$i}) {
+          order: list.nth($flex-order-mobile, $i);
+        }
+      }
+      @include screen(web) {
+        // padding-bottom: calc(($gutter-w + $height412px + $height732px) / 1284px) * 100%;
+        padding-bottom: calc($height1312px / $design-grid-full) * 100%;
+        @for $i from 1 through length($document-order) {
+          .c-block-image__cover:nth-child(#{$i}) {
+            order: list.nth($flex-order, $i);
+          }
+        }
+      }
+      @include screen(mobile) {
+        .c-block-image__cover:nth-child(7) {
+          margin-right: rem($gutter-m);
+        }
+      }
+    }
+    &.length-6 {
+      // order :: match document & layout
+      $document-order: 1, 2, 3, 4, 5, 6;
+      $flex-order: 1, 3, 5, 2, 4, 6;
+      $flex-order-mobile: 1, 4, 2, 5, 3, 6;
+
+      padding-bottom: calc($height520px / columns(4, false, mobile)) * 100%;
+      @for $i from 1 through length($document-order) {
+        .c-block-image__cover:nth-child(#{$i}) {
+          order: list.nth($flex-order-mobile, $i);
+        }
+      }
+      @include screen(web) {
+        padding-bottom: calc($height1106px / $design-grid-full) * 100%;
+        @for $i from 1 through length($document-order) {
+          .c-block-image__cover:nth-child(#{$i}) {
+            order: list.nth($flex-order, $i);
+          }
+        }
+      }
+    }
+  }
+  // block : content box
+  .c-content-box {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding-bottom: calc(2 / 3) * 100%;
+    margin-top: rem($gutter-m);
+    @include lgness-radius('default');
+    overflow: hidden;
+    @include screen(web) {
+      margin-top: rem($gutter-w);
+    }
+
+    // size variation
+    &[data-ratio='1-1'] {
+      padding-bottom: 100%;
+    }
+    &[data-ratio='3-4'] {
+      padding-bottom: 133.34%;
+    }
+    &[data-ratio='4-3'] {
+      padding-bottom: 75%;
+    }
+    &[data-ratio='9-16'] {
+      padding-bottom: 177.78%;
+    }
+
+    .c-content-box__banner,
+    .c-content-box__bodycopy {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      overflow: hidden;
+    }
+    .c-content-box__banner {
+      img {
+        width: 100%;
+        height: 100%; // wrong image size check for admin
+        transition: transform 300ms ease;
+      }
+    }
+    .c-content-box__bodycopy {
+      background-color: rgb(51 51 51 / 40%);
+      opacity: 0;
+      z-index: -$z-index1;
+      font-weight: $font-semibold;
+      color: $white;
+      // margin:auto;
+      @include screen(web) {
+        transition: opacity 100ms;
+      }
+      .cmp-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        max-width: rem($max-width316px + $gutter-w * 2);
+        padding: rem($gutter-w);
+        color: inherit;
+      }
+    }
+    .c-content-box__headline {
+      position: absolute;
+      bottom: rem($padding10px);
+      left: rem($padding10px);
+      width: calc(100% - rem($padding14px + $padding10px * 2 + $icon16px));
+      @include screen(web) {
+        bottom: rem($padding26px);
+        left: rem($padding30px);
+        width: calc(100% - rem($padding30px + $padding30px * 2 + $icon24px));
+      }
+    }
+
+    &:focus,
+    &:hover {
+      .c-content-box__banner img {
+        transform: scale(1.1);
+      }
+      .c-content-box__bodycopy {
+        @include screen(web) {
+          opacity: 1;
+          z-index: 1;
+        }
+      }
+    }
+
+    $more-icon: '&[href] .c-content-box__banner:after';
+    #{$more-icon} {
+      content: '';
+      position: absolute;
+      bottom: rem($padding10px);
+      right: rem($padding10px);
+      display: block;
+      width: rem($icon16px);
+      height: rem($icon16px);
+      background: {
+        image: url($icon-plus-white-16-16);
+        repeat: no-repeat;
+        position: 50% 50%;
+        size: 100% auto;
+      }
+      background-size: 100% 100%;
+      @include screen(web) {
+        bottom: rem($padding26px);
+        right: rem($padding30px);
+        width: rem($icon24px);
+        height: rem($icon24px);
+        background-image: url($icon-plus-white-24-24);
+      }
+    }
+  }
+}
+
+// in the popup
+// block : interactive gallery
+.c-interactive-gallery {
+  // variable
+  $interactive-gallery: '.c-interactive-gallery';
+  $text-contents: '.c-text-contents';
+  // for handler's position
+  @include carousel-order-change(960, 540);
+  .c-render-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+  .c-text-contents {
+    display: flex;
+    flex-direction: column;
+    &__headline,
+    &__bodycopy {
+      @include screen(web) {
+        max-width: rem($text-box-width-md);
+      }
+    }
+  }
+  .c-image {
+    overflow: hidden;
+    @include lgness-radius('default');
+  }
+  .c-render-video__close-button {
+    z-index: $z-index1 * -1;
+  }
+  @at-root #{$interactive-gallery} {
+    #{$text-contents}__headline + #{$text-contents}__bodycopy {
+      margin-top: rem($margin8px);
+    }
+    .align-left #{$text-contents} {
+      align-items: flex-start; /* 230601 RTL */
+      text-align: left; /* 230601 RTL */
+    }
+    .align-center #{$text-contents} {
+      align-items: center;
+    }
+    .align-right #{$text-contents} {
+      align-items: flex-end #{'/*!rtl:flex-start*/'}; /*! RTL last keep colon */
+      text-align: right #{'/*!rtl:right*/'}; /*! RTL last keep colon */
+    }
+  }
+}

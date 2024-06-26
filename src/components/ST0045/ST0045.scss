@@ -1,0 +1,284 @@
+@charset "UTF-8";
+
+@use '../../scss/abstract/' as *;
+
+$component: '.ST0045';
+$carousel: '.c-carousel';
+$tag-carousel: '.c-tag-carousel';
+#{$component} {
+  margin: rem($margin30px 0 $margin40px);
+  overflow: visible;
+  @include screen(web) {
+    margin: rem($margin40px 0 $margin60px);
+  }
+
+  > .component > .cmp-container {
+    position: relative;
+  }
+
+  // sns-share
+  .c-sns-share {
+    display: flex;
+    justify-content: flex-end;
+    gap: rem($margin24px);
+
+    position: relative;
+    @include screen(web) {
+      position: absolute;
+      top: 0;
+      right: rem($block-margin-w);
+    }
+    @include screen(mobile) {
+      margin-bottom: rem($padding12px);
+    }
+
+    .c-icon-button {
+      vertical-align: top;
+    }
+  }
+  // tooltip
+  .c-tooltip {
+    &__container {
+      top: rem($padding14px);
+      right: 0;
+    }
+  }
+  // list
+  .c-list {
+    @include reset-list-style;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: rem($margin12px);
+    margin-top: rem($margin16px);
+    .only-mobile {
+      display: none;
+    }
+  }
+
+  // blcok : article title
+  .c-article-title {
+    position: relative;
+    @include container($design-grid-full, true);
+    @include inset-padding-hz;
+    > * {
+      max-width: rem($text-box-width-md);
+    }
+
+    &__user-info {
+      display: flex;
+
+      > * {
+        display: flex;
+        align-items: center;
+        color: $gray3;
+
+        &:not(:first-child)::before {
+          content: '';
+          display: inline-block;
+          background-color: $mid-gray1;
+          width: rem($width1px);
+          height: rem($height10px);
+          margin: 0 rem($margin8px);
+          @include screen(web) {
+            height: rem($height14px);
+            margin: 0 rem($margin16px);
+          }
+        }
+      }
+    }
+  }
+
+  .c-article-filter {
+    $filter: '.c-article-filter';
+    $arrow-size: $icon10px;
+    $arrow-touch-margin: $margin12px;
+    $arrow-touch-size: $arrow-size + $arrow-touch-margin * 2;
+    $arrow-margin: $padding38px;
+    // @debug $design-grid-full + ($arrow-touch-size + $padding38px) * 2;
+    // @debug $arrow-touch-size + $padding38px - $arrow-touch-margin;
+    // @include container($design-grid-full + ($arrow-touch-size + $padding38px) * 2);
+    @include container($design-grid-full);
+    // @include screen(web) {
+    //     padding-left: rem($block-margin-w - $arrow-touch-margin);
+    //     padding-right: rem($block-margin-w - $arrow-touch-margin);
+    // }
+
+    // element
+    &__inner {
+      position: relative;
+      // modifier
+      &--tag {
+        // padding: rem(0 $arrow-touch-size);
+        // @include screen(custom, rem($design-grid-full), min) {
+        //     padding: rem(0 $arrow-touch-size + $padding38px - $arrow-touch-margin);
+        // }
+
+        padding: 0;
+
+        #{$filter}__scroll {
+          padding: rem(0 $block-margin-m);
+          @include screen(web) {
+            padding: rem(0);
+            @include screen(custom, rem($design-grid-full + 1px), max) {
+              padding: rem(0 $block-margin-w);
+            }
+          }
+        }
+
+        // #{$filter}__scroll {
+        //     @include screen(web) {
+        //         scrollbar-width: none;
+        //         &::-webkit-scrollbar {
+        //             display: none;
+        //         }
+        //     }
+        // }
+      }
+    }
+    &__scroll {
+      overflow-y: hidden;
+      overflow-x: auto;
+    }
+    &__tag {
+      display: flex;
+      gap: rem($margin6px);
+      @include screen(web) {
+        gap: rem($margin10px);
+      }
+
+      #{$filter}__button {
+        text-decoration: initial;
+        border: rem($border1) solid $mid-gray2;
+        border-radius: $radius99;
+        padding: rem($padding14px $padding20px);
+        color: $black;
+        @include screen(web) {
+          padding-left: rem($padding24px);
+          padding-right: rem($padding24px);
+          &:hover,
+          &:focus-visible {
+            border-color: $active-red;
+            outline-offset: rem(-5px);
+          }
+        }
+        &.active {
+          border-color: $active-red;
+        }
+      }
+    }
+    &__button {
+      cursor: pointer;
+      background-color: transparent;
+      white-space: nowrap;
+      font-size: rem(14px);
+      line-height: rem(16px);
+      @include screen(web) {
+        line-height: rem(14px);
+        font-weight: $font-semibold;
+      }
+    }
+    &__btn-scroll {
+      position: absolute;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: rem($arrow-touch-size);
+      height: rem($height40px);
+      border: 0;
+      background-color: transparent;
+      padding: 0;
+      cursor: pointer;
+      &::before {
+        content: '';
+        display: block;
+        width: rem($icon7px);
+        height: rem($icon12px);
+        background-size: 100% auto;
+        background-image: url($icon-arrow-gray3-right-7-12);
+        background-repeat: no-repeat;
+        transform: none #{'/*!rtl:rotate(#{$degree180})*/'}; /*! RTL last keep colon */
+        @include screen(web) {
+          width: rem($icon10px);
+          height: rem($icon18px);
+          background-image: url($icon-arrow-gray3-right-10-18);
+        }
+      }
+      &:disabled::before {
+        background-image: url($icon-arrow-mid-gray1-right-7-12);
+        @include screen(web) {
+          background-image: url($icon-arrow-mid-gray1-right-10-18);
+        }
+      }
+      &--left {
+        left: 0;
+        @include screen(custom, rem($design-grid-full), max) {
+          border-right: rem($border1) solid $mid-gray1;
+        }
+        &::before {
+          transform: rotate($degree180) #{'/*!rtl:none*/'}; /*! RTL last keep colon */
+        }
+      }
+      &--right {
+        right: 0;
+        @include screen(custom, rem($design-grid-full), max) {
+          border-left: rem($border1) solid $mid-gray1;
+        }
+      }
+    }
+  }
+
+  // layout : margin
+  .c-text-contents__eyebrow + .c-text-contents__headline {
+    margin-top: rem($margin8px);
+  }
+  .c-text-contents__headline + .c-text-contents__bodycopy {
+    margin-top: rem($margin20px);
+    @include screen(web) {
+      margin-top: rem($margin32px);
+    }
+  }
+  .c-article-title__user-info {
+    margin-top: rem($margin12px);
+  }
+  .c-article-filter {
+    margin-top: rem($margin20px);
+  }
+
+  .CM0003 {
+    max-width: 100%;
+    .c-sns-share {
+      padding: 0;
+      border-bottom: 0;
+      position: relative;
+      @include screen(web) {
+        position: absolute;
+      }
+    }
+  }
+
+  &.bg-darkgray,
+  &.bg-black {
+    .c-article-title__user-info > * {
+      color: $white;
+    }
+    .c-article-filter__tag .c-article-filter__button {
+      border-color: $white;
+      outline-color: $white;
+      color: $white;
+    }
+    .c-icon-button {
+      color: $white !important;
+    }
+    .c-tooltip__contents {
+      .c-text-contents__bodycopy {
+        color: $gray3 !important;
+      }
+    }
+    .c-icon-button[class*='-share']:before {
+      background-image: url($icon-share-white-24-24);
+    }
+  }
+}

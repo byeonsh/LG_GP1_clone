@@ -1,0 +1,73 @@
+include ../_common/_image.pug
+include ../_common/_button.pug
+include ../_common/_carousel.pug
+include ../_common/_title-area.pug
+
+mixin ST0044(option=false)
+    mixin image
+        // block : image
+        .image.c-image
+            +printLazyImage(`https://via.placeholder.com/930x1200/999999/333333`)
+            if block
+                block
+        .swiper-lazy-preloader
+
+    mixin img-contents
+        // block : media contents
+        +image
+        
+
+    mixin carouselItem(params)
+        - var config = {id: '', ...params}
+        .cmp-carousel__item.swiper-slide(data-cmp-data-layer="" data-cmp-hook-carousel="item")
+            // block : floating contents
+            .c-floating-contents
+                .c-floating-contents__floor
+                    +img-contents
+                .c-floating-contents__floating
+                    // block : text contents
+                    .c-text-contents.font-black
+                        .title.c-text-contents__headline
+                            .cmp-title.font-w-light-36.font-m-light-24(data-cmp-data-layer="" id= config.id)
+                                strong How to find the best TV for my lifestyle.
+                    // block : cta 
+                    .button.c-cta
+                        +defaultButton({name: 'Learn More', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: false})(aria-labelledby= config.id)
+                    if block
+                        block
+
+    .c-wrapper.ST0044.margin-top.margin-bottom.border-top
+        .component
+            .cmp-container
+                // 23.02.14 - changed markup
+                if option != 'NOTITLE'
+                    +component-title-area({
+                        headline : {
+                            text : "A Better way to shop with LG",
+                        },
+                        description : {
+                            style : 'font-w-normal-24 font-m-normal-14',
+                            text : "Make life better with our tips, information, and advice.",
+                        }
+                    })(class="c-region-header--vacate-side")
+
+                // carousel
+                .carousel.panelcontainer
+                    // block : carousel
+                    .cmp-carousel.swiper.c-carousel(data-cmp-data-layer="")
+                        .cmp-carousel__content.swiper-wrapper
+                            if option == 'LESS3'
+                                - for (var x = 0; x < 3; x++)
+                                    +carouselItem
+                            else 
+                                - for (var x = 0; x < 5; x++)
+                                    +carouselItem({
+                                        id: `item_`+`${x}`
+                                    })
+                        // 23.02.14 modified markup - added ".c-carousel__handler--dial", ".c-carousel__handler--away-from-carousel"
+                        .c-carousel__handler
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"prev"})
+                            +carouselPagination
+                            .cmp-carousel__actions
+                                +carouselBtn({type:"pagination", direction:"next"})

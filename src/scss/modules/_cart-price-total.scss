@@ -1,0 +1,994 @@
+@use '../abstract/' as *;
+@mixin cart-price-total {
+  $component: '.cart-price-total';
+  #{$component} {
+    .toast-popup {
+      margin: 0 rem($margin16px);
+      width: calc(100% - rem(32px));
+      @media (min-width: $mobile) and (max-width: rem(980px)) {
+        margin: 0 rem($margin16px);
+        width: calc(100% - rem(32px));
+      }
+      @include screen(web) {
+        margin: 0;
+        width: 100%;
+      }
+    }
+    // -------------------------------------------- total
+    .c-product-price-sticky {
+      $block: '.c-product-price-sticky';
+      // margin-top: rem($margin20px);
+      z-index: $stacking-floor;
+      transition: padding 0.3s;
+      @media (min-width: $mobile) and (max-width: rem(980px)) {
+        z-index: $stacking-floor;
+        transition: padding 0.3s;
+      }
+      @include screen(web) {
+        position: sticky;
+        top: 0;
+        // padding-top: rem($padding10px);
+      }
+      .c-product-pay-cta.button {
+        @media (min-width: $mobile) and (max-width: rem(980px)) {
+          margin-top: rem($margin12px);
+          padding: 0;
+        }
+        @include screen(mobile) {
+          margin-top: rem($margin12px);
+          padding: 0;
+        }
+      }
+      .toast-popup {
+        margin-bottom: rem($margin10px);
+        @media (min-width: $mobile) and (max-width: rem(980px)) {
+          margin-bottom: rem($margin10px);
+        }
+        @include screen(web) {
+          margin-bottom: 0;
+        }
+      }
+      // mobile에서 bottom fixed UI일경우
+      &--m-bottom-fixed {
+        @include screen(mobile) {
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+          top: initial;
+          // @include screen(landscape) {
+          //     position: relative !important;
+          // }
+          z-index: 10 !important;
+        }
+        @media (min-width: $mobile) and (max-width: rem(980px)) {
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+          top: initial;
+        }
+      }
+      // mobile에서 detail toggle UI
+      &:not(#{$block}--fold-toggle) {
+        .c-product-price-information__btn-toggle {
+          display: none;
+        }
+      }
+    }
+    .c-product-price--expand-bottom {
+      @include screen(mobile) {
+        position: static !important;
+        bottom: 0;
+        box-shadow: none !important;
+        margin-top: rem($margin14px);
+        padding: 0 rem($padding25px);
+        .text-discount {
+          display: none !important;
+        }
+        .c-product-price-information__btn-toggle {
+          display: none;
+        }
+        .c-price-box {
+          max-height: 100vw !important;
+        }
+        .c-price-info__discount {
+          position: static !important;
+        }
+        .c-product-price-information {
+          margin-top: rem($margin20px);
+          padding: 0 0 rem($padding20px) 0;
+          border: none;
+          box-shadow: none;
+          background: transparent;
+        }
+        .c-product-price-information__inner {
+          padding: rem($padding13px $padding10px);
+          border: rem($border1) solid $graye6;
+          border-radius: rem($radius8);
+          background-color: $white;
+        }
+        .c-product-pay-cta.button {
+          margin-top: rem($margin20px);
+        }
+      }
+      @media (min-width: $mobile) and (max-width: rem(980px)) {
+        position: static !important;
+        bottom: 0;
+        box-shadow: none !important;
+        margin-top: rem($margin14px);
+        padding: 0 rem($padding25px);
+        .text-discount {
+          display: none !important;
+        }
+        .c-product-price-information__btn-toggle {
+          display: none;
+        }
+        .c-price-box {
+          max-height: 100vw !important;
+        }
+        .c-price-info__discount {
+          position: static !important;
+        }
+        .c-product-price-information {
+          margin-top: rem($margin20px);
+          padding: 0 0 rem($padding20px) 0;
+          border: none;
+          box-shadow: none;
+          background: transparent;
+        }
+        .c-product-price-information__inner {
+          padding: rem($padding13px $padding10px);
+          border: rem($border1) solid $graye6;
+          border-radius: rem($radius8);
+          background-color: $white;
+        }
+        .c-product-pay-cta.button {
+          margin-top: rem($margin20px);
+        }
+      }
+    }
+    // block : product price information
+    .c-product-price-information {
+      position: relative;
+      padding: rem(0 $padding16px $padding16px);
+      @include lgness-radius('default');
+      box-shadow: 0 rem(-4px) rem(4px) rgb(0 0 0 / 5%);
+      background-color: $white;
+      @include screen(mobile) {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      @media (min-width: $mobile) and (max-width: rem(980px)) {
+        position: relative;
+        padding: rem(0 $padding16px $padding16px);
+        // @include lgness-radius('default');
+        box-shadow: 0 rem(-4px) rem(4px) rgb(0 0 0 / 5%);
+        background-color: $white;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      @include screen(web) {
+        // border: rem($border1) solid $graye6;
+        padding: rem($padding24px);
+        box-shadow: unset;
+      }
+      &--empty {
+        .c-product-total-price__box {
+          padding-top: 0 !important;
+          @media (min-width: $mobile) and (max-width: rem(980px)) {
+            padding-top: 0 !important;
+          }
+        }
+        .c-product-price-information__btn-toggle {
+          display: none;
+          @media (min-width: $mobile) and (max-width: rem(980px)) {
+            display: none;
+          }
+        }
+        .buy-total__container {
+          display: none;
+          @media (min-width: $mobile) and (max-width: rem(980px)) {
+            display: none;
+          }
+        }
+        .c-product-price-information__inner {
+          // padding-top: rem($padding30px) !important;
+        }
+      }
+      &.active,
+      &.open {
+        .c-product-price-information__btn-toggle {
+          button {
+            &::before {
+              transform: none;
+              @media (min-width: $mobile) and (max-width: rem(980px)) {
+                transform: none;
+              }
+            }
+          }
+        }
+        .c-price-box {
+          max-height: 100vh;
+          overflow: inherit;
+          @media (min-width: $mobile) and (max-width: rem(980px)) {
+            max-height: 100vh;
+          }
+        }
+        .c-product-total-price__guide-msg {
+          display: block;
+          @include screen(web) {
+            display: block;
+          }
+        }
+      }
+      &.close {
+        .c-price-box {
+          max-height: 0;
+          @include screen(web) {
+            max-height: 100%;
+          }
+          @media (min-width: $mobile) and (max-width: rem(980px)) {
+            max-height: 0;
+          }
+        }
+        .text-coupon {
+          max-height: 0;
+          overflow: hidden;
+          @media (min-width: $mobile) and (max-width: rem(980px)) {
+            max-height: 0;
+            overflow: hidden;
+          }
+          @include screen(web) {
+            max-height: 100%;
+          }
+        }
+        .buy-total__container {
+          &--discount-sapce {
+            position: relative;
+            // .c-price-info__discount {
+            //     position: absolute;
+            //     right: 0;
+            //     bottom: 0;
+            // }
+            .c-price-info__title {
+              margin-right: rem(3px);
+            }
+            @media (min-width: $mobile) and (max-width: rem(980px)) {
+              position: relative;
+              .c-price-info__title {
+                margin-right: rem(3px);
+              }
+            }
+          }
+        }
+        .text-discount {
+          display: flex;
+          @media (min-width: $mobile) and (max-width: rem(980px)) {
+            display: flex;
+          }
+        }
+        // [Start] 2023-06-12 : UPDATE - text show/hide mobile active */
+        .c-product-card-info {
+          display: none;
+          @include screen(web) {
+            display: flex;
+          }
+        }
+        // [End] 2023-06-12 : UPDATE - text show/hide mobile active */
+        .c-product-total-price__guide-msg {
+          display: none;
+          @include screen(web) {
+            display: block;
+          }
+        }
+      }
+      &__inner {
+        margin-top: 0;
+        @include screen(mobile) {
+          padding-bottom: 0;
+          border: none;
+          border-radius: rem($radius8);
+        }
+        @media (min-width: $mobile) and (max-width: rem(980px)) {
+          padding-bottom: 0;
+          border: none;
+          border-radius: rem($radius8);
+        }
+      }
+      &__btn-toggle {
+        // position: absolute;
+        // top: 0;
+        // left: 0;
+        // margin: rem(0 $block-margin-w);
+        // width: calc(100% - rem($block-margin-w * 2));
+        // display: block;
+        text-align: center;
+        @include screen(web) {
+          display: none;
+        }
+        @media (min-width: $mobile) and (max-width: rem(980px)) {
+          position: absolute;
+          top: 0;
+          left: 0;
+          margin: rem(0 $block-margin-w);
+          width: calc(100% - rem($block-margin-w * 2));
+          display: block;
+          text-align: center;
+        }
+        button {
+          position: relative;
+          // display: flex;
+          // align-items: center;
+          // justify-content: center;
+          width: rem(27px);
+          height: rem(27px);
+          cursor: pointer;
+          background: transparent;
+          border: none;
+          padding: 0;
+          &:before {
+            content: '';
+            display: inline-block;
+            margin-top: rem($margin12px);
+            width: rem(12px);
+            height: rem(10px);
+            transform: rotate($degree180);
+            background: {
+              position: center;
+              size: auto;
+              repeat: no-repeat;
+              color: transparent;
+              image: url($icon-arrow-gray3-down-18-10);
+            }
+          }
+        }
+      }
+    }
+    .toast-popup + .c-product-price-information {
+      @include screen(web) {
+        margin-top: rem($margin10px);
+      }
+    }
+    // .buy-total__container {
+    //     // margin-top: rem($margin15px);
+    //     @include screen(web) {
+    //         margin-top: rem($margin20px);
+    //     }
+    // }
+    .c-price-box {
+      overflow: hidden;
+      flex-direction: column;
+      gap: rem($margin8px);
+      transition: max-height ease-in-out 0.1s;
+      .c-list {
+        @include reset-list-style;
+      }
+      @include screen(web) {
+        overflow: inherit;
+      }
+      // [Start] 2023-06-29 : UPDATE - tablet size */
+      @media (min-width: $mobile) and (max-width: rem(980px)) {
+        overflow: hidden;
+      }
+      // [End] 2023-06-29 : UPDATE - tablet size */
+      &__item {
+        margin-top: rem($margin12px);
+        border-top: rem($border1) solid $warm-gray;
+        padding: rem($padding12px 0 0);
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        @media (min-width: $mobile) and (max-width: rem(980px)) {
+          margin-top: rem($margin12px);
+          padding: rem($padding12px 0 0);
+        }
+        @include screen(web) {
+          margin-top: rem($margin16px);
+          padding: rem($padding16px 0 0);
+        }
+        &--promotion {
+          font-weight: $font-bold;
+          @include screen(mobile) {
+            display: flex;
+            flex-direction: column;
+            column-gap: rem($margin2px);
+          }
+          @media (min-width: $mobile) and (max-width: rem(980px)) {
+            display: flex;
+            flex-direction: column;
+            column-gap: rem($margin2px);
+          }
+        }
+        &--special-price {
+          font-weight: $font-semibold;
+          .c-list {
+            display: flex;
+            column-gap: rem($margin20px);
+            flex-wrap: wrap;
+            &__item {
+              position: relative;
+              &:not(:first-child) {
+                &::before {
+                  content: '';
+                  display: block;
+                  position: absolute;
+                  top: rem($padding5px);
+                  left: calc(rem(-$margin20px) / 2);
+                  width: rem($width1px);
+                  height: rem($height12px);
+                  background-color: $graye6;
+                }
+              }
+              &.limited-qty {
+                @include screen(custom, rem($tablet), max) {
+                  width: 100%;
+                  &::before {
+                    display: none;
+                  }
+                }
+              }
+            }
+          }
+          .qty {
+            display: inline-flex;
+            align-items: center;
+            background-color: $red;
+            color: $white;
+            font-style: normal;
+            padding: rem($padding2px $padding5px);
+            margin-left: rem($margin8px);
+            border-radius: rem($radius999);
+            font-size: rem(11px);
+            line-height: 1;
+            @media (min-width: $mobile) and (max-width: rem(980px)) {
+              padding: rem($padding3px $padding5px);
+              font-size: rem(12px);
+              line-height: 1;
+            }
+            &.zero {
+              background-color: $grayb;
+              span {
+                opacity: 0.5;
+              }
+            }
+          }
+        }
+      }
+    }
+    // price info
+    .c-price-info {
+      $c-price-info: '.c-price-info';
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      & + .c-price-info {
+        @include screen(web) {
+          margin-top: rem($margin10px);
+        }
+      }
+      &__subject {
+        &:not(:first-child) {
+          margin-top: rem($margin12px);
+          @media (min-width: $mobile) and (max-width: rem(980px)) {
+            margin-top: rem($margin12px);
+          }
+          @include screen(web) {
+            margin-top: rem($margin16px);
+          }
+        }
+        &.font-red {
+          p {
+            color: #ea1917;
+          }
+        }
+      }
+      &__title {
+        display: flex;
+        column-gap: rem($margin6px);
+        font-weight: $font-regular;
+        // [Start] 2023-08-11 : UPDATE - c-price-info__title font-size
+        // font-size: rem(24px);
+        // [End] 2023-08-11 : UPDATE - c-price-info__title font-size
+        color: $black;
+      }
+      &__price {
+        font-size: rem(16px);
+        line-height: rem(18px);
+        font-weight: $font-regular;
+        color: $black;
+        &.font-red {
+          p {
+            color: #ea1917;
+          }
+        }
+        @media (min-width: $mobile) and (max-width: rem(980px)) {
+          font-size: rem(16px);
+          line-height: rem(18px);
+        }
+        @include screen(web) {
+          font-size: rem(20px);
+          line-height: rem(20px);
+        }
+        .smallFont {
+          font-size: rem(12px);
+          @media (min-width: $mobile) and (max-width: rem(980px)) {
+            font-size: rem(14px);
+          }
+          @include screen(web) {
+            font-size: rem(16px);
+          }
+        }
+        sup.smallFont {
+          margin-top: rem($margin6px);
+        }
+      }
+      &.sub-tree {
+        .c-price-info__title {
+          position: relative;
+          display: flex;
+          &:before {
+            content: '';
+            width: rem($width10px);
+            height: rem($height10px);
+            border-style: solid;
+            margin: rem(0 $margin4px 0 $margin10px);
+            border: {
+              style: solid;
+              color: $black;
+              width: rem(0 0 $border1 $border1);
+            }
+          }
+        }
+      }
+      &.dimmed {
+        opacity: 0.5;
+      }
+      &.font-red {
+        a {
+          color: inherit;
+          text-decoration: underline;
+        }
+      }
+      &-point {
+        font-size: rem(12px);
+        line-height: rem(12px);
+        margin-top: rem($margin8px);
+        &__copy {
+          font-size: rem(12px);
+          line-height: rem(14px);
+          @include screen(web) {
+            font-size: rem(16px);
+            line-height: rem(18px);
+          }
+        }
+      }
+      &-detail {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: $gray6;
+        font-weight: $font-regular;
+        // [Start] 2023-06-14 : UPDATE - update margin-top */
+        margin-top: rem($margin4px);
+        @include screen(web) {
+          margin-top: rem($margin8px);
+        }
+        // [End] 2023-06-14 : UPDATE - update margin-top */
+        & + .c-price-info {
+          @include screen(web) {
+            margin-top: rem($margin16px);
+          }
+        }
+        &__name {
+          position: relative;
+          font-size: rem(12px);
+          line-height: rem(18px);
+          @media (min-width: $mobile) and (max-width: rem(980px)) {
+            font-size: rem(12px);
+          }
+          @include screen(web) {
+            font-size: rem(16px);
+          }
+          span {
+            @include screen(web) {
+              // display: inline-block;
+              line-height: rem(18px);
+            }
+            .c-tooltip {
+              width: rem(16px);
+              height: rem(16px);
+              position: absolute;
+              right: rem(-20px);
+              bottom: rem(-2px);
+              z-index: 1;
+              @include screen(web) {
+                bottom: 0;
+                top: 50%;
+                transform: translateY(-50%);
+              }
+              .button {
+                position: relative;
+                z-index: 1;
+              }
+              &__container {
+                z-index: 2;
+              }
+            }
+          }
+        }
+        &__price {
+          font-weight: $font-regular;
+          font-size: rem(12px);
+          @media (min-width: $mobile) and (max-width: rem(980px)) {
+            font-size: rem(12px);
+          }
+          @include screen(web) {
+            font-size: rem(16px);
+            line-height: rem(16px);
+          }
+        }
+        &.payAtDoor {
+          .c-price-info-detail__name,
+          .c-price-info-detail__price {
+            color: $black;
+            font-size: rem(16px);
+            line-height: rem(16px);
+            @include screen(web) {
+              font-size: rem(20px);
+              line-height: rem(20px);
+            }
+          }
+        }
+      }
+      &.EarnedPoint {
+        margin-top: rem($margin16px);
+        border-top: rem($border1) solid $graye6;
+        padding-top: rem($padding16px);
+        line-height: rem(22px);
+        color: $gray6;
+        // font-size: rem(12px);
+        // @media (min-width: $mobile) and (max-width: rem(980px)) {
+        //     font-size: rem(12px);
+        // }
+        // @include screen(web) {
+        //     font-size: rem(16px);
+        // }
+      }
+      &--payment-info {
+        margin: rem(11px) rem(-23px) 0 !important;
+        padding: rem($padding10px) rem(23px) 0;
+        border-top: rem($border1) solid $graye6;
+        @media (min-width: $mobile) and (max-width: rem(980px)) {
+          margin: rem(11px) rem(-23px) 0 !important;
+          padding: rem($padding10px) rem(23px) 0;
+        }
+        @include screen(web) {
+          margin: rem(24px) rem(-25px) 0 !important;
+          padding: rem($padding20px) rem($padding25px) 0;
+        }
+      }
+    }
+    .c-price__smallFont {
+      font-size: 0.889em;
+      @include screen(web) {
+        font-size: 0.8em;
+      }
+    }
+    // product pay cta
+    .c-product-pay-cta {
+      // padding-bottom: rem($padding20px);
+      @include screen(mobile) {
+        margin-top: rem($margin12px);
+        padding-left: rem($block-margin-m);
+        padding-right: rem($block-margin-m);
+      }
+      @media (min-width: $mobile) and (max-width: rem(980px)) {
+        margin-top: rem($margin12px);
+        padding-left: rem($block-margin-m);
+        padding-right: rem($block-margin-m);
+      }
+      @include screen(web) {
+        margin-top: rem($margin20px);
+      }
+      .c-button {
+        width: 100%;
+      }
+    }
+    .c-product-card-info {
+      display: flex;
+      justify-content: flex-end;
+      // flex-direction: column;
+      align-items: center;
+      row-gap: rem($margin8px);
+      margin-top: rem($margin12px);
+      @include screen(web) {
+        justify-content: flex-end;
+        align-items: center;
+        flex-direction: row;
+        // row-gap: 0;
+        margin-top: rem($margin20px);
+      }
+      @media (min-width: $mobile) and (max-width: rem(980px)) {
+        align-items: flex-end;
+        // flex-direction: column;
+        row-gap: rem($margin8px);
+        margin-top: rem($margin12px);
+      }
+      &__image {
+        display: flex;
+        column-gap: rem($margin8px);
+        @media (min-width: $mobile) and (max-width: rem(980px)) {
+          column-gap: rem($margin16px);
+        }
+        svg {
+          width: 100%;
+        }
+      }
+      &__text {
+        line-height: rem(20px);
+        white-space: nowrap;
+        @media (min-width: $mobile) and (max-width: rem(980px)) {
+          line-height: rem(20px);
+        }
+        @include screen(web) {
+          line-height: rem(22px);
+        }
+        // [Start] 2023-06-02 : ADD - added message */
+        &-sub {
+          margin-top: rem($margin12px);
+        }
+        // [End] 2023-06-02 : ADD - added message */
+      }
+    }
+    .c-product-total-price {
+      &__box {
+        display: flex;
+        justify-content: space-between;
+        // [Start] 2023-07-19 : UPDATE - total price */
+        flex-wrap: wrap;
+        // [End] 2023-07-19 : UPDATE - total price */
+        .cmp-text {
+          line-height: rem(20px);
+          @media (min-width: $mobile) and (max-width: rem(980px)) {
+            line-height: rem(20px);
+          }
+          @include screen(web) {
+            line-height: rem(32px);
+          }
+          sup {
+            top: rem(-4.8px);
+            font-size: rem(15px);
+            line-height: 0;
+            @include screen(web) {
+              top: rem(-9.6px);
+              font-size: rem(20px);
+            }
+          }
+        }
+      }
+      &__num {
+        display: flex;
+        // align-items: center;
+        gap: rem($margin10px);
+        text-align: right;
+        // [Start] 2023-07-19 : UPDATE - total price */
+        flex: 1;
+        flex-direction: column;
+        align-items: flex-end;
+        // [End] 2023-07-19 : UPDATE - total price */
+        span {
+          line-height: rem(23px);
+          @media (min-width: $mobile) and (max-width: rem(980px)) {
+            line-height: rem(23px);
+          }
+          @include screen(web) {
+            line-height: rem(32px);
+          }
+        }
+        strong {
+          font-weight: inherit;
+          display: inline-block;
+          line-height: rem(20px);
+          height: rem(20px);
+          @media (min-width: $mobile) and (max-width: rem(980px)) {
+            line-height: rem(20px);
+            height: rem(20px);
+          }
+          @include screen(web) {
+            line-height: rem(32px);
+            height: rem(32px);
+          }
+        }
+        .smallFont {
+          font-size: rem(12px);
+          @include screen(web) {
+            font-size: rem(20px);
+          }
+        }
+        sup.smallFont {
+          margin-top: rem($margin6px);
+        }
+      }
+      &__payment {
+        display: flex;
+        flex-direction: column;
+        row-gap: rem($margin6px);
+        margin-top: rem($margin12px);
+      }
+      &__link {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        // text-decoration: underline;
+        column-gap: rem($margin8px);
+        // color: ;
+      }
+      .icon-afterpay {
+        &:before {
+          display: block;
+          content: '';
+          width: rem($icon72px);
+          height: rem($icon16px);
+          background: {
+            position: center;
+            size: auto;
+            repeat: no-repeat;
+            image: url($icon-logo-afterpay-black-72-16);
+          }
+        }
+      }
+      .icon-zip {
+        &:before {
+          display: block;
+          content: '';
+          width: rem($icon41px);
+          height: rem($icon16px);
+          background: {
+            position: center;
+            size: auto;
+            repeat: no-repeat;
+            image: url($icon-logo-zip-black-41-16);
+          }
+        }
+      }
+      &__guide-msg {
+        color: $mid-gray2;
+        margin-top: rem($margin4px);
+      }
+    }
+    .text-coupon {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      gap: rem(6px);
+      margin-top: rem($margin6px);
+      .c-image__img {
+        width: rem($width24px);
+      }
+      .c-button {
+        margin-left: auto;
+      }
+      span {
+        font-size: rem(12px);
+        line-height: rem(24px);
+        @media (min-width: $mobile) and (max-width: rem(980px)) {
+          font-size: rem(12px);
+        }
+        @include screen(web) {
+          font-size: rem(14px);
+        }
+      }
+    }
+    .text-discount {
+      display: none;
+      width: 100%;
+      justify-content: flex-end;
+      margin-top: rem($margin6px);
+      @include screen(web) {
+        display: none !important;
+      }
+      .font-red {
+        color: #bf0c3f;
+      }
+    }
+  }
+  // RO CA EHF tooltip
+  .infoTooltipWrap {
+    position: relative;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    color: #646464;
+  }
+  .infoTooltipArea {
+    .btnInfoTooltip {
+      display: flex;
+      width: 12px;
+      height: 12px;
+      background: url($icon-exclamation-mid-gray2-16-16);
+      background-size: 12px 12px;
+      border: 0;
+      cursor: pointer;
+    }
+    .infoTooltipNote {
+      display: none;
+      position: absolute;
+      z-index: 100;
+      min-width: rem(230px);
+      max-width: rem(280px);
+      left: 0;
+      right: rem(16px);
+      bottom: rem(20px);
+      background: #fff;
+      padding: 24px 24px 23px;
+      border-radius: 20px;
+      border: 1px solid #cbc8c2;
+      box-shadow: 0 4px 12px rgb(0 0 0 / 25%);
+      font-size: 16px;
+      color: #333;
+      font-weight: 400;
+      line-height: 20px;
+      .linkMore {
+        a {
+          display: inline-block;
+          margin-top: 9px;
+          font-size: 14px;
+          color: #000;
+          font-weight: 600;
+          gap: 5px;
+          align-items: center;
+          cursor: pointer;
+          text-decoration: none;
+          &::after {
+            content: '';
+            display: inline-block;
+            width: 9px;
+            height: 14px;
+            background: url($icon-arrow-black-right-9-14);
+            vertical-align: top;
+            margin-top: 3px;
+          }
+        }
+      }
+      .bottomArrow {
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        display: block;
+        width: 10px;
+        height: 10px;
+        background-color: #fff;
+        border-right: 1px solid #cbc8c2;
+        border-bottom: 1px solid #cbc8c2;
+        border-radius: 2px;
+        transform: rotate(45deg);
+      }
+      .btnClose {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 12px;
+        height: 12px;
+        background: url($icon-tooltip-close-12-12);
+        background-size: 12px 12px;
+        border: 0;
+        cursor: pointer;
+      }
+      &.active {
+        display: block;
+      }
+    }
+    @include screen(web) {
+      .btnInfoTooltip {
+        width: 16px;
+        height: 16px;
+        background: url($icon-exclamation-mid-gray2-16-16);
+        background-size: 16px 16px;
+      }
+      .infoTooltipNote {
+        min-width: rem(280px);
+        max-width: rem(280px);
+        bottom: rem(30px);
+      }
+    }
+  }
+}

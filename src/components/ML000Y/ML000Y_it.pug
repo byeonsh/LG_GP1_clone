@@ -1,0 +1,205 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+
+block meta 
+    - var componentId = "ML000Y"
+    - var componentName = "View Profile"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+    
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-16.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+            if data.required
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)
+            else 
+                if data.active
+                    input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value)&attributes(attributes)
+                    if data.search 
+                        button(type='button' class='my-form__search__icon')
+                            span.sr-only search
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`,)&attributes(attributes)
+                    if data.search 
+                        button(type='button' class='my-form__search__icon')
+                            span.sr-only search
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+                
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin printProfile(params)
+    - let data = {...params}
+    each set in data
+        dl(class=`${set.title=='Address' ? 'my-formbox__profile__box my-formbox__profile__box--wide' : 'my-formbox__profile__box'}`) 
+            dt.my-formbox__profile__title 
+                .c-text-contents.align-text-left
+                    .c-text-contents__bodycopy
+                        span.font-w-normal-16.font-m-semibold-16 !{set.title} 
+            dt.my-formbox__profile__text 
+                .c-text-contents.align-text-left
+                    .c-text-contents__bodycopy
+                        span.font-w-normal-20.font-m-normal-16 !{set.text}
+
+mixin myLinkedLoginIcon(params)
+    - let data = {...params}
+    .my-linkedlogin-icon
+        .my-linkedlogin-icon__title
+            .c-text-contents
+                .title.c-text-contents__bodycopy
+                    span.font-w-normal-16.font-m-normal-14 !{data.title}
+        ul.my-linkedlogin-icon__list
+            each set in data.loginApp
+                li 
+                    a(class='my-linkedlogin-icon__ico-box' href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                        i(class=`my-linkedlogin-icon__ico my-linkedlogin-icon__ico--${set.apps}`)
+                        span.sr-only= set.apps
+
+mixin ML000Y
+    .c-wrapper.ML000Y
+        .component
+            .fluid-container
+                .my-component.my-page-title
+                    .c-text-contents.my-component__title-section
+                        .c-text-contents__headline
+                            +headline("font-w-light-56 font-m-light-28", "h2", "Profile")
+                .my-component__wrap.border-only-web
+                    .my-component.my-component--form-type
+                        .my-formbox
+                            .my-formbox__title
+                                .c-text-contents
+                                    .title.c-text-contents__headline
+                                        p.font-w-normal-32.font-m-normal-20 Account and Personal Information
+                            .my-formbox__container
+                                .my-formbox__profile
+                                    +printProfile([
+                                        {
+                                            title:"Name",
+                                            text:"Rob*** Pa**",
+                                        },
+                                        {
+                                            title:"Country",
+                                            text:"United *********",
+                                        },
+                                        {
+                                            title:"Address",
+                                            text:"253A Portobello***************",
+                                        },
+                                        {
+                                            title:"Telephone",
+                                            text:"3839*****",
+                                        },
+                                        {
+                                            title:"Mobile phone",
+                                            text:"4393******",
+                                        },
+                                    ])
+                            .my-formbox__title
+                                .c-text-contents
+                                    .title.c-text-contents__headline
+                                        p.font-w-normal-32.font-m-normal-20 Receipt of Marketing Messages
+                            .my-formbox__container
+                                .my-check-msg
+                                    .my-check-msg__container
+                                        ul.my-check-msg__list
+                                            li.my-check-msg__item
+                                                p.font-w-normal-16.font-m-normal-14 I consent to being contacted by LGE and its affiliates about latest news and special offers by email, SMS, push notification, phone call, social media sites and/or other form of electronic messages.
+                                            li.my-check-msg__item
+                                                p.font-w-normal-16.font-m-normal-14 
+                                                    | I can change my mind at any time by following the instructions given in each communication channel including but not limited to email and in accordance with the LGE 
+                                                    +linkButton({type:"text",color:"red", underline:true, name:"privacy policy"}).
+                                    .my-check-msg__button.requireItem
+                                        +formCheckbox('I’d like to receive marketing message', "name1", "val1", `checkId1`, count="false")
+                                    .my-check-msg__button.requireItem
+                                        +formCheckbox('Dò il consenso al trattamento dei dati personali per analisi di abitudini, interessi e preferenze al fine di elaborare dei profili e ricevere comunicazioni e offerte mirate sulla base degli stessi (ad es. offerte e buoni sconto personalizzati come lo sconto in occasione del compleanno).', "name2", "val2", `checkId2`, count="false")
+                                    .my-check-msg__button.requireItem
+                                        +formCheckbox('Dò il consenso al trattamento dei dati personali per la comunicazione a terzi partner commerciali per finalità di marketing tramite email.', "name3", "val3", `checkId3`, count="false")
+                                .button.c-cta.my-formbox__button
+                                    // case 1. disabled button
+                                    +defaultButton({name: 'Save', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})(disabled='disabled')
+                                    // case 2. active button
+                                    //- +defaultButton({name: 'Save', wSize: 'medium', mSize: 'small', buttonStyle: 'highlight', isButton: true})
+                                    // <button class="cmp-button c-button c-button--default highlight m-small w-medium" type="button" data-cmp-data-layer=""><span class="cmp-button__text c-button__text">Save</span></button>
+                                +myInputForm([
+                                    {
+                                        type:"email",
+                                        label:"Email Account",
+                                        id:"emailAddressPersonalInfo01",
+                                        required:false,
+                                        placeholder:"abcd1****@gmail.com",
+                                        infoText:["Account email can not be changed."],
+                                        readonly: true
+                                    },
+                                    {
+                                        type:"email",
+                                        label:"Second Email Address",
+                                        id:"emailAddressPersonalInfo02",
+                                        required:false,
+                                        placeholder:"sjssk*****@gmail.com",
+                                        infoText:["Email address to receive info."],
+                                        readonly: true
+                                    },
+                                ])
+                                +myLinkedLoginIcon({
+                                title:"Social Media Account", 
+                                loginApp: [
+                                    {
+                                        apps:"amazon",
+                                    },
+                                    {
+                                        apps:"facebook",
+                                    },
+                                ]})
+
+                            .button.c-cta.my-button
+                                    +defaultButton({name: 'Delete', wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})
+                                    +defaultButton({name: 'Edit', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: false})
+
+block content
+    // Component Markup
+    +ML000Y

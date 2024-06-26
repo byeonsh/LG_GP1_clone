@@ -1,0 +1,648 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_toast.pug
+include ../_common/_pop-msg.pug
+
+block meta 
+    - var componentId = "ETC000C"
+    - var componentName = "Jeong-do Management"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+    
+mixin myPrintTab(div, num, selected)
+    if selected
+        li.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0" data-cmp-hook-tabs="tab" aria-selected="true")
+            if block
+                block
+    else 
+        li.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1" data-cmp-hook-tabs="tab" aria-selected="false")
+            if block
+                block
+
+mixin myPrintTabPanel(div, num, selected)
+    if selected 
+        .cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+            if block
+                block
+    else 
+        .cmp-tabs__tabpanel(id=`tabs-1-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-1-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+            if block
+                block
+
+mixin formTextarea(type, label, id, required=false, warningFirst=false, infoText=false, placeholder, inLayer=false, labelSrOnly=false )
+    .c-input-item.ty2(class=`${warningFirst ? 'my-warn' : ''}`)
+        if inLayer 
+            if block
+                block
+            else
+                label.font-w-normal-16.font-m-normal-14(for=`${id}`)= label
+                    if(required) 
+                        +required-text-sr
+        else 
+            if block
+                block
+            else
+                label.font-w-normal-16.font-m-normal-14(for=`${id}` class={'sr-only' : labelSrOnly})= label
+                    if(required) 
+                        +required-text-sr
+        //- Bad value true for attribute required on element input.
+        if required
+            textarea(id=`${id}`, placeholder=`${placeholder}`, maxlength=`${maxlength}`, required)&attributes(attributes)
+        
+        else
+            textarea(id=`${id}`, placeholder=`${placeholder}`, maxlength=`${maxlength}`)&attributes(attributes)
+            
+        if warningFirst || infoText
+            +myMsg({warningFirst: warningFirst, infoText: infoText})
+        .c-input-item--length.font-w-normal-16.font-m-normal-14
+            span.counting-num Characters left : 3000
+            span= `/ ${attributes.maxlength}`
+
+mixin upload-item(params)
+    - var buttonStyle = "c-button c-button--default default m-medium w-medium"
+    - var options = {fileName : "", ...params}
+    .c-upload-item(id=options.itemId)
+        .c-upload-item__container
+            .c-upload-item__indicator(class={"fill" : options.fileName.length > 0})
+                if options.fileName
+                    span.c-upload-item__file-name= options.fileName
+                else 
+                    span.c-upload-item__placeholder= options.placeholder
+                button.cmp-button.c-upload-item__file-remover(type="button" data-cmp-data-layer="" aria-controls=options.itemId)
+                    span.sr-only Remove
+            .c-upload-item__buttons
+                .c-upload-item__open-explorer
+                    input(type="file" id=options.inputId)
+                    label.c-upload-item__label(for=options.inputId class=buttonStyle) Upload
+                div
+                    if options.index == 0
+                        button.cmp-button.c-upload-item__button.c-upload-item__button(type="button" data-cmp-data-layer="")
+                            span.sr-only Add
+                    else
+                        button.cmp-button.c-upload-item__button.c-upload-item__button--remove(type="button" data-cmp-data-layer="" aria-controls=options.itemId)
+                            span.sr-only Remove
+        .c-upload-item__msg.font-m-normal-14.font-w-normal-16= options.validMsg
+
+mixin myFormRadio(params)
+    - let data = {...params}
+    .c-form__box.c-form__radio-box
+        each set in data
+            .c-form-box
+                .c-radio-item
+                    label.radio(for=`${set.id}`)
+                        input(type="radio" name=`${set.name}`, value=`${set.val}`, id=`${set.id}`)&attributes(attributes)
+                        span.label= set.label               
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+    if warningFirst
+        - for(var i=0; i < warningFirst.length; i++)
+            +invalid-warning(warningFirst[i])
+    if correct
+        - for(var i=0; i < correct.length; i++)
+            +valid-msg(correct[i])
+    if infoText
+        ul.my-input__info 
+            li.font-w-normal-16.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i])
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        ul.my-input__info 
+            li.font-w-normal-16.font-m-normal-14= infoTextSecond
+
+
+mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected, required= false})    
+    .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+        +formSelect(label, id, placeholder, required)
+            if optionVal
+                - for(var i=0; i < optionVal.length; i++)
+                    if selected === i + 1
+                        option(value="" selected)= optionVal[i]
+                    else
+                        option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText})
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst ? 'my-warn' : ''}` 
+    if data.type === 'select'
+        +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required}) 
+    else if data.type === 'radio'
+        +myFormRadio(params)
+    else if data.type === 'captcha'
+        +myCaptcha({label: data.label, id: data.id, placeholder: data.placeholder, warning: data.warning, required: data.required})
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                    if data.required
+                        em.c-required *
+                            span.sr-only Required fields
+            if data.required && !data.button && data.type !== "password"
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+                if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)            
+            else if data.button
+                if data.validation
+                    .input-button__container.input-button__container--validation
+                        .my-button-validation
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required)&attributes(attributes)
+                            +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                        each item in data.button
+                            .button.c-cta.button-full
+                                +defaultButton({name:item, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                else
+                    .input-button__container
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required)&attributes(attributes)
+                        // [Start] 2023-05-03 : ADD - email form case
+                        each item in data.button
+                            .button.c-cta.button-full
+                                +defaultButton({name:item, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                        // [End] 2023-05-03 : ADD - email form case
+            else 
+                if data.active
+                    input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value, required)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                    else if data.search 
+                        button(type='button' class='my-form__search__icon')
+                            span.sr-only search
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config} ${data.search ? 'my-form__search' : ''}`, required)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                    else if data.search 
+                        button(type='button' class='my-form__search__icon')
+                            span.sr-only search
+        if !data.validation 
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+                
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+                    if(set.label == 'Report type')
+                        .infoTxt 
+                            p Quando nossos funcionários ou seus familiares recebem ou exigem recompensa (dinheiro ou outros objetos de valor) das partes interessadas.
+                            ul 
+                                li - Recebimento de dinheiro, objetos de valor ou entretenimento (refeição, guloseima em estabelecimento indecente, esportes ou viagens)
+                                li - Compra/venda de bens (móveis ou imóveis) ou concessão/recebimento de um empréstimo para fins particulares
+mixin formCheckbox(label, name, val, id, count = "false", disabled = false, required)
+    .c-checkbox-item&attributes(attributes)
+        label.checkbox(for=`${id}`)
+            if(disabled)
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`, disabled="disabled")&attributes(attributes)
+            else 
+                input(type="checkbox", name=`${name}`, value=`${val}`, id=`${id}`)&attributes(attributes)
+            if(label)
+                span.label= label
+                    -if(count >= 0 & count != "false") // for filter
+                        sup.count= count 
+                    if required
+                        em.c-required *
+                            span.sr-only Required fields
+            else 
+                if block 
+                    span.label
+                        block
+mixin ETC000D(option=false)
+    if option == 'default'
+        .ETC000D
+
+
+mixin ETC000C(option=false)
+    if option == 'default'
+        .c-wrapper.ETC000C
+            .component
+                .fluid-container
+                    .my-component__wrap
+                        .my-component.head.borb
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline('font-w-light-56 font-m-light-28', "h2", "Offer to management")
+                                .text.c-text-contents__bodycopy.font-w-normal-20.font-m-normal-12
+                                    p.cmp-text(data-cmp-data-layer="") You can convey your views to management.
+                    .my-component--maximum
+                        .my-component
+                            .jeongdo__title--box
+                                .jeongdo__title.font-w-normal32.font-m-normal-12 Informant
+                                p.my-form-required.font-w-normal-16.font-m-normal-12
+                                    em.c-required * 
+                                        span.sr-only Required fields
+                                    | Required fields
+                            .jeongdo__box
+                                .my-formbox
+                                    +myInputForm([
+                                        {
+                                            type:"text",
+                                            label:"Name",
+                                            id:"Name",
+                                            required:true,
+                                            placeholder:"Name",
+                                        },
+                                        {
+                                            type:"text",
+                                            label:"Name",
+                                            id:"Name",
+                                            required:true,
+                                            warning: ["The name is required."],
+                                            placeholder:"Name",
+                                        },
+                                        {
+                                            type:"email",
+                                            label:"E-mail",
+                                            id:"email",
+                                            required:true,
+                                            placeholder:"Your email",
+                                            infoText: 'Your email address note it is case sensitive.',
+                                        },
+                                        {
+                                            type:"email",
+                                            label:"E-mail",
+                                            id:"email",
+                                            required:true,
+                                            warningFirst: ["Invalid email address.","Email is required."],
+                                            placeholder:"Your email",
+                                            infoText: 'Your email address note it is case sensitive.',
+                                        },
+                                        { 
+                                            type:"tel",
+                                            label:"Telephone number",
+                                            id:"telephoneNumber",
+                                            required:true,
+                                            placeholder:"Phone number",
+                                            infoText: 'Please input phone number without space.'
+                                        },
+                                        { 
+                                            type:"tel",
+                                            label:"Telephone number",
+                                            id:"telephoneNumber",
+                                            required:true,
+                                            warningFirst: ["This is not a valid phone number.","Telephone number is required."],
+                                            placeholder:"Phone number",
+                                            infoText: 'Please input phone number without space.'
+                                        },
+                                    ])
+                                    .c-form
+                                        label.font-w-normal-16.font-m-normal-14 Choose a report destination
+                                            em.c-required *
+                                                span.sr-only Required fields
+                                        +myFormRadio([
+                                            {
+                                                val: "Need to reply",
+                                                id: "needToReply",
+                                                label: "Need to reply",
+                                            },
+                                            {
+                                                val: "No reply required",
+                                                id: "noReplyRequired",
+                                                label: "No reply required",
+                                            },
+                                        ])
+                        .my-component
+                            .jeongdo__title.font-w-normal32.font-m-normal-12 Contents of report
+                            .jeongdo__box
+                                .my-formbox
+                                    +myInputForm([
+                                        {                                        
+                                            type: 'select',
+                                            optionVal: ['Select','Customer complaints', 'Unsatisfactory response','Delay / Inattentive service','Suggestions'],
+                                            label: 'Report type',
+                                            id: 'reportType',
+                                            required:true,                                                   
+                                        },
+                                        {                                        
+                                            type: 'select',
+                                            optionVal: ['Select','Customer complaints', 'Unsatisfactory response','Delay / Inattentive service','Suggestions'],
+                                            label: 'Report type',
+                                            id: 'reportType',
+                                            required:true,
+                                            warning: ["Report type is required."],                                                    
+                                        },    
+                                        {
+                                            type:"text",
+                                            label:"Title",
+                                            id:"title",
+                                            required:true,
+                                            warningFirst: ["Title is required."],
+                                            infoText: ["Characters left : 100 / 100"],
+                                            placeholder:"Enter title",
+                                        },
+                                    ])  
+                                    +formTextarea("text", "Contents", "comments", true, false, false, "Please provide as detailed information as possible.(e.g. who the employee in question is, where they work, what they did exactly, when/where this happened)If you provide relevant evidence (photos, documents, other supporting documents, etc.), it will be of great help to the investigation.(I will take all necessary measures to protect my identity and submitted evidence.)")(minLength="20", maxlength="3000")
+                                    +formTextarea("text", "Contents", "comments", true, ["Content is required."], false, "Please provide as detailed information as possible.(e.g. who the employee in question is, where they work, what they did exactly, when/where this happened)If you provide relevant evidence (photos, documents, other supporting documents, etc.), it will be of great help to the investigation.(I will take all necessary measures to protect my identity and submitted evidence.)")(minLength="20", maxlength="3000")
+                                    .c-input-item.ty2
+                                        label.font-w-normal-16.font-m-normal-14 Select a file to upload
+                                            //- em.c-required *
+                                            //-     span.sr-only Required fields
+                                        +upload-item({
+                                            index: 0,
+                                            itemId : "PR0005file04item",
+                                            inputId : "PR0005file04",
+                                            placeholder : "Select a file to upload",
+                                            validMsg :"File must be less than 10MB. Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip"
+                                        })
+                                        +upload-item({
+                                            itemId : "PR0005file01item",
+                                            inputId : "PR0005file01",
+                                            fileName : "22e646b35e51a064d2ac5cfbe54ddba8.jpg",
+                                            validMsg :"File must be less than 10MB. Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip"
+                                        })
+                                        +upload-item({
+                                            itemId : "PR0005file01item",
+                                            inputId : "PR0005file01",
+                                            fileName : "22e646b35e51a064d2ac5cfbe54ddba8.jpg",
+                                            validMsg :"File must be less than 10MB. Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip"
+                                        })
+                                    //- agree formbox
+                                    .agree_form
+                                        .agree-formbox
+                                            .agree-formbox__title
+                                                .cmp-text.c-text
+                                                    p Collection and use of personal information
+                                            .agree-formbox__scroll
+                                                .agree-formbox__scroll--text
+                                                    |    1. Personal information that may be collected<br>
+                                                    |    Surname and first name, email address, contact information (landline or mobile phone number), report content, report ID However, in the case of an
+                                                    |    anonymous report, no personal information will be collected and, in this case, there may be processing restrictions, such as acknowledgment of receipt of the report.<br>
+                                                    |    
+                                                    |    2. Purpose of collecting and using personal information<br>
+                                                    |    - Process complaints according to the report and return the results<br>
+                                                    |    - Pseudonymize or anonymize personal information in order to prevent recurrences and strengthen ethical management, and analyze and use personal information for statistical or scientific research purposes<br>
+                                                    |    1. Personal information that may be collected<br>
+                                                    |    Surname and first name, email address, contact information (landline or mobile phone number), report content, report ID However, in the case of an<br>
+                                                    |    anonymous report, no personal information will be collected and, in this case, there may be processing restrictions, such as acknowledgment of receipt of the report.<br>
+                                                    |    
+                                                    |    2. Purpose of collecting and using personal information<br>
+                                                    |    - Process complaints according to the report and return the results<br>
+                                                    |    - Pseudonymize or anonymize personal information in order to prevent recurrences and strengthen ethical management, and analyze and use personal information for statistical or scientific research purposes
+                                            .agree-formbox__check
+                                                +formCheckbox('I agree to the collection and use of personal information', "name", "val1", `checkId1`, count="false", disabled = false, required = true)
+                                                +postFormMessage("Please consent to the collection and use of personal information", "")
+                                        //- agree formbox
+                                        .agree-formbox
+                                            .agree-formbox__title
+                                                .cmp-text.c-text
+                                                    p Consent to provide personal information to a third party
+                                            .agree-formbox__scroll   
+                                                .agree-formbox__scroll--text
+                                                    |    1. Personal information that may be collected<br>
+                                                    |    Surname and first name, email address, contact information (landline or mobile phone number), report content, report ID However, in the case of an
+                                                    |    anonymous report, no personal information will be collected and, in this case, there may be processing restrictions, such as acknowledgment of receipt of the report.<br>
+                                                    |    
+                                                    |    2. Purpose of collecting and using personal information<br>
+                                                    |    - Process complaints according to the report and return the results<br>
+                                                    |    - Pseudonymize or anonymize personal information in order to prevent recurrences and strengthen ethical management, and analyze and use personal information for statistical or scientific research purposes<br>
+                                                    |    1. Personal information that may be collected<br>
+                                                    |    Surname and first name, email address, contact information (landline or mobile phone number), report content, report ID However, in the case of an
+                                                    |    anonymous report, no personal information will be collected and, in this case, there may be processing restrictions, such as acknowledgment of receipt of the report.<br>
+                                                    |    
+                                                    |    2. Purpose of collecting and using personal information<br>
+                                                    |    - Process complaints according to the report and return the results<br>
+                                                    |    - Pseudonymize or anonymize personal information in order to prevent recurrences and strengthen ethical management, and analyze and use personal information for statistical or scientific research purposes
+                                            .agree-formbox__check
+                                                +formCheckbox('I agree to the collection and use of personal information', "name", "val2", `checkId2`, count="false", disabled = false, required = false)
+                                                    //-+postFormMessage("Please consent to the collection and use of personal information", "")     
+                            .button.c-cta.my-button
+                                +defaultButton({name: "Cancel", wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                                +defaultButton({name: "Submit", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+                    // privacy-policy
+                    .jeongdo__privacy
+                        .cmp-title.c-title
+                            strong Privacy policy
+                        .cmp-text.c-text
+                            p LG will succeed through fair management practices and constant development of our business skills.
+                                +textButton({name: 'Read more', isButton:false, buttonStyle:"default", underline:true})
+
+                    
+                    // 리캡챠 임시 표시
+                    .recapcha(style={position: 'fixed', right: '0px', bottom: '20px'})
+                        img(src="../../assets/image/recaptcha.png", alt="")
+    else if option == 'DE'
+        .c-wrapper.ETC000C
+            .component
+                .fluid-container
+                    .my-component__wrap
+                        .my-component.head.borb
+                            .c-text-contents
+                                .title.c-text-contents__headline
+                                    +headline('font-w-light-56 font-m-light-28', "h2", "Offer to management")
+                                .text.c-text-contents__bodycopy.font-w-normal-20.font-m-normal-12
+                                    p.cmp-text(data-cmp-data-layer="") You can convey your views to management.
+                    .my-component--maximum
+                        .my-component
+                            .jeongdo__title--box
+                                .jeongdo__title.font-w-normal32.font-m-normal-12 Informant
+                                p.my-form-required.font-w-normal-16.font-m-normal-12
+                                    em.c-required * 
+                                        span.sr-only Required fields
+                                    | Required fields
+                            .jeongdo__box
+                                .my-formbox
+                                    +myInputForm([
+                                        {
+                                            type:"text",
+                                            label:"Name",
+                                            id:"Name",
+                                            required:true,
+                                            placeholder:"Name",
+                                        },
+                                        {
+                                            type:"text",
+                                            label:"Name",
+                                            id:"Name",
+                                            required:true,
+                                            warning: ["The name is required."],
+                                            placeholder:"Name",
+                                        },
+                                        {
+                                            type:"email",
+                                            label:"E-mail",
+                                            id:"email",
+                                            required:true,
+                                            placeholder:"Your email",
+                                            infoText: 'Your email address note it is case sensitive.',
+                                        },
+                                        {
+                                            type:"email",
+                                            label:"E-mail",
+                                            id:"email",
+                                            required:true,
+                                            warningFirst: ["Invalid email address.","Email is required."],
+                                            placeholder:"Your email",
+                                            infoText: 'Your email address note it is case sensitive.',
+                                        },
+                                        { 
+                                            type:"tel",
+                                            label:"Telephone number",
+                                            id:"telephoneNumber",
+                                            required:true,
+                                            placeholder:"Phone number",
+                                            infoText: 'Please input phone number without space.'
+                                        },
+                                        { 
+                                            type:"tel",
+                                            label:"Telephone number",
+                                            id:"telephoneNumber",
+                                            required:true,
+                                            warningFirst: ["This is not a valid phone number.","Telephone number is required."],
+                                            placeholder:"Phone number",
+                                            infoText: 'Please input phone number without space.'
+                                        },
+                                    ])
+                                    .c-form
+                                        label.font-w-normal-16.font-m-normal-14 Choose a report destination
+                                            em.c-required *
+                                                span.sr-only Required fields
+                                        +myFormRadio([
+                                            {
+                                                val: "Need to reply",
+                                                id: "needToReply",
+                                                label: "Need to reply",
+                                            },
+                                            {
+                                                val: "No reply required",
+                                                id: "noReplyRequired",
+                                                label: "No reply required",
+                                            },
+                                        ])
+                        .my-component
+                            .jeongdo__title.font-w-normal32.font-m-normal-12 Contents of report
+                            .jeongdo__box
+                                .my-formbox
+                                    +myInputForm([
+                                        {
+                                            type:"text",
+                                            label:"Title",
+                                            id:"title",
+                                            required:true,
+                                            warningFirst: ["Title is required."],
+                                            infoText: ["Characters left : 100 / 100"],
+                                            placeholder:"Enter title",
+                                        },
+                                    ])  
+                                    +formTextarea("text", "Contents", "comments", true, false, false, "Please provide as detailed information as possible.(e.g. who the employee in question is, where they work, what they did exactly, when/where this happened)If you provide relevant evidence (photos, documents, other supporting documents, etc.), it will be of great help to the investigation.(I will take all necessary measures to protect my identity and submitted evidence.)")(minLength="20", maxlength="3000")
+                                    +formTextarea("text", "Contents", "comments", true, ["Content is required."], false, "Please provide as detailed information as possible.(e.g. who the employee in question is, where they work, what they did exactly, when/where this happened)If you provide relevant evidence (photos, documents, other supporting documents, etc.), it will be of great help to the investigation.(I will take all necessary measures to protect my identity and submitted evidence.)")(minLength="20", maxlength="3000")
+                                    .c-input-item.ty2
+                                        label.font-w-normal-16.font-m-normal-14 Select a file to upload
+                                            //- em.c-required *
+                                            //-     span.sr-only Required fields
+                                        +upload-item({
+                                            index: 0,
+                                            itemId : "PR0005file04item",
+                                            inputId : "PR0005file04",
+                                            placeholder : "Select a file to upload",
+                                            validMsg :"File must be less than 10MB. Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip"
+                                        })
+                                        +upload-item({
+                                            itemId : "PR0005file01item",
+                                            inputId : "PR0005file01",
+                                            fileName : "22e646b35e51a064d2ac5cfbe54ddba8.jpg",
+                                            validMsg :"File must be less than 10MB. Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip"
+                                        })
+                                        +upload-item({
+                                            itemId : "PR0005file01item",
+                                            inputId : "PR0005file01",
+                                            fileName : "22e646b35e51a064d2ac5cfbe54ddba8.jpg",
+                                            validMsg :"File must be less than 10MB. Allowed file types : jpeg, jpg, gif, pdf, png, tif, zip"
+                                        })
+                                    //- agree formbox
+                                    .agree_form
+                                        .agree-formbox
+                                            .agree-formbox__title
+                                                .cmp-text.c-text
+                                                    p Collection and use of personal information
+                                            .agree-formbox__scroll
+                                                .agree-formbox__scroll--text
+                                                    |    1. Personal information that may be collected<br>
+                                                    |    Surname and first name, email address, contact information (landline or mobile phone number), report content, report ID However, in the case of an
+                                                    |    anonymous report, no personal information will be collected and, in this case, there may be processing restrictions, such as acknowledgment of receipt of the report.<br>
+                                                    |    
+                                                    |    2. Purpose of collecting and using personal information<br>
+                                                    |    - Process complaints according to the report and return the results<br>
+                                                    |    - Pseudonymize or anonymize personal information in order to prevent recurrences and strengthen ethical management, and analyze and use personal information for statistical or scientific research purposes<br>
+                                                    |    1. Personal information that may be collected<br>
+                                                    |    Surname and first name, email address, contact information (landline or mobile phone number), report content, report ID However, in the case of an<br>
+                                                    |    anonymous report, no personal information will be collected and, in this case, there may be processing restrictions, such as acknowledgment of receipt of the report.<br>
+                                                    |    
+                                                    |    2. Purpose of collecting and using personal information<br>
+                                                    |    - Process complaints according to the report and return the results<br>
+                                                    |    - Pseudonymize or anonymize personal information in order to prevent recurrences and strengthen ethical management, and analyze and use personal information for statistical or scientific research purposes
+                                            .agree-formbox__check
+                                                +formCheckbox('I agree to the collection and use of personal information', "name", "val1", `checkId1`, count="false", disabled = false, required = true)
+                                                +postFormMessage("Please consent to the collection and use of personal information", "")
+                                        //- agree formbox
+                                        .agree-formbox
+                                            .agree-formbox__title
+                                                .cmp-text.c-text
+                                                    p Consent to provide personal information to a third party
+                                            .agree-formbox__scroll   
+                                                .agree-formbox__scroll--text
+                                                    |    1. Personal information that may be collected<br>
+                                                    |    Surname and first name, email address, contact information (landline or mobile phone number), report content, report ID However, in the case of an
+                                                    |    anonymous report, no personal information will be collected and, in this case, there may be processing restrictions, such as acknowledgment of receipt of the report.<br>
+                                                    |    
+                                                    |    2. Purpose of collecting and using personal information<br>
+                                                    |    - Process complaints according to the report and return the results<br>
+                                                    |    - Pseudonymize or anonymize personal information in order to prevent recurrences and strengthen ethical management, and analyze and use personal information for statistical or scientific research purposes<br>
+                                                    |    1. Personal information that may be collected<br>
+                                                    |    Surname and first name, email address, contact information (landline or mobile phone number), report content, report ID However, in the case of an
+                                                    |    anonymous report, no personal information will be collected and, in this case, there may be processing restrictions, such as acknowledgment of receipt of the report.<br>
+                                                    |    
+                                                    |    2. Purpose of collecting and using personal information<br>
+                                                    |    - Process complaints according to the report and return the results<br>
+                                                    |    - Pseudonymize or anonymize personal information in order to prevent recurrences and strengthen ethical management, and analyze and use personal information for statistical or scientific research purposes
+                                            .agree-formbox__check
+                                                +formCheckbox('I agree to the collection and use of personal information', "name", "val2", `checkId2`, count="false", disabled = false, required = false)
+                                                    //-+postFormMessage("Please consent to the collection and use of personal information", "")     
+                            .button.c-cta.my-button
+                                +defaultButton({name: "Cancel", wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                                +defaultButton({name: "Submit", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: true})
+
+                    // privacy-policy
+                    .jeongdo__privacy
+                        .cmp-title.c-title
+                            strong Privacy policy
+                        .cmp-text.c-text
+                            p LG will succeed through fair management practices and constant development of our business skills.
+                                +textButton({name: 'Read more', isButton:false, buttonStyle:"default", underline:true})
+
+                    
+                    // 리캡챠 임시 표시
+                    .recapcha(style={position: 'fixed', right: '0px', bottom: '20px'})
+                        img(src="../../assets/image/recaptcha.png", alt="")
+    
+block content
+    // Component Markup
+    
+    .guide-text-type Type1. default
+    +ETC000C('default')
+
+    .guide-text-type Type2. DE
+    +ETC000C('DE')

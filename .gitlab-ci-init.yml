@@ -1,0 +1,128 @@
+include:
+  - project: gitops/gitlab-ci
+    ref: master
+    file: '/templates/.global-common-template.yml'
+
+variables:
+  env: dev
+  ECR_REPO_NAME: ecr-ec1-gp1-dev-lggp1-html
+  EFS_DEV_HTML: "/data001/efs-gp1-dev/access-point/lggp1-html"
+  EFS_DEV_HTML_ROOT: "${EFS_DEV_HTML}/$CI_COMMIT_BRANCH"
+  TARGET_SITE_REPO: "https://$TARGET_ADMIN_ID:$TARGET_ADMIN_TOKEN@gitlab.gp1.aws.lge.com/front/lggp1-html"
+   
+cache:
+  paths:
+    - node_modules/
+
+stages:
+  - git-branch-copy
+  - package
+  - deploy
+  - health-check
+
+git-branch-copy:
+  image: node:10.15.0
+  stage: git-branch-copy
+  script:
+    - >
+            for branch in PBGTgtc PBOPopt multishop; do
+                if [ -d ${EFS_DEV_HTML}/$branch ]; then
+                  echo '@@@  exists directory :' ${EFS_DEV_HTML}/$branch;
+                  cd ${EFS_DEV_HTML}/$branch;
+                  git pull;
+                else
+                  echo '@@@ not exists directory :' ${EFS_DEV_HTML}/$branch; 
+                  mkdir -p ${EFS_DEV_HTML}/$branch;
+                  git clone -b $branch  ${TARGET_HTML_REPO} -l "${EFS_DEV_HTML}/$branch";
+                fi
+            done
+    
+  rules:
+    - if:  $CI_COMMIT_BRANCH == "master" 
+#      when: manual
+
+         
+#############  Build Step #############
+#gulp-build:
+#  extends: .npm-build
+#  rules:
+#    - if:  $CI_COMMIT_BRANCH == "master"
+#############  Package Step ##############
+docker-package:
+  stage: package
+  script:
+    - |
+      apk add --no-cache curl jq python3 py3-pip
+      pip install wheel setuptools pip --upgrade
+      pip3 install wheel setuptools pip --upgrade
+      pip3 install awscli
+      aws sts get-caller-identity
+      $(aws ecr get-login --no-include-email --region eu-central-1)
+     
+      docker build -t ${ECR_PATH}webserver-${CI_COMMIT_SHA} -f Dockerfile-Webserver .
+      docker build -t ${ECR_PATH}master-${CI_COMMIT_SHA} --build-arg CI_COMMIT_BRANCH=master .
+      docker build -t ${ECR_PATH}pbgtGtc-${CI_COMMIT_SHA} --build-arg CI_COMMIT_BRANCH=PBGTgtc .
+      docker build -t ${ECR_PATH}pbopOpt-${CI_COMMIT_SHA} --build-arg CI_COMMIT_BRANCH=PBOPopt .
+      docker build -t ${ECR_PATH}pbroCty-${CI_COMMIT_SHA} --build-arg CI_COMMIT_BRANCH=multishop .
+    
+    
+      for branch in webserver master pbgtGtc pbopOpt multishop; do
+        docker push ${ECR_PATH}$branch-${CI_COMMIT_SHA};
+        docker rmi ${ECR_PATH}$branch-${CI_COMMIT_SHA};
+      done
+  
+    
+  rules:
+    - if:  $CI_COMMIT_BRANCH == "master"
+
+#docker-package:
+#  extends: .docker-package
+#  rules:
+#    - if:  $CI_COMMIT_BRANCH == "master"
+
+#############  deploy helm Step ###############
+deploy:
+  stage: deploy
+  image: dtzar/helm-kubectl
+  before_script:
+    - apk add --no-cache curl jq python3 py3-pip
+    - pip install wheel setuptools pip --upgrade
+    - pip3 install wheel setuptools pip --upgrade
+    - pip3 install awscli
+    - curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+    - install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+    - REPO_TOKEN=`aws secretsmanager get-secret-value --secret-id secret-ec1-gp1-gitops --region ${SECRET_MGR_REGION} | jq -r '.SecretString|fromjson|.repotoken'`
+    - REPO_USER=`aws secretsmanager get-secret-value --secret-id secret-ec1-gp1-gitops --region ${SECRET_MGR_REGION} | jq -r '.SecretString|fromjson|.repouser'`
+    - ARGO_TOKEN=`aws secretsmanager get-secret-value --secret-id secret-ec1-gp1-gitops --region ${SECRET_MGR_REGION} | jq -r '.SecretString|fromjson|.argotoken'`
+    - git config --global user.email "abc@def.com"
+    - git config --global user.name "Gitlab Admin"
+  script:
+    - |
+       git clone https://${REPO_USER}:${REPO_TOKEN}@gitlab.gp1.aws.lge.com/gitops/gp1-helm.git
+       cd gp1-helm
+       git checkout -B master
+       #stg/prd/dev 구분없이 개발에만 등록.
+       for branch in webserver master pbgtGtc pbopOpt multishop; do
+           export IMAGE_NAME="${ECR_PATH}$branch-${CI_COMMIT_SHA}"
+           export BRNC=$branch
+           yq e --inplace '.imageversion.[env(BRNC)] = env(IMAGE_NAME)' ./charts/publish/values.yaml ;
+           
+       done;
+       
+       helm lint ./charts/publish/ -f ./charts/publish/values.yaml
+       git add .
+       git commit -am 'IMAGE UPDATE'
+       git push origin master
+       aws ecr tag-resource --resource-arn arn:aws:ecr:${ECR_REGION}:${AWS_ACCOUNT_NO}:repository/${ECR_REPO_NAME} --tags Key=${env},Value=${CI_COMMIT_SHORT_SHA} --region ${ECR_REGION}
+       argocd app sync ${CI_PROJECT_NAME}-gitops-${env} --force --auth-token ${ARGO_TOKEN} --server ${ARGO_URL} --grpc-web
+  rules:
+    - if:  $CI_COMMIT_BRANCH == "master"
+
+
+#############  health check Step ###############
+health-check:
+  extends: .pod-health-check
+  rules:
+    - if:  $CI_COMMIT_BRANCH == "master"
+
+

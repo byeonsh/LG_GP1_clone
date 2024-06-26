@@ -1,0 +1,102 @@
+extends ../_common/_layout.pug
+include ../_common/_index.pug
+
+block meta 
+    - var componentId = "PD0058"
+    - var componentName = "Product selector"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pd.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+
+    include ./PD0058-inc.pug
+    +PD0058()
+
+    mixin carousel-item-component(id, set) 
+        - var index = Math.floor(Math.random() * 7);
+        .cmp-carousel__inner(class=`${id}`)&attributes(attributes)
+            .c-hero-banner
+                +printLazyImage(`${set.images}`)
+
+    mixin carousel-nested-component(id, type = "", itemOption)
+        .carousel.panelcontainer
+            // block : carousel
+            .cmp-carousel.swiper.c-carousel(data-cmp-autoplay="autoplay" data-cmp-timedelay="5000" data-cmp-autopause="true" style="--heroTimer:5s" data-cmp-data-layer="")&attributes(attributes)
+                .cmp-carousel__content.swiper-wrapper
+                    - for (var i=0; i < itemOption.length; i++)
+                        - var set = itemOption[i]
+                        .cmp-carousel__item.swiper-slide.c-carousel__item
+                            +carousel-item-component(id, set)(class=`${type}`)
+                +hero-controls
+
+block modal
+        +pop-msg-standard({id : `popAppDetail`, useHeadline:true, size: "large", label: "popup title"})
+            .title 
+                h2.font-w-semibold-48.font-m-semibold-24 Play great family fun games like Neon Rider, Doodle Jump, Solitaire, all for free?
+            .app__contents
+                +carousel-nested-component("popApp_banner", "type-default", [
+                    {images : "https://via.placeholder.com/1200x480/333333/ffffff"},
+                    {images : "https://via.placeholder.com/1200x480/ffffff/000000"},
+                    {images : "https://via.placeholder.com/1200x480/999999/ffffff"},
+                ])(class="autoplay")
+
+                .app-boxs
+                    .app-boxs__info
+                        +printLazyImage(`https://via.placeholder.com/122x122/333333/ffffff`)
+                        ul.info__list
+                            li
+                                .info__tit Category
+                                .info__txt Actualités et informations
+                            li
+                                .info__tit Seller
+                                .info__txt Universidad Peruana de Ciencias
+                            li
+                                .info__tit Age
+                                .info__txt 12 years or older
+                    .app-boxs__desc
+                        p.desc__tit Description
+                        .app-boxs__inner
+                            p.desc__txt Artmotion is an innovative approach to broadcasting Albanian TV channels. Artmotion is the leader in offering the best of Albanian TV channels to clients in Kosovo. With the ArtMotion App you will have a fully featured experience with Live TV, Video On Demand, Radio and much more! The availability of apps on LG Smart TV may differ by TV model and country. <br>Stack geometric shapes in one of the most popular and addictive games of all time! <br><br>This is a premium service for LG smart monitor. Enjoy your smart monitor with premium services. <br>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus <br>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus <br>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
+            .app__close
+                +defaultButton({
+                        name: 'Close', 
+                        wSize: 'medium', 
+                        mSize: 'small', 
+                        buttonStyle: 'default', 
+                        isButton: true
+                    })(class="c-pop-msg__close-btn js-pop-close" aria-controls="popAppDetail")

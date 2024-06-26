@@ -1,0 +1,263 @@
+mixin myPrintTabPanel(div, num, selected)
+    if selected 
+        .cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+            if block
+                block
+    else 
+        .cmp-tabs__tabpanel(id=`tabs-1-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-1-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel" data-cmp-data-layer="")
+            if block
+                block
+
+mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond, type})
+    if warningFirst
+       div(role='list')
+            - for(var i=0; i < warningFirst.length; i++)
+                div(role='listitem')
+                    +invalid-warning(warningFirst[i], `validate-w-${type}-${i}`)
+    if correct
+        div(role='list')
+            - for(var i=0; i < correct.length; i++)
+                div(role='listitem')
+                    +valid-msg(correct[i], `validate-c-${type}-${i}`)
+    if infoText
+        div.my-input__info 
+            p.font-w-normal-16.font-m-normal-14!= infoText
+    if warning !==  []
+        - for(var i=0; i < warning.length; i++)
+            +invalid-warning(warning[i], `validate-w-${type}-${i}`)
+    if check
+        - for(var i=0; i < check.length; i++)
+            +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+    if infoTextSecond
+        div.my-input__info 
+            p.font-w-normal-14.font-m-normal-14 !{infoTextSecond}
+
+mixin myFormText(params)
+    - let data = {...params}
+    - let config = `${data.warning || data.warningFirst && !data.correct ? 'my-warn' : ''}`
+    if data.type === 'select'
+        +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected})
+    else
+        .c-input-item(class=`${data.active ? 'active' : ''}`)
+            if data.cancel
+                .buy-member-edit__button-container
+                    label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                    +button({type: "text", name: "Cancel", underline: true, size: "small"})
+            else if !data.cancel && data.label
+                label.font-w-normal-16.font-m-normal-14(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+            if data.required
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+            else if data.readonly
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+            else if data.disabled
+                input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+            else if data.type === 'textarea'
+                if data.limit
+                    .my-textarea__container
+                        textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class='my-textarea--limit')&attributes(attributes)
+                        .my-count
+                            span.font-w-normal-14.font-m-normal-12 0 / !{data.limit} byte
+                else
+                    textarea(id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder)&attributes(attributes)
+            else if data.button
+                if data.validation
+                    .input-button__container.input-button__container--validation
+                        .my-button-validation
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+                            +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst, type :data.type})
+                        .button.c-cta.button-full
+                            if data.buttonDisabled
+                                +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(disabled=true)
+                            else 
+                                +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})
+                else
+                    .input-button__container
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+                        .button.c-cta.button-full
+                            if data.buttonDisabled
+                                +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})(disabled=true)
+                            else
+                                +defaultButton({name:data.button, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton: true})
+            else
+                if data.active
+                    input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__password ${config}` value= data.value, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+                else
+                    input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__password ${config}` class=`${data.search ? 'my-form__search' : ''}`, aria-describedby=`validate-${data.type}-connection-error`)&attributes(attributes)
+                    if data.type === 'password'
+                        button(type='button' class='my-form__eye')
+                            span.sr-only show password
+        if !data.validation
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst, type: data.type})
+        else
+            +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, type: data.type})
+
+mixin myInputForm(data)
+    .my-input
+        ul
+            each set in data
+                li
+                    +myFormText(set)
+
+mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected})
+    .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+        +formSelect(label, id, placeholder, false)(aria-describedby=`validate-${validate}-connection-error`)
+            if optionVal
+                - for(var i=0; i < optionVal.length; i++)
+                    if selected === i + 1
+                        option(value="" selected)= optionVal[i]
+                    else
+                        option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText, type: id})
+
+mixin checkoutStepItem(params)
+    h4.c-checkout-step__title= params.title
+    if params.type === 'checked'
+        div.c-checkout-step__box
+            button.c-checkout-step__edit(type='button')
+                span.sr-only edit
+    else
+        div.c-checkout-step__box
+            span.c-checkout-step__txt STEP
+            span.c-checkout-step__current= params.current
+            span.c-checkout-step__total= `/ ${params.total}`
+
+mixin checkoutStep(params)
+    case params.type
+        when "active"
+            .c-checkout-step(class=params.type)
+                +checkoutStepItem(params)
+        when "checked"
+            .c-checkout-step(class=params.type)
+                +checkoutStepItem(params)
+        default
+            .c-checkout-step
+                +checkoutStepItem(params)
+
+mixin myLinkedLoginIcon(data)
+    ul.my-linkedlogin-icon
+        each set in data
+            li 
+                a(class='my-linkedlogin-icon__ico-box' href="#" role="button")
+                    i(class=`my-linkedlogin-icon__ico my-linkedlogin-icon__ico--${set.apps}`)
+                    span.sr-only= set.apps
+
+mixin CT0300(option=false)
+    .c-wrapper.CT0300
+        .component
+            .fluid-container
+                if(option === "checkout")
+                    .guest-checkout
+                        // [Start] 2023-06-02 : UPDATE- change messages
+                        p.guest-checkout__text.font-w-normal-20.font-m-normal-16 Become an LG.com  
+                            br
+                            | Member and receive a 5% discount code
+                        // [End] 2023-06-02 : UPDATE- change messages
+                        +myInputForm([
+                            {
+                                type:"email",
+                                label:"Order Email",
+                                id:"orderEmail",
+                                required:false,
+                                placeholder: 'Enter Email Address',
+                                button: 'Continue',
+                                buttonDisabled: true,
+                                warning: ['Email address invalid.']
+                            },
+                        ])
+                        // [Start] 2023-10-24 : ADD - popup button
+                        .guest-checkout__info 
+                            .c-text-contents
+                                .c-text-contents__bodycopy 
+                                    .cmp-text.font-w-normal-16.font-m-normal-14 Üye Olmayan Müşterilerin <span class="guest-checkout__info__bold">Kişisel Verilerine İlişkin Aydınlatma Metni</span> için 
+                                        +textButton({name: 'tıklayınız.', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : true, isButton: false})(class="js-pop-open", roleButton="true")
+                        // [End] 2023-10-24 : ADD - popup button
+                if(option === "member")
+                    .guest-checkout
+                        // [Start] 2023-06-02 : UPDATE- change messages
+                        p.guest-checkout__text.font-w-normal-20.font-m-normal-16 Become an LG.com 
+                            br
+                            | Member and receive a 5% discount code
+                        // [End] 2023-06-02 : UPDATE- change messages
+                        +myInputForm([
+                            {
+                                type:"select",
+                                label:"Location",
+                                id:"location",
+                                value:"UK",
+                                optionVal: ['UK', 'UK', 'UK'],
+                                placeholder:"UK",
+                            },
+                            {
+                                type:"email",
+                                label:"Email Address",
+                                id:"emailAddress",
+                                required:false,
+                                placeholder: 'Email Account (Case Sensitive)',
+                                warning: ['Email is required.', 'Email address invalid.']
+                            },
+                            {
+                                type:"password",
+                                label:"Password",
+                                id:"password",
+                                required:false,
+                                placeholder: 'Password (Case Sensitive)',
+                                warning: ['Password (case sensitive) is required.']
+                            },
+                        ])
+                        .guest-checkout__check
+                            .button.c-cta
+                                +formCheckbox('Remember Email', "name", "val1", `checkId1`, count="false")
+                                +linkButton({type: 'text', name: "Forgot password?", underline: true})
+                        +toastPopup([
+                            {
+                                type: "warning",
+                                text: 'The email or password is incorrect.',
+                                remove: true
+                            }
+                        ], 'sign-help')
+                        .guest-checkout__button
+                            .button 
+                                +defaultButton({name:"Sign In", wSize: 'large', mSize: 'medium', buttonStyle: 'default', isButton: false})(aria-describedby="sign-help")
+                                +defaultButton({name:"Join Us", wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: false})
+                        .my-signIn__list
+                            .my-signIn__text
+                                span.font-w-normal-14i.font-m-normal-14 Sign in with
+                            +myLinkedLoginIcon([
+                                {
+                                    apps:"apple",
+                                },
+                                {
+                                    apps:"amazon",
+                                },
+                                {
+                                    apps:"google",
+                                },
+                                {
+                                    apps:"facebook",
+                                },
+                            ])
+                .buy-checkout__item.before
+                    +checkoutStep({
+                        title:"Coupon",
+                        current:"1",
+                        total:"3",
+                        type: "checkoutStep"
+                    })
+                .buy-checkout__item.before
+                    +checkoutStep({
+                        title:"Delivery",
+                        current:"2",
+                        total:"3",
+                        type: "checkoutStep"
+                    })
+                .buy-checkout__item.before
+                    +checkoutStep({
+                        title:"Payment",
+                        current:"3",
+                        total:"3",
+                        type: "checkoutStep"
+                    })

@@ -1,0 +1,147 @@
+extends ../_common/_layout.pug
+include ../_common/_button.pug
+include ../_common/_headline.pug
+include ../_common/_pop-msg.pug
+
+block meta 
+    - var componentId = "ML000R"
+    - var componentName = "MyLG Addresses - IT"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet" href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+mixin addressBox(params)
+    - let data = { ...params }
+    ul.c-address-box__list
+        each set in data
+            li.c-address-box__item
+                .c-address-box__container
+                    if set.flag
+                        - for(let i = 0; i < set.flag.length; i +=1)
+                            span.c-address-box__flag.font-w-bold-10.font-m-bold-10= set.flag[i]
+                    .c-address-box__info
+                        .c-address-box__head
+                            p.c-address-box__title= set.title
+                            +linkButton({type:"text", color:"black", underline:true, name:"Modifica", roleButton:"true"})
+                        .c-address-box__body
+                            .c-address-box__context
+                                p.c-address-box__text= set.address
+                                    // [Start] 2023-05-12 : UPDATE- fix word-wrap add span.c-address-box__text-postcode
+                                    span.c-address-box__text-postcode= set.postcode
+                                p.c-address-box__num= set.num
+                            if set.deleteBtn
+                                +linkButton({type:"text", color:"black", size: 'medium', name:" ", href:"#popDeleteAlert", class:"js-pop-open c-product-item__input--delete", roleButton:"true"})
+
+mixin ML000R
+    .c-wrapper.ML000R
+        .component
+            .fluid-container
+                .my-component.my-page-title
+                    .c-text-contents.my-component__title-section
+                        .c-text-contents__headline
+                            +headline("font-w-light-56 font-m-light-36", "h2", "Rubrica")
+                .my-component__wrap.border-only-web
+                    .my-component.address-book
+                        .layout-contents
+                            .section-title
+                                +headline("font-w-normal-32 font-m-normal-20", "h3", "I miei indirizzi")
+                        .c-checkout-step02
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox([
+                                    {
+                                        flag: ["DEFAULT SHIPPING"],
+                                        title:"Robert Surrency",
+                                        address:"20 Farringdon Street, London, ",
+                                        postcode:"EC4A 4AB",
+                                        num:"123-4567-8910",
+                                    },
+                                ])
+                        .c-checkout-step02
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox([
+                                    {
+                                        flag: ["DEFAULT BILLING"],
+                                        title:"Robert Surrency",
+                                        address:"20 Farringdon Street, London, ",
+                                        postcode:"EC4A 4AB",
+                                        num:"123-4567-8910",
+                                    },
+                                ])
+                        .c-checkout-step02
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox([
+                                    {
+                                        flag: ["SHIPPING"],
+                                        title:"Robert Surrency",
+                                        address:"20 Farringdon Street, London, ",
+                                        postcode:"EC4A 4AB",
+                                        num:"123-4567-8910",
+                                        deleteBtn:true
+                                    },
+                                ])
+                        .c-checkout-step02
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox([
+                                    {
+                                        flag: ["SHIPPING"],
+                                        title:"Camilar Surrency",
+                                        address:"20 Farringdon Street, London, EC4A 4AB",
+                                        num:"123-4567-8910",
+                                        deleteBtn:true
+                                    },
+                                ])
+                        .button.c-cta.my-button
+                            +defaultButton({name: 'Aggiungi indirizzo', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: false})
+                        
+                        .layout-contents.margin-top
+                            .section-title
+                                +headline("font-w-normal-32 font-m-normal-20", "h3", "I miei dati per la fatturazione")
+                        .c-checkout-step02
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox([
+                                    {
+                                        flag: ["Dati per la fatturazione"],
+                                        title:"Sono una persona fisica",
+                                    },
+                                ])
+                        .c-checkout-step02
+                            .buy-address-box.buy-address-box--complete
+                                +addressBox([
+                                    {
+                                        flag: ["Dati di fatturazione predefiniti"],
+                                        title:"Sono una persona fisica",
+                                    },
+                                ])
+                        .button.c-cta.my-button
+                            +defaultButton({name: 'Aggiungi dati di fatturazione', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: false})
+
+                // case. no address book
+                .my-component__wrap
+                    .my-component.my-component--nodata
+                        .nodata-wrap
+                            .c-text-contents
+                                .c-text-contents__bodycopy 
+                                    .font-w-light-36.font-m-normal-16 There is no address book.
+                            .button.c-cta.my-button
+                                +defaultButton({name: 'Aggiungi indirizzo', wSize: 'large', mSize: 'medium', buttonStyle: 'highlight', isButton: false})
+
+block content
+    // Component Markup
+    +ML000R
+
+block modal
+    +pop-msg-standard({id : `popDeleteAlert`, size: "small"})
+        .c-pop-msg__item
+            .c-pop-msg__contents#popAddToCart-headline
+                p.align-text-center Are you sure you want to delete?
+            .button.c-pop-msg__button-wrap.my-address-pop__button
+                +button({type:"box-outlined", color:"black", size:"medium", name: "cancel"})(class="c-pop-msg__close-btn js-pop-close" aria-controls="popDeleteAlert")
+                +linkButton({type:"box", color:"red", size:"medium", name: "Delete", roleButton:"true", class:"js-pop-close my-address-pop__delete"})

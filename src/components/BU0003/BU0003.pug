@@ -1,0 +1,680 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_forms.pug
+include ../_common/_image.pug
+include ../_common/_button.pug
+include ../_common/_pagination.pug
+include ../_common/_resource.pug
+include ../_common/_title-area.pug
+
+block meta 
+    - var componentId = "BU0003"
+    - var componentName = "Manual download"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-st.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'Top Border',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'border-top'},
+                                ]
+                            },
+                        ],
+                    };
+
+    mixin resourceType(type, img=false, dataSrc, src, alt)
+        if(img === true)
+            div.wrap-country-img
+                img.img-country(data-src= dataSrc, src= src, alt= alt)
+                span= type
+        else 
+            .c-table__type= type
+
+    mixin resourceDownload(name)
+        // 2023-01-27 : Add role to download link for tagging
+        a(href="#", target="_blank" role="button").c-table__title.font-underline
+            span= `${name}`
+            .c-table__title--icon
+                .c-icon-button.c-icon-button--download
+
+    mixin resourceSize(extension, size)
+        .c-table__size
+            if(extension == 'pdf' || extension == 'txt' || extension == 'djvu' || extension == 'zip' || extension == 'html' || extension == 'dwg')
+                span(class=`c-resources__item--extension c-resources__item--extension-${extension}`)
+                    span.sr-only= `extension : ${extension}`
+                span= size
+            else
+                span(class=`c-resources__item--extension c-resources__item--extension-etc`)
+                    span.sr-only= `extension : ${extension}`
+                span= size
+
+    mixin csResultContent(num, control, compare, params)
+        - let data = {...params}
+        .cs-search-result__container
+            if control
+                .c-result-area 
+                    .c-result-area__controls
+                        .c-result-area__result.productcollection__results-count
+                            strong.c-result-area__count
+                                span.page-number 1
+                                |  - 
+                                span.data-page-length.top 10
+                            span  of <em class='data-page-length-total'>14</em> Manuals
+                            +formSelect("", "sort", "", false)
+                                option(value="") 10
+                                option(value="") 20
+                                option(value="") 30
+                                option(value="") 40
+                                option(value="") 50
+                        .c-result-area__sort
+                            +formSelect("", "sort", "", false)
+                                option(value="") Newest
+                                option(value="") Oldest
+                        
+    mixin mySelect({optionVal=false, warning=false, label='', id='', infoText= false, placeholder='', warn=false, selected, required= false, correct= false})
+        //- .c-search-box__form(class=`${warning ? 'my-warn' : ''}`)
+        .c-search-box__form
+            +formSelect(label, id, placeholder, required)
+                if optionVal
+                    - for(var i=0; i < optionVal.length; i++)
+                        if selected === i + 1
+                            option(value="" selected)= optionVal[i]
+                        else
+                            option(value="")= optionVal[i]
+        if warning || infoText
+            +myMsg({warning: warning, infoText: infoText})
+
+
+
+    mixin myMsg({infoText= false, correct= false, warning= false, check= false, warningFirst, infoTextSecond})
+        if warningFirst
+            - for(var i=0; i < warningFirst.length; i++)
+                +invalid-warning(warningFirst[i])
+        if correct
+            - for(var i=0; i < correct.length; i++)
+                +valid-msg(correct[i])
+        if infoText
+            ul.my-input__info 
+                li.font-w-normal-14.font-m-normal-14= infoText
+        if warning !==  []
+            - for(var i=0; i < warning.length; i++)
+                +invalid-warning(warning[i])
+        if check
+            - for(var i=0; i < check.length; i++)
+                +formCheckbox(check[i], "name", "val1", `checkId${i}`, count="false", false)
+        if infoTextSecond
+            ul.my-input__info 
+                li.font-w-normal-14.font-m-normal-14= infoTextSecond
+
+    mixin myInputForm(data, column)
+        .my-input(class=`${column ? 'my-date-picker' : ''}`)
+            ul
+                each set in data
+                    li
+                        +myFormText(set)
+
+    mixin myFormText(params)
+        - let data = {...params}
+        - let config = `${data.warning || data.warningFirst ? 'my-warn' : ''}` 
+        if data.type === 'select'
+            +mySelect({optionVal: data.optionVal, warning: data.warning, label: data.label, id: data.id, class: data.class, infoText: data.infoText, placeholder: data.placeholder, warn: data.warn, selected: data.selected, required: data.required,}) 
+        else if data.type === 'radio'
+            +myFormRadio(params)
+        else if data.type === 'captcha'
+            +myCaptcha({label: data.label, id: data.id, placeholder: data.placeholder, warning: data.warning, required: data.required})
+        else
+            .c-input-item(class=`${data.class}`)
+                if data.label
+                    label.font-w-normal-16.font-m-normal-16(for= data.id class=`${data.info ? 'my-info' : ''}`)= data.label
+                        if data.required
+                            em.c-required *
+                                span.sr-only Required fields
+                if data.required && !data.button && data.type !== "password"
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, required)&attributes(attributes)
+                    if data.type === 'password'
+                            button(type='button' class='my-form__eye')
+                else if data.readonly
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, readonly)&attributes(attributes)
+                else if data.disabled
+                    input(type= data.type id= data.id placeholder= data.placeholder data-placeholder=data.placeholder class=config, disabled)&attributes(attributes)            
+                else if data.button
+                    if data.validation
+                        .input-button__container.input-button__container--validation
+                            .my-button-validation
+                                input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required)&attributes(attributes)
+                                +myMsg({correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+                            each item in data.button
+                                .button.c-cta.button-full
+                                    +defaultButton({name:item, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                    else
+                        .input-button__container
+                            input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder class=config, required)&attributes(attributes)
+                            // [Start] 2023-05-03 : ADD - email form case
+                            each item in data.button
+                                .button.c-cta.button-full
+                                    +defaultButton({name:item, wSize: 'medium', mSize: 'medium', buttonStyle: 'default', isButton:true})
+                            // [End] 2023-05-03 : ADD - email form case
+                else 
+                    if data.active
+                        input(type='text' id= data.id placeholder= data.placeholder data-placeholder= data.placeholder class=`my-input__keyword ${config}` value= data.value, required)&attributes(attributes)
+                        if data.type === 'password'
+                            button(type='button' class='my-form__eye')
+                                span.sr-only show password
+                        else if data.search 
+                            button(type='button' class='my-form__search__icon')
+                                span.sr-only search
+                    else
+                        input(type= data.type id= data.id, placeholder= data.placeholder data-placeholder= data.placeholder, value= data.value class=`my-input__keyword ${config} ${data.search ? 'my-form__search' : ''}`, required)&attributes(attributes)
+                        if data.type === 'password'
+                            button(type='button' class='my-form__eye')
+                                span.sr-only show password
+                        else if data.search 
+                            button(type='button' class='my-form__search__icon')
+                                span.sr-only search
+            if !data.validation 
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond, correct: data.correct, warning: data.warning, check: data.check, warningFirst: data.warningFirst})
+            else
+                +myMsg({infoText: data.infoText, infoTextSecond: data.infoTextSecond})
+
+                    
+    // Component Markup
+    .guide-text-type Type | Global <br>Before Search
+    // block : BU0003
+    .BU0003
+        .c-wrapper.margin-top.margin-bottom.bg-default
+            .component
+                .cmp-container
+                    //- contents
+                    // block : Sort box
+                    .my-component
+                        .my-formbox
+                            +required-text-indicate 
+                            +myInputForm([
+                                {                                        
+                                    type: 'select',
+                                    label: 'Country ',
+                                    required: true,
+                                    warning: ["Country is required"],
+                                    optionVal: ['Country','Afghanistan' , 'Albania' , 'Algeria' , 'Anguilla' , 'Antigua and Barbuda' , 'Antigua' , 'Argentina' , 'Armenia' , 'Aruba' , 'Australia' , 'Austria' , 'Azerbaijan' , 'Bahamas' , 'Bahrain' , 'Bangladesh' , 'Barbados' , 'Belarus' , 'Belgium' , 'Belize' , 'Benin' , 'Bermuda' , 'Bolivia' , 'Bosnia and Herzegovina' , 'Botswana' , 'Brazil' , 'British Virgin Islands' , 'Brunei' , 'Bulgaria' , 'Burkina Faso' , 'Cambodia' , 'Cameroon' , 'Canada' , 'Cayman Islands' , 'Central African Republic' , 'Chile' , 'China' , 'Colombia' , 'Congo' , 'Costa Rica' , 'Cote d`Ivoire' , 'Croatia' , 'Cuba' , 'Curaçao' , 'Cyprus' , 'Czech' , 'Democratic Republic of the Congo' , 'Denmark' , 'Djibouti' , 'Dominican Republic' , 'Ecuador' , 'Egypt' , 'El Salvador' , 'Equatorial Guinea' , 'Eritrea' , 'Estonia' , 'Ethiopia' , 'Fiji' , 'Finland' , 'France' , 'Gabon' , 'Gambia' , 'Georgia' , 'Germany' , 'Ghana' , 'Greece' , 'Grenada' , 'Guatemala' , 'Guinea' , 'Guyana' , 'Haiti' , 'Honduras' , 'Hong Kong' , 'Hungary' ,'Iceland' , 'India' , 'Indonesia' , 'Iran' , 'Iraq' , 'Ireland' , 'Isle of Man' , 'Israel' , 'Italy' , 'Ivory Coast' , 'Jamaica' , 'Japan' , 'Jordan' , 'Kazakhstan' , 'Kenya' , 'Kosovo' , 'Kuwait' , 'Laos' , 'Latvia' , 'Lebanon' , 'Liberia' , 'Libya' , 'Lithuania' , 'Luxembourg' , 'Macedonia' , 'Malawi' , 'Malaysia' , 'Maldives' , 'Mali' , 'Malta' , 'Mauritania' , 'Mauritius' , 'Mexico' , 'Montenegro' , 'Morocco' , 'Mozambique' , 'Myanmar' , 'Namibia' , 'Nepal' , 'Netherlands Antilles' , 'Netherlands' , 'New Zealand' , 'Nicaragua' , 'Nigeria' , 'Norway' , 'Oman' , 'Pakistan' , 'Palestine' , 'Panama' , 'Papua New Guinea' , 'Paraguay' , 'Peru' , 'Philippines' , 'Poland' , 'Portugal' , 'Puerto Rico' , 'Qatar' , 'Romania' , 'Russia' , 'Rwanda' , 'Saint Kitts and Nevis' , 'Saint Lucia' , 'Sao Tome and Principe' , 'Saudi Arabia' , 'Senegal' , 'Serbia' , 'Sierra Leone' , 'Singapore' , 'Slovakia' , 'Slovenia' , 'Somalia' , 'South Africa' , 'South Korea' , 'Sri Lanka' , 'St Kitts' , 'St Maarten' , 'St Vincent' , 'Sudan' , 'Suriname' , 'Swaziland' , 'Sweden' , 'Switzerland' , 'Syria' , 'Taiwan' , 'Thailand' , 'Togo' , 'Trinidad and Tobago' , 'Tunisia' , 'Turkey' , 'Turkmenistan' , 'Turks and Caicos Islands' , 'U.A.E' , 'Uganda' , 'Ukraine' , 'United Kingdom' , 'United Republic of Tanzania' , 'United States' , 'Uruguay' , 'US Virgin Islands' , 'Uzbekistan' , 'Venezuela' , 'Vietnam' , 'Yemen' , 'Zambia' , 'Zimbabwe' ,], 
+                                },
+                                {                                        
+                                    type: 'select',
+                                    label: 'Manual type ',
+                                    required: false,
+                                    optionVal: ["All", "Owner's manual", "Installation manual", ], 
+                                },
+                                {                                        
+                                    type: 'select',
+                                    label: 'Language ',
+                                    
+                                    required:false,
+                                    optionVal: ["All","Arabic", "Bulgarian", "Bosnian", "Czech", "Danish", "German", "Greek", "English","Spanish","Estonian", "Persian","Finnish", "French", "Croatian", "Hungarian", "Interlingue", "Indonesian","Iranian", "Italian","Hebrew","Japanese","Kazakh","Korean", "Lithuanian", "Latvian, Lettish","Macedonian", "Maltese","Dutch", "Norwegian", "Polish", "Portuguese", "Romanian", "Russian", "Slovak", "Slovenian", "Albanian", "Serbian", "Swedish", "Thai", "Turkish", "Taiwanese", "Ukrainian", "Uzbek", "Vietnamese", "Chinese", ], 
+                                },
+                            ])
+                            +myInputForm([
+                                {                                        
+                                    type: 'date',
+                                    label: 'Registration start date ',
+                                    placeholder: 'DD/MM/YYYY',
+                                    required:false,
+                                    class: 'registrationStartDate'
+                                },
+                                {                                        
+                                    type: 'date',
+                                    label: 'Registration end date ',
+                                    placeholder: 'DD/MM/YYYY',
+                                    required:false,
+                                    class: 'registrationEndDate'
+                                },
+                                {                                        
+                                    type: 'text',
+                                    label: 'Keyword ',
+                                    placeholder: 'Keyword',
+                                    required:false,
+                                    class: 'keyword'
+                                },
+                            ])
+                            .c-button-wrap
+                                .button.c-cta
+                                    +defaultButton({name: 'Reset', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(aria-label="")
+                                    +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search" role="button" data-link-name aria-label="")
+
+    .guide-text-type Type | Global <br>Searched
+    .BU0003
+        .c-wrapper.margin-top.margin-bottom.bg-default
+            .component
+                .cmp-container
+                    //- contents
+                    // block : Sort box
+                    .my-component
+                        .my-formbox
+                            +required-text-indicate
+                            +myInputForm([
+                                {                                        
+                                    type: 'select',
+                                    label: 'Country ',
+                                    required: true,
+                                    warning: ["Country is required"],
+                                    optionVal: ['Country','Afghanistan' , 'Albania' , 'Algeria' , 'Anguilla' , 'Antigua and Barbuda' , 'Antigua' , 'Argentina' , 'Armenia' , 'Aruba' , 'Australia' , 'Austria' , 'Azerbaijan' , 'Bahamas' , 'Bahrain' , 'Bangladesh' , 'Barbados' , 'Belarus' , 'Belgium' , 'Belize' , 'Benin' , 'Bermuda' , 'Bolivia' , 'Bosnia and Herzegovina' , 'Botswana' , 'Brazil' , 'British Virgin Islands' , 'Brunei' , 'Bulgaria' , 'Burkina Faso' , 'Cambodia' , 'Cameroon' , 'Canada' , 'Cayman Islands' , 'Central African Republic' , 'Chile' , 'China' , 'Colombia' , 'Congo' , 'Costa Rica' , 'Cote d`Ivoire' , 'Croatia' , 'Cuba' , 'Curaçao' , 'Cyprus' , 'Czech' , 'Democratic Republic of the Congo' , 'Denmark' , 'Djibouti' , 'Dominican Republic' , 'Ecuador' , 'Egypt' , 'El Salvador' , 'Equatorial Guinea' , 'Eritrea' , 'Estonia' , 'Ethiopia' , 'Fiji' , 'Finland' , 'France' , 'Gabon' , 'Gambia' , 'Georgia' , 'Germany' , 'Ghana' , 'Greece' , 'Grenada' , 'Guatemala' , 'Guinea' , 'Guyana' , 'Haiti' , 'Honduras' , 'Hong Kong' , 'Hungary' ,'Iceland' , 'India' , 'Indonesia' , 'Iran' , 'Iraq' , 'Ireland' , 'Isle of Man' , 'Israel' , 'Italy' , 'Ivory Coast' , 'Jamaica' , 'Japan' , 'Jordan' , 'Kazakhstan' , 'Kenya' , 'Kosovo' , 'Kuwait' , 'Laos' , 'Latvia' , 'Lebanon' , 'Liberia' , 'Libya' , 'Lithuania' , 'Luxembourg' , 'Macedonia' , 'Malawi' , 'Malaysia' , 'Maldives' , 'Mali' , 'Malta' , 'Mauritania' , 'Mauritius' , 'Mexico' , 'Montenegro' , 'Morocco' , 'Mozambique' , 'Myanmar' , 'Namibia' , 'Nepal' , 'Netherlands Antilles' , 'Netherlands' , 'New Zealand' , 'Nicaragua' , 'Nigeria' , 'Norway' , 'Oman' , 'Pakistan' , 'Palestine' , 'Panama' , 'Papua New Guinea' , 'Paraguay' , 'Peru' , 'Philippines' , 'Poland' , 'Portugal' , 'Puerto Rico' , 'Qatar' , 'Romania' , 'Russia' , 'Rwanda' , 'Saint Kitts and Nevis' , 'Saint Lucia' , 'Sao Tome and Principe' , 'Saudi Arabia' , 'Senegal' , 'Serbia' , 'Sierra Leone' , 'Singapore' , 'Slovakia' , 'Slovenia' , 'Somalia' , 'South Africa' , 'South Korea' , 'Sri Lanka' , 'St Kitts' , 'St Maarten' , 'St Vincent' , 'Sudan' , 'Suriname' , 'Swaziland' , 'Sweden' , 'Switzerland' , 'Syria' , 'Taiwan' , 'Thailand' , 'Togo' , 'Trinidad and Tobago' , 'Tunisia' , 'Turkey' , 'Turkmenistan' , 'Turks and Caicos Islands' , 'U.A.E' , 'Uganda' , 'Ukraine' , 'United Kingdom' , 'United Republic of Tanzania' , 'United States' , 'Uruguay' , 'US Virgin Islands' , 'Uzbekistan' , 'Venezuela' , 'Vietnam' , 'Yemen' , 'Zambia' , 'Zimbabwe' ,], 
+                                },
+                                {                                        
+                                    type: 'select',
+                                    label: 'Manual type ',
+                                    required:false,
+                                    optionVal: ["All", "Owner's manual", "Installation manual", ], 
+                                },
+                                {                                        
+                                    type: 'select',
+                                    label: 'Language ',
+                                    required:false,
+                                    optionVal: ["All","Arabic", "Bulgarian", "Bosnian", "Czech", "Danish", "German", "Greek", "English","Spanish","Estonian", "Persian","Finnish", "French", "Croatian", "Hungarian", "Interlingue", "Indonesian","Iranian", "Italian","Hebrew","Japanese","Kazakh","Korean", "Lithuanian", "Latvian, Lettish","Macedonian", "Maltese","Dutch", "Norwegian", "Polish", "Portuguese", "Romanian", "Russian", "Slovak", "Slovenian", "Albanian", "Serbian", "Swedish", "Thai", "Turkish", "Taiwanese", "Ukrainian", "Uzbek", "Vietnamese", "Chinese", ], 
+                                },
+                            ])
+                            +myInputForm([
+                                {                                        
+                                    type: 'date',
+                                    label: 'Registration start date ',
+                                    placeholder: 'DD/MM/YYYY',
+                                    required:false,
+                                    class: 'registrationStartDate'
+                                },
+                                {                                        
+                                    type: 'date',
+                                    label: 'Registration end date ',
+                                    placeholder: 'DD/MM/YYYY',
+                                    required:false,
+                                    class: 'registrationEndDate'
+                                },
+                                {                                        
+                                    type: 'text',
+                                    label: 'Keyword ',
+                                    placeholder: 'Keyword',
+                                    required:false,
+                                    class: 'keyword'
+                                },
+                            ])
+                            .c-button-wrap
+                                .button.c-cta
+                                    +defaultButton({name: 'Reset', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(aria-label="")
+                                    +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search" role="button" data-link-name aria-label="")
+        .c-wrapper.margin-top.margin-bottom.border-top.bg-default.c-search-result
+            .component
+                .cmp-container
+                    // block : c-result-area
+                    +csResultContent(50, true, false, [])
+                    // block : c-table
+                    .c-table
+                        table
+                            caption Catalogue & Leaflet & Document download list
+                            colgroup
+                                col.cell-size
+                                col.cell-size
+                                col.cell-title-size
+                                col.cell-size
+                                col.cell-size
+                            thead
+                                tr
+                                    th(scope="col") Manual type
+                                    th(scope="col") Buyer Model
+                                    th(scope="col") Factory
+                                    th(scope="col") Suffix
+                                    th(scope="col") Language
+                                    th(scope="col") Registration Date
+                                    th(scope="col") Size(KB)
+                            tbody
+                                - for(var x = 0 ; x < 5; x++)
+                                    tr
+                                        td 
+                                            +resourceType("Owner's Manual")
+                                        td 
+                                            +resourceDownload("AMNC09GTUA0.ANCBASA", "")
+                                        td 
+                                            +resourceType("AMNC09GTUA0")
+                                        td 
+                                            +resourceType("ANCBASA")
+                                        td 
+                                            +resourceType("English")
+                                        td 
+                                            +resourceType("2023-06-30")
+                                        td
+                                            +resourceSize("pdf", "4,036")
+                                    tr
+                                        td 
+                                            +resourceType("Owner's Manual")
+                                        td 
+                                            +resourceDownload("ARNU24GTPC4.ENWBLEU", '')
+                                        td 
+                                            +resourceType("ARNU24GTPC4")
+                                        td 
+                                            +resourceType("ENWBLEU")
+                                        td 
+                                            +resourceType("Bulgarian")
+                                        td 
+                                            +resourceType("2023-06-08")
+                                        td
+                                            +resourceSize("pdf", "1,682")
+                    // block : pagenation
+                    .c-search__pagenation
+                        +pagination
+
+
+    .guide-text-type Type | Global <br>No Data
+    .BU0003
+        .c-wrapper.margin-top.margin-bottom.bg-default
+            .component
+                .cmp-container
+                    //- contents
+                    // block : Sort box
+                    .my-component
+                        .my-formbox
+                            +required-text-indicate 
+                            +myInputForm([
+                                {                                        
+                                    type: 'select',
+                                    label: 'Country ',
+                                    required: true,
+                                    warning: ["Country is required"],
+                                    optionVal: ['Country','Afghanistan' , 'Albania' , 'Algeria' , 'Anguilla' , 'Antigua and Barbuda' , 'Antigua' , 'Argentina' , 'Armenia' , 'Aruba' , 'Australia' , 'Austria' , 'Azerbaijan' , 'Bahamas' , 'Bahrain' , 'Bangladesh' , 'Barbados' , 'Belarus' , 'Belgium' , 'Belize' , 'Benin' , 'Bermuda' , 'Bolivia' , 'Bosnia and Herzegovina' , 'Botswana' , 'Brazil' , 'British Virgin Islands' , 'Brunei' , 'Bulgaria' , 'Burkina Faso' , 'Cambodia' , 'Cameroon' , 'Canada' , 'Cayman Islands' , 'Central African Republic' , 'Chile' , 'China' , 'Colombia' , 'Congo' , 'Costa Rica' , 'Cote d`Ivoire' , 'Croatia' , 'Cuba' , 'Curaçao' , 'Cyprus' , 'Czech' , 'Democratic Republic of the Congo' , 'Denmark' , 'Djibouti' , 'Dominican Republic' , 'Ecuador' , 'Egypt' , 'El Salvador' , 'Equatorial Guinea' , 'Eritrea' , 'Estonia' , 'Ethiopia' , 'Fiji' , 'Finland' , 'France' , 'Gabon' , 'Gambia' , 'Georgia' , 'Germany' , 'Ghana' , 'Greece' , 'Grenada' , 'Guatemala' , 'Guinea' , 'Guyana' , 'Haiti' , 'Honduras' , 'Hong Kong' , 'Hungary' ,'Iceland' , 'India' , 'Indonesia' , 'Iran' , 'Iraq' , 'Ireland' , 'Isle of Man' , 'Israel' , 'Italy' , 'Ivory Coast' , 'Jamaica' , 'Japan' , 'Jordan' , 'Kazakhstan' , 'Kenya' , 'Kosovo' , 'Kuwait' , 'Laos' , 'Latvia' , 'Lebanon' , 'Liberia' , 'Libya' , 'Lithuania' , 'Luxembourg' , 'Macedonia' , 'Malawi' , 'Malaysia' , 'Maldives' , 'Mali' , 'Malta' , 'Mauritania' , 'Mauritius' , 'Mexico' , 'Montenegro' , 'Morocco' , 'Mozambique' , 'Myanmar' , 'Namibia' , 'Nepal' , 'Netherlands Antilles' , 'Netherlands' , 'New Zealand' , 'Nicaragua' , 'Nigeria' , 'Norway' , 'Oman' , 'Pakistan' , 'Palestine' , 'Panama' , 'Papua New Guinea' , 'Paraguay' , 'Peru' , 'Philippines' , 'Poland' , 'Portugal' , 'Puerto Rico' , 'Qatar' , 'Romania' , 'Russia' , 'Rwanda' , 'Saint Kitts and Nevis' , 'Saint Lucia' , 'Sao Tome and Principe' , 'Saudi Arabia' , 'Senegal' , 'Serbia' , 'Sierra Leone' , 'Singapore' , 'Slovakia' , 'Slovenia' , 'Somalia' , 'South Africa' , 'South Korea' , 'Sri Lanka' , 'St Kitts' , 'St Maarten' , 'St Vincent' , 'Sudan' , 'Suriname' , 'Swaziland' , 'Sweden' , 'Switzerland' , 'Syria' , 'Taiwan' , 'Thailand' , 'Togo' , 'Trinidad and Tobago' , 'Tunisia' , 'Turkey' , 'Turkmenistan' , 'Turks and Caicos Islands' , 'U.A.E' , 'Uganda' , 'Ukraine' , 'United Kingdom' , 'United Republic of Tanzania' , 'United States' , 'Uruguay' , 'US Virgin Islands' , 'Uzbekistan' , 'Venezuela' , 'Vietnam' , 'Yemen' , 'Zambia' , 'Zimbabwe' ,], 
+                                },
+                                {                                        
+                                    type: 'select',
+                                    label: 'Manual type ',
+                                    required:false,
+                                    optionVal: ["All", "Owner's manual", "Installation manual", ], 
+                                },
+                                {                                        
+                                    type: 'select',
+                                    label: 'Language ',
+                                    required:false,
+                                    optionVal: ["All","Arabic", "Bulgarian", "Bosnian", "Czech", "Danish", "German", "Greek", "English","Spanish","Estonian", "Persian","Finnish", "French", "Croatian", "Hungarian", "Interlingue", "Indonesian","Iranian", "Italian","Hebrew","Japanese","Kazakh","Korean", "Lithuanian", "Latvian, Lettish","Macedonian", "Maltese","Dutch", "Norwegian", "Polish", "Portuguese", "Romanian", "Russian", "Slovak", "Slovenian", "Albanian", "Serbian", "Swedish", "Thai", "Turkish", "Taiwanese", "Ukrainian", "Uzbek", "Vietnamese", "Chinese", ], 
+                                },
+                            ])
+                            +myInputForm([
+                                {                                        
+                                    type: 'date',
+                                    label: 'Registration start date ',
+                                    placeholder: 'DD/MM/YYYY',
+                                    required:false,
+                                    class: 'registrationStartDate'
+                                },
+                                {                                        
+                                    type: 'date',
+                                    label: 'Registration end date ',
+                                    placeholder: 'DD/MM/YYYY',
+                                    required:false,
+                                    class: 'registrationEndDate'
+                                },
+                                {                                        
+                                    type: 'text',
+                                    label: 'Keyword ',
+                                    placeholder: 'Keyword',
+                                    required:false,
+                                    class: 'keyword'
+                                },
+                            ])
+                            .c-button-wrap
+                                .button.c-cta
+                                    +defaultButton({name: 'Reset', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(aria-label="")
+                                    +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search" role="button" data-link-name aria-label="")
+        .c-wrapper.c-no-search-result.border-top
+            .component
+                .cmp-container
+                    // block: No result
+                    .c-no-result 
+                        .c-no-result__wrap
+                            span.c-no-result__icon 
+                            p.c-no-result__headline.font-m-normal-16.font-w-normal-20 No results were found.
+
+    // Type | Local 
+    .guide-text-type Type | Local <br>Before Search
+    // block : BU0003
+    .BU0003
+        .c-wrapper.margin-top.margin-bottom.bg-default
+            .component
+                .cmp-container
+                    //- contents
+                    // block : Sort box
+                    .my-component
+                        .my-formbox.type-02
+                            +myInputForm([
+                                {                                        
+                                    type: 'select',
+                                    label: 'Manual type ',
+                                    required:false,
+                                    optionVal: ["All", "Owner's manual", "Installation manual", ], 
+                                },
+                                {                                        
+                                    type: 'select',
+                                    label: 'Language ',
+                                    required:false,
+                                    optionVal: ["All","Arabic", "Bulgarian", "Bosnian", "Czech", "Danish", "German", "Greek", "English","Spanish","Estonian", "Persian","Finnish", "French", "Croatian", "Hungarian", "Interlingue", "Indonesian","Iranian", "Italian","Hebrew","Japanese","Kazakh","Korean", "Lithuanian", "Latvian, Lettish","Macedonian", "Maltese","Dutch", "Norwegian", "Polish", "Portuguese", "Romanian", "Russian", "Slovak", "Slovenian", "Albanian", "Serbian", "Swedish", "Thai", "Turkish", "Taiwanese", "Ukrainian", "Uzbek", "Vietnamese", "Chinese", ], 
+                                },
+                            ])
+                            +myInputForm([
+                                {                                        
+                                    type: 'date',
+                                    label: 'Registration start date ',
+                                    placeholder: 'DD/MM/YYYY',
+                                    required:false,
+                                    class: 'registrationStartDate'
+                                },
+                                {                                        
+                                    type: 'date',
+                                    label: 'Registration end date ',
+                                    placeholder: 'DD/MM/YYYY',
+                                    required:false,
+                                    class: 'registrationEndDate'
+                                },
+                                {                                        
+                                    type: 'text',
+                                    label: 'Keyword ',
+                                    placeholder: 'Keyword',
+                                    required:false,
+                                    class: 'keyword'
+                                },
+                            ])
+                            .c-button-wrap
+                                .button.c-cta
+                                    +defaultButton({name: 'Reset', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(aria-label="")
+                                    +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search" role="button" data-link-name aria-label="")
+
+    .guide-text-type Type | Local <br>Searched
+    .BU0003
+        .c-wrapper.margin-top.margin-bottom.bg-default.type02
+            .component
+                .cmp-container
+                    //- contents
+                    // block : Sort box
+                    .my-component
+                        .my-formbox.type-02
+                            +myInputForm([
+                                {                                        
+                                    type: 'select',
+                                    label: 'Manual type ',
+                                    required:false,
+                                    optionVal: ["All", "Owner's manual", "Installation manual", ], 
+                                },
+                                {                                        
+                                    type: 'select',
+                                    label: 'Language ',
+                                    required:false,
+                                    optionVal: ["All","Arabic", "Bulgarian", "Bosnian", "Czech", "Danish", "German", "Greek", "English","Spanish","Estonian", "Persian","Finnish", "French", "Croatian", "Hungarian", "Interlingue", "Indonesian","Iranian", "Italian","Hebrew","Japanese","Kazakh","Korean", "Lithuanian", "Latvian, Lettish","Macedonian", "Maltese","Dutch", "Norwegian", "Polish", "Portuguese", "Romanian", "Russian", "Slovak", "Slovenian", "Albanian", "Serbian", "Swedish", "Thai", "Turkish", "Taiwanese", "Ukrainian", "Uzbek", "Vietnamese", "Chinese", ],                                 
+                                },
+                            ])
+                            +myInputForm([
+                                {                                        
+                                    type: 'date',
+                                    label: 'Registration start date ',
+                                    placeholder: 'DD/MM/YYYY',
+                                    required:false,
+                                    class: 'registrationStartDate'
+                                },
+                                {                                        
+                                    type: 'date',
+                                    label: 'Registration end date ',
+                                    placeholder: 'DD/MM/YYYY',
+                                    required:false,
+                                    class: 'registrationEndDate'
+                                },
+                                {                                        
+                                    type: 'text',
+                                    label: 'Keyword ',
+                                    placeholder: 'Keyword',
+                                    required:false,
+                                    class: 'keyword'
+                                },
+                            ])
+                            .c-button-wrap
+                                .button.c-cta
+                                    +defaultButton({name: 'Reset', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(aria-label="")
+                                    +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search" role="button" data-link-name aria-label="")
+        .c-wrapper.margin-top.margin-bottom.border-top.bg-default.c-search-result
+            .component
+                .cmp-container
+                    // block : c-result-area
+                    +csResultContent(50, true, false, [])
+                    // block : c-table
+                    .c-table
+                        table
+                            caption Catalogue & Leaflet & Document download list
+                            colgroup
+                                col.cell-size
+                                col.cell-title-size
+                                col.cell-size
+                                col.cell-size
+                                col.cell-size
+                                col.cell-size
+                                col.cell-size
+                            thead
+                                tr
+                                    th(scope="col") Manual type
+                                    th(scope="col") Buyer Model
+                                    th(scope="col") Factory
+                                    th(scope="col") Suffix
+                                    th(scope="col") Language
+                                    th(scope="col") Registration Date
+                                    th(scope="col") Size(KB)
+
+                            tbody
+                                - for(var x = 0 ; x < 5; x++)
+                                    tr
+                                        td 
+                                            +resourceType("Owner's Manual")
+                                        td 
+                                            +resourceDownload("AMNC09GTUA0.ANCBASA", "")
+                                        td 
+                                            +resourceType("AMNC09GTUA0")
+                                        td 
+                                            +resourceType("ANCBASA")
+                                        td 
+                                            +resourceType("English")
+                                        td 
+                                            +resourceType("2023-06-30")
+                                        td
+                                            +resourceSize("pdf", "4,036")
+                                    tr
+                                        td 
+                                            +resourceType("Owner's Manual")
+                                        td 
+                                            +resourceDownload("ARNU24GTPC4.ENWBLEU", "")
+                                        td 
+                                            +resourceType("ARNU24GTPC4")
+                                        td 
+                                            +resourceType("ENWBLEU")
+                                        td 
+                                            +resourceType("Bulgarian")
+                                        td 
+                                            +resourceType("2023-06-08")
+                                        td
+                                            +resourceSize("pdf", "1,682")
+                    // block : pagenation
+                    .c-search__pagenation
+                        +pagination
+
+    .guide-text-type Type | Local <br>No Data
+    .BU0003
+        .c-wrapper.margin-top.margin-bottom.bg-default
+            .component
+                .cmp-container
+                    //- contents
+                    // block : Sort box
+                    .my-component
+                        .my-formbox.type-02
+                            +myInputForm([
+                                {                                        
+                                    type: 'select',
+                                    label: 'Manual type ',
+                                    required:false,
+                                    optionVal: ["All", "Owner's manual", "Installation manual", ], 
+                                },
+                                {                                        
+                                    type: 'select',
+                                    label: 'Language ',
+                                    required:false,
+                                    optionVal: ["All","Arabic", "Bulgarian", "Bosnian", "Czech", "Danish", "German", "Greek", "English","Spanish","Estonian", "Persian","Finnish", "French", "Croatian", "Hungarian", "Interlingue", "Indonesian","Iranian", "Italian","Hebrew","Japanese","Kazakh","Korean", "Lithuanian", "Latvian, Lettish","Macedonian", "Maltese","Dutch", "Norwegian", "Polish", "Portuguese", "Romanian", "Russian", "Slovak", "Slovenian", "Albanian", "Serbian", "Swedish", "Thai", "Turkish", "Taiwanese", "Ukrainian", "Uzbek", "Vietnamese", "Chinese", ], 
+                                },
+                            ])
+                            +myInputForm([
+                                {                                        
+                                    type: 'date',
+                                    label: 'Registration start date ',
+                                    placeholder: 'DD/MM/YYYY',
+                                    required:false,
+                                    class: 'registrationStartDate'
+                                },
+                                {                                        
+                                    type: 'date',
+                                    label: 'Registration end date ',
+                                    placeholder: 'DD/MM/YYYY',
+                                    required:false,
+                                    class: 'registrationEndDate'
+                                },
+                                {                                        
+                                    type: 'text',
+                                    label: 'Keyword ',
+                                    placeholder: 'Keyword',
+                                    required:false,
+                                    class: 'keyword'
+                                },
+                            ])
+                            .c-button-wrap
+                                .button.c-cta
+                                    +defaultButton({name: 'Reset', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(aria-label="")
+                                    +defaultButton({name: 'Search', wSize: 'medium', mSize: 'small', buttonStyle: 'default', isButton: true})(class="c-btn-search" role="button" data-link-name aria-label="")
+        .c-wrapper.c-no-search-result.border-top
+            .component
+                .cmp-container
+                    // block: No result
+                    .c-no-result 
+                        .c-no-result__wrap
+                            span.c-no-result__icon 
+                            p.c-no-result__headline.font-m-normal-16.font-w-normal-20 No results were found.
+

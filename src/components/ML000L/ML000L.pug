@@ -1,0 +1,869 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_pop-msg.pug
+include ../_common/_carousel.pug
+include ../_common/_pagination.pug
+include ../_common/_link-banner.pug
+include ../_common/_my-component.pug
+
+block meta 
+    - var componentId = "ML000L"
+    // [Start] 2023-06-05 : UPDATE - change text
+    - var componentName = "My Enquiries"
+    // [End] 2023-06-05 : UPDATE - change text
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+
+//- 2023-05-11 ( Receipt No : Icon )
+mixin myInquiryReceiptNoIcon(icon) 
+    if icon === "Call" || icon === "Email"
+        i(class=`c-text-contents__bodycopy__icon c-text-contents__bodycopy__icon--${icon}`) 
+
+mixin inquiryList(data)
+    ul.my-inquiry
+        each set in data
+            li.my-inquiry__item
+                if set.flag === "RECEIPT"
+                    .my-inquiry__flag.my-inquiry__flag--receipt !{set.flag}
+                if set.flag === "PROCESS"
+                    .my-inquiry__flag.my-inquiry__flag--process !{set.flag}
+                if set.flag === "CANCELED"
+                    .my-inquiry__flag.my-inquiry__flag--canceled !{set.flag}
+                if set.flag === "COMPLETED"
+                    .my-inquiry__flag.my-inquiry__flag--completed !{set.flag}
+
+                .c-text-contents
+                    if set.symptom
+                        .c-text-contents__bodycopy
+                            span.my-inquiry__title.font-w-normal-20.font-m-normal-16 Symptom :&nbsp;
+                            span.my-inquiry__name.font-w-normal-20.font-m-normal-16 !{set.symptom}
+                    // [Start] 2023-06-05 : REMOVE - remove subject data
+                    //- if set.subject
+                    //-     .c-text-contents__bodycopy
+                    //-         span.my-inquiry__title.font-w-normal-20.font-m-normal-16 Subject :&nbsp;
+                    //-         span.my-inquiry__name.font-w-normal-20.font-m-normal-16 !{set.subject}
+                    // [End] 2023-06-05 : REMOVE - remove subject data
+                    if set.subject
+                        .c-text-contents__bodycopy
+                            span.my-inquiry__title--subject.font-w-normal-20.font-m-normal-16 Subject :&nbsp;
+                            span.my-inquiry__name.font-w-normal-20.font-m-normal-16 !{set.subject}
+                    if set.type
+                        .c-text-contents__bodycopy
+                            // [Start] 2023-06-05 : REMOVE - remove subject data                                
+                            //- 2023-06-07 ( Type of Enquiry OR Type of Inquiry )
+                            if set.nation === "uk" 
+                                span.my-inquiry__title--type.font-w-normal-20.font-m-normal-16 Type of Enquiry :&nbsp;
+                            else
+                                span.my-inquiry__title--type.font-w-normal-20.font-m-normal-16 Type of Inquiry :&nbsp;
+                            // [End] 2023-06-05 : REMOVE - remove subject data
+                            span.my-inquiry__name.font-w-normal-20.font-m-normal-16 !{set.type}
+                    if set.ReceiptNo
+                        .c-text-contents__bodycopy
+                            span.my-inquiry__title--receiptNo.font-w-normal-20.font-m-normal-16 Receipt No. :&nbsp;
+                            //- 2023-05-11 ( Receipt No : Icon )
+                            +myInquiryReceiptNoIcon(`${set.receiptType}`)
+                            a(href='#' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                                span.font-w-normal-20.font-m-normal-16.my-inquiry__receipt.font-red !{set.ReceiptNo}                                
+                    if set.ReceiveNum  
+                        .c-text-contents__bodycopy
+                            span.my-inquiry__title--receiveNum.font-w-normal-20.font-m-normal-16 Receive number :&nbsp;
+                            +myInquiryReceiptNoIcon(`${set.receiptType}`)
+                            span.font-w-normal-20.font-m-normal-16.my-inquiry__receipt.font-red  
+                                a(href='#' data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") !{set.ReceiveNum}                                                              
+                    if set.ModelNo
+                        .c-text-contents__bodycopy
+                            span.my-inquiry__title--modelNo.font-w-normal-20.font-m-normal-16 Model No. :&nbsp;
+                            span.my-inquiry__name.font-w-normal-20.font-m-normal-16 !{set.ModelNo}
+                    if set.ReceiptDate
+                        .c-text-contents__bodycopy
+                            span.my-inquiry__title--receiptDate.font-w-normal-20.font-m-normal-16 Receipt Date :&nbsp;
+                            span.my-inquiry__name.font-w-normal-20.font-m-normal-16 !{set.ReceiptDate}
+    +pagination
+    
+mixin myInputForm(params)
+    .my-input
+        ul
+            each set in params
+                - let data = {...set}
+                li
+                    .my-com__sort-box-text
+                    .c-search-box__form(class=`${data.warning ? 'my-warn' : ''}`)
+                        +formSelect(data.label='', data.id, data.placeholder, false)
+                            if data.optionVal
+                                - for(var i=0; i < data.optionVal.length; i++)
+                                    if data.selected === i + 1
+                                        option(value="" data.selected)= data.optionVal[i]
+                                    else
+                                        option(value="")= data.optionVal[i]
+
+//- 2023-06-07 
+mixin ML000L(option=false)
+    if option == 'uk' 
+        .c-wrapper.ML000L
+            .component
+                .fluid-container
+                    // [Start] 2023-06-05 : REMOVE - remove subject data
+                    +myComponentSubMenu({
+                        title:"My Enquiries",
+                        subMenu:['Menu 1', 'Menu 2', 'Menu 3']
+                    })
+                    // [End] 2023-06-05 : REMOVE - remove Subject data
+                    //- .my-component__wrap
+                    //-     .my-component
+                    //-         .my-nodata-wrap 
+                    //-             .c-no-data 
+                    //-                 // [Start] 2023-06-05 : REMOVE - remove subject data
+                    //-                 strong.font-w-light-36.font-m-normal-16 There is no enquiry.
+                    //-                 // [End] 2023-06-05 : REMOVE - remove subject data
+                    .my-component__wrap
+                        .my-component
+                            .my-inquiry-box
+                                .my-com__sort-box 
+                                    +myInputForm([
+                                        {
+                                            type: 'select',
+                                            optionVal: ['All', 'Receipt', 'Completed'],
+                                            id: 'select1',
+                                        },
+                                        {
+                                            type: 'select',
+                                            optionVal: ['Latest', 'Oldest'],
+                                            id: 'select2',
+                                        }
+                                    ])
+                                // [Start] 2023-06-05 : REMOVE - remove subject data
+                                +inquiryList([
+                                    { 
+                                        nation: option, 
+                                        flag: "RECEIPT", 
+                                        type: "Online shop",
+                                        ReceiptNo : "GCP221004079840",
+                                        ModelNo : "LRMVS2806S",
+                                        ReceiptDate : "15 Sep. 2022",
+                                    },
+                                    {                                        
+                                        nation: option, 
+                                        flag: "COMPLETED", 
+                                        type: "Online shop",
+                                        ReceiptNo : "GCP221004079840",
+                                        ModelNo : "LRMVS2806S",
+                                        ReceiptDate : "15 Sep. 2022",
+                                    },
+                                ])  
+                                // [End] 2023-06-05 : REMOVE - remove subject data 
+            .my-component__wrap
+                .my-component
+                    // [Start] 2023-06-05 : REMOVE - remove subject data
+                    +linkBanner({
+                        type:"noPadding",
+                        mobileTextAlignLeft:true,
+                        bgColor:"transparent",
+                        title:[{
+                            text:"How can we help?",
+                            font:"font-w-light-56 font-m-light-28"
+                        }],
+                        desc:[{
+                            text:"Welcome your enquiry at any time and type. <br/> We are ready to help your inconveniences.",
+                            font:"font-w-normal-24 font-m-normal-16"
+                        }], 
+                        button:[{
+                            size:"large",
+                            sizeMobile:"medium",
+                            name: "Enquiry Request",
+                            buttonStyle: 'highlight',
+                            isButton: false
+                        }],
+                    })
+                    // [End] 2023-06-05 : REMOVE - remove subject data
+            
+            .my-component__wrap
+                .my-component
+                    +linkBanner({
+                        type:"noPadding",
+                        mobileTextAlignLeft:true,
+                        bgColor:"transparent",
+                        title:[{
+                            text:"Do you still need help?",
+                            font:"font-w-light-56 font-m-light-28"
+                        }],
+                        desc:[{
+                            text:"FAQs for Delivery / Payment / Your Orders / Changes to Your Order",
+                            font:"font-w-normal-24 font-m-normal-16"
+                        }], 
+                        button:[{
+                            size:"large",
+                            sizeMobile:"medium",
+                            name: "View FAQ​",
+                            buttonStyle: 'default',
+                            isButton: false
+                        }],
+                    })
+    else if option == 'other' 
+        .c-wrapper.ML000L
+            .component
+                .fluid-container
+                    +myComponentSubMenu({
+                        title:"My Inquiries",
+                        subMenu:['Menu 1', 'Menu 2', 'Menu 3']
+                    })
+                    .my-component__wrap
+                        .my-component
+                            .my-inquiry-box
+                                .my-com__sort-box 
+                                    +myInputForm([
+                                        {
+                                            type: 'select',
+                                            optionVal: ['All', 'Receipt', 'Completed'],
+                                            id: 'select1',
+                                        },
+                                        {
+                                            type: 'select',
+                                            optionVal: ['Latest', 'Oldest'],
+                                            id: 'select2',
+                                        }
+                                    ])
+                                +inquiryList([
+                                    {
+                                        flag: "RECEIPT", 
+                                        subject: "how to product warranty extensio..",
+                                        type: "Online shop",
+                                        ReceiptNo : "GCP221004079840",
+                                        ModelNo : "LRMVS2806S",
+                                        ReceiptDate : "15 Sep. 2022",
+                                        receiptType: "Call",
+                                    },
+                                    {
+                                        flag: "COMPLETED", 
+                                        subject: "how to product warranty extensio..",
+                                        type: "Online shop",
+                                        ReceiptNo : "GCP221004079840",
+                                        ModelNo : "LRMVS2806S",
+                                        ReceiptDate : "15 Sep. 2022",
+                                        receiptType: "Email",
+                                    }
+                                ]) 
+            .my-component__wrap
+                .my-component                    
+                    +linkBanner({
+                        type:"noPadding",
+                        mobileTextAlignLeft:true,
+                        bgColor:"transparent",
+                        title:[{
+                            text:"How can we help?",
+                            font:"font-w-light-56 font-m-light-28"
+                        }],
+                        desc:[{
+                            text:"Welcome your inquiry at any time and type. <br/> We are ready to help your inconveniences.",
+                            font:"font-w-normal-24 font-m-normal-16"
+                        }], 
+                        button:[{
+                            size:"large",
+                            sizeMobile:"medium",
+                            name:"Go to Appointment​",
+                            buttonStyle: 'default',
+                            isButton: false
+                        },
+                        {
+                            size:"large",
+                            sizeMobile:"medium",
+                            name:"Go to Email​",
+                            buttonStyle: 'default',
+                            isButton: false
+                        }],
+                    })            
+            .my-component__wrap
+                .my-component
+                    +linkBanner({
+                        type:"noPadding",
+                        mobileTextAlignLeft:true,
+                        bgColor:"transparent",
+                        title:[{
+                            text:"Do you still need help?",
+                            font:"font-w-light-56 font-m-light-28"
+                        }],
+                        desc:[{
+                            text:"FAQs for Delivery / Payment / Your Orders / Changes to Your Order",
+                            font:"font-w-normal-24 font-m-normal-16"
+                        }], 
+                        button:[{
+                            size:"large",
+                            sizeMobile:"medium",
+                            name: "View FAQ​",
+                            buttonStyle: 'default',
+                            isButton: false
+                        }],
+                    }) 
+    else if option == 'cn'
+        .c-wrapper.ML000L
+            .component
+                .fluid-container
+                    +myComponentSubMenu({
+                        title:"My Inquiries",
+                        subMenu:['Menu 1', 'Menu 2', 'Menu 3']
+                    })
+                    .my-component__wrap
+                        .my-component
+                            .my-inquiry-box
+                                .my-com__sort-box 
+                                    +myInputForm([
+                                        {
+                                            type: 'select',
+                                            optionVal: ['All', 'Receipt', 'Completed'],
+                                            id: 'select1',
+                                        },
+                                        {
+                                            type: 'select',
+                                            optionVal: ['Latest', 'Oldest'],
+                                            id: 'select2',
+                                        }
+                                    ])
+                                +inquiryList([
+                                    {
+                                        flag: "RECEIPT", 
+                                        subject: "how to product warranty extensio..",
+                                        type: "Online shop",
+                                        ReceiveNum : "GCP221004079840",
+                                        ModelNo : "LRMVS2806S",
+                                        ReceiptDate : "15 Sep. 2022",
+                                        receiptType: "Call",
+                                    },
+                                    {
+                                        flag: "COMPLETED", 
+                                        subject: "how to product warranty extensio..",
+                                        type: "Online shop",
+                                        ReceiptNo : "GCP221004079840",
+                                        ModelNo : "LRMVS2806S",
+                                        ReceiptDate : "15 Sep. 2022",
+                                        receiptType: "Email",
+                                    }
+                                ]) 
+            .my-component__wrap
+                .my-component                    
+                    +linkBanner({
+                        type:"noPadding",
+                        mobileTextAlignLeft:true,
+                        bgColor:"transparent",
+                        title:[{
+                            text:"How can we help?",
+                            font:"font-w-light-56 font-m-light-28"
+                        }],
+                        desc:[{
+                            text:"Welcome your inquiry at any time and type. <br/> We are ready to help your inconveniences.",
+                            font:"font-w-normal-24 font-m-normal-16"
+                        }], 
+                        button:[{
+                            size:"large",
+                            sizeMobile:"medium",
+                            name:"去预约​",
+                            buttonStyle: 'default',
+                            isButton: false
+                        },
+                        {
+                            size:"large",
+                            sizeMobile:"medium",
+                            name:"转到电子邮件​",
+                            buttonStyle: 'default',
+                            isButton: false
+                        }],
+                    })            
+            .my-component__wrap
+                .my-component
+                    +linkBanner({
+                        type:"noPadding",
+                        mobileTextAlignLeft:true,
+                        bgColor:"transparent",
+                        title:[{
+                            text:"Do you still need help?",
+                            font:"font-w-light-56 font-m-light-28"
+                        }],
+                        desc:[{
+                            text:"FAQs for Delivery / Payment / Your Orders / Changes to Your Order",
+                            font:"font-w-normal-24 font-m-normal-16"
+                        }], 
+                        button:[{
+                            size:"large",
+                            sizeMobile:"medium",
+                            name: "View FAQ​",
+                            buttonStyle: 'default',
+                            isButton: false
+                        }],
+                    })
+    else if option == 'hk' 
+        .c-wrapper.ML000L
+            .component
+                .fluid-container
+                    +myComponentSubMenu({
+                        title:"My Inquiries",
+                        subMenu:['Menu 1', 'Menu 2', 'Menu 3']
+                    })
+                    .my-component__wrap
+                        .my-component
+                            .my-inquiry-box
+                                .my-com__sort-box 
+                                    +myInputForm([
+                                        {
+                                            type: 'select',
+                                            optionVal: ['All', 'Receipt', 'Completed'],
+                                            id: 'select1',
+                                        },
+                                        {
+                                            type: 'select',
+                                            optionVal: ['Latest', 'Oldest'],
+                                            id: 'select2',
+                                        }
+                                    ])
+                                +inquiryList([
+                                    {
+                                        flag: "RECEIPT", 
+                                        subject: "how to product warranty extensio..",
+                                        type: "Online shop",
+                                        ReceiveNum : "GCP221004079840",
+                                        ModelNo : "LRMVS2806S",
+                                        ReceiptDate : "15 Sep. 2022",
+                                        receiptType: "Call",
+                                    },
+                                    {
+                                        flag: "COMPLETED", 
+                                        subject: "how to product warranty extensio..",
+                                        type: "Online shop",
+                                        ReceiptNo : "GCP221004079840",
+                                        ModelNo : "LRMVS2806S",
+                                        ReceiptDate : "15 Sep. 2022",
+                                        receiptType: "Email",
+                                    }
+                                ]) 
+            .my-component__wrap
+                .my-component                    
+                    +linkBanner({
+                        type:"noPadding",
+                        mobileTextAlignLeft:true,
+                        bgColor:"transparent",
+                        title:[{
+                            text:"How can we help?",
+                            font:"font-w-light-56 font-m-light-28"
+                        }],
+                        desc:[{
+                            text:"Welcome your inquiry at any time and type. <br/> We are ready to help your inconveniences.",
+                            font:"font-w-normal-24 font-m-normal-16"
+                        }], 
+                        button:[{
+                            size:"large",
+                            sizeMobile:"medium",
+                            name:"到電話查詢預約服務",
+                            buttonStyle: 'default',
+                            isButton: false
+                        },
+                        {
+                            size:"large",
+                            sizeMobile:"medium",
+                            name:"到電郵服務",
+                            buttonStyle: 'default',
+                            isButton: false
+                        }],
+                    })            
+            .my-component__wrap
+                .my-component
+                    +linkBanner({
+                        type:"noPadding",
+                        mobileTextAlignLeft:true,
+                        bgColor:"transparent",
+                        title:[{
+                            text:"Do you still need help?",
+                            font:"font-w-light-56 font-m-light-28"
+                        }],
+                        desc:[{
+                            text:"FAQs for Delivery / Payment / Your Orders / Changes to Your Order",
+                            font:"font-w-normal-24 font-m-normal-16"
+                        }], 
+                        button:[{
+                            size:"large",
+                            sizeMobile:"medium",
+                            name: "View FAQ​",
+                            buttonStyle: 'default',
+                            isButton: false
+                        }],
+                    })
+    else if option == 'hk_en' 
+        .c-wrapper.ML000L
+            .component
+                .fluid-container
+                    +myComponentSubMenu({
+                        title:"My Inquiries",
+                        subMenu:['Menu 1', 'Menu 2', 'Menu 3']
+                    })     
+                    .my-component__wrap
+                        .my-component
+                            .my-inquiry-box
+                                .my-com__sort-box 
+                                    +myInputForm([
+                                        {
+                                            type: 'select',
+                                            optionVal: ['All', 'Receipt', 'Completed'],
+                                            id: 'select1',
+                                        },
+                                        {
+                                            type: 'select',
+                                            optionVal: ['Latest', 'Oldest'],
+                                            id: 'select2',
+                                        }
+                                    ])
+                                +inquiryList([
+                                    {
+                                        flag: "RECEIPT", 
+                                        subject: "how to product warranty extensio..",
+                                        type: "Online shop",
+                                        ReceiveNum : "GCP221004079840",
+                                        ModelNo : "LRMVS2806S",
+                                        ReceiptDate : "15 Sep. 2022",
+                                        receiptType: "Call",
+                                    },
+                                    {
+                                        flag: "COMPLETED", 
+                                        subject: "how to product warranty extensio..",
+                                        type: "Online shop",
+                                        ReceiptNo : "GCP221004079840",
+                                        ModelNo : "LRMVS2806S",
+                                        ReceiptDate : "15 Sep. 2022",
+                                        receiptType: "Email",
+                                    }
+                                ]) 
+            .my-component__wrap
+                .my-component                    
+                    +linkBanner({
+                        type:"noPadding",
+                        mobileTextAlignLeft:true,
+                        bgColor:"transparent",
+                        title:[{
+                            text:"How can we help?",
+                            font:"font-w-light-56 font-m-light-28"
+                        }],
+                        desc:[{
+                            text:"Welcome your inquiry at any time and type. <br/> We are ready to help your inconveniences.",
+                            font:"font-w-normal-24 font-m-normal-16"
+                        }], 
+                        button:[{
+                            size:"large",
+                            sizeMobile:"medium",
+                            name:"Go to Call Appointment",
+                            buttonStyle: 'default',
+                            isButton: false
+                        },
+                        {
+                            size:"large",
+                            sizeMobile:"medium",
+                            name:"Go to Email",
+                            buttonStyle: 'default',
+                            isButton: false
+                        }],
+                    })            
+            .my-component__wrap
+                .my-component
+                    +linkBanner({
+                        type:"noPadding",
+                        mobileTextAlignLeft:true,
+                        bgColor:"transparent",
+                        title:[{
+                            text:"Do you still need help?",
+                            font:"font-w-light-56 font-m-light-28"
+                        }],
+                        desc:[{
+                            text:"FAQs for Delivery / Payment / Your Orders / Changes to Your Order",
+                            font:"font-w-normal-24 font-m-normal-16"
+                        }], 
+                        button:[{
+                            size:"large",
+                            sizeMobile:"medium",
+                            name: "View FAQ​",
+                            buttonStyle: 'default',
+                            isButton: false
+                        }],
+                    })
+    else if option == 'th'
+        .c-wrapper.ML000L
+            .component
+                .fluid-container
+                    +myComponentSubMenu({
+                        title:"My Inquiries",
+                        subMenu:['Menu 1', 'Menu 2', 'Menu 3']
+                    })
+                    .my-component__wrap
+                        .my-component
+                            .my-inquiry-box
+                                .my-com__sort-box 
+                                    +myInputForm([
+                                        {
+                                            type: 'select',
+                                            optionVal: ['All', 'Receipt', 'Completed'],
+                                            id: 'select1',
+                                        },
+                                        {
+                                            type: 'select',
+                                            optionVal: ['Latest', 'Oldest'],
+                                            id: 'select2',
+                                        }
+                                    ])
+                                +inquiryList([
+                                    {
+                                        flag: "RECEIPT", 
+                                        subject: "how to product warranty extensio..",
+                                        type: "Online shop",
+                                        ReceiveNum : "GCP221004079840",
+                                        ModelNo : "LRMVS2806S",
+                                        ReceiptDate : "15 Sep. 2022",
+                                        receiptType: "Call",
+                                    },
+                                    {
+                                        flag: "COMPLETED", 
+                                        subject: "how to product warranty extensio..",
+                                        type: "Online shop",
+                                        ReceiptNo : "GCP221004079840",
+                                        ModelNo : "LRMVS2806S",
+                                        ReceiptDate : "15 Sep. 2022",
+                                        receiptType: "Email",
+                                    }
+                                ]) 
+            .my-component__wrap
+                .my-component                    
+                    +linkBanner({
+                        type:"noPadding",
+                        mobileTextAlignLeft:true,
+                        bgColor:"transparent",
+                        title:[{
+                            text:"How can we help?",
+                            font:"font-w-light-56 font-m-light-28"
+                        }],
+                        desc:[{
+                            text:"Welcome your inquiry at any time and type. <br/> We are ready to help your inconveniences.",
+                            font:"font-w-normal-24 font-m-normal-16"
+                        }], 
+                        button:[{
+                            size:"large",
+                            sizeMobile:"medium",
+                            name:"ไปที่การโทรนัดหมาย",
+                            buttonStyle: 'default',
+                            isButton: false
+                        },
+                        {
+                            size:"large",
+                            sizeMobile:"medium",
+                            name:"ไปยังอีเมล",
+                            buttonStyle: 'default',
+                            isButton: false
+                        }],
+                    })            
+            .my-component__wrap
+                .my-component
+                    +linkBanner({
+                        type:"noPadding",
+                        mobileTextAlignLeft:true,
+                        bgColor:"transparent",
+                        title:[{
+                            text:"Do you still need help?",
+                            font:"font-w-light-56 font-m-light-28"
+                        }],
+                        desc:[{
+                            text:"FAQs for Delivery / Payment / Your Orders / Changes to Your Order",
+                            font:"font-w-normal-24 font-m-normal-16"
+                        }], 
+                        button:[{
+                            size:"large",
+                            sizeMobile:"medium",
+                            name: "View FAQ​",
+                            buttonStyle: 'default',
+                            isButton: false
+                        }],
+                    })    
+    else if option == 'jp' 
+        .c-wrapper.ML000L
+            .component
+                .fluid-container
+                    +myComponentSubMenu({
+                        title:"My Inquiries",
+                        subMenu:['Menu 1', 'Menu 2', 'Menu 3']
+                    })
+                    .my-component__wrap
+                        .my-component
+                            .my-inquiry-box
+                                .my-com__sort-box 
+                                    +myInputForm([
+                                        {
+                                            type: 'select',
+                                            optionVal: ['All', 'Receipt', 'Completed'],
+                                            id: 'select1',
+                                        },
+                                        {
+                                            type: 'select',
+                                            optionVal: ['Latest', 'Oldest'],
+                                            id: 'select2',
+                                        }
+                                    ])
+                                +inquiryList([
+                                    {
+                                        flag: "RECEIPT", 
+                                        subject: "how to product warranty extensio..",
+                                        type: "Online shop",
+                                        ReceiveNum : "GCP221004079840",
+                                        ModelNo : "LRMVS2806S",
+                                        ReceiptDate : "15 Sep. 2022",
+                                        receiptType: "Call",
+                                    },
+                                    {
+                                        flag: "COMPLETED", 
+                                        subject: "how to product warranty extensio..",
+                                        type: "Online shop",
+                                        ReceiptNo : "GCP221004079840",
+                                        ModelNo : "LRMVS2806S",
+                                        ReceiptDate : "15 Sep. 2022",
+                                        receiptType: "Email",
+                                    }
+                                ]) 
+            .my-component__wrap
+                .my-component                    
+                    +linkBanner({
+                        type:"noPadding",
+                        mobileTextAlignLeft:true,
+                        bgColor:"transparent",
+                        title:[{
+                            text:"How can we help?",
+                            font:"font-w-light-56 font-m-light-28"
+                        }],
+                        desc:[{
+                            text:"Welcome your inquiry at any time and type. <br/> We are ready to help your inconveniences.",
+                            font:"font-w-normal-24 font-m-normal-16"
+                        }], 
+                        button:[{
+                            size:"large",
+                            sizeMobile:"medium",
+                            name:"コール予約へ",
+                            buttonStyle: 'default',
+                            isButton: false
+                        },
+                        {
+                            size:"large",
+                            sizeMobile:"medium",
+                            name:"メールお問い合わせへ",
+                            buttonStyle: 'default',
+                            isButton: false
+                        }],
+                    })            
+            .my-component__wrap
+                .my-component
+                    +linkBanner({
+                        type:"noPadding",
+                        mobileTextAlignLeft:true,
+                        bgColor:"transparent",
+                        title:[{
+                            text:"Do you still need help?",
+                            font:"font-w-light-56 font-m-light-28"
+                        }],
+                        desc:[{
+                            text:"FAQs for Delivery / Payment / Your Orders / Changes to Your Order",
+                            font:"font-w-normal-24 font-m-normal-16"
+                        }], 
+                        button:[{
+                            size:"large",
+                            sizeMobile:"medium",
+                            name: "View FAQ​",
+                            buttonStyle: 'default',
+                            isButton: false
+                        }],
+                    })
+    else 
+        .c-wrapper.ML000L
+            .component
+                .fluid-container
+                    +myComponentSubMenu({
+                        title:"My Inquiries",
+                        subMenu:['Menu 1', 'Menu 2', 'Menu 3']
+                    })
+                    .my-component__wrap
+                        .my-component
+                            .my-nodata-wrap 
+                                .c-no-data 
+                                    strong.font-w-light-36.font-m-normal-16 There is no inquiry.                    
+            .my-component__wrap
+                .my-component
+                    +linkBanner({
+                        type:"noPadding",
+                        mobileTextAlignLeft:true,
+                        bgColor:"transparent",
+                        title:[{
+                            text:"How can we help?",
+                            font:"font-w-light-56 font-m-light-28"
+                        }],
+                        desc:[{
+                            text:"Welcome your inquiry at any time and type. <br/> We are ready to help your inconveniences.",
+                            font:"font-w-normal-24 font-m-normal-16"
+                        }], 
+                        button:[{
+                            size:"large",
+                            sizeMobile:"medium",
+                            name: "Inquiry request​​",
+                            buttonStyle: 'highlight',
+                            isButton: false
+                        }],
+                    }) 
+            .my-component__wrap
+                .my-component
+                    +linkBanner({
+                        type:"noPadding",
+                        mobileTextAlignLeft:true,
+                        bgColor:"transparent",
+                        title:[{
+                            text:"Do you still need help?",
+                            font:"font-w-light-56 font-m-light-28"
+                        }],
+                        desc:[{
+                            text:"FAQs for Delivery / Payment / Your Orders / Changes to Your Order",
+                            font:"font-w-normal-24 font-m-normal-16"
+                        }], 
+                        button:[{
+                            size:"large",
+                            sizeMobile:"medium",
+                            name: "View FAQ​",
+                            buttonStyle: 'default',
+                            isButton: false
+                        }],
+                    })
+block content
+    // Component Markup    
+    //- 2023-06-07
+    .guide-text-type Type1. UK ( e-mail inquiry only )
+    +ML000L('uk')   
+    .guide-text-type Type2. Other ( 2 cases : e-mail, call appointment )
+    +ML000L('other')     
+    .guide-text-type Type3. CN
+    +ML000L('cn')
+    .guide-text-type Type4. HK
+    +ML000L('hk')
+    .guide-text-type Type4. HK_en
+    +ML000L('hk_en')
+    .guide-text-type Type5. TH
+    +ML000L('th')
+    .guide-text-type Type6. JP
+    +ML000L('jp')
+    .guide-text-type Type7. No Inquiry
+    +ML000L('noInquiry')
+
+block modal
+    //- ML0028 My Inquiries (popup)
+    +pop-msg-standard({id : `myInquiriesPopup`, headline:"Delete history"})
+        // block - text contents
+        .c-text-contents 
+            .text.c-text-contents__bodycopy
+                .cmp-text.font-m-normal-16.font-w-normal-16(data-cmp-data-layer="")
+                | The DELETE button on this page
+                | deletes the history, it does not delete or cancel the actual service.
+        .button.c-pop-msg__button-wrap.c-pop-msg__button-wrap--no-divide-on-mobile
+            +button({type:"box-outlined", color:"black", size:"medium", name: "cancel"})(class="c-pop-msg__close-btn js-pop-close" aria-controls="myInquiriesPopup")
+            +button({type:"box", color:"red", size:"medium", name: "Delete"})

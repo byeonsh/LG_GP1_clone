@@ -1,0 +1,310 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_link-banner.pug
+
+block meta 
+    - var componentId = "ML000M"
+    - var componentName = "My Inquiries Complete"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+    
+mixin inquiryDetailPack(params)
+    - let data = {...params}
+    .my-infoBox__accordion
+        .c-accordion.js-accordion
+            .c-accordion__box.js-accordion-handle-target
+                .c-accordion__head
+                    // block - text contents
+                    .c-accordion__head-text.c-text-contents
+                        //- 2023-05-23 ( uk )
+                        if data.nation === "uk" 
+                            if data.title === "Answer"
+                                span.font-w-normal-32.font-m-normal-20(aria-hidden="true").font-red !{data.title}
+                            else
+                                span.font-w-normal-32.font-m-normal-20(aria-hidden="true") !{data.title}
+                        //- 2023-05-23 ( other )
+                        if data.nation === "other" 
+                            if data.title === "Answer"
+                                span.font-w-normal-32.font-m-normal-20(aria-hidden="true").font-black !{data.title}
+                            else
+                                span.font-w-normal-32.font-m-normal-20(aria-hidden="true") !{data.title}
+                    +trigger(params)
+                .c-accordion__body(id=`${data.controlsId}`)
+                    each set in data.desc
+                        if set.descTitle
+                            .title.c-text-contents__headline.font-w-normal-20.font-m-normal-16 !{set.descTitle}
+                        .text.c-text-contents__bodycopy.font-w-normal-20.font-m-normal-16
+                            .cmp-text(data-cmp-data-layer="") !{set.descText}
+                    if data.download
+                        +linkButton({type:"text",color:"black",class:"download",otherClass:"c-tooltip__button", name:"receipt_TV_proof.zip", ariaControls:"download", expanded:"false"})
+        
+
+mixin trigger(params)
+    - let data = {...params}
+    .button
+        button.cmp-button.c-accordion__button.js-accordion-trigger(aria-expanded="false" aria-controls=`${data.controlsId}` class=`${data.controlsId}`)
+            span.c-accordion__button-text.expand.sr-only Expand
+            span.c-accordion__button-text.collapse.sr-only Collapse
+
+mixin inquiryDetailStatusBox(params)
+    - let data = { ...params }
+    .my-repairdetail-info
+        .my-repairdetail-info__title
+            .c-text-contents
+                .c-text-contents__title
+                    //- if data.nation === "uk" 
+                    //-     p.font-w-normal-32.font-m-normal-20.font-red= data.title
+                    //- if data.nation === "other" 
+                    //-     p.font-w-normal-32.font-m-normal-20.font-black= data.title
+                    p.font-w-normal-32.font-m-normal-20.font-black= data.title
+        .my-repairdetail-info__text
+            .c-list(role="list").c-list--step
+                .my-repairdetail-info__receipt
+                    each set in data.receipt
+                        if set.receiptTitle
+                            .c-list__item(class=`${data.fitContent ? `c-list__item--fitContent`:''}`).c-list__item--step
+                                .c-text-contents
+                                    .c-text-contents__title
+                                        span.font-w-normal-20.font-m-normal-16 !{set.receiptTitle}
+                                    span.c-list__colon &nbsp;:&nbsp;
+                                    .c-text-contents__bodycopy
+                                        //- 2023-05-16 ( Receipt No : Icon 추가)
+                                        +myInquiryReceiptNoIcon(`${set.receiptType}`)
+                                        span.font-w-normal-20.font-m-normal-16 !{set.receiptText}
+                .my-repairdetail-info__desc
+                    each set in data.desc
+                        if set.descTitle
+                            .c-list__item(class=`${data.fitContent ? `c-list__item--fitContent`:''}`).c-list__item--step
+                                .c-text-contents
+                                    .c-text-contents__title
+                                        span.font-w-normal-20.font-m-normal-16 !{set.descTitle}
+                                    span.c-list__colon &nbsp;:&nbsp;
+                                    .c-text-contents__bodycopy
+                                        if set.descLink
+                                            a(href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="")
+                                                span.font-w-normal-20.font-m-normal-16.font-red.my-repairdetail-info__link !{set.descText}
+                                        else
+                                            span.font-w-normal-20.font-m-normal-16 !{set.descText}
+//- 2023-05-16 ( Receipt No : Icon )
+mixin myInquiryReceiptNoIcon(icon)
+    if icon === "Call" || icon === "Email"
+        i(class=`c-text-contents__bodycopy__icon c-text-contents__bodycopy__icon--${icon}`)    
+
+mixin ML000M(option=false)
+    if option == 'default'
+        .c-wrapper.ML000M
+            .component
+                .fluid-container
+                    .my-component.my-page-title
+                        .c-text-contents.my-component__title-section
+                            .c-text-contents__headline
+                                +headline("font-w-light-56 font-m-light-28", "h2", "Inquiry Details")
+                    .my-component__wrap.border-only-web
+                        .my-component
+                            .my-item-detail.my-item-detail--wrap
+                                .my-infoBox
+                                    +inquiryDetailStatusBox({
+                                        nation: "uk",
+                                        title: "Receipt",
+                                        receipt : [
+                                            {receiptTitle:'Receipt No.', receiptText:'GCP221004079840'},
+                                            {receiptTitle:'Receipt Date', receiptText:'03 Aug. 2022'},
+                                        ],
+                                        desc : [
+                                            {descTitle:'Request Type', descText:'Email inquiry'},
+                                            {descTitle:'Customer Name', descText:'Surre***** Do**'},
+                                            {descTitle:'Type of Inquiry', descText:'Online shop'},
+                                            {descTitle:'Model No.', descText:'LRMVS2806S', descLink:true},
+                                        ],
+                                    })
+                                    +inquiryDetailPack({
+                                        nation: "uk",
+                                        controlsId:"id1",
+                                        title:"Question",
+                                        download:false,
+                                        desc: [
+                                            {descTitle:'Subject', descText:'Inquiry for repair service of air purifier purchased in Korea'},
+                                            {descTitle:'Message', descText:'How can extend the warranty? and what is the benefit? plus, it has a price?  is the benefit? plus, it has a price?'},
+                                        ]
+                                    })
+                                    +inquiryDetailPack({
+                                        nation: "uk",
+                                        controlsId:"id2",
+                                        title:"Answer",
+                                        desc: [
+                                            {descText:'Dear Camila, Greeting from LG Electronics...!!! We have been forward your concern to our branch office in order to take an immediate step in this regards. For any further assistance, please call us on 1800-315-9999 or write to us at Thanking you and reassuring you of our best services always. Thanks and Regards LG Customer Support.'},
+                                        ]
+                                    })
+                    .my-component__wrap
+                        .my-component
+                            +linkBanner({
+                                type:"padding-tb",
+                                mobileTextAlignLeft:true,
+                                bgColor:"transparent",
+                                title:[{
+                                    text:"Do you still need help?",
+                                    font:"font-w-light-56 font-m-light-28"
+                                }],
+                                desc:[{
+                                    text:"FAQs for Delivery / Payment / Your Orders / Changes to Your Order",
+                                    font:"font-w-normal-24 font-m-normal-16"
+                                }], 
+                                button:[{
+                                    size:"large",
+                                    sizeMobile:"medium",
+                                    name: "View FAQ",
+                                    buttonStyle: 'default',
+                                    isButton: false
+                                }],
+                            })
+    else if option == 'call'
+        .c-wrapper.ML000M
+            .component
+                .fluid-container
+                    .my-component.my-page-title
+                        .c-text-contents.my-component__title-section
+                            .c-text-contents__headline
+                                +headline("font-w-light-56 font-m-light-28", "h2", "Inquiry Details")
+                    .my-component__wrap.border-only-web
+                        .my-component
+                            .my-item-detail.my-item-detail--wrap
+                                .my-infoBox
+                                    +inquiryDetailStatusBox({
+                                        nation: "other",
+                                        title: "Receipt",
+                                        receipt : [
+                                            {receiptType: "Call", receiptTitle:'Receipt No.', receiptText:'GCP221004079840'},
+                                            {receiptType: "Date", receiptTitle:'Receipt Date', receiptText:'01 Mar. 2023'},
+                                        ],
+                                        desc : [
+                                            {descTitle:'Request Type', descText:'Call Appointment'},
+                                            {descTitle:'Customer Name', descText:'Surre***** Do**'},
+                                            {descTitle:'Type of Inquiry', descText:'Online shop'},
+                                            {descTitle:'Model No.', descText:'LRMVS2806S', descLink:true},
+                                        ],
+                                    })
+                                    +inquiryDetailPack({
+                                        nation: "other",
+                                        controlsId:"id1",
+                                        title:"Question",
+                                        download:false,
+                                        desc: [
+                                            {descTitle:'Subject', descText:'Inquiry for repair service of air purifier purchased in Korea'},
+                                            {descTitle:'Message', descText:'How can extend the warranty? and what is the benefit? plus, it has a price?  is the benefit? plus, it has a price?'},
+                                        ]
+                                    })
+                                    +inquiryDetailPack({
+                                        nation: "other",
+                                        controlsId:"id2",
+                                        title:"Answer",
+                                        desc: [
+                                            {descText:'Dear Camila, Greeting from LG Electronics...!!! We have been forward your concern to our branch office in order to take an immediate step in this regards. For any further assistance, please call us on 1800-315-9999 or write to us at Thanking you and reassuring you of our best services always. Thanks and Regards LG Customer Support.'},
+                                        ]
+                                    })
+                    .my-component__wrap
+                        .my-component
+                            +linkBanner({
+                                type:"padding-tb",
+                                mobileTextAlignLeft:true,
+                                bgColor:"transparent",
+                                title:[{
+                                    text:"Do you still need help?",
+                                    font:"font-w-light-56 font-m-light-28"
+                                }],
+                                desc:[{
+                                    text:"FAQs for Delivery / Payment / Your Orders / Changes to Your Order",
+                                    font:"font-w-normal-24 font-m-normal-16"
+                                }], 
+                                button:[{
+                                    size:"large",
+                                    sizeMobile:"medium",
+                                    name: "View FAQ",
+                                    buttonStyle: 'default',
+                                    isButton: false
+                                }],
+                            })
+    else
+        .c-wrapper.ML000M
+            .component
+                .fluid-container
+                    .my-component.my-page-title
+                        .c-text-contents.my-component__title-section
+                            .c-text-contents__headline
+                                +headline("font-w-light-56 font-m-light-28", "h2", "Inquiry Details")
+                    .my-component__wrap.border-only-web
+                        .my-component
+                            .my-item-detail.my-item-detail--wrap
+                                .my-infoBox
+                                    +inquiryDetailStatusBox({
+                                        nation: "other",
+                                        title: "Receipt",
+                                        receipt : [
+                                            {receiptType: "Email", receiptTitle:'Receipt No.', receiptText:'GCP221004079840'},
+                                            {receiptType: "Date", receiptTitle:'Receipt Date', receiptText:'03 Aug. 2022'},
+                                        ],
+                                        desc : [
+                                            {descTitle:'Request Type', descText:'Email inquiry'},
+                                            {descTitle:'Customer Name', descText:'Surre***** Do**'},
+                                            {descTitle:'Type of Inquiry', descText:'Online shop'},
+                                            {descTitle:'Model No.', descText:'LRMVS2806S', descLink:true},
+                                        ],
+                                    })
+                                    +inquiryDetailPack({
+                                        nation: "other",
+                                        controlsId:"id1",
+                                        title:"Question",
+                                        download:false,
+                                        desc: [
+                                            {descTitle:'Subject', descText:'Inquiry for repair service of air purifier purchased in Korea'},
+                                            {descTitle:'Message', descText:'How can extend the warranty? and what is the benefit? plus, it has a price?  is the benefit? plus, it has a price?'},
+                                        ]
+                                    })
+                                    +inquiryDetailPack({
+                                        nation: "other",
+                                        controlsId:"id2",
+                                        title:"Answer",
+                                        desc: [
+                                            {descText:'Dear Camila, Greeting from LG Electronics...!!! We have been forward your concern to our branch office in order to take an immediate step in this regards. For any further assistance, please call us on 1800-315-9999 or write to us at Thanking you and reassuring you of our best services always. Thanks and Regards LG Customer Support.'},
+                                        ]
+                                    })
+                    .my-component__wrap
+                        .my-component
+                            +linkBanner({
+                                type:"padding-tb",
+                                mobileTextAlignLeft:true,
+                                bgColor:"transparent",
+                                title:[{
+                                    text:"Do you still need help?",
+                                    font:"font-w-light-56 font-m-light-28"
+                                }],
+                                desc:[{
+                                    text:"FAQs for Delivery / Payment / Your Orders / Changes to Your Order",
+                                    font:"font-w-normal-24 font-m-normal-16"
+                                }], 
+                                button:[{
+                                    size:"large",
+                                    sizeMobile:"medium",
+                                    name: "View FAQ",
+                                    buttonStyle: 'default',
+                                    isButton: false
+                                }],
+                            })
+block content
+    // Component Markup
+    .guide-text-type Type1. Default (UK)
+    +ML000M('default')
+    .guide-text-type Type2. Receipt No - Call
+    +ML000M('call')   
+    .guide-text-type Type3. Receipt No - Email
+    +ML000M('mail')

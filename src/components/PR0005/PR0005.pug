@@ -1,0 +1,1284 @@
+extends ../_common/_layout.pug
+include ../_common/_headline.pug
+include ../_common/_button.pug
+include ../_common/_image.pug
+include ../_common/_sns-list.pug
+include ../_common/_promotion-detail.pug
+include ../_common/_pop-msg.pug
+include ../_common/_forms.pug
+
+
+block meta 
+    - var componentId = "PR0005"
+    - var componentName = "Redemption"
+    - var description = "description text"
+    - var keywords = "keyword list"
+    title #{componentId}. #{componentName}
+    meta(name="description" content=description)
+    meta(name="keywords" content=keywords)
+
+block styles
+    link(rel="stylesheet", href=componentId+".css")
+
+block scripts
+    script(src=componentId+".js" type="module")
+    script. 
+        const stepIndex = {
+            claim : 0,
+            track : 0,
+        };
+        const dialog = {
+            claim : document.getElementById('popClaimNow'),
+            track : document.getElementById('popClaimTrack'),
+        }
+        const claimSteps = dialog.claim.querySelectorAll('[data-claim-index]');
+        const claimStepButtons = dialog.claim.querySelectorAll('.c-pop-msg__footer .c-button');
+        const trackSteps = dialog.track.querySelectorAll('[data-claim-index]');
+        const trackStepButtons = dialog.track.querySelectorAll('.c-pop-msg__footer .c-button');
+
+        claimSteps.forEach(el => el.dataset.claimIndex > 0 && el.setAttribute("style", "display:none"));
+        claimStepButtons.forEach(button => {
+            button.addEventListener("click", event=>{
+                const done = event.currentTarget.closest('.c-pop-msg__footer-container').dataset.claimIndex === "2";
+                if (done) return;
+
+                event.preventDefault();
+                stepIndex.claim++;
+                claimSteps.forEach(el => {
+                    if(el.dataset.claimIndex === `${stepIndex.claim}`){
+                        el.removeAttribute("style");
+                    }
+                    else {
+                        el.setAttribute("style", "display:none");
+                    }
+                })
+            }, false);
+        })
+
+        trackSteps.forEach(el => el.dataset.claimIndex > 0 && el.setAttribute("style", "display:none"));
+        trackStepButtons.forEach(button => {
+            button.addEventListener("click", event=>{
+                const done = event.currentTarget.closest('.c-pop-msg__footer-container').dataset.claimIndex === "1";
+                if (done) return;
+
+                event.preventDefault();
+                stepIndex.track++;
+                trackSteps.forEach(el => {
+                    if(el.dataset.claimIndex === `${stepIndex.track}`){
+                        el.removeAttribute("style");
+                    }
+                    else {
+                        el.setAttribute("style", "display:none");
+                    }
+                })
+            }, false);
+        })
+block content
+    .guide 
+        .grid-1600 
+        .grid-1440
+        .inner
+            .guide-list
+                a(href="../../list-pr.html") List 
+            .guide-title #{componentId}. #{componentName}
+            .guide-wrapper
+                script. 
+                    const guideList = {
+                        '.c-wrapper' : [
+                            {
+                                'name' : 'Margin',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'margin-top'},
+                                    {'toggle' : true, 'add' : 'margin-bottom'},
+                                ]
+                            },
+                            {
+                                'name' : 'BG Color',
+                                'buttons' : [
+                                    {'toggle' : false, 'add' : 'bg-default', 'remove' : 'bg-black'},
+                                    {'toggle' : false, 'add' : 'bg-black', 'remove' : 'bg-default'},
+                                ]
+                            },
+                        ],
+                        '.c-promotion-date' : [
+                            {
+                                'name' : 'Date hidden',
+                                'buttons' : [
+                                    {'toggle' : true, 'add' : 'hidden'},
+                                ]
+                            },
+                        ],
+                        
+                    };
+            .button-wrapper
+                .guide-column
+                    .target Popup Btns
+                    ul.btn-list
+                        li.btn-item 
+                            +linkButton({href:"#popSimpleAlert", type:"guide", class:"js-pop-open", name:"Pop SimpleAlert", roleButton:"true"})
+                        li.btn-item 
+                            +linkButton({href:"#printSuccessExit", type:"guide", class:"js-pop-open", name:"Pop Package Exit", roleButton:"true"})
+    mixin find-model-number(params)
+        - var options = {selectionList : [0, 0, null], ...params}
+        .c-post-form__group
+            .c-post-form__item
+                +formSelect("Select a Category", `claimCategory${index}_1`, "", required=true, labelSrOnly=true)
+                    option(value="" disabled selected=(options.selectionList[0] == 0)) Category
+                    option(value="Fridge Freezers" selected=(options.selectionList[0] == 1)) Fridge Freezers
+                +invalid-warning("Category is required.")
+            .c-post-form__item
+                +formSelect("Select a model number", `claimModelNum${index}_2`, "", required=true, labelSrOnly=true)(disabled=(options.selectionList[0] == "0"))
+                    option(value="" disabled selected=(options.selectionList[1] == 0)) Model number
+                    option(value="GSXV91BSAE" selected=(options.selectionList[1] == 1)) GSXV91BSAE
+                    option(value="GSXV91BSAE" selected=(options.selectionList[1] == 2)) GSXV91BSAE
+                    option(value="GSXV91BSAE" selected=(options.selectionList[1] == 3)) GSXV91BSAE
+                +invalid-warning("Model Number is required.")
+            .c-post-form__item
+                - var required = true
+                - var inLayer = false
+                - var labelSrOnly = true
+
+                +formText("text", "Select a serial number", `claimSerialNum${index}_3`, required, "Serial number", inLayer, labelSrOnly)(disabled=(options.selectionList[1] == "0") value=options.selectionList[2])
+                +invalid-warning("Serial Number is required.")
+    
+    mixin find-model-number-type01(params)
+        - var options = {index:"0", selectionList : [0, 0, null], ...params}
+        .c-post-form__group
+            .c-post-form__group.inner
+                .c-post-form__item
+                    +formSelect("Select a Category", `claimCategory_row4_${options.index}_1`, "", required=true, labelSrOnly=true)(aria-describedby=`aria_row4_${options.index}_1`)
+                        option(value="" disabled selected=(options.selectionList[0] == 0)) Category
+                        option(value="Fridge Freezers" selected=(options.selectionList[0] == 1)) Fridge Freezers
+                    +invalid-warning("Category is required.", `aria_row4_${options.index}_1`)
+                .c-post-form__item
+                    +formSelect("Sub select a Category", `claimCategory_row4_${options.index}_1`, "", required=true, labelSrOnly=true)(aria-describedby=`aria_row4_${options.index}_1`)
+                        option(value="" disabled selected=(options.selectionList[0] == 0)) Category
+                        option(value="Fridge Freezers" selected=(options.selectionList[0] == 1)) Fridge Freezers
+                    +invalid-warning("Sub category is required.", `aria_row4_${options.index}_1`)
+                .c-post-form__item
+                    +formSelect("Select a model number", `claimModelNum_row4_${options.index}_2`, "", required=true, labelSrOnly=true)(disabled=(options.selectionList[0] == "0") aria-describedby=`aria_row4_${options.index}_2`)
+                        option(value="" disabled selected=(options.selectionList[1] == 0)) Model number
+                        option(value="GSXV91BSAE" selected=(options.selectionList[1] == 1)) GSXV91BSAE
+                        option(value="GSXV91BSAE" selected=(options.selectionList[1] == 2)) GSXV91BSAE
+                        option(value="GSXV91BSAE" selected=(options.selectionList[1] == 3)) GSXV91BSAE
+                    +invalid-warning("Model Number is required.", `aria_row4_${options.index}_2`)
+                .c-post-form__item
+                    - var required = true
+                    - var inLayer = false
+                    - var labelSrOnly = true
+
+                    +formText("text", "Select a serial number", `claimSerialNum_row4_${options.index}_3`, required, "Serial number", inLayer, labelSrOnly)(disabled=(options.selectionList[1] == "0") value=options.selectionList[2] aria-describedby=`aria_row4_${options.index}_3`)
+                    +invalid-warning("Serial Number is required.", `aria_row4_${options.index}_3`)
+            .c-upload-item__buttons
+                    div
+                        if options.index == 0
+                            button.cmp-button.c-upload-item__button.c-upload-item__button(type="button" data-cmp-data-layer="")
+                                span.sr-only Add
+                        else
+                            button.cmp-button.c-upload-item__button.c-upload-item__button--remove(type="button" data-cmp-data-layer="" aria-controls=options.itemId)
+                                span.sr-only Remove
+
+    mixin find-model-number-type02(params)
+        - var options = {index:"0", selectionList : [0, 0, null], ...params}
+        .c-post-form__group
+            .c-post-form__group.inner
+                .c-post-form__item
+                    +formSelect("Select a Category", `claimCategory_${options.index}_1`, "", required=true, labelSrOnly=true)(aria-describedby=`aria_${options.index}_1`)
+                        option(value="" disabled selected=(options.selectionList[0] == 0)) Category
+                        option(value="Fridge Freezers" selected=(options.selectionList[0] == 1)) Fridge Freezers
+                    +invalid-warning("Category is required.", `aria_${options.index}_1`)
+                .c-post-form__item
+                    +formSelect("Select a model number", `claimModelNum_${options.index}_2`, "", required=true, labelSrOnly=true)(disabled=(options.selectionList[0] == "0") aria-describedby=`aria_${options.index}_2`)
+                        option(value="" disabled selected=(options.selectionList[1] == 0)) Model number
+                        option(value="GSXV91BSAE" selected=(options.selectionList[1] == 1)) GSXV91BSAE
+                        option(value="GSXV91BSAE" selected=(options.selectionList[1] == 2)) GSXV91BSAE
+                        option(value="GSXV91BSAE" selected=(options.selectionList[1] == 3)) GSXV91BSAE
+                    +invalid-warning("Model Number is required.", `aria_${options.index}_2`)
+                .c-post-form__item
+                    - var required = true
+                    - var inLayer = false
+                    - var labelSrOnly = true
+
+                    +formText("text", "Select a serial number", `claimSerialNum_${options.index}_3`, required, "Serial number", inLayer, labelSrOnly)(disabled=(options.selectionList[1] == "0") value=options.selectionList[2] aria-describedby=`aria_${options.index}_3`)
+                    +invalid-warning("Serial Number is required.", `aria_${options.index}_3`)
+            .c-upload-item__buttons
+                    div
+                        if options.index == 0
+                            button.cmp-button.c-upload-item__button.c-upload-item__button(type="button" data-cmp-data-layer="")
+                                span.sr-only Add
+                        else
+                            button.cmp-button.c-upload-item__button.c-upload-item__button--remove(type="button" data-cmp-data-layer="" aria-controls=options.itemId)
+                                span.sr-only Remove
+
+    mixin agreement-group
+        - var value = ""
+        - var disabled = false
+        
+        // block - field group
+        .c-field-group.c-field-group--agreement-fields
+            //- agreement : 
+            .c-field-group__line
+                +formCheckbox(false, "agreementToUpload", value, "agreementToUpload", disabled)(required = require)
+                    span You have a copy of your sales receipt, which you are able to upload.
+                        +required-text-sr
+                +invalid-warning("You have not agreed to the required terms and conditions")
+                
+            //- agreement : 
+            .c-field-group__line
+                +formCheckbox(false, "agreementClaimDeadline", value, "agreementClaimDeadline", disabled)(required = require)
+                    span Your claim is being submitted before {Date of Last schedule}.
+                        +required-text-sr
+                +invalid-warning("You have not agreed to the required terms and conditions")
+                
+            //- agreement : 
+            .c-field-group__line
+                +formCheckbox(false, "agreementSerialDelivery", value, "agreementSerialDelivery", disabled)(required = require)
+                    span You have an image of each product's serial number, as shown directly on the product, ready to upload. If your products haven't been delivered yet, you can return later to provide your serial number.
+                        +required-text-sr
+                +invalid-warning("You have not agreed to the required terms and conditions")
+
+            //- agreement : 
+            .c-field-group__line
+                +formCheckbox(false, "agreementFullyTerms", value, "agreementFullyTerms", disabled)(required = require)
+                    span You confirm you have fully read the Terms and Conditions of this promotion.
+                        +required-text-sr
+                        +textButton({name: 'Read More', wSize: 'medium', mSize: 'small', buttonStyle: 'default', underline : false, isButton: false})(class="js-pop-open" href="#popRedemptionTerms" role="button")
+                +invalid-warning("You have not agreed to the required terms and conditions")
+
+    mixin upload-item(params)
+        - var buttonStyle = "c-button c-button--default default m-medium w-medium"
+        - var options = {fileName : "", ...params}
+        .c-upload-item(id=options.itemId)
+            .c-upload-item__container
+                .c-upload-item__indicator(class={"fill" : options.fileName.length > 0})
+                    span.c-upload-item__file-name= options.fileName ? options.fileName : "Select a file to upload"
+                    button.cmp-button.c-upload-item__file-remover(type="button" data-cmp-data-layer="" aria-controls=options.itemId)
+                        span.sr-only Remove
+                .c-upload-item__buttons
+                    .c-upload-item__open-explorer
+                        input(type="file" id=options.inputId placeholder="Select a file to upload")
+                        label.c-upload-item__label(for=options.inputId class=buttonStyle) Browse
+                    div
+                        if options.index == 0
+                            button.cmp-button.c-upload-item__button.c-upload-item__button(type="button" data-cmp-data-layer="")
+                                span.sr-only Add
+                        else
+                            button.cmp-button.c-upload-item__button.c-upload-item__button--remove(type="button" data-cmp-data-layer="" aria-controls=options.itemId)
+                                span.sr-only Remove
+            +postFormMessage("Purchase Date is required.", "")
+
+    mixin radio-option(params)
+        - var options = {type : "model", id : "", name : "", ...params}
+        - var contentsId = `contents-${new Date().getTime()}`
+        case options.type
+            when "model"
+                .c-radio-item.c-radio-item--floating-label
+                    if options.name
+                        input(type="radio" id=`${options.id}` name=`${options.name}` checked=options.checked)
+                        label(for=`${options.id}` aria-labelledby=`${contentsId}`)
+                    .c-option-information.c-option-information--model
+                        .c-image
+                            +printLazyImage("https://via.placeholder.com/160x160/999999/333333/?text=350x350")
+                        .c-text-contents(id=`${contentsId}`)
+                            .text.c-text-contents__eyebrow.sku
+                                .cmp-text.font-w-semibold-16.font-m-semibold-16(data-cmp-data-layer="") GSJV70PZTF
+                            .text.c-text-contents__headline
+                                .cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") American Fridge Freezer 635L Water & Ice Dispenser
+            when "image + text"
+                .c-radio-item.c-radio-item--floating-label
+                    if options.name
+                        input(type="radio" id=`${options.id}` name=`${options.name}` checked=options.checked)
+                        label(for=`${options.id}` aria-labelledby=`${contentsId}`)
+                    
+                    .c-option-information
+                        .c-image
+                            +printLazyImage("https://via.placeholder.com/160x160/999999/333333/?text=160x160")
+                        .c-text-contents(id=`${contentsId}`)
+                            .text.c-text-contents__headline
+                                .cmp-text.font-w-normal-16.font-m-normal-16(data-cmp-data-layer="") Lorem ipsum dolor sit amet.
+            default
+                +formRadio(options.text, options.name, options.id, options.id)(checked=options.checked)
+
+    mixin printTab(div, num, selected)
+        if selected
+            button.c-tabs__tab.cmp-tabs__tab.cmp-tabs__tab--active(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="0", data-cmp-hook-tabs="tab", aria-selected="true")
+                if block
+                    block
+        else 
+            button.c-tabs__tab.cmp-tabs__tab(role="tab", id=`tabs-${div}-item-${num}-tab`, aria-controls=`tabs-${div}-item-${num}-tabpanel`, tabindex="-1", data-cmp-hook-tabs="tab", aria-selected="false")
+                if block
+                    block
+
+    mixin printTabPanel(div, num, selected)
+        if selected 
+            .cmp-tabs__tabpanel.cmp-tabs__tabpanel--active(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="0" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+        else 
+            .cmp-tabs__tabpanel(id=`tabs-${div}-item-${num}-tabpanel`, role="tabpanel", aria-labelledby=`tabs-${div}-item-${num}-tab`, tabindex="-1" data-cmp-hook-tabs="tabpanel", data-cmp-data-layer="")
+                if block
+                    block
+
+    mixin claim-now-completion
+        // block - completion
+        .c-completion
+            .c-completion__primary-area
+                .c-completion__paragraph
+                    .c-completion__head
+                        strong.cmp-text.font-w-normal-24.font-m-normal-20(data-cmp-data-layer="") Thank you for Submitting Your Claim.
+                .c-completion__paragraph
+                    .cmp-text.font-w-normal-16.font-m-normal-14(data-cmp-data-layer="") Claim Reference
+                    // button
+                    a.cmp-button.font-w-normal-16.font-m-normal-14(href="#popCopyComplete" target="_self" class="js-clipboard-copy" role="button" data-complete-msg="The Claim Reference has been copied" data-clipboard="123-456-789")
+                        span.cmp-button__text 123-456-789
+            
+            .c-completion__description-area
+                .c-completion__paragraph
+                    span.cmp-text(data-cmp-data-layer="") We'll send a confirmation email to the email you provided, and be in touch shortly on the status of your redemption
+                .c-completion__paragraph
+                    span.cmp-text(data-cmp-data-layer="") You can check of your claim by entering your claim reference into the Track My Claim Function on the homepage.
+
+                // button
+                +textButton({
+                    name : "Track my claim",
+                    wSize : "small",
+                    mSize : "small",
+                    buttonStyle : "default",
+                    isButton : false
+                })(href="#popClaimTrack" class="js-pop-open" role="button")
+                
+                // when use move to page
+                // a.cmp-button.c-button.c-button--text-icon.default.m-small.w-small(href="{to track my claim page}") 
+                //     span.cmp-button__text.c-button__text Track my claim
+                // -- end
+
+    mixin progress-step(params)
+        - var options = {list : [], blindText : false, activeIndex : 0, ...params}
+        - var activeClass = "c-line-progress__step--active"
+        ul.c-line-progress
+            each name, index in options.list
+                li.c-line-progress__step(class={[activeClass] : options.activeIndex == index})
+                    span.c-line-progress__name(class={"sr-only" : blindText})= name  
+
+    mixin field-head(params)
+        - var options = {name : "Lorem", ...params}
+        .c-field-group__head
+            strong.cmp-text.font-w-normal-32.font-m-normal-20(data-cmp-data-layer)= options.name
+
+                    
+    // Component Markup
+    .guide-text-option Option. 1 Promotion
+    .c-wrapper.PR0005.bg-default
+        .component
+            .cmp-container
+                // block : promotion detail
+                +promotionDetail({
+                    type:"list", 
+                    headline:"Buy a LG fridge, get a return and a charger with batteries!", 
+                    subcopy:"Registration closes <span class='date-end-render'>16/10/2024</span>", 
+                    bodycopy:"Buy a selected LG refrigerator and receive a PLN 400 return on your account and a Varta charger in a set with batteries!", 
+                })
+
+    .guide-text-option Option. 2 Promotion - Closed
+    .c-wrapper.PR0005.bg-default
+        .component
+            .cmp-container
+                // block : promotion detail
+                +promotionDetail({
+                    type:"closed", 
+                    headline:"Buy a LG fridge, get a return and a charger with batteries!", 
+                    subcopy:"Registration closes <span class='date-end-render'>16/10/2024</span>", 
+                    bodycopy:"Buy a selected LG refrigerator and receive a PLN 400 return on your account and a Varta charger in a set with batteries!", 
+                })                
+
+block modal
+    //- claim now
+    +pop-msg-standard({
+        id : `popClaimNow`, 
+        size: "large full-m",
+        headline : "Claim Now",
+        headerDescription : "Get a reward by entering your purchase detail and about you.",
+        headerBorder : false,
+        classes: "smooth-head",
+        headLineStyle: "font-w-semibold-36 font-m-semibold-24"
+    })
+        .c-pop-msg__contents.c-pop-msg__contents--popClaimNow.c-pop-msg__contents--reset
+            .c-pop_msg__contents-container(data-claim-index=2)
+                +claim-now-completion
+                
+            .c-pop_msg__contents-container(data-claim-index=1)
+                form(action="#" method="post").c-post-form
+                    .c-post-form__intro
+                        +textButton({name: 'Previous', wSize: 'medium', mSize: 'small', buttonStyle: 'default back', isButton: false})
+                        .cmp-text.c-post-form__intro-text(data-cmp-data-layer="" class="font-w-normal-16 font-m-normal-12") 
+                            span Select the Product to Be Rewarded.
+                    
+                    .c-post-form__group.c-field-group.c-field-group--reward-fields
+                        // display one of them
+                        // when [ 1. Model Type ] 
+                        .c-post-form__group-box.c-post-form__group-box--full
+                            .c-field-group__box.c-field-group__box--w-row-flow.c-field-group__box--w-column3
+                                +radio-option({type : "model", name : "claimReward", id : "claimOption1-1"})
+                                +radio-option({type : "model", name : "claimReward", id : "claimOption1-2"})
+                                +radio-option({type : "model", name : "claimReward", id : "claimOption1-3"})
+                                +radio-option({type : "model", name : "claimReward", id : "claimOption1-4"})
+                        // when [ 2. Text/Images Type ] 
+                        .c-post-form__group-box.c-post-form__group-box--full.c-post-form__group-divide-line 
+                            .c-field-group__box.c-field-group__box--w-row-flow.c-field-group__box--w-column3
+                                +radio-option({type : "image + text", name : "claimReward", id : "claimOption2-1"})
+                                +radio-option({type : "image + text", name : "claimReward", id : "claimOption2-2"})
+                                +radio-option({type : "image + text", name : "claimReward", id : "claimOption2-3"})
+                        // when [ 3. Text Type ] 
+                        .c-post-form__group-box.c-post-form__group-box--full.c-post-form__group-divide-line 
+                            .c-field-group__box
+                                +radio-option({type : "text", name : "claimReward", id : "prepaid1", text : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero, veniam."})
+                                +radio-option({type : "text", name : "claimReward", id : "prepaid2", text : "Lorem ipsum dolor sit amet consectetur"})
+                        
+                        // #rewarded-Receipt
+                        #rewarded-Receipt.hidden
+                            +postFormFieldset("Receipt information")
+                                .c-post-form__group
+                                    .c-post-form__group-box.c-post-form__group-box--full
+                                        .c-post-form__item
+                                            +formText("text", "Street address 1", "Street address 1", true, "Street address 1")(aria-describedby="aria_Street_1")
+                                            +postFormMessage("this area is required", "", "aria_Street_1")
+                                    .c-post-form__group-box.c-post-form__group-box--full
+                                        .c-post-form__item
+                                            +formText("text", "Street address 2", "Street address 2", false, "Street address 2")
+                                    .c-post-form__item
+                                        +formText("text", "City", "City", true, "City")(aria-describedby="aria_City_1")
+                                        +postFormMessage("City is required", "", "aria_City_1")
+                                    .c-post-form__item
+                                        +formText("text", "Country", "Country", true, "Country")(aria-describedby="aria_Country_1")
+                                        +postFormMessage("Country is required", "", "aria_Country_1")
+                                    .c-post-form__item
+                                        +formText("text", "Postcode", "Postcode", true, "Postcode")(aria-describedby="aria_Postcode_1")
+                                        +postFormMessage("Postcode is required", "", "aria_Postcode_1")
+                        
+                        // Apply for Cashback
+                        .c-post-form__group-box.c-post-form__group-box--full.c-post-form__group-divide-line
+                            .cashback-select
+                                input(type="checkbox" name="cashback" value="cashback" id="cashback" class="sr-only")
+                                label.c-field-group__box.label-cashback(for="cashback")
+                                    p(class='font-w-normal-16 font-m-normal-14') Apply for Cashback
+                        
+                        // #cashback-Receipt
+                        #cashback-Receipt.hidden
+                            +postFormFieldset("Receipt information")
+                                .c-post-form__group
+                                    .c-post-form__item
+                                        +formText("text", "Bank holder name", "Bank holder name", true, "Bank holder name")(aria-describedby="aria_bankHolder_1")
+                                        +postFormMessage("Bank holder name is required", "", "aria_bankHolder_1")
+                                    .c-post-form__item
+                                        +formSelect("Currency", "Currency", "currency", true)(aria-describedby="aria_Currency_1")
+                                            option(value="" disabled selected) Select your Currency
+                                            option(value="GBP") GBP
+                                            option(value="GBP1") GBP1
+                                            option(value="GBP2") GBP2
+                                        +postFormMessage("Currency is required", "", "aria_Currency_1")    
+                                    .c-post-form__item
+                                        +formText("text", "Bank account number", "Bank account number", false, "Bank account number")
+                                    .c-post-form__item.row-group
+                                        .c-input-item
+                                            label(for='sortCode' class='font-w-normal-16 font-m-normal-14') Sort code
+                                            .group-r3
+                                                input(type='text' id='sortCode', class='')
+                                                input(type='text' id='', class='')
+                                                input(type='text' id='', class='')
+                                    .c-post-form__item
+                                        +formText("text", "IBAN Code", "IBAN Code", false, "IBAN Code")
+                                    .c-post-form__item
+                                        +formText("text", "BIC Code", "BIC Code", false, "BIC Code")
+
+            .c-pop-msg__contents-container(data-claim-index=0)
+                //- dialog description 
+                +required-text-indicate
+                // block - pop msg (dialog) form 
+                - var require = true
+                - var inLayer = true
+                form(action="#" method="post").c-post-form
+                    +postFormFieldset("Product")
+                        .c-post-form__group-title 
+                            span Select a Product
+                            +required-text-sr
+                        +find-model-number-type01({index: 0, selectionList : [1, 1, null]})
+                        +find-model-number-type01({index: 1, selectionList : [1, 1, "123qwer12345"]})
+                        +find-model-number-type02({index: 0, selectionList : [1, 1, null]})
+                        +find-model-number-type02({index: 1, selectionList : [1, 1, "123qwer12345"]})
+                        +find-model-number-type02({index: 2})
+                        +find-model-number-type02({index: 3})
+
+                    //- Product END
+                    +postFormFieldset("Purchase")
+                        //- group : Purchase - place/date
+                        .c-post-form__dateAnum
+                            .c-post-form__group
+                                .c-post-form__group.inner
+                                    .c-post-form__item
+                                        +formText("date", "Purchase Date", "purchaseDate", true, "Purchase Date", false, false)(aria-describedby="aria_dateAnum_1")
+                                        +postFormMessage("Purchase Date is required.", "", "aria_dateAnum_1")
+                                    .c-post-form__item
+                                        +formText("tel", "Order Number", "orderNumber", true, "Order Number", false, false, false, false, false, false, {tooltip: true})(aria-describedby="aria_dateAnum_2" maxlength="20")
+                                        +postFormMessage("Order Number is required.", "", "aria_dateAnum_2")
+                                .c-upload-item__buttons
+                                    div
+                                        button.cmp-button.c-upload-item__button.c-upload-item__button(type="button" data-cmp-data-layer="")
+                                            span.sr-only Add
+                                    
+                            .c-post-form__group
+                                .c-post-form__group.inner
+                                    .c-post-form__item
+                                        +formText("date", "Purchase Date", "purchaseDate", true, "Purchase Date", false, false)(aria-describedby="aria_dateAnum_3")
+                                        +postFormMessage("Purchase Date is required.", "", "aria_dateAnum_3")
+                                    .c-post-form__item
+                                        +formText("tel", "Order Number", "orderNumber", true, "Order Number", false, false)(aria-describedby="aria_dateAnum_4" maxlength="20")
+                                        +postFormMessage("Order Number is required.", "", "aria_dateAnum_4")
+                                .c-upload-item__buttons
+                                    div
+                                        button.cmp-button.c-upload-item__button.c-upload-item__button--remove(type="button" data-cmp-data-layer="")
+                                            span.sr-only Remove
+
+                        //- group : Serial Images
+                        .c-post-form__group-title.c-post-form__group-divide-line 
+                            span Serial Images
+                            +required-text-sr
+                        .c-post-form__group
+                            .c-post-form__group-box.c-post-form__group-box--full
+                                +upload-item({
+                                    index: 0,
+                                    itemId : "PR0005file01item",
+                                    inputId : "PR0005file01",
+                                    fileName : "22e646b35e51a064d2ac5cfbe54ddba8.jpg",
+                                    validMsg : [
+                                        "Receipt of Purchase is required."
+                                    ]
+                                })
+                                +upload-item({
+                                    itemId : "PR0005file04item",
+                                    inputId : "PR0005file04",
+                                    validMsg : [
+                                        "Receipt of Purchase is required."
+                                    ]
+                                })
+                                .c-post-form__complementary-area
+                                    span.c-post-form__description File must be less than 10MB. Allowed file types : jpeg, jpg, gif, png, tif
+                                    .button
+                                        +textButton({wSize : "medium", mSize : "small", buttonStyle:"default", name:"Where is the serial image in the actual product?", isButton : false})(href="#popFindModel" class="js-pop-open" role="button")
+                        
+                        //- group : Cheaper Retailer Screenshot
+                        .c-post-form__group-title 
+                            span Cheaper Retailer Screenshot
+                            +required-text-sr
+                        .c-post-form__group
+                            .c-post-form__group-box.c-post-form__group-box--full
+                                +upload-item({
+                                    index: 0,
+                                    itemId : "PR0005file01item",
+                                    inputId : "PR0005file01",
+                                    fileName : "22e646b35e51a064d2ac5cfbe54ddba8.jpg",
+                                    validMsg : [
+                                        "Receipt of Purchase is required."
+                                    ]
+                                })
+                                +upload-item({
+                                    itemId : "PR0005file04item",
+                                    inputId : "PR0005file04",
+                                    validMsg : [
+                                        "Receipt of Purchase is required."
+                                    ]
+                                })
+                                .c-post-form__complementary-area
+                                    span.c-post-form__description File must be less than 10MB. Allowed file types : jpeg, jpg, gif, png, tif
+
+                        //- Additional description of purchase
+                        .c-post-form__group-title 
+                            span Additional Description of Purchase
+                        .c-post-form__group
+                            .c-post-form__group-box.c-post-form__group-box--full.form_textarea
+                                +formTextarea("text", "Comments", "comments", false, "")(minLength="20", maxlength="5000" aria-describedby="aria_Textarea_1")    
+                                +postFormMessage("This area is required", "", "aria_Textarea_1")
+                        .c-post-form__group
+                            .c-post-form__group-box.c-post-form__group-box--full
+                                +formSelect("Authorized Retailers", "Retailers", "Authorized Retailers", true)(aria-describedby="aria_Retailers_1")
+                                    option(value="" disabled selected) Select
+                                    option(value="") Amazon Canada
+                                    option(value="") Canada Computers
+                                    option(value="") BestBuy Canada
+                                    option(value="") Home Depot
+                                +postFormMessage("Authorized Retailers is required", "", "aria_Retailers_1")
+                    //- Purchase END 
+                    +postFormFieldset("About you")
+                        .c-post-form__group
+                            .c-post-form__item
+                                +formText("text", "First Name", "First Name", true, "First Name")(aria-describedby="aria_FirstName_1")
+                                +postFormMessage("Place of First Name is required", "", "aria_FirstName_1")
+                            .c-post-form__item
+                                +formText("text", "Last Name", "Last Name", true, "Last Name")(aria-describedby="aria_LastName_1")
+                                +postFormMessage("Place of Last Name is required", "", "aria_LastName_1")
+                            .c-post-form__item
+                                +formSelect("Gender", "Gender", "gender", false)(aria-describedby="aria_Gender_1")
+                                    option(value="" disabled selected) Select your gender
+                                    option(value="Mr.") Mr.
+                                    option(value="Mrs.") Mrs.
+                                    option(value="Ms.") Ms.
+                                    option(value="Miss") Miss
+                                //- +postFormMessage("Gender is required", "", "aria_Gender_1")
+                            .c-post-form__item
+                                +formText("text", "Email", "Email", true, "Email")(aria-describedby="aria_Email_1 aria_Email_2")
+                                +postFormMessage("Email is required", "", "aria_Email_1")
+                                +postFormMessage("Email is invalid", "", "aria_Email_2")
+                            .c-post-form__item
+                                +formText("text", "Phone Number", "Phone Number", true, "Phone Number")(aria-describedby="aria_PhoneNumber_1")
+                                +postFormMessage("Phone Number is required", "", "aria_PhoneNumber_1")
+                            .c-post-form__item
+                                +formText("text", "Telephone Number", "Telephone Number", true, "Telephone Number")(aria-describedby="aria_TelephoneNumber_1")
+                                +postFormMessage("Telephone Number is required", "", "aria_TelephoneNumber_1")
+
+                    +postFormFieldset
+                        .c-post-form__group
+                            +agreement-group
+
+        .c-pop-msg__footer
+            .c-pop-msg__footer-container(data-claim-index=2)
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: 'OK', 
+                        wSize: 'medium', 
+                        mSize: 'medium', 
+                        buttonStyle: 'highlight', 
+                        isButton: false
+                    })(aria-controls="popClaimNow" class="js-pop-open" href="#popClaimTrack" role="button")
+                +progress-step({list : [1,2,3], activeIndex : 2})
+            .c-pop-msg__footer-container(data-claim-index=1)
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: 'Next', 
+                        wSize: 'medium', 
+                        mSize: 'medium', 
+                        buttonStyle: 'highlight', 
+                        isButton: true
+                    })(aria-controls="popClaimNow")
+                +progress-step({list : [1,2,3], activeIndex : 1})
+            .c-pop-msg__footer-container(data-claim-index=0)
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: 'Next', 
+                        wSize: 'medium', 
+                        mSize: 'medium', 
+                        buttonStyle: 'highlight', 
+                        isButton: true
+                    })(aria-controls="popClaimNow")
+                +progress-step({list : [1,2,3], activeIndex : 0})
+
+    //- track my claim
+    +pop-msg-standard({
+        id : `popClaimTrack`, 
+        size: "large full-m",
+        headline : "Track My Claim",
+        headerDescription : "Track the progress of your claim by entering your Claim Reference and Email Address",
+        headerBorder : false,
+        classes: "smooth-head",
+        headLineStyle: "font-w-semibold-36 font-m-semibold-24"
+    })
+        .c-pop-msg__contents.c-pop-msg__contents--popClaimTrack.c-pop-msg__contents--reset
+            .c-pop-msg__contents-container(data-claim-index=1)
+                //- summary
+                .c-field-group
+                    .c-field-group__header
+                        +field-head({name : "Claim Reference"})
+                    .c-field-group__box
+                        .c-table-field
+                            .c-table-field__item.c-table-field__item--line-bottom
+                                .c-table-field__item-data
+                                    span.cmp-text.font-red(data-cmp-data-layer="") 123-456-789
+
+                            .c-table-field__item.full
+                                .c-table-field__item-name
+                                    span.cmp-text(data-cmp-data-layer="") Status
+                                .c-table-field__item-data
+                                    .cmp-text(data-cmp-data-layer="")
+                                        ul.claim-status
+                                            li
+                                                span.claim-status-title Rejected
+                                                span Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales
+                .c-field-group
+                    .c-field-group__header
+                        +field-head({name : "Track your Gift"})
+                    .c-field-group__box
+                        .c-table-field
+                            each set in [{name : "Tracking number", info : "12345678"},{name : "Status", info : "Delivery completed"},{name : "Delivery date", info : "24/07/2023"},{name : "Courier", info : "Hermes"}]
+                                .c-table-field__item.c-table-field__item--line-bottom
+                                    .c-table-field__item-name
+                                        span.cmp-text(data-cmp-data-layer="")= set.name
+                                    .c-table-field__item-data
+                                        span.cmp-text(data-cmp-data-layer="")= set.info
+                
+                .c-field-group
+                    .c-field-group__header
+                        +field-head({name : "Track your Cashback"})
+                    .c-field-group__box
+                        .c-table-field
+                            each set in [{name : "Status", info : "Remittance completed"},{name : "Remittance date", info : "24/07/2023"}]
+                                .c-table-field__item.c-table-field__item--line-bottom
+                                    .c-table-field__item-name
+                                        span.cmp-text(data-cmp-data-layer="")= set.name
+                                    .c-table-field__item-data
+                                        span.cmp-text(data-cmp-data-layer="")= set.info
+                
+                .c-field-group
+                    .c-field-group__header
+                        +field-head({name : "Purchase Details"})
+                        +textButton({name: 'Edit', wSize: 'small', mSize: 'small', buttonStyle: 'default', underline : true, isButton: true})(href="#popClaimEditPurchaseDetails" class="js-pop-open" role="button")
+
+                    .c-field-group__box
+                        .c-table-field
+                            .c-table-field__item.full
+                                .c-table-field__item-name
+                                    span.cmp-text(data-cmp-data-layer="") Product 
+                                .c-table-field__item-data
+                                    .cmp-text(data-cmp-data-layer="") 
+                                        ul 
+                                            li 
+                                                span Fridge Freezers 
+                                                span American Style Fridge Freezers  
+                                                span 123Test48934
+                                                span 123Test48934
+                                            li 
+                                                span Laundry 
+                                                span Computer Accessories
+                                                span 123Test48934
+                                                span 123Test48934
+                                            li 
+                                                span Fridge Freezers 
+                                                span American Style Fridge Freezers 
+                                                span 123Test48934
+                                                span 123Test48934
+                                            li 
+                                                span TV/Audio/Video TV/Audio/Video TV/Audio/Video 
+                                                span American Style Fridge Freezers American Style Fridge Freezers 
+                                                span GSXV91BSAE
+                                                span 123Test48934123Test48934
+                                            li 
+                                                span TV/Audio/Video
+                                                span GSXV91BSAE
+                                                span 123Test48934
+                                            li 
+                                                span TV/Audio/Video TV/Audio/Video TV/Audio/Video 
+                                                span GSXV91BSAE
+                                                span 123Test48934123Test48934
+                            .c-table-field__item.c-table-field__item--line-bottom
+                                .c-table-field__item-name
+                                    span.cmp-text(data-cmp-data-layer="") Place of Purchase 
+                                .c-table-field__item-data
+                                    span.cmp-text(data-cmp-data-layer="") Top Discount Electrical Stores
+                            .c-table-field__item.c-table-field__item--line-bottom
+                                .c-table-field__item-name
+                                    span.cmp-text(data-cmp-data-layer="") Purchase Date
+                                .c-table-field__item-data
+                                    span.cmp-text(data-cmp-data-layer="") 05/31/2023
+
+                .c-field-group
+                    .c-field-group__header
+                        +field-head({name : "Personal Details"})
+                        //- +textButton({name: 'Edit', wSize: 'small', mSize: 'small', buttonStyle: 'default', underline : true, isButton: true})(href="#popClaimEditPersonalDetails" class="js-pop-open" role="button")
+
+                    .c-field-group__box
+                        .c-table-field
+                            each set in [{name : "Name", info : "Hong gil"},{name : "Email", info : "uktest@lg.com"},{name : "Mobile Phone Number", info : "0750-789-1376"},{name : "Telephone Number", info : "020-8789-1376"}]
+                                .c-table-field__item.c-table-field__item--line-bottom
+                                    .c-table-field__item-name
+                                        span.cmp-text(data-cmp-data-layer="")= set.name
+                                    .c-table-field__item-data
+                                        span.cmp-text(data-cmp-data-layer="")= set.info
+
+                .c-field-group
+                    .c-field-group__header
+                        +field-head({name : "Reward"})
+                        //- +textButton({name: 'Edit', wSize: 'small', mSize: 'small', buttonStyle: 'default', underline : true, isButton: true})(href="#popClaimEditReward" class="js-pop-open" role="button")
+                    
+                    // Reward
+                    .c-field-group__box
+                        .c-table-field.c-table-field--stack-free
+                            .c-table-field__item.full
+                                ul.select-ul
+                                    li
+                                        +radio-option({type : "image + text"})
+                                    li
+                                        +radio-option({type : "model"}) 
+                                    li
+                                        p.radio-text.font-w-normal-20.font-m-normal-16 Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero, veniam.
+
+                            .c-table-field__item.full
+                                .c-table-field__item.c-table-field__item--line-bottom
+                                    .c-table-field__item-name
+                                        span.cmp-text(data-cmp-data-layer="") Street address 1
+                                    .c-table-field__item-data
+                                        span.cmp-text(data-cmp-data-layer="") {Applicant street address 1}
+
+                            .c-table-field__item.full
+                                .c-table-field__item.c-table-field__item--line-bottom
+                                    .c-table-field__item-name
+                                        span.cmp-text(data-cmp-data-layer="") Street address 2
+                                    .c-table-field__item-data
+                                        span.cmp-text(data-cmp-data-layer="") {Applicant street address 2}
+                               
+                            .c-table-field__item.c-table-field__item--line-bottom
+                                .c-table-field__item-name
+                                    span.cmp-text(data-cmp-data-layer="") City
+                                .c-table-field__item-data
+                                    span.cmp-text(data-cmp-data-layer="") {Applicant city}
+
+                            .c-table-field__item.c-table-field__item--line-bottom
+                                .c-table-field__item-name
+                                    span.cmp-text(data-cmp-data-layer="") Country
+                                .c-table-field__item-data
+                                    span.cmp-text(data-cmp-data-layer="") {Applicant country}
+
+                            .c-table-field__item.c-table-field__item--line-bottom
+                                .c-table-field__item-name
+                                    span.cmp-text(data-cmp-data-layer="") Postcode
+                                .c-table-field__item-data
+                                    span.cmp-text(data-cmp-data-layer="") {Applicant postcode}
+
+                    // cashback
+                    .c-field-group__box
+                        .c-table-field.c-table-field--stack-free
+                            .c-table-field__item.full
+                                ul.select-ul
+                                    li.cashback-select
+                                        div.label-cashback
+                                            p(class='font-w-normal-16 font-m-normal-14') Apply for Cashback
+
+                            .c-table-field__item.c-table-field__item--line-bottom
+                                .c-table-field__item-name
+                                    span.cmp-text(data-cmp-data-layer="") Bank holder name
+                                .c-table-field__item-data
+                                    span.cmp-text(data-cmp-data-layer="") {Applicant Bank holder name}
+
+                            .c-table-field__item.c-table-field__item--line-bottom
+                                .c-table-field__item-name
+                                    span.cmp-text(data-cmp-data-layer="") Currency
+                                .c-table-field__item-data
+                                    span.cmp-text(data-cmp-data-layer="") {Applicant Currency}
+                               
+                            .c-table-field__item.c-table-field__item--line-bottom
+                                .c-table-field__item-name
+                                    span.cmp-text(data-cmp-data-layer="") Bank account number
+                                .c-table-field__item-data
+                                    span.cmp-text(data-cmp-data-layer="") {Applicant Bank account number}
+
+                            .c-table-field__item.c-table-field__item--line-bottom
+                                .c-table-field__item-name
+                                    span.cmp-text(data-cmp-data-layer="") Sort code
+                                .c-table-field__item-data
+                                    span.cmp-text(data-cmp-data-layer="") {Applicant Sort code}
+
+                            .c-table-field__item.c-table-field__item--line-bottom
+                                .c-table-field__item-name
+                                    span.cmp-text(data-cmp-data-layer="") IBAN Code
+                                .c-table-field__item-data
+                                    span.cmp-text(data-cmp-data-layer="") {Applicant IBAN Code}
+
+                            .c-table-field__item.c-table-field__item--line-bottom
+                                .c-table-field__item-name
+                                    span.cmp-text(data-cmp-data-layer="") BIC Code
+                                .c-table-field__item-data
+                                    span.cmp-text(data-cmp-data-layer="") {Applicant BIC Code}
+
+                    // Email Support
+                    .c-field-group__box
+                        .c-field-group__description
+                            span If you have any questions about product delivery, please contact us. 
+                            // GA4
+                            a(href="#" target="_blank" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="") Email Support
+
+            .c-pop-msg__contents-container(data-claim-index=0)
+                form(action="#" method="post").c-post-form
+                    +postFormFieldset({
+                        legend : false
+                    })
+                        .c-post-form__group
+                            - var required = true
+                            - var inLayer = true 
+                            - var labelSrOnly = false
+
+                            .c-post-form__item
+                                +formText("text", "Claim Reference", `claimSerialNum${index}`, required, "", inLayer, labelSrOnly)
+                                +invalid-warning("Claim Reference is required.")
+                            .c-post-form__item
+                                +formText("text", "Email", `claimSerialNum${index}`, required, "", inLayer, labelSrOnly)
+                                +invalid-warning("Email is required.")
+                                +invalid-warning("Email is invalid.")
+
+        .c-pop-msg__footer
+            .c-pop-msg__footer-container(data-claim-index=1)
+                .button.c-pop-msg__button-wrap
+                    // GA4 
+                    +defaultButton({
+                         name: 'Close', 
+                        wSize: 'medium', 
+                        mSize: 'medium', 
+                        buttonStyle: 'default', 
+                        isButton: false
+                    })(aria-controls="popClaimTrack" href="#" data-link-name="" data-link-destination="" data-link-menu="" data-link-page-type="" class="js-pop-close")
+            .c-pop-msg__footer-container(data-claim-index=0)
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: 'Submit', 
+                        wSize: 'medium', 
+                        mSize: 'medium', 
+                        buttonStyle: 'highlight', 
+                        isButton: true
+                    })(aria-controls="popClaimTrack")
+
+    //- Edit Purchase Details
+    +pop-msg-standard({
+        id : `popClaimEditPurchaseDetails`, 
+        size: "large full-m",
+        headline : "Edit Purchase Details",
+        headerBorder : false,
+        classes: "smooth-head",
+        headLineStyle: "font-w-semibold-36 font-m-semibold-24"
+    })
+        .c-pop-msg__contents.c-pop-msg__contents--popClaimEdit
+            +required-text-indicate
+            form(action="#" method="post").c-post-form
+                +postFormFieldset("Product")
+                    .c-post-form__group-title 
+                        span Select a Product
+                        +required-text-sr
+                    +find-model-number-type01({index: 2, selectionList : [1, 1, null]})
+                    +find-model-number-type01({index: 3, selectionList : [1, 1, "123qwer12345"]})
+                    +find-model-number-type02({index: 4, selectionList : [1, 1, null]})
+                    +find-model-number-type02({index: 5, selectionList : [1, 1, "123qwer12345"]})
+                    +find-model-number-type02({index: 6})
+                    +find-model-number-type02({index: 7})
+
+                +postFormFieldset("Purchase")
+                    //- group : Purchase - place/date
+                    .c-post-form__dateAnum
+                        .c-post-form__group
+                            .c-post-form__group.inner
+                                .c-post-form__item
+                                    +formText("date", "Purchase Date", "purchaseDate", true, "Purchase Date", false, false)(aria-describedby="aria_dateAnum_edit_1")
+                                    +postFormMessage("Purchase Date is required.", "", "aria_dateAnum_edit_1")
+                                .c-post-form__item
+                                    +formText("tel", "Order Number", "orderNumber", true, "Order Number", false, false)(aria-describedby="aria_dateAnum_edit_2" maxlength="20")
+                                    +postFormMessage("Order Number is required.", "", "aria_dateAnum_edit_2")
+                            .c-upload-item__buttons
+                                div
+                                    button.cmp-button.c-upload-item__button.c-upload-item__button(type="button" data-cmp-data-layer="")
+                                        span.sr-only Add
+                        .c-post-form__group
+                            .c-post-form__group.inner
+                                .c-post-form__item
+                                    +formText("date", "Purchase Date", "purchaseDate", true, "Purchase Date", false, false)(aria-describedby="aria_dateAnum_edit_3")
+                                    +postFormMessage("Purchase Date is required.", "", "aria_dateAnum_edit_3")
+                                .c-post-form__item
+                                    +formText("tel", "Order Number", "orderNumber", true, "Order Number", false, false)(aria-describedby="aria_dateAnum_edit_4" maxlength="20")
+                                    +postFormMessage("Order Number is required.", "", "aria_dateAnum_edit_4")
+                            .c-upload-item__buttons
+                                div
+                                    button.cmp-button.c-upload-item__button.c-upload-item__button--remove(type="button" data-cmp-data-layer="")
+                                        span.sr-only Remove
+
+                    //- group : Serial Images
+                    .c-post-form__group-title.c-post-form__group-divide-line 
+                        span Serial Images
+                        +required-text-sr
+                    .c-post-form__group
+                        .c-post-form__group-box.c-post-form__group-box--full
+                            +upload-item({
+                                index: 0,
+                                itemId : "PR0005file01item",
+                                inputId : "PR0005file01",
+                                fileName : "22e646b35e51a064d2ac5cfbe54ddba8.jpg",
+                                validMsg : [
+                                    "Receipt of Purchase is required."
+                                ]
+                            })
+                            +upload-item({
+                                itemId : "PR0005file04item",
+                                inputId : "PR0005file04",
+                                validMsg : [
+                                    "Receipt of Purchase is required."
+                                ]
+                            })
+                            .c-post-form__complementary-area
+                                span.c-post-form__description File must be less than 10MB. Allowed file types : jpeg, jpg, gif, png, tif
+                                .button
+                                    +textButton({wSize : "medium", mSize : "small", buttonStyle:"default", name:"Where is the serial image in the actual product?", isButton : false})(href="#popFindModel" class="js-pop-open" role="button")
+                    
+                    //- group : Cheaper Retailer Screenshot
+                    .c-post-form__group-title 
+                        span Cheaper Retailer Screenshot
+                        +required-text-sr
+                    .c-post-form__group
+                        .c-post-form__group-box.c-post-form__group-box--full
+                            +upload-item({
+                                index: 0,
+                                itemId : "PR0005file01item",
+                                inputId : "PR0005file01",
+                                fileName : "22e646b35e51a064d2ac5cfbe54ddba8.jpg",
+                                validMsg : [
+                                    "Receipt of Purchase is required."
+                                ]
+                            })
+                            +upload-item({
+                                itemId : "PR0005file04item",
+                                inputId : "PR0005file04",
+                                validMsg : [
+                                    "Receipt of Purchase is required."
+                                ]
+                            })
+                            .c-post-form__complementary-area
+                                span.c-post-form__description File must be less than 10MB. Allowed file types : jpeg, jpg, gif, png, tif
+
+                    //- Additional description of purchase
+                    .c-post-form__group-title 
+                        span Additional Description of Purchase
+                    .c-post-form__group
+                        .c-post-form__group-box.c-post-form__group-box--full.form_textarea
+                            +formTextarea("text", "Comments", "comments", false, "")(minLength="20", maxlength="5000" aria-describedby="aria_Textarea_edit_1")    
+                            +postFormMessage("This area is required", "", "aria_Textarea_edit_1")
+                            
+        .c-pop-msg__footer
+            .c-pop-msg__footer-container
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: 'Cancel', 
+                        wSize: 'medium', 
+                        mSize: 'medium', 
+                        buttonStyle: 'default', 
+                        isButton: true
+                    })(aria-controls="popClaimEditPurchaseDetails" class="js-pop-close")
+                    +defaultButton({
+                        name: 'Save', 
+                        wSize: 'medium', 
+                        mSize: 'medium', 
+                        buttonStyle: 'highlight', 
+                        isButton: true
+                    })(aria-controls="popClaimEditPurchaseDetails")
+
+    //- Edit Personal Details
+    +pop-msg-standard({
+        id : `popClaimEditPersonalDetails`, 
+        size: "large full-m",
+        headline : "Edit Personal Details",
+        headerBorder : false,
+        classes: "smooth-head",
+        headLineStyle: "font-w-semibold-36 font-m-semibold-24"
+    })
+        .c-pop-msg__contents.c-pop-msg__contents--popClaimEdit
+            +required-text-indicate
+            form(action="#" method="post").c-post-form
+                +postFormFieldset("About you")
+                    .c-post-form__group
+                        .c-post-form__item
+                            +formText("text", "First Name", "First Name", true, "First Name")(aria-describedby="aria_FirstName_1")
+                            +postFormMessage("Place of First Name is required", "", "aria_FirstName_1")
+                        .c-post-form__item
+                            +formText("text", "Last Name", "Last Name", true, "Last Name")(aria-describedby="aria_LastName_1")
+                            +postFormMessage("Place of Last Name is required", "", "aria_LastName_1")
+                        .c-post-form__item
+                            +formSelect("Gender", "Gender", "gender", false)(aria-describedby="aria_Gender_1")
+                                option(value="" disabled selected) Select your gender
+                                option(value="Mr.") Mr.
+                                option(value="Mrs.") Mrs.
+                                option(value="Ms.") Ms.
+                                option(value="Miss") Miss
+                            //- +postFormMessage("Gender is required", "", "aria_Gender_1")
+                        .c-post-form__item
+                            +formText("text", "Email", "Email", true, "Email")(aria-describedby="aria_Email_1 aria_Email_2")
+                            +postFormMessage("Email is required", "", "aria_Email_1")
+                            +postFormMessage("Email is invalid", "", "aria_Email_2")
+                        .c-post-form__item
+                            +formText("text", "Phone Number", "Phone Number", true, "Phone Number")(aria-describedby="aria_PhoneNumber_1")
+                            +postFormMessage("Phone Number is required", "", "aria_PhoneNumber_1")
+                        .c-post-form__item
+                            +formText("text", "Telephone Number", "Telephone Number", true, "Telephone Number")(aria-describedby="aria_TelephoneNumber_1")
+                            +postFormMessage("Telephone Number is required", "", "aria_TelephoneNumber_1")
+        .c-pop-msg__footer
+            .c-pop-msg__footer-container
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: 'Cancel', 
+                        wSize: 'medium', 
+                        mSize: 'medium', 
+                        buttonStyle: 'default', 
+                        isButton: true
+                    })(aria-controls="popClaimEditPersonalDetails" class="js-pop-close")
+                    +defaultButton({
+                        name: 'Save', 
+                        wSize: 'medium', 
+                        mSize: 'medium', 
+                        buttonStyle: 'highlight', 
+                        isButton: true
+                    })(aria-controls="popClaimEditPersonalDetails")
+
+    //- Edit Reward
+    +pop-msg-standard({
+        id : `popClaimEditReward`, 
+        size: "large full-m",
+        headline : "Edit Reward",
+        headerBorder : false,
+        classes: "smooth-head",
+        headLineStyle: "font-w-semibold-36 font-m-semibold-24"
+    })
+        .c-pop-msg__contents.c-pop-msg__contents--popClaimEdit
+            form(action="#" method="post").c-post-form
+               .c-post-form__group.c-field-group.c-field-group--reward-fields
+                    // display one of them
+                    // when [ 1. Model Type ] 
+                    .c-post-form__group-box.c-post-form__group-box--full
+                        .c-field-group__box.c-field-group__box--w-row-flow.c-field-group__box--w-column3
+                            +radio-option({type : "model", name : "claimEditReward", id : "claimOptionEdit1-1"})
+                            +radio-option({type : "model", name : "claimEditReward", id : "claimOptionEdit1-2"})
+                            +radio-option({type : "model", name : "claimEditReward", id : "claimOptionEdit1-3"})
+                            +radio-option({type : "model", name : "claimEditReward", id : "claimOptionEdit1-4"})
+                    // when [ 2. Text/Images Type ] 
+                    .c-post-form__group-box.c-post-form__group-box--full.c-post-form__group-divide-line 
+                        .c-field-group__box.c-field-group__box--w-row-flow.c-field-group__box--w-column3
+                            +radio-option({type : "image + text", name : "claimEditReward", id : "claimOptionEdit2-1"})
+                            +radio-option({type : "image + text", name : "claimEditReward", id : "claimOptionEdit2-2"})
+                            +radio-option({type : "image + text", name : "claimEditReward", id : "claimOptionEdit2-3"})
+                    // when [ 3. Text Type ] 
+                    .c-post-form__group-box.c-post-form__group-box--full.c-post-form__group-divide-line 
+                        .c-field-group__box
+                            +radio-option({type : "text", name : "claimEditReward", id : "prepaid3", text : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero, veniam."})
+                            +radio-option({type : "text", name : "claimEditReward", id : "prepaid4", text : "Lorem ipsum dolor sit amet consectetur"})
+                    
+                    // #rewarded-Receipt
+                    #rewarded-Receipt-edit.hidden
+                        +postFormFieldset("Receipt information")
+                            .c-post-form__group
+                                .c-post-form__group-box.c-post-form__group-box--full
+                                    .c-post-form__item
+                                        +formText("text", "Street address 1", "Street address 1", true, "Street address 1")(aria-describedby="aria_Street_1")
+                                        +postFormMessage("this area is required", "", "aria_Street_1")
+                                .c-post-form__group-box.c-post-form__group-box--full
+                                    .c-post-form__item
+                                        +formText("text", "Street address 2", "Street address 2", false, "Street address 2")
+                                .c-post-form__item
+                                    +formText("text", "City", "City", true, "City")(aria-describedby="aria_City_1")
+                                    +postFormMessage("City is required", "", "aria_City_1")
+                                .c-post-form__item
+                                    +formText("text", "Country", "Country", true, "Country")(aria-describedby="aria_Country_1")
+                                    +postFormMessage("Country is required", "", "aria_Country_1")
+                                .c-post-form__item
+                                    +formText("text", "Postcode", "Postcode", true, "Postcode")(aria-describedby="aria_Postcode_1")
+                                    +postFormMessage("Postcode is required", "", "aria_Postcode_1")
+                    
+                    // Apply for Cashback
+                    .c-post-form__group-box.c-post-form__group-box--full.c-post-form__group-divide-line
+                        .cashback-select
+                            input(type="checkbox" name="cashbackEdit" value="cashbackEdit" id="cashbackEdit" class="sr-only")
+                            label.c-field-group__box.label-cashback(for="cashbackEdit")
+                                p(class='font-w-normal-16 font-m-normal-14') Apply for Cashback
+                    
+                    // #cashback-Receipt
+                    #cashback-Receipt-edit.hidden
+                        +postFormFieldset("Receipt information")
+                            .c-post-form__group
+                                .c-post-form__item
+                                    +formText("text", "Bank holder name", "Bank holder name", true, "Bank holder name")(aria-describedby="aria_bankHolder_1")
+                                    +postFormMessage("Bank holder name is required", "", "aria_bankHolder_1")
+                                .c-post-form__item
+                                    +formSelect("Currency", "Currency", "currency", true)(aria-describedby="aria_Currency_1")
+                                        option(value="" disabled selected) Select your Currency
+                                        option(value="GBP") GBP
+                                        option(value="GBP1") GBP1
+                                        option(value="GBP2") GBP2
+                                    +postFormMessage("Currency is required", "", "aria_Currency_1")    
+                                .c-post-form__item
+                                    +formText("text", "Bank account number", "Bank account number", false, "Bank account number")
+                                .c-post-form__item.row-group
+                                    .c-input-item
+                                        label(for='sortCode' class='font-w-normal-16 font-m-normal-14') Sort code
+                                        .group-r3
+                                            input(type='text' id='sortCode', class='')
+                                            input(type='text' id='', class='')
+                                            input(type='text' id='', class='')
+                                .c-post-form__item
+                                    +formText("text", "IBAN Code", "IBAN Code", false, "IBAN Code")
+                                .c-post-form__item
+                                    +formText("text", "BIC Code", "BIC Code", false, "BIC Code")
+
+        .c-pop-msg__footer
+            .c-pop-msg__footer-container
+                .button.c-pop-msg__button-wrap
+                    +defaultButton({
+                        name: 'Cancel', 
+                        wSize: 'medium', 
+                        mSize: 'medium', 
+                        buttonStyle: 'default', 
+                        isButton: true
+                    })(aria-controls="popClaimEditPersonalDetails" class="js-pop-close")
+                    +defaultButton({
+                        name: 'Save', 
+                        wSize: 'medium', 
+                        mSize: 'medium', 
+                        buttonStyle: 'highlight', 
+                        isButton: true
+                    })(aria-controls="popClaimEditPersonalDetails")
+
+    //- terms and conditions
+    +pop-msg-standard({
+        id : `popRedemptionTerms`, 
+        size: "large full-m",
+        headline : "Terms and conditions",
+        headerBorder : false,
+        headLineStyle: "font-w-semibold-36 font-m-semibold-24"
+    })
+        .c-pop-msg__contents.c-pop-msg__contents--popClaimTerms
+            .tabs.panelcontainer
+                .cmp-tabs(data-cmp-data-layer="", data-placeholder-text="false")
+                    .cmp-tabs__inner
+                        .cmp-tabs__tablist(role="tablist", aria-multiselectable="false")
+                            each name, index in ["Terms and Conditions", "Privacy Policy", "Tab name 3", "Tab name 4"]
+                                - var active = 0 == index
+                                +printTab(2, (index + 1), active)
+                                    span= name
+
+                    +printTabPanel(2, 1, true)
+                        // insert html
+                        p(style="font-size:20px") 
+                            strong Full Terms and Conditions
+                        ol 
+                            li This Promotion is open to residents of Great Britain aged 18 or over, excluding anyone professionally associated with this Promotion.
+                            li Purchase is necessary. Internet access and a valid email address.
+                            li Promotion Period: Purchase between 00:01 BST on the 22 December 2021 and 23:59 BST on the 1 February 2022 inclusive.
+                            li Offer: Purchase a Participating LG Product, see clause 5 for details, online at LG.com, within the Promotion Period to receive a free 4 year extended warranty on the product purchased.
+                            li Participating LG Products:
+                            li How to Claim 4-year extended warranty:
+                                ul 
+                                    li a. After purchasing a participating product, visit LG.com and complete the form with your details (name, email address, and telephone number) and insert the products serial number. -Redeem here
+                                    li b. The 4-year extended warranty certificate will be sent to you via our 3rd party, Domestic and General.
+                                    li c. Things you need to know:
+                        p 
+                            | This LG Protection Policy meets the demands and needs of those who wish to insure their electronic appliances and/or household goods against breakdown.
+                            br
+                            | Domestic & General Insurance PLC is an insurance undertaking, not an intermediary. We are the underwriter of the LG Protection Policy and do not provide a personal recommendation or advice.
+                            br
+                            | Full details on how to submit a complaint can be found in the Terms and Conditions.
+                        br
+                        p(style="font-size:20px") 
+                            strong Summary Terms and Conditions
+                        p 
+                            | GB, 18+ only. 00:01 22/12/21 - 23:59 01/02/22. Purchase a Participating LG Product from LG.com to claim your 4-year extended warranty . Retain receipt to claim. Internet access required. Max 1 claim and Offer per person during the Promotion Period. Visit www.lg.com/uk for full T&Cs. Promoter: LG Electronics U.K. Ltd, Velocity 2, Brooklands Drive, Weybridge, KT13 0SL.
+
+                    +printTabPanel(2, 2, false)
+                        // insert html 
+                        | {Text Edit - Tab contents 2}
+                    +printTabPanel(2, 3, false)
+                        // insert html
+                        | {Text Edit - Tab contents 3}
+                    +printTabPanel(2, 4, false)
+                        // insert html 
+                        | {Text Edit - Tab contents 4}
+
+    // to dev - #popCopyComplete, #popFindModel must be below popup of claim series;claim now, track, edit, etc  
+    +printLayerPopup('popCopyComplete')
+    +printLayerPopup('popFindModel')
+    +printSimpleLayerPopup('popSimpleAlert', {desc: 'text'})
+    +printSuccessPopup('printSuccessExit', {desc: 'text text text', btn1: 'No', btn2: 'Yes'})

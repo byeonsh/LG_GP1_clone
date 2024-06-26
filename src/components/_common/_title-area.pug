@@ -1,0 +1,68 @@
+include ./_headline.pug
+
+mixin component-headline(params)
+	- var options = {style : "font-w-light-56 font-m-light-28", level : "h2", text : "Lorem ipsum dolor sit amet.", ...params}
+	.title.c-region-header__headline
+		+headline(
+			options.style, 
+			options.level, 
+			options.text
+		)
+
+mixin component-description(params)
+	- var options = {text : "Lorem ipsum, dolor sit amet consectetur adipisicing.", style : "", addClassList : "", ...params}
+
+	.text.c-region-header__text(class=`${options.style}` class={[options.addClassList] : !!options.addClassList})&attributes(attributes)
+		span.cmp-text(data-cmp-data-layer="")= options.text
+			
+	
+mixin component-title-area(params)
+	- var options = {alignment : "align-text-left", headline : {}, description : null, ...params}
+	.c-region-header&attributes(attributes)
+		.c-region-header__container(class=`${options.alignment}`)
+			//- title
+			if options.headline
+				+component-headline(options.headline)
+
+			//- description
+			if options.description != null
+				//- multiple
+				if options.description instanceof Array
+					each set in options.description
+						+component-description(set)
+						
+				//- single
+				if options.description instanceof Object
+					- var set = options.description
+					+component-description(set)
+
+		//- others
+		if block
+			//- 아래 요소는 text alignment의 영향을 받지 않음. 
+			.c-region-header__complementary-area
+				block
+
+//- sample
+//- +component-title-area({
+//- 	alignment : "align-text-left",
+//- 	headline : {
+//- 		text : "Social",
+//- 		style : "font-w-light-56 font-m-light-28",
+//- 		level : "h2",
+//- 	},
+//- 	description : {
+//- 		text : "Life’s good campaign",
+//- 		style : "font-w-normal-20 font-m-normal-12"
+//- 	}
+//- })(class="c-region-header--vacate-side")
+
+
+//- 레이아웃이 default mixin으로 만들 수 없는 경우에 사용.
+//- headline은 component-headline, 
+//- copy text는 component-description
+//- 위 코드로만 사용할 것.
+mixin component-title-area-custom(params)
+	.c-region-header&attributes(attributes)
+		.c-region-header__container
+			if block
+				block
