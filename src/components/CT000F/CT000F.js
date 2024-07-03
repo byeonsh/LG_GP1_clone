@@ -91,6 +91,23 @@ function init() {
       autoHyphen(el);
     });
   });
+
+  const autoHyphenTinNum = targetItem => {
+    // eslint-disable-next-line no-param-reassign
+    targetItem.value = targetItem.value
+      .replace(/[^0-9]/g, '')
+      .replace(/^(\d{0,3})(\d{0,3})(\d{0,3})(\d{0,5})$/, '$1-$2-$3-$4')
+      // eslint-disable-next-line no-useless-escape
+      .replace(/(\-{1,2})$/g, '')
+      .replace(/\b\d{14,}\b/g, '');
+  };
+  const TINNumber = document.querySelectorAll('.js-TINNumber-keyup');
+  TINNumber.forEach(el => {
+    if (beforeLaunch(el)) return false;
+    el.addEventListener('keyup', () => {
+      autoHyphenTinNum(el);
+    });
+  });
 }
 
 init();
